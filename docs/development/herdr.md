@@ -281,8 +281,11 @@ In order, stopping at the first problem and saying what it did and did not do:
    `--force-with-lease=refs/heads/<branch>:<remote sha>`, **only if** that remote commit is in the local branch's
    reflog (it was this branch's own tip). It never pushes without a lease, and it stops when the remote tip was never on
    this branch (someone else's work), is ahead of the local branch, or shares no history with it.
-3. **Pull request.** Opens one against `main` (assigned to `HERDR_PR_ASSIGNEE` when it is not empty) or reuses the open
-   one for the branch, whose title and description it leaves alone.
+3. **Pull request.** Opens one against `main` or reuses the open
+   one for the branch, whose title and description it leaves alone. A new pull request is assigned to
+   `HERDR_PR_ASSIGNEE` (when it is not empty) afterwards, with `gh pr edit --add-assignee`: `gh pr create --assignee`
+   with a long description failed with a GraphQL error. If the assignment fails it warns and goes on, because the pull
+   request already exists.
 4. It waits until the PR shows the pushed commit as its head (`headRefOid`), so the checks of the previous head are never
    counted.
 5. **Checks and merge.** Both paths pin the merge to the pushed commit with `--match-head-commit`, and the script never

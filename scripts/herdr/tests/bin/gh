@@ -5,6 +5,7 @@
 #            | queued (an older passed run and a rerun that has not started, with Go's zero time) | queued-null (same, startedAt null)
 #            | requeue:N (N polls like queued, then pass)
 #   merge    (absent) | never (the PR stays OPEN after the auto-merge is scheduled) | closed (it ends CLOSED, unmerged)
+#   edit-fails  (present) `pr edit` fails like a GraphQL error
 #   rewrite  (present) the merge lands as new commits with the same patches, like GitHub's rebase merge (new SHAs)
 #   stale    N: `pr view --json headRefOid` shows an old head for the first N polls
 set -euo pipefail
@@ -20,6 +21,7 @@ case $cmd in
   "pr create")
     head=; while [ $# -gt 0 ]; do [ "$1" = "--head" ] && head=$2; shift; done
     jq -n --arg h "$head" '{number:41,head:$h,state:"OPEN"}' >"$G/pr.json"; echo "https://github.com/example/forma-ui/pull/41" ;;
+  "pr edit") [ ! -f "$G/edit-fails" ] || { echo "GraphQL: Could not resolve to a User" >&2; exit 1; } ;;
   "pr checks")
     mode=$(cat "$G/checks" 2>/dev/null || echo pass); bucket=$mode; rc=0
     case $mode in
