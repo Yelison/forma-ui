@@ -58,6 +58,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  Reflect.deleteProperty(window, 'pageGlobal')
   // reset() empties the body; these live elsewhere. Only this file's key goes: the origin is shared with other specs.
   for (const element of addedToHead.splice(0)) element.remove()
   root.removeAttribute('data-theme')
@@ -99,5 +100,30 @@ describe('first paint with a stored theme that the operating system disagrees wi
     await emulateMedia({ colorScheme: 'light' })
     await expect.element(page.getByText('Preference system, painted light')).toBeInTheDocument()
     expect(background()).toBe(painted.light)
+  })
+})
+
+// The script runs in the global scope of the page, where a top-level `var` would leak and a `let` of the page with the
+// same name would make it fail before it paints anything. jsdom cannot show this: it runs the script inside a function.
+describe('the first-paint script among the globals of the page', () => {
+  it('leaves no global behind', () => {
+    localStorage.setItem(STORAGE_KEY, 'dark')
+
+    runFirstPaintScript()
+
+    expect(root.getAttribute('data-theme')).toBe('dark')
+    expect(Reflect.has(window, 't')).toBe(false)
+  })
+
+  // A `let` stays in the page for the rest of the file: this is the only spec that declares one.
+  it('paints the theme and leaves the page its own variable when the page declares the same name', () => {
+    appendToHead('script', "let t = 'page'")
+    localStorage.setItem(STORAGE_KEY, 'dark')
+
+    runFirstPaintScript()
+    appendToHead('script', 'window.pageGlobal = t')
+
+    expect(root.getAttribute('data-theme')).toBe('dark')
+    expect(Reflect.get(window, 'pageGlobal')).toBe('page')
   })
 })
