@@ -1,0 +1,677 @@
+{
+  "counts": {
+    "collections": 4,
+    "colorVariables": 23,
+    "componentSets": 18,
+    "components": 6,
+    "contractFrames": 1,
+    "frames": 70,
+    "icons": 5,
+    "pages": 6,
+    "pngs": 70,
+    "screens": 40,
+    "svgs": 6,
+    "textStyles": 8,
+    "variables": 116,
+    "variablesByCollection": {
+      "Forma / Color": 24,
+      "Forma / Color Dark": 24,
+      "Forma / Dimensions": 22,
+      "Forma / Primitives": 46
+    },
+    "variants": 102
+  },
+  "exportedAt": "2026-10-06T19:00:17.393Z",
+  "files": {
+    "components.json": "279668021bd5b952b0c55f3b89d92847e7e702cf722981cf913937c862f53d7d",
+    "pages/00-start-here/forma-ui.json": "4c46fa4c555a79c463fa47a61b8c93509132ce98f027a808aa7960023ff36270",
+    "pages/01-foundations/foundations.json": "ecfe3b873d46d8b228b83a71804bda982442739a9a1a7c041d2c84417a326529",
+    "pages/02-components-light/forma-badge-light.json": "3b267f499b8756a107ab6f6abbd187d625443e235308853a2a672238629226b3",
+    "pages/02-components-light/forma-button-light.json": "2c095cce33e5a70ad01cb8c9d63f673b79182c8bc1dbe8e574b8444ac9b2219b",
+    "pages/02-components-light/forma-checkbox-light.json": "1ba77bc52f2144b76d7fc247e513ab7da5c9f44e9ba01287a3c37f3cb2c0a060",
+    "pages/02-components-light/forma-dialog-light.json": "20acccab8b2bc276da55774f4055154d9f81ffca6c65ee06835433527657a549",
+    "pages/02-components-light/forma-icon-grid.json": "f761f9149f5a235c8b5d994495774fb0b05a1c722ce78cd4780ad1c3b34e5194",
+    "pages/02-components-light/forma-input-light.json": "49d0d3ad3f6b77b68ecbaea6834e02ddbade1258207e60f47950d9e1e37cffee",
+    "pages/02-components-light/forma-navitem-light.json": "339660f0bf12fec8d93f079fe2ea8fe46a1a756efccb51a2dcd73958c88b786c",
+    "pages/02-components-light/forma-switch-light.json": "fe169555d72c6bfb43cb33da600297de7b1fac3f8b282b2b449153763409c577",
+    "pages/02-components-light/forma-tabs-light.json": "2bf6b19ca94d44a24478a82ff36353a5c19974168156e945db0d2e0f41caa233",
+    "pages/02-components-light/forma-tooltip-light.json": "805d60ff0cf9eaf18058e36060ec05203a713eaced9a4ec5bab020f40a2f90d9",
+    "pages/03-components-dark/forma-badge-dark.json": "5b957bda5cc3303dcb947827d1a4afd82d75963e28bae84ba3b9f9a0bafeee63",
+    "pages/03-components-dark/forma-button-dark.json": "0bfac2dcb3830be200d04334cbd5795eede6f9478ef9f73fa292abcefffc6a68",
+    "pages/03-components-dark/forma-checkbox-dark.json": "2794302ffbe5d604950275c0653b276b93032cf943c5f3f4cf52157dad005cf8",
+    "pages/03-components-dark/forma-dialog-dark.json": "adc7a17f6a3f5a785eb6d64c8eefb74d48a9247c80881fb856eab8150b084d71",
+    "pages/03-components-dark/forma-input-dark.json": "7eb743d8911a9650947d4375ebc1a27790dcf4539cf0987a3bfe1829c60c6fd9",
+    "pages/03-components-dark/forma-navitem-dark.json": "940f00d9b2d24a430ce88ff357ab41877656841d9c48239b8b2fd87a058dd4ab",
+    "pages/03-components-dark/forma-switch-dark.json": "5fd7cc354ecbaad91581d6f50ae7e35db06a2ff14047f0c333d859ce842178e6",
+    "pages/03-components-dark/forma-tabs-dark.json": "ed308f5efe758e112051af7740773c89ce454d05dfaa5649df966bdc0d424be4",
+    "pages/03-components-dark/forma-tooltip-dark.json": "1308dc201ddd4134b9aa985407721abfdedb7f2d35999b5de4ef32811fbf0bf6",
+    "pages/04-catalog-handoff/component-catalog-dark.json": "67f594d002f0e2fa59bdc5bc5d88e16506857912dcd4322ef91fa95f8e2843c9",
+    "pages/04-catalog-handoff/component-catalog-light.json": "950a016b5691c25864dccba55f93476117d48008adb07022867da65e292a7271",
+    "pages/04-catalog-handoff/implementation-guide.json": "8d2c4259a6d3c41c3bd5a98dccf3f4e8babb57ed0193e7b84df282735c0cad0b",
+    "pages/07-forma-ui-centered-documentation/catalog-dark-1024.json": "bf8c4ded8c191bde6b554998ff40222bc9b996458609de3c84091d8a52ebcedf",
+    "pages/07-forma-ui-centered-documentation/catalog-dark-1440-collapsed.json": "cb5ab18391522a7cd7861e1eaaa98aef454389ceb5c1b92feb0d9133ca28702e",
+    "pages/07-forma-ui-centered-documentation/catalog-dark-1440.json": "07d050428cc3e8e270dd9e255910453ba68a8863270d77a3ebd78d9459aa7565",
+    "pages/07-forma-ui-centered-documentation/catalog-dark-390.json": "ef649537ff406155d23d3733ee7a36830a72b3658981d224958ca164259e93ae",
+    "pages/07-forma-ui-centered-documentation/catalog-light-1024.json": "d67bc85334b39608da24ec8f9e0cf96e2787e265030b8270b1d4dd08d6d46fea",
+    "pages/07-forma-ui-centered-documentation/catalog-light-1440-collapsed.json": "ed54000b3e91cf6853e62ebc997bca6113d8ce20395cedd9241bf600613c59fe",
+    "pages/07-forma-ui-centered-documentation/catalog-light-1440.json": "ad491fc047eb447c39b903e5894f4fbb84ac31eaee2ccd92b848a35afdf19f9a",
+    "pages/07-forma-ui-centered-documentation/catalog-light-390.json": "872f91d83e66fa4d2bcb97994cec1dc5a2d90820eab5e4371166f63434f5c187",
+    "pages/07-forma-ui-centered-documentation/changelog-dark-1024.json": "a27cf694918c543d9e6b73dee05ac0a11b3acf24bff10ced0ba06a5a61add632",
+    "pages/07-forma-ui-centered-documentation/changelog-dark-1440.json": "6d0b6815d06e610d390bee9953d33b9727bebf8be1d6b691c255fd65bfaae694",
+    "pages/07-forma-ui-centered-documentation/changelog-dark-390.json": "27a1e2e2c7fff9f076726fd80c9763747b01e5097dae4b1ebe01456f1f2eb8f8",
+    "pages/07-forma-ui-centered-documentation/changelog-light-1024.json": "275003cd9f3fb05b9123c4fcd1b6b9ce2c4e1350eac176744f2172c6659c6fbd",
+    "pages/07-forma-ui-centered-documentation/changelog-light-1440.json": "e010764e4da90e53ca7817943eb023c44bb511410b0a25ba46982e3b30b1209c",
+    "pages/07-forma-ui-centered-documentation/changelog-light-390.json": "d5c4cb1567952e9b4e6f5ab6150937d50bb16fcab23cc1abeefc9d8b799e2ce4",
+    "pages/07-forma-ui-centered-documentation/detail-dark-1024.json": "55f9ea0a3c901e0c8600fab68b0c60f5d3a226963ccde37c078bd694359d11bd",
+    "pages/07-forma-ui-centered-documentation/detail-dark-1440-collapsed.json": "e3f2a25a7e9a67bab82bad11b6a3df6b18d10e806bf729c99c838f5a99a94334",
+    "pages/07-forma-ui-centered-documentation/detail-dark-1440.json": "fedb911a4dc07de00bee429d8ef2f0a993bdd883de0e29ea73901ef284f732e6",
+    "pages/07-forma-ui-centered-documentation/detail-dark-390.json": "1cbd9cf15da8416ef9a9ea9a267d527ec8125836ce17dda7a988a8db179c9344",
+    "pages/07-forma-ui-centered-documentation/detail-light-1024.json": "691ae376931de7005bb0ca442a29310f62e109b36b1bd2c9e368e9220beb985e",
+    "pages/07-forma-ui-centered-documentation/detail-light-1440-collapsed.json": "7d5d0ff1d18fcfc4ddc57843283c3c26180468543161ce7a42326ac2f986efc2",
+    "pages/07-forma-ui-centered-documentation/detail-light-1440.json": "9938a612745aa7184aa7d8202743cdd715fd4f95ea903f26bd401b0bb2816949",
+    "pages/07-forma-ui-centered-documentation/detail-light-390.json": "a9ec512b2e90f5ce55d7a84f6887ec1199bd33dcf525be48ed844c786f4b38aa",
+    "pages/07-forma-ui-centered-documentation/forma-website-icon-catalog.json": "15ed09bdbf52756de03fdb96753ad466f67bf95f6086261e8798ae630805636f",
+    "pages/07-forma-ui-centered-documentation/forma-website-icon-changelog.json": "65fcaa8a6af9515f3c40e86993f95288eb53a1d18ba7278abd156645b05f305a",
+    "pages/07-forma-ui-centered-documentation/forma-website-icon-foundations.json": "e5a3ae94c5003b5d6f2ada983ccad598aba57b26dd1d90ca9bf50a00af428072",
+    "pages/07-forma-ui-centered-documentation/forma-website-icon-guides.json": "c581add0c7c5ede9ef038f1a3d3bff62e95cb0bde808d513f2a9108a5e579733",
+    "pages/07-forma-ui-centered-documentation/forma-website-icon-overview.json": "f7dec5f22c0b91d83f4afe2bb7687962739a4a83ab569be8387441d3264f5048",
+    "pages/07-forma-ui-centered-documentation/foundations-dark-1024.json": "7c110c62f390881ab57e53fba8076d20156e799f93f85abeaad8f12884cd8a90",
+    "pages/07-forma-ui-centered-documentation/foundations-dark-1440.json": "3b78bdcee76819e3b599aef619d47b0bd6bafd722f85b2944e7839a25ee306f3",
+    "pages/07-forma-ui-centered-documentation/foundations-dark-390.json": "91af24726a82d2f9e59c3752c502dc42c0295e4394d6008cd3250bc6a043883a",
+    "pages/07-forma-ui-centered-documentation/foundations-light-1024.json": "62c6adfd7d644cddd1c89213b34520cbc2ce336cc560738f598c0e44b020ea54",
+    "pages/07-forma-ui-centered-documentation/foundations-light-1440.json": "94840aa502925575befa37b00ee25f187b5c56350b4ff5121a507c8bf56b840a",
+    "pages/07-forma-ui-centered-documentation/foundations-light-390.json": "6fbac748a802374e25c56edb82691668d9ecca3b2bcf2761fa5d36749243416f",
+    "pages/07-forma-ui-centered-documentation/guides-dark-1024.json": "301a7c3aeac3a4bc41b61ca4c77972ff3404588ef4f66ff7438d67c194dbbe98",
+    "pages/07-forma-ui-centered-documentation/guides-dark-1440.json": "ed0312748b0ffe3b650e3caf4d86574ae5deaf9f576140e9115ad0cb4efd8be7",
+    "pages/07-forma-ui-centered-documentation/guides-dark-390.json": "d2d38212fad922d9775395757beef8720e089918ae28f40f926b6a0d4c724e14",
+    "pages/07-forma-ui-centered-documentation/guides-light-1024.json": "0c289355e715f36e8b244d6676f18208f6229f1a89980312f02a17b751a5ed6d",
+    "pages/07-forma-ui-centered-documentation/guides-light-1440.json": "ffcce1af2ac210868446d070978ffe9fbd43effeb0a5e1a0c550b2ca56b7af7b",
+    "pages/07-forma-ui-centered-documentation/guides-light-390.json": "f4fd2676ea735004814a2cd4d05c5c199e44e87f62132f402ea0942d98937862",
+    "pages/07-forma-ui-centered-documentation/overview-dark-1024.json": "9b284b10a8f8fc09aff7117260f6576e0d683979f0caf5716d073c265d0f4a4f",
+    "pages/07-forma-ui-centered-documentation/overview-dark-1440.json": "1e842caa54fcd9b47ea482e89351f8a971d7bf43306c95a9ac7de86d4a2ff7e4",
+    "pages/07-forma-ui-centered-documentation/overview-dark-390.json": "ea35e08729193e59715bdba3e80b20d91b24691beca00675180073e38a544669",
+    "pages/07-forma-ui-centered-documentation/overview-light-1024.json": "0ff6891b0015c5a0a719a5ee4e7bad0073ac98a54e560bc0fbffb6b59911d6d1",
+    "pages/07-forma-ui-centered-documentation/overview-light-1440.json": "e83ccc2ef7ee4ba82413941bd5a2dd49ece437144485f7b0caf41d75b1ca7ccc",
+    "pages/07-forma-ui-centered-documentation/overview-light-390.json": "1f40a90f10aa06990c7cde2e6c936144dc080e9ba442bda47c315fb842dbde72",
+    "pages/07-forma-ui-centered-documentation/responsive-interaction-contract.json": "8ab271cceac705d3d93cdbda7f2525c4a704cb91100f1b5d4d1bfb074ba5328a",
+    "png/00-start-here/forma-ui.png": "e0288fce379a06f63ad668de546b26e833c98ebe62e3dd62982c39042934898b",
+    "png/01-foundations/foundations.png": "5ccc5ef5c150c342debb9cedfbb9d99403ddec7b3d84be6d397efecfa1266e52",
+    "png/02-components-light/forma-badge-light.png": "8e8d9fcb44c0bc92aaa3cf357a390e03d96312a991e1e07e477f8c9fc22831da",
+    "png/02-components-light/forma-button-light.png": "f0cd229fa1c8ce31d8cf8cfb0e87109155f2006382dbc272ae8849e17b016bba",
+    "png/02-components-light/forma-checkbox-light.png": "0cf128647bf6bf70ec4a193b86b2561d01edb0d9186fa76ddadd570a2207526f",
+    "png/02-components-light/forma-dialog-light.png": "95368d37d00e7a0d472fbca3db2edc3ba957fe48f7f6667993cabb71c956eaf4",
+    "png/02-components-light/forma-icon-grid.png": "9d43e48d851de2c1ae2bdb915a44b8d45f69bf5e43f706ea0217196967d002cc",
+    "png/02-components-light/forma-input-light.png": "70f607723bdf4306c56170adec9512bf4605aa91332680102cb07394572da920",
+    "png/02-components-light/forma-navitem-light.png": "3665c4082ef2e35851523b38a2c587f7242f327e0f09780bfbe3c0f600d2f276",
+    "png/02-components-light/forma-switch-light.png": "38fabfd94ec1c9f556727cb4e00d7d9c1ecbd2cdf40923735a0baab6e04f5d27",
+    "png/02-components-light/forma-tabs-light.png": "d9c818603260ad9d84ee6444cdccf477e5edf766ae9256c4502c719769b543fe",
+    "png/02-components-light/forma-tooltip-light.png": "c9413d77396a625e3b7c996cfc5253580387b13ea36046b68ba8f27f6a46f8b8",
+    "png/03-components-dark/forma-badge-dark.png": "423a1040e8aa5b14b3c4d8d13a19ac8fec587f220b8aa0e5371ceaaa582245f2",
+    "png/03-components-dark/forma-button-dark.png": "bdd8e59c7f2e6d7a544ff2e00f2232628d7e72e730a82ec8d7718e372c1ad6aa",
+    "png/03-components-dark/forma-checkbox-dark.png": "dbe3eb18140c55457819e6bfa7727e8b4ad5c989f2532f4c88065d3c8d91ace4",
+    "png/03-components-dark/forma-dialog-dark.png": "9b1791bf0faecc9002633a0be42327d96fd4e1434d5faee3653f962bfb7287ca",
+    "png/03-components-dark/forma-input-dark.png": "d518dbe8e8b215b2e6934dd0a20ed26582e0fed03939828a5d4802d4e65d6290",
+    "png/03-components-dark/forma-navitem-dark.png": "d67392ec866fe0bd11fce98e9b50ac1004c9657c5b63350c195933225dd1398c",
+    "png/03-components-dark/forma-switch-dark.png": "1a8beac36d1c1b1319ddd9446724189f1813770fd710d1203837ebfce4cadf85",
+    "png/03-components-dark/forma-tabs-dark.png": "f9e7da8a2b20f74f1b8656d85ecc0b4a7c9df2d88a216392de0a4040f3714043",
+    "png/03-components-dark/forma-tooltip-dark.png": "489e090b892c1f6f95318a82178f7a586f369bb9ba5002cdc250dce84bd01481",
+    "png/04-catalog-handoff/component-catalog-dark.png": "c73face5b6a3821b2256cd2a52689577e3102ea96d8c7143d604ffefd8d06eb9",
+    "png/04-catalog-handoff/component-catalog-light.png": "c8b74ada1d08881914b13e50a6924ce571f7c6a83f8ac964cd4c1067b9db115b",
+    "png/04-catalog-handoff/implementation-guide.png": "8c8a05c143306ae7d85f030429a24754f3538abe683687382fe2dd8ee850d917",
+    "png/07-forma-ui-centered-documentation/catalog-dark-1024.png": "335605ac37a57a0a996f19ebae25ae368ce1780208728684d6465af25bd9524f",
+    "png/07-forma-ui-centered-documentation/catalog-dark-1440-collapsed.png": "1d91e3e4cafdd72966ac3280aa9228414e79605a3fce697056a975ba4a6674c9",
+    "png/07-forma-ui-centered-documentation/catalog-dark-1440.png": "3a9a320eeef85772098bc669dbe6b2fd67040551624a4c6b41d6c78ef3c081d2",
+    "png/07-forma-ui-centered-documentation/catalog-dark-390.png": "b1e5e98cb9bfc4426782f722a7ebaae79aafe7ca2f9b5ece2fee3fd5cb5a4bcc",
+    "png/07-forma-ui-centered-documentation/catalog-light-1024.png": "68d04e542493af09f405a8a73df69e01dc5ad33f93b1017f9f067751066e10f4",
+    "png/07-forma-ui-centered-documentation/catalog-light-1440-collapsed.png": "926bedb9d16ea0f3f13ccadeed661a6a530864f9818d3d0d863232b40cabd498",
+    "png/07-forma-ui-centered-documentation/catalog-light-1440.png": "987ec79672e9185074317ad38da712e0c422e846443d6fbe6c977ad275b02e65",
+    "png/07-forma-ui-centered-documentation/catalog-light-390.png": "9820e25ad5bc23dfc6e7983e199e5b1db34d9d50f729598fb36bce3ae70524d0",
+    "png/07-forma-ui-centered-documentation/changelog-dark-1024.png": "f1cbb4837b7d2a116abde908de692e5ccc4f5c73936391588e7cd65c91984184",
+    "png/07-forma-ui-centered-documentation/changelog-dark-1440.png": "14ed4c6c913c85d7df5e24ce8c0f1178faec7d896e424243e22aaf38076a6853",
+    "png/07-forma-ui-centered-documentation/changelog-dark-390.png": "e17ebfb6f95c4c95442eae2588d631ee31b603c70d34e77d7d72c55f58121b5b",
+    "png/07-forma-ui-centered-documentation/changelog-light-1024.png": "a2517518c17028c5347539a64e792cbe196ef08689f96bce45d9fedc6d9ca50a",
+    "png/07-forma-ui-centered-documentation/changelog-light-1440.png": "037a9cebc98723fb741b48cc6bca80415c4dbbc8ee1d3e39a1d0216ca650c040",
+    "png/07-forma-ui-centered-documentation/changelog-light-390.png": "7d5d791ee08dfc6d5f0f98514af9ba2f351e0ce4f0a914ca6fce17e7d4ca619c",
+    "png/07-forma-ui-centered-documentation/detail-dark-1024.png": "6f1647c63a4e6cd1297eaa60af55330ca667e0378af61970f40084c568d0e5cd",
+    "png/07-forma-ui-centered-documentation/detail-dark-1440-collapsed.png": "eca8e5b2ee61061a6b2053d47fecd731147f8c5b8670b70f9ecd5847ba783925",
+    "png/07-forma-ui-centered-documentation/detail-dark-1440.png": "95c0cffc490fc31958b098057e3b90dfc8588b4ff3d7726505c7b52b1e6627a1",
+    "png/07-forma-ui-centered-documentation/detail-dark-390.png": "d133b41a8dbcf6cbfdc27f270ab40ac67c2b8b8e2ac2b237770e5493642758cc",
+    "png/07-forma-ui-centered-documentation/detail-light-1024.png": "6bf6148b20e1f4dd266e8cb0dd32d8556aef92b1abef2c575ba973e9d36818ca",
+    "png/07-forma-ui-centered-documentation/detail-light-1440-collapsed.png": "cc8bdc915ad64794011eb84792e876a6826c5e9a7eea1128ce014b1e21acc6c9",
+    "png/07-forma-ui-centered-documentation/detail-light-1440.png": "014e86f3303e1472a60b098b9ed0e6db28bd8f34010d3f7152803a6a06351b87",
+    "png/07-forma-ui-centered-documentation/detail-light-390.png": "e2a650deef58cd0643d349a7dc7005c27da472551f4b92763b28262d5c98af65",
+    "png/07-forma-ui-centered-documentation/forma-website-icon-catalog.png": "68fd5c6abbb5960148c23ec59c24b487a76e910c84b13bcd0cb5d9a0c00369b4",
+    "png/07-forma-ui-centered-documentation/forma-website-icon-changelog.png": "a6c5e62d18efa28fa87bcd144c5a05b2aa4385dac86ffbc0a734c7cd7a468d33",
+    "png/07-forma-ui-centered-documentation/forma-website-icon-foundations.png": "96b6ac3c441a451beeb5ab2fc9b0a56eefc2eb5e8d772bf808ec8f0abac61b73",
+    "png/07-forma-ui-centered-documentation/forma-website-icon-guides.png": "190bb0e2702deb471224a1901b8e9fac217e18e820249a018628b154c67cda14",
+    "png/07-forma-ui-centered-documentation/forma-website-icon-overview.png": "e5a0c46d8d1c22c52287fb031fc6ef6d455e1da2fea496b87d0a3303fb5dce6c",
+    "png/07-forma-ui-centered-documentation/foundations-dark-1024.png": "55bab3310fd0606c068efab88ed0e3cbc6b2794afebf3431c4c5fef35bd13c54",
+    "png/07-forma-ui-centered-documentation/foundations-dark-1440.png": "df137f2efe164e060c7604e545b42962e8e03ea051091fbaa66b964e16c37760",
+    "png/07-forma-ui-centered-documentation/foundations-dark-390.png": "66d377b9817329a81f6c3171248798bb138e2ff9e4619b82e8de86b22a9b9746",
+    "png/07-forma-ui-centered-documentation/foundations-light-1024.png": "f8e93862c7659d97eaa83e2ec85eaacdc58747813e892510d37c13315d086102",
+    "png/07-forma-ui-centered-documentation/foundations-light-1440.png": "1e43d764a05e99dbab99d520259be7833fcca1f191d6930b91df15e2ae29d6dd",
+    "png/07-forma-ui-centered-documentation/foundations-light-390.png": "c73cc0a8f2f9fa7650b3fd4560a2f9a75bcdb7f518d756153639015db865d9f4",
+    "png/07-forma-ui-centered-documentation/guides-dark-1024.png": "eb6dc7d6249982b86a2747d6f352c658956c64899727cbec48624ef929a0e2f5",
+    "png/07-forma-ui-centered-documentation/guides-dark-1440.png": "8a1ee6a30f791f29121a96d5cb98a3f66e6a192ada8a740f05d779478a83509a",
+    "png/07-forma-ui-centered-documentation/guides-dark-390.png": "b09c48bba4cd6e5d98b55af4371c6a17a45dd9e49ce69a1bf25b6d7e49d59e9c",
+    "png/07-forma-ui-centered-documentation/guides-light-1024.png": "d7f5cebfe2b781121dc384d8916626b2f239a8ada1a039929da6f4adb01732a6",
+    "png/07-forma-ui-centered-documentation/guides-light-1440.png": "51177e1410d28310174819fb7efe1c6be0e94b006ef548706012e8e89208e782",
+    "png/07-forma-ui-centered-documentation/guides-light-390.png": "f3a90234574560f3fd22addd936a8b68b5640018b6f3f738ac1961d9f9a0f4fd",
+    "png/07-forma-ui-centered-documentation/overview-dark-1024.png": "5cdeed093a7dff08c72cd515da132993304121ed51a2de894203149102ceb05e",
+    "png/07-forma-ui-centered-documentation/overview-dark-1440.png": "cf63b3d90037a8957b2f59787c441f23e99919d350fd66afc593c6c40fba1f7f",
+    "png/07-forma-ui-centered-documentation/overview-dark-390.png": "bccb049761563c15e582905d166af3eef51e1a498e0eb5f013766d8ff99602ce",
+    "png/07-forma-ui-centered-documentation/overview-light-1024.png": "bdda5b8418af906cdf4c94cb594ad542090039febca8513a95beccfec63bc819",
+    "png/07-forma-ui-centered-documentation/overview-light-1440.png": "64415bd9c592f463a1bb5a63293a1131f9e03126996cedaf76df5b92bde021d1",
+    "png/07-forma-ui-centered-documentation/overview-light-390.png": "19ce62b597e76308eeecec376103023762aad2cd023eea84a885cf8cb60382e0",
+    "png/07-forma-ui-centered-documentation/responsive-interaction-contract.png": "2dadd1c251ccbbc3335598e30c0916a2244ab5dcdce4d39618e83a986c164a4e",
+    "styles.json": "202225619165079d11ac1e1145182b3e94971b457136ed0bc6f70b9d3991a838",
+    "svg/02-components-light/forma-icon-grid.svg": "0c615d1ad2baa71df823d229c29ea4ce0e5db275a9ed950efbe9d518a8f7df18",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-catalog.svg": "75a06b6014b511261210b81c972f686c0a9fc7907505af42c33190bcf6f84ce5",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-changelog.svg": "77137aa4dbfcf372cca6480ca2b25844b0e54a890e4bd2ed5066571be6e8c406",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-foundations.svg": "1dde332d7c9edb4c8314e6d197f519aa54535eea05600332d77a61517b9cf22e",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-guides.svg": "addfccc9f43e7f5029cd1787652c84518b236562f8c3aefd469f7890734a1625",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-overview.svg": "d862a9f86f338bfc051a75d34cb23ca806dc47966d70d80dec875644561d8927",
+    "variables.json": "fa17b89bf5a4d859dbd5cd659035573ab0852b38020afa20188aa16c37aca911"
+  },
+  "modeLayout": "separate-collections",
+  "pages": [
+    {
+      "frames": 1,
+      "kinds": {
+        "other": 1
+      },
+      "name": "00 · Start here",
+      "skipped": 0,
+      "slug": "00-start-here"
+    },
+    {
+      "frames": 1,
+      "kinds": {
+        "other": 1
+      },
+      "name": "01 · Foundations",
+      "skipped": 0,
+      "slug": "01-foundations"
+    },
+    {
+      "frames": 10,
+      "kinds": {
+        "other": 10
+      },
+      "name": "02 · Components Light",
+      "skipped": 0,
+      "slug": "02-components-light"
+    },
+    {
+      "frames": 9,
+      "kinds": {
+        "other": 9
+      },
+      "name": "03 · Components Dark",
+      "skipped": 0,
+      "slug": "03-components-dark"
+    },
+    {
+      "frames": 3,
+      "kinds": {
+        "other": 3
+      },
+      "name": "04 · Catalog & Handoff",
+      "skipped": 0,
+      "slug": "04-catalog-handoff"
+    },
+    {
+      "frames": 46,
+      "kinds": {
+        "contract": 1,
+        "icon": 5,
+        "screen": 40
+      },
+      "name": "07 · Forma UI · Centered Documentation",
+      "skipped": 1,
+      "slug": "07-forma-ui-centered-documentation"
+    }
+  ],
+  "plugin": {
+    "name": "Forma UI Builder",
+    "version": "0.9"
+  },
+  "png": {
+    "clamped": [],
+    "files": {
+      "png/00-start-here/forma-ui.png": {
+        "clamped": false,
+        "height": 524,
+        "scale": 1,
+        "width": 1120
+      },
+      "png/01-foundations/foundations.png": {
+        "clamped": false,
+        "height": 3094,
+        "scale": 1,
+        "width": 1120
+      },
+      "png/02-components-light/forma-badge-light.png": {
+        "clamped": false,
+        "height": 104,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/02-components-light/forma-button-light.png": {
+        "clamped": false,
+        "height": 360,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/02-components-light/forma-checkbox-light.png": {
+        "clamped": false,
+        "height": 168,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/02-components-light/forma-dialog-light.png": {
+        "clamped": false,
+        "height": 260,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/02-components-light/forma-icon-grid.png": {
+        "clamped": false,
+        "height": 20,
+        "scale": 1,
+        "width": 20
+      },
+      "png/02-components-light/forma-input-light.png": {
+        "clamped": false,
+        "height": 176,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/02-components-light/forma-navitem-light.png": {
+        "clamped": false,
+        "height": 104,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/02-components-light/forma-switch-light.png": {
+        "clamped": false,
+        "height": 168,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/02-components-light/forma-tabs-light.png": {
+        "clamped": false,
+        "height": 104,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/02-components-light/forma-tooltip-light.png": {
+        "clamped": false,
+        "height": 104,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-badge-dark.png": {
+        "clamped": false,
+        "height": 104,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-button-dark.png": {
+        "clamped": false,
+        "height": 360,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-checkbox-dark.png": {
+        "clamped": false,
+        "height": 168,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-dialog-dark.png": {
+        "clamped": false,
+        "height": 260,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-input-dark.png": {
+        "clamped": false,
+        "height": 176,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-navitem-dark.png": {
+        "clamped": false,
+        "height": 104,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-switch-dark.png": {
+        "clamped": false,
+        "height": 168,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-tabs-dark.png": {
+        "clamped": false,
+        "height": 104,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/03-components-dark/forma-tooltip-dark.png": {
+        "clamped": false,
+        "height": 104,
+        "scale": 1,
+        "width": 1040
+      },
+      "png/04-catalog-handoff/component-catalog-dark.png": {
+        "clamped": false,
+        "height": 2130,
+        "scale": 1,
+        "width": 1120
+      },
+      "png/04-catalog-handoff/component-catalog-light.png": {
+        "clamped": false,
+        "height": 2130,
+        "scale": 1,
+        "width": 1120
+      },
+      "png/04-catalog-handoff/implementation-guide.png": {
+        "clamped": false,
+        "height": 590,
+        "scale": 1,
+        "width": 1120
+      },
+      "png/07-forma-ui-centered-documentation/catalog-dark-1024.png": {
+        "clamped": false,
+        "height": 2897,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/catalog-dark-1440-collapsed.png": {
+        "clamped": false,
+        "height": 2537,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/catalog-dark-1440.png": {
+        "clamped": false,
+        "height": 2715,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/catalog-dark-390.png": {
+        "clamped": false,
+        "height": 4503,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/catalog-light-1024.png": {
+        "clamped": false,
+        "height": 2897,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/catalog-light-1440-collapsed.png": {
+        "clamped": false,
+        "height": 2537,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/catalog-light-1440.png": {
+        "clamped": false,
+        "height": 2715,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/catalog-light-390.png": {
+        "clamped": false,
+        "height": 4503,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/changelog-dark-1024.png": {
+        "clamped": false,
+        "height": 1612,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/changelog-dark-1440.png": {
+        "clamped": false,
+        "height": 1592,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/changelog-dark-390.png": {
+        "clamped": false,
+        "height": 1848,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/changelog-light-1024.png": {
+        "clamped": false,
+        "height": 1612,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/changelog-light-1440.png": {
+        "clamped": false,
+        "height": 1592,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/changelog-light-390.png": {
+        "clamped": false,
+        "height": 1848,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/detail-dark-1024.png": {
+        "clamped": false,
+        "height": 1789,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/detail-dark-1440-collapsed.png": {
+        "clamped": false,
+        "height": 1680,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/detail-dark-1440.png": {
+        "clamped": false,
+        "height": 1680,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/detail-dark-390.png": {
+        "clamped": false,
+        "height": 2417,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/detail-light-1024.png": {
+        "clamped": false,
+        "height": 1789,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/detail-light-1440-collapsed.png": {
+        "clamped": false,
+        "height": 1680,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/detail-light-1440.png": {
+        "clamped": false,
+        "height": 1680,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/detail-light-390.png": {
+        "clamped": false,
+        "height": 2417,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/forma-website-icon-catalog.png": {
+        "clamped": false,
+        "height": 20,
+        "scale": 1,
+        "width": 20
+      },
+      "png/07-forma-ui-centered-documentation/forma-website-icon-changelog.png": {
+        "clamped": false,
+        "height": 20,
+        "scale": 1,
+        "width": 20
+      },
+      "png/07-forma-ui-centered-documentation/forma-website-icon-foundations.png": {
+        "clamped": false,
+        "height": 20,
+        "scale": 1,
+        "width": 20
+      },
+      "png/07-forma-ui-centered-documentation/forma-website-icon-guides.png": {
+        "clamped": false,
+        "height": 20,
+        "scale": 1,
+        "width": 20
+      },
+      "png/07-forma-ui-centered-documentation/forma-website-icon-overview.png": {
+        "clamped": false,
+        "height": 20,
+        "scale": 1,
+        "width": 20
+      },
+      "png/07-forma-ui-centered-documentation/foundations-dark-1024.png": {
+        "clamped": false,
+        "height": 1682,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/foundations-dark-1440.png": {
+        "clamped": false,
+        "height": 1682,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/foundations-dark-390.png": {
+        "clamped": false,
+        "height": 1965,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/foundations-light-1024.png": {
+        "clamped": false,
+        "height": 1682,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/foundations-light-1440.png": {
+        "clamped": false,
+        "height": 1682,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/foundations-light-390.png": {
+        "clamped": false,
+        "height": 1965,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/guides-dark-1024.png": {
+        "clamped": false,
+        "height": 2276,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/guides-dark-1440.png": {
+        "clamped": false,
+        "height": 2236,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/guides-dark-390.png": {
+        "clamped": false,
+        "height": 2669,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/guides-light-1024.png": {
+        "clamped": false,
+        "height": 2276,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/guides-light-1440.png": {
+        "clamped": false,
+        "height": 2236,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/guides-light-390.png": {
+        "clamped": false,
+        "height": 2669,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/overview-dark-1024.png": {
+        "clamped": false,
+        "height": 1093,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/overview-dark-1440.png": {
+        "clamped": false,
+        "height": 1073,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/overview-dark-390.png": {
+        "clamped": false,
+        "height": 1874,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/overview-light-1024.png": {
+        "clamped": false,
+        "height": 1093,
+        "scale": 1,
+        "width": 1024
+      },
+      "png/07-forma-ui-centered-documentation/overview-light-1440.png": {
+        "clamped": false,
+        "height": 1073,
+        "scale": 1,
+        "width": 1440
+      },
+      "png/07-forma-ui-centered-documentation/overview-light-390.png": {
+        "clamped": false,
+        "height": 1874,
+        "scale": 1,
+        "width": 390
+      },
+      "png/07-forma-ui-centered-documentation/responsive-interaction-contract.png": {
+        "clamped": false,
+        "height": 502,
+        "scale": 1,
+        "width": 1120
+      }
+    },
+    "requestedScale": 1,
+    "scales": {
+      "1": 70
+    },
+    "skipped": []
+  },
+  "svg": [
+    "svg/02-components-light/forma-icon-grid.svg",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-overview.svg",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-foundations.svg",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-catalog.svg",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-guides.svg",
+    "svg/07-forma-ui-centered-documentation/forma-website-icon-changelog.svg"
+  ]
+}

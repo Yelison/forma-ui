@@ -1,0 +1,1141 @@
+{
+  "children": [
+    {
+      "boundVariables": {
+        "bottomLeftRadius": {
+          "collection": "Forma / Dimensions",
+          "name": "radius-control",
+          "value": 8
+        },
+        "bottomRightRadius": {
+          "collection": "Forma / Dimensions",
+          "name": "radius-control",
+          "value": 8
+        },
+        "itemSpacing": {
+          "collection": "Forma / Dimensions",
+          "name": "space-12",
+          "value": 12
+        },
+        "paddingBottom": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "paddingLeft": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "paddingRight": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "paddingTop": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "topLeftRadius": {
+          "collection": "Forma / Dimensions",
+          "name": "radius-control",
+          "value": 8
+        },
+        "topRightRadius": {
+          "collection": "Forma / Dimensions",
+          "name": "radius-control",
+          "value": 8
+        }
+      },
+      "children": [
+        {
+          "characters": "Guardar cambios",
+          "fills": [
+            {
+              "resolved": "#e7edf8",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color Dark",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "height": 24,
+          "id": "1:433",
+          "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Default#0/Guardar cambios#0",
+          "layoutSizingVertical": "HUG",
+          "name": "Guardar cambios",
+          "segments": [
+            {
+              "characters": "Guardar cambios",
+              "fills": [
+                {
+                  "resolved": "#e7edf8",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/ink"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Semi Bold"
+              },
+              "fontSize": 17,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 24
+              },
+              "textStyle": "Forma / Section"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Section",
+          "type": "TEXT",
+          "width": 328,
+          "x": 17,
+          "y": 34
+        },
+        {
+          "characters": "Los cambios afectarán al elemento seleccionado. Confirma para continuar.",
+          "fills": [
+            {
+              "resolved": "#a0afc5",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color Dark",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "height": 40,
+          "id": "1:434",
+          "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Default#0/Los cambios afectarán al elemento seleccionado. Confirma para continua#1",
+          "layoutSizingVertical": "HUG",
+          "name": "Los cambios afectarán al elemento seleccionado. Confirma para continua",
+          "segments": [
+            {
+              "characters": "Los cambios afectarán al elemento seleccionado. Confirma para continuar.",
+              "fills": [
+                {
+                  "resolved": "#a0afc5",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Regular"
+              },
+              "fontSize": 14,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 20
+              },
+              "textStyle": "Forma / Body"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Body",
+          "type": "TEXT",
+          "width": 328,
+          "x": 17,
+          "y": 70
+        },
+        {
+          "boundVariables": {
+            "itemSpacing": {
+              "collection": "Forma / Dimensions",
+              "name": "space-12",
+              "value": 12
+            }
+          },
+          "children": [
+            {
+              "boundVariables": {
+                "bottomLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "bottomRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingBottom": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingLeft": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingRight": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingTop": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "topLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "topRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                }
+              },
+              "children": [
+                {
+                  "characters": "Cancelar",
+                  "fills": [
+                    {
+                      "resolved": "#e7edf8",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/ink"
+                      }
+                    }
+                  ],
+                  "height": 20,
+                  "id": "I12:18696;1:306",
+                  "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Default#0/Actions#2/Forma %2F Button %2F dark#0/Continuar#0",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Continuar",
+                  "segments": [
+                    {
+                      "characters": "Cancelar",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Medium"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Label"
+                    }
+                  ],
+                  "textAlignHorizontal": "CENTER",
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Label",
+                  "type": "TEXT",
+                  "width": 148,
+                  "x": 4,
+                  "y": 12
+                }
+              ],
+              "clipsContent": false,
+              "cornerRadius": 8,
+              "counterAxisAlignItems": "CENTER",
+              "counterAxisSizingMode": "FIXED",
+              "fills": [
+                {
+                  "resolved": "#141f32",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/surface"
+                  }
+                }
+              ],
+              "height": 44,
+              "id": "12:18696",
+              "instance": {
+                "component": "Variant=Secondary, State=Default",
+                "properties": {
+                  "Label#1:85": {
+                    "type": "TEXT",
+                    "value": "Cancelar"
+                  },
+                  "State": {
+                    "type": "VARIANT",
+                    "value": "Default"
+                  },
+                  "Variant": {
+                    "type": "VARIANT",
+                    "value": "Secondary"
+                  }
+                },
+                "set": "Forma / Button / dark",
+                "variant": {
+                  "State": "Default",
+                  "Variant": "Secondary"
+                }
+              },
+              "itemSpacing": 8,
+              "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Default#0/Actions#2/Forma %2F Button %2F dark#0",
+              "layoutMode": "HORIZONTAL",
+              "name": "Forma / Button / dark",
+              "paddingBottom": 8,
+              "paddingLeft": 8,
+              "paddingRight": 8,
+              "paddingTop": 8,
+              "primaryAxisAlignItems": "CENTER",
+              "primaryAxisSizingMode": "FIXED",
+              "strokeAlign": "INSIDE",
+              "strokeWeight": 1,
+              "strokes": [
+                {
+                  "resolved": "#2a3951",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/line"
+                  }
+                }
+              ],
+              "type": "INSTANCE",
+              "width": 156,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "boundVariables": {
+                "bottomLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "bottomRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingBottom": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingLeft": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingRight": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingTop": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "topLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "topRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                }
+              },
+              "children": [
+                {
+                  "characters": "Guardar",
+                  "fills": [
+                    {
+                      "resolved": "#ffffff",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/on-brand"
+                      }
+                    }
+                  ],
+                  "height": 20,
+                  "id": "I12:18698;1:294",
+                  "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Default#0/Actions#2/Forma %2F Button %2F dark#1/Continuar#0",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Continuar",
+                  "segments": [
+                    {
+                      "characters": "Guardar",
+                      "fills": [
+                        {
+                          "resolved": "#ffffff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/on-brand"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Medium"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Label"
+                    }
+                  ],
+                  "textAlignHorizontal": "CENTER",
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Label",
+                  "type": "TEXT",
+                  "width": 148,
+                  "x": 4,
+                  "y": 12
+                }
+              ],
+              "clipsContent": false,
+              "cornerRadius": 8,
+              "counterAxisAlignItems": "CENTER",
+              "counterAxisSizingMode": "FIXED",
+              "fills": [
+                {
+                  "resolved": "#4779ff",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/brand"
+                  }
+                }
+              ],
+              "height": 44,
+              "id": "12:18698",
+              "instance": {
+                "component": "Variant=Primary, State=Default",
+                "properties": {
+                  "Label#1:85": {
+                    "type": "TEXT",
+                    "value": "Guardar"
+                  },
+                  "State": {
+                    "type": "VARIANT",
+                    "value": "Default"
+                  },
+                  "Variant": {
+                    "type": "VARIANT",
+                    "value": "Primary"
+                  }
+                },
+                "set": "Forma / Button / dark",
+                "variant": {
+                  "State": "Default",
+                  "Variant": "Primary"
+                }
+              },
+              "itemSpacing": 8,
+              "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Default#0/Actions#2/Forma %2F Button %2F dark#1",
+              "layoutMode": "HORIZONTAL",
+              "name": "Forma / Button / dark",
+              "paddingBottom": 8,
+              "paddingLeft": 8,
+              "paddingRight": 8,
+              "paddingTop": 8,
+              "primaryAxisAlignItems": "CENTER",
+              "primaryAxisSizingMode": "FIXED",
+              "strokeAlign": "INSIDE",
+              "strokeWeight": 1,
+              "strokes": [
+                {
+                  "resolved": "#2a3951",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/line"
+                  }
+                }
+              ],
+              "type": "INSTANCE",
+              "width": 156,
+              "x": 168,
+              "y": 0
+            }
+          ],
+          "counterAxisSizingMode": "FIXED",
+          "height": 44,
+          "id": "1:435",
+          "itemSpacing": 12,
+          "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Default#0/Actions#2",
+          "layoutMode": "HORIZONTAL",
+          "name": "Actions",
+          "primaryAxisSizingMode": "FIXED",
+          "type": "FRAME",
+          "width": 328,
+          "x": 17,
+          "y": 122
+        }
+      ],
+      "clipsContent": false,
+      "cornerRadius": 8,
+      "counterAxisSizingMode": "FIXED",
+      "description": "Forma UI Dialog. Presentation specification; verify keyboard and screen-reader behavior in code.",
+      "fills": [
+        {
+          "resolved": "#141f32",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color Dark",
+            "name": "color/surface"
+          }
+        }
+      ],
+      "height": 200,
+      "id": "1:432",
+      "itemSpacing": 12,
+      "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Default#0",
+      "layoutMode": "VERTICAL",
+      "name": "Variant=Default, State=Default",
+      "paddingBottom": 16,
+      "paddingLeft": 16,
+      "paddingRight": 16,
+      "paddingTop": 16,
+      "primaryAxisAlignItems": "CENTER",
+      "primaryAxisSizingMode": "FIXED",
+      "strokeAlign": "INSIDE",
+      "strokeWeight": 1,
+      "strokes": [
+        {
+          "resolved": "#2a3951",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color Dark",
+            "name": "color/line"
+          }
+        }
+      ],
+      "type": "COMPONENT",
+      "variant": {
+        "State": "Default",
+        "Variant": "Default"
+      },
+      "width": 360,
+      "x": 20,
+      "y": 40
+    },
+    {
+      "boundVariables": {
+        "bottomLeftRadius": {
+          "collection": "Forma / Dimensions",
+          "name": "radius-control",
+          "value": 8
+        },
+        "bottomRightRadius": {
+          "collection": "Forma / Dimensions",
+          "name": "radius-control",
+          "value": 8
+        },
+        "itemSpacing": {
+          "collection": "Forma / Dimensions",
+          "name": "space-12",
+          "value": 12
+        },
+        "paddingBottom": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "paddingLeft": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "paddingRight": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "paddingTop": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "topLeftRadius": {
+          "collection": "Forma / Dimensions",
+          "name": "radius-control",
+          "value": 8
+        },
+        "topRightRadius": {
+          "collection": "Forma / Dimensions",
+          "name": "radius-control",
+          "value": 8
+        }
+      },
+      "children": [
+        {
+          "characters": "¿Eliminar este elemento?",
+          "fills": [
+            {
+              "resolved": "#e7edf8",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color Dark",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "height": 24,
+          "id": "1:441",
+          "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Destructive#1/¿Eliminar este elemento?#0",
+          "layoutSizingVertical": "HUG",
+          "name": "¿Eliminar este elemento?",
+          "segments": [
+            {
+              "characters": "¿Eliminar este elemento?",
+              "fills": [
+                {
+                  "resolved": "#e7edf8",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/ink"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Semi Bold"
+              },
+              "fontSize": 17,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 24
+              },
+              "textStyle": "Forma / Section"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Section",
+          "type": "TEXT",
+          "width": 328,
+          "x": 17,
+          "y": 34
+        },
+        {
+          "characters": "Los cambios afectarán al elemento seleccionado. Confirma para continuar.",
+          "fills": [
+            {
+              "resolved": "#a0afc5",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color Dark",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "height": 40,
+          "id": "1:442",
+          "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Destructive#1/Los cambios afectarán al elemento seleccionado. Confirma para continua#1",
+          "layoutSizingVertical": "HUG",
+          "name": "Los cambios afectarán al elemento seleccionado. Confirma para continua",
+          "segments": [
+            {
+              "characters": "Los cambios afectarán al elemento seleccionado. Confirma para continuar.",
+              "fills": [
+                {
+                  "resolved": "#a0afc5",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Regular"
+              },
+              "fontSize": 14,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 20
+              },
+              "textStyle": "Forma / Body"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Body",
+          "type": "TEXT",
+          "width": 328,
+          "x": 17,
+          "y": 70
+        },
+        {
+          "boundVariables": {
+            "itemSpacing": {
+              "collection": "Forma / Dimensions",
+              "name": "space-12",
+              "value": 12
+            }
+          },
+          "children": [
+            {
+              "boundVariables": {
+                "bottomLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "bottomRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingBottom": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingLeft": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingRight": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingTop": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "topLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "topRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                }
+              },
+              "children": [
+                {
+                  "characters": "Cancelar",
+                  "fills": [
+                    {
+                      "resolved": "#e7edf8",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/ink"
+                      }
+                    }
+                  ],
+                  "height": 20,
+                  "id": "I12:18700;1:306",
+                  "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Destructive#1/Actions#2/Forma %2F Button %2F dark#0/Continuar#0",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Continuar",
+                  "segments": [
+                    {
+                      "characters": "Cancelar",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Medium"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Label"
+                    }
+                  ],
+                  "textAlignHorizontal": "CENTER",
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Label",
+                  "type": "TEXT",
+                  "width": 148,
+                  "x": 4,
+                  "y": 12
+                }
+              ],
+              "clipsContent": false,
+              "cornerRadius": 8,
+              "counterAxisAlignItems": "CENTER",
+              "counterAxisSizingMode": "FIXED",
+              "fills": [
+                {
+                  "resolved": "#141f32",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/surface"
+                  }
+                }
+              ],
+              "height": 44,
+              "id": "12:18700",
+              "instance": {
+                "component": "Variant=Secondary, State=Default",
+                "properties": {
+                  "Label#1:85": {
+                    "type": "TEXT",
+                    "value": "Cancelar"
+                  },
+                  "State": {
+                    "type": "VARIANT",
+                    "value": "Default"
+                  },
+                  "Variant": {
+                    "type": "VARIANT",
+                    "value": "Secondary"
+                  }
+                },
+                "set": "Forma / Button / dark",
+                "variant": {
+                  "State": "Default",
+                  "Variant": "Secondary"
+                }
+              },
+              "itemSpacing": 8,
+              "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Destructive#1/Actions#2/Forma %2F Button %2F dark#0",
+              "layoutMode": "HORIZONTAL",
+              "name": "Forma / Button / dark",
+              "paddingBottom": 8,
+              "paddingLeft": 8,
+              "paddingRight": 8,
+              "paddingTop": 8,
+              "primaryAxisAlignItems": "CENTER",
+              "primaryAxisSizingMode": "FIXED",
+              "strokeAlign": "INSIDE",
+              "strokeWeight": 1,
+              "strokes": [
+                {
+                  "resolved": "#2a3951",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/line"
+                  }
+                }
+              ],
+              "type": "INSTANCE",
+              "width": 156,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "boundVariables": {
+                "bottomLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "bottomRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingBottom": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingLeft": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingRight": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingTop": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "topLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "topRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                }
+              },
+              "children": [
+                {
+                  "characters": "Eliminar",
+                  "fills": [
+                    {
+                      "resolved": "#ffacb3",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/red-ink"
+                      }
+                    }
+                  ],
+                  "height": 20,
+                  "id": "I12:18702;1:330",
+                  "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Destructive#1/Actions#2/Forma %2F Button %2F dark#1/Continuar#0",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Continuar",
+                  "segments": [
+                    {
+                      "characters": "Eliminar",
+                      "fills": [
+                        {
+                          "resolved": "#ffacb3",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/red-ink"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Medium"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Label"
+                    }
+                  ],
+                  "textAlignHorizontal": "CENTER",
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Label",
+                  "type": "TEXT",
+                  "width": 148,
+                  "x": 4,
+                  "y": 12
+                }
+              ],
+              "clipsContent": false,
+              "cornerRadius": 8,
+              "counterAxisAlignItems": "CENTER",
+              "counterAxisSizingMode": "FIXED",
+              "fills": [
+                {
+                  "resolved": "#3f242b",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/red-bg"
+                  }
+                }
+              ],
+              "height": 44,
+              "id": "12:18702",
+              "instance": {
+                "component": "Variant=Danger, State=Default",
+                "properties": {
+                  "Label#1:85": {
+                    "type": "TEXT",
+                    "value": "Eliminar"
+                  },
+                  "State": {
+                    "type": "VARIANT",
+                    "value": "Default"
+                  },
+                  "Variant": {
+                    "type": "VARIANT",
+                    "value": "Danger"
+                  }
+                },
+                "set": "Forma / Button / dark",
+                "variant": {
+                  "State": "Default",
+                  "Variant": "Danger"
+                }
+              },
+              "itemSpacing": 8,
+              "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Destructive#1/Actions#2/Forma %2F Button %2F dark#1",
+              "layoutMode": "HORIZONTAL",
+              "name": "Forma / Button / dark",
+              "paddingBottom": 8,
+              "paddingLeft": 8,
+              "paddingRight": 8,
+              "paddingTop": 8,
+              "primaryAxisAlignItems": "CENTER",
+              "primaryAxisSizingMode": "FIXED",
+              "strokeAlign": "INSIDE",
+              "strokeWeight": 1,
+              "strokes": [
+                {
+                  "resolved": "#2a3951",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/line"
+                  }
+                }
+              ],
+              "type": "INSTANCE",
+              "width": 156,
+              "x": 168,
+              "y": 0
+            }
+          ],
+          "counterAxisSizingMode": "FIXED",
+          "height": 44,
+          "id": "1:443",
+          "itemSpacing": 12,
+          "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Destructive#1/Actions#2",
+          "layoutMode": "HORIZONTAL",
+          "name": "Actions",
+          "primaryAxisSizingMode": "FIXED",
+          "type": "FRAME",
+          "width": 328,
+          "x": 17,
+          "y": 122
+        }
+      ],
+      "clipsContent": false,
+      "cornerRadius": 8,
+      "counterAxisSizingMode": "FIXED",
+      "description": "Forma UI Dialog. Presentation specification; verify keyboard and screen-reader behavior in code.",
+      "fills": [
+        {
+          "resolved": "#141f32",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color Dark",
+            "name": "color/surface"
+          }
+        }
+      ],
+      "height": 200,
+      "id": "1:440",
+      "itemSpacing": 12,
+      "key": "Forma %2F Dialog %2F dark#8/Variant=Default, State=Destructive#1",
+      "layoutMode": "VERTICAL",
+      "name": "Variant=Default, State=Destructive",
+      "paddingBottom": 16,
+      "paddingLeft": 16,
+      "paddingRight": 16,
+      "paddingTop": 16,
+      "primaryAxisAlignItems": "CENTER",
+      "primaryAxisSizingMode": "FIXED",
+      "strokeAlign": "INSIDE",
+      "strokeWeight": 1,
+      "strokes": [
+        {
+          "resolved": "#2a3951",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color Dark",
+            "name": "color/line"
+          }
+        }
+      ],
+      "type": "COMPONENT",
+      "variant": {
+        "State": "Destructive",
+        "Variant": "Default"
+      },
+      "width": 360,
+      "x": 400,
+      "y": 40
+    }
+  ],
+  "cornerRadius": 5,
+  "description": "Theme dark. Dialog states. Input errors require external Field label and helper text. Focus is illustrative; validate WCAG in code.",
+  "explicitVariableModes": {
+    "Forma / Color Dark": "Dark"
+  },
+  "fills": [
+    {
+      "resolved": "#0b1220",
+      "type": "SOLID",
+      "variable": {
+        "collection": "Forma / Color Dark",
+        "name": "color/bg"
+      }
+    }
+  ],
+  "height": 260,
+  "id": "1:448",
+  "key": "Forma %2F Dialog %2F dark#8",
+  "name": "Forma / Dialog / dark",
+  "page": "03 · Components Dark",
+  "propertyDefinitions": {
+    "State": {
+      "defaultValue": "Default",
+      "type": "VARIANT",
+      "variantOptions": [
+        "Default",
+        "Destructive"
+      ]
+    },
+    "Variant": {
+      "defaultValue": "Default",
+      "type": "VARIANT",
+      "variantOptions": [
+        "Default"
+      ]
+    }
+  },
+  "type": "COMPONENT_SET",
+  "width": 1040,
+  "x": 100,
+  "y": 1900
+}

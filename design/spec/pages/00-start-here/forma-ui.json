@@ -1,0 +1,552 @@
+{
+  "boundVariables": {
+    "itemSpacing": {
+      "collection": "Forma / Dimensions",
+      "name": "space-24",
+      "value": 24
+    },
+    "paddingBottom": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingLeft": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingRight": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingTop": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    }
+  },
+  "children": [
+    {
+      "characters": "Forma UI",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 42,
+      "id": "1:450",
+      "key": "Forma UI#0/Forma UI#0",
+      "layoutSizingVertical": "HUG",
+      "name": "Forma UI",
+      "segments": [
+        {
+          "characters": "Forma UI",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Bold"
+          },
+          "fontSize": 30,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 42
+          },
+          "textStyle": "Forma / Title"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Title",
+      "type": "TEXT",
+      "width": 1056,
+      "x": 32,
+      "y": 32
+    },
+    {
+      "characters": "Forma UI · Shared foundations. Resolve is the first consumer.",
+      "fills": [
+        {
+          "resolved": "#6a778d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/muted"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:451",
+      "key": "Forma UI#0/Forma UI · Shared foundations. Resolve is the first consumer.#1",
+      "layoutSizingVertical": "HUG",
+      "name": "Forma UI · Shared foundations. Resolve is the first consumer.",
+      "segments": [
+        {
+          "characters": "Forma UI · Shared foundations. Resolve is the first consumer.",
+          "fills": [
+            {
+              "resolved": "#6a778d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1056,
+      "x": 32,
+      "y": 98
+    },
+    {
+      "characters": "Un lenguaje visual. Varios productos.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 42,
+      "id": "1:452",
+      "key": "Forma UI#0/Un lenguaje visual. Varios productos.#2",
+      "layoutSizingVertical": "HUG",
+      "name": "Un lenguaje visual. Varios productos.",
+      "segments": [
+        {
+          "characters": "Un lenguaje visual. Varios productos.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Bold"
+          },
+          "fontSize": 30,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 42
+          },
+          "textStyle": "Forma / Title"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Title",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 142
+    },
+    {
+      "characters": "v0.1 · Fundamentos + nueve familias de componentes.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:453",
+      "key": "Forma UI#0/v0.1 · Fundamentos + nueve familias de componentes.#3",
+      "layoutSizingVertical": "HUG",
+      "name": "v0.1 · Fundamentos + nueve familias de componentes.",
+      "segments": [
+        {
+          "characters": "v0.1 · Fundamentos + nueve familias de componentes.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 208
+    },
+    {
+      "characters": "Origen: Resolve tokens.css y global.css; valores preservados.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:454",
+      "key": "Forma UI#0/Origen: Resolve tokens.css y global.css; valores preservados.#4",
+      "layoutSizingVertical": "HUG",
+      "name": "Origen: Resolve tokens.css y global.css; valores preservados.",
+      "segments": [
+        {
+          "characters": "Origen: Resolve tokens.css y global.css; valores preservados.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 252
+    },
+    {
+      "characters": "Usar instancias y variables; no separar ni duplicar componentes.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:455",
+      "key": "Forma UI#0/Usar instancias y variables; no separar ni duplicar componentes.#5",
+      "layoutSizingVertical": "HUG",
+      "name": "Usar instancias y variables; no separar ni duplicar componentes.",
+      "segments": [
+        {
+          "characters": "Usar instancias y variables; no separar ni duplicar componentes.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 296
+    },
+    {
+      "characters": "Primero validar en Resolve. Después ampliar para Draftroom.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:456",
+      "key": "Forma UI#0/Primero validar en Resolve. Después ampliar para Draftroom.#6",
+      "layoutSizingVertical": "HUG",
+      "name": "Primero validar en Resolve. Después ampliar para Draftroom.",
+      "segments": [
+        {
+          "characters": "Primero validar en Resolve. Después ampliar para Draftroom.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 340
+    },
+    {
+      "characters": "Este archivo documenta presentación. El código define semántica, teclado y comportamiento.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:457",
+      "key": "Forma UI#0/Este archivo documenta presentación. El código define semántica, tecla#7",
+      "layoutSizingVertical": "HUG",
+      "name": "Este archivo documenta presentación. El código define semántica, tecla",
+      "segments": [
+        {
+          "characters": "Este archivo documenta presentación. El código define semántica, teclado y comportamiento.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 384
+    },
+    {
+      "characters": "Estados de hover/pressed y familias nuevas son propuestas: comparar con CSS antes de publicar.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:458",
+      "key": "Forma UI#0/Estados de hover%2Fpressed y familias nuevas son propuestas: comparar co#8",
+      "layoutSizingVertical": "HUG",
+      "name": "Estados de hover/pressed y familias nuevas son propuestas: comparar co",
+      "segments": [
+        {
+          "characters": "Estados de hover/pressed y familias nuevas son propuestas: comparar con CSS antes de publicar.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 428
+    },
+    {
+      "characters": "Pendientes: importar el conjunto completo de iconos, Code Connect, QA visual en Figma y auditoría de contraste.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:459",
+      "key": "Forma UI#0/Pendientes: importar el conjunto completo de iconos, Code Connect, QA #9",
+      "layoutSizingVertical": "HUG",
+      "name": "Pendientes: importar el conjunto completo de iconos, Code Connect, QA ",
+      "segments": [
+        {
+          "characters": "Pendientes: importar el conjunto completo de iconos, Code Connect, QA visual en Figma y auditoría de contraste.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 472
+    }
+  ],
+  "counterAxisSizingMode": "FIXED",
+  "explicitVariableModes": {
+    "Forma / Color": "Light"
+  },
+  "fills": [
+    {
+      "resolved": "#f5f7fb",
+      "type": "SOLID",
+      "variable": {
+        "collection": "Forma / Color",
+        "name": "color/bg"
+      }
+    }
+  ],
+  "height": 524,
+  "id": "1:449",
+  "itemSpacing": 24,
+  "key": "Forma UI#0",
+  "layoutMode": "VERTICAL",
+  "layoutSizingVertical": "HUG",
+  "name": "Forma UI",
+  "paddingBottom": 32,
+  "paddingLeft": 32,
+  "paddingRight": 32,
+  "paddingTop": 32,
+  "page": "00 · Start here",
+  "primaryAxisSizingMode": "AUTO",
+  "type": "FRAME",
+  "width": 1120,
+  "x": 100,
+  "y": 100
+}
