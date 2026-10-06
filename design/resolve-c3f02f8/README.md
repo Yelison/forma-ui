@@ -24,4 +24,4 @@ To change the snapshot, pin a new Resolve commit and replace the whole directory
 
 ## Consumers
 
-Read by plan tasks 1.1 (token source and CSS generator), 1.2 (themes) and 2.2 (icons and base CSS). Nothing else edits these files.
+Read by plan tasks 1.1 (DTCG token source and CSS generator: `tokens.css` and `global.css`), 1.2 (contrast contract on the token source: `contrast-pairs.json`) and 2.2 (icon and icon generation: `icon-paths.ts`). Nothing else edits these files.

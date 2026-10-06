@@ -23,7 +23,7 @@
         "light",
         "dark"
       ],
-      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg). Also same block with color and background: Modal (ink on surface)."
     },
     {
       "foreground": "ink",
@@ -33,7 +33,7 @@
         "light",
         "dark"
       ],
-      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg). Also same block with color and background: Topbar (ink on surface-hover)."
     },
     {
       "foreground": "ink",
@@ -63,7 +63,7 @@
         "light",
         "dark"
       ],
-      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg). Also same block with color and background: Tabs (muted on surface)."
     },
     {
       "foreground": "muted",
