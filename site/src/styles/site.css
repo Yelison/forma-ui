@@ -11,6 +11,9 @@
   --site-content-width: 1080px;
   --site-nav-content-width: 1184px;
   --site-drawer-width: 320px;
+  --site-wordmark-width: 160px;
+  --site-mark-size: 28px;
+  --site-mark-radius: 6px;
 }
 
 @media (min-width: 768px) {
