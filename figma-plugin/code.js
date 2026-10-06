@@ -546,8 +546,10 @@ async function serializeText(ctx, node, out) {
   const style = await styleName(ctx, node.textStyleId);
   if (style) out.textStyle = style;
   const segments = await ctx.resolver.getTextSegments(node, TEXT_SEGMENT_FIELDS);
-  out.segments = [];
-  for (const segment of segments) out.segments.push(await serializeSegment(ctx, segment, node));
+  if (segments.length) {
+    out.segments = [];
+    for (const segment of segments) out.segments.push(await serializeSegment(ctx, segment, node));
+  }
 }
 
 // Serializes one node and its subtree. `key` is the name path plus sibling index;
@@ -673,6 +675,20 @@ async function serializeVariables(ctx) {
   return { collections: out };
 }
 
+// A layout grid with numbers rounded and colors as hex; nested objects (bound variables) are kept out.
+function serializeGrid(grid) {
+  const out = {};
+  for (const field of Object.keys(grid).sort()) {
+    const value = grid[field];
+    if (value !== null && typeof value === 'object') {
+      if ('r' in value) out[field] = hexColor(value);
+    } else if (value !== undefined) {
+      out[field] = typeof value === 'number' ? round2(value) : value;
+    }
+  }
+  return out;
+}
+
 async function serializeTextStyle(ctx, style) {
   const out = {
     name: style.name,
@@ -710,7 +726,7 @@ async function serializeStyles(ctx) {
     grid: await sorted(styles.grid || [], async (s) => ({
       name: s.name,
       id: s.id,
-      layoutGrids: JSON.parse(JSON.stringify(s.layoutGrids || [])),
+      layoutGrids: (s.layoutGrids || []).map(serializeGrid),
     })),
   };
 }
