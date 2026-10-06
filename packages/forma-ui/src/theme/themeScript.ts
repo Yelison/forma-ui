@@ -1,4 +1,4 @@
-import type { ThemeStoreOptions } from './themeStore'
+import type { ThemeStoreOptions } from './themeStore.js'
 
 // A JavaScript string literal that is also safe inside an HTML <script> element. JSON.stringify covers quotes,
 // backslashes and line breaks; the only thing left is `</script>` (and `<!--`), which the HTML parser would read
