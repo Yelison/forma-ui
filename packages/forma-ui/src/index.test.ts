@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import pkg from '../package.json'
+import * as entry from './index'
 import { contrastRatio, relativeLuminance, tokenNames, version } from './index'
 
 describe('package entry point', () => {
@@ -15,5 +16,20 @@ describe('package entry point', () => {
   it('exports the names of the CSS custom properties the tokens define', () => {
     expect(tokenNames).toContain('--color-bg')
     expect(new Set(tokenNames).size).toBe(tokenNames.length)
+  })
+
+  it('exports the provider and the strings', () => {
+    expect(entry).toMatchObject({
+      FormaProvider: expect.any(Function),
+      useFormaStrings: expect.any(Function),
+      defaultStrings: { buttonLoading: 'Loading…', dialogClose: 'Close' },
+    })
+  })
+
+  // An export added by accident becomes API that the next release has to keep.
+  it('keeps the internal helpers out of the public API', () => {
+    for (const internal of ['cx', 'computePosition', 'lockScroll', 'useFloating', 'useModalDialog']) {
+      expect(entry).not.toHaveProperty(internal)
+    }
   })
 })
