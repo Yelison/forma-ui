@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import { readFileSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
@@ -17,6 +18,21 @@ export default defineConfig({
       // The package declares react and react-dom as peer dependencies: it never bundles a second copy of them,
       // nor of the JSX runtime. The pattern covers subpaths such as react/jsx-runtime and react-dom/client.
       external: [/^react(-dom)?($|\/)/],
+      plugins: [
+        {
+          // base.css is exported on its own (./base.css) and no module imports it, so Vite would never see it.
+          // Importing it from index.ts would instead put its rules in a bundled stylesheet and make the entry
+          // point a side effect.
+          name: 'emit-base-css',
+          generateBundle() {
+            this.emitFile({
+              type: 'asset',
+              fileName: 'base.css',
+              source: readFileSync(new URL('./src/styles/base.css', import.meta.url), 'utf8'),
+            })
+          },
+        },
+      ],
     },
   },
   test: {

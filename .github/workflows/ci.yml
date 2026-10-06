@@ -37,6 +37,15 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
       - run: npm run build -w @yelison/forma-ui
+      # Every file that `exports` promises must be in dist/: a build step that stops emitting one still exits 0.
+      - run: |
+          node -e "
+          const targets = (value) => (typeof value === 'string' ? [value] : Object.values(value).flatMap(targets))
+          const missing = targets(require('./package.json').exports).filter((path) => !require('node:fs').existsSync(path))
+          if (missing.length) { console.error('Missing export targets: ' + missing.join(', ')); process.exit(1) }
+          console.log('Export targets present: ' + targets(require('./package.json').exports).length)
+          "
+        working-directory: packages/forma-ui
 
   site:
     name: Site
