@@ -9,6 +9,7 @@
     "emit:routes": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/emit-route-html.ts",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json",
+    "i18n:pseudo": "formatjs compile src/i18n/en.json --format simple --ast --pseudo-locale en-XA --out-file ../node_modules/.cache/forma-ui-site/en-XA.json",
     "check:messages": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/check-messages.ts",
     "test": "vitest run --maxWorkers=3",
     "e2e": "playwright test --workers=3"
