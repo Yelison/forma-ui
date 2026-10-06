@@ -27,7 +27,7 @@ Preserve Resolve's current public behavior during extraction. Inventory its API,
   - dark `--color-brand` is `#3068ff`;
   - `--color-link` and `--color-brand-hover` are new (#65), and so is `--color-progress-track` (#75).
 
-  A contrast test (`frontend/src/styles/tokens.contrast.test.ts`) guards them, and the identity provider's login theme keeps a literal copy of `tokens.css` guarded by `tokens.keycloak.test.ts`. Snapshot the tokens from the pinned Resolve commit; `figma-plugin/tokens.json` is an older snapshot, not a source.
+  A contrast test (`frontend/src/styles/tokens.contrast.test.ts`) guards them, and the identity provider's login theme keeps a literal copy of `tokens.css` guarded by `tokens.keycloak.test.ts`. The verified snapshot from the pinned Resolve commit is `design/resolve-c3f02f8/`; the Figma variables are older values, not a source.
 
 Define one editable token source and deterministic outputs. Figma variable names and CSS code syntax must map to that source. Do not let both generated CSS and Figma be independently editable canonical sources.
 
@@ -40,7 +40,7 @@ Do not rename public CSS variables during initial adoption without a compatibili
 
 Page 07 holds Overview, Foundations, Catalog, Detail, Guides and Changelog in light and dark at 1440, 1024 and 390 px, four collapsed-navigation variants, a «Responsive & interaction contract» frame and five website icons.
 
-**Design specifications come from a plugin export, not from live Figma reads.** The Forma UI Builder plugin (`figma-plugin/`) gets an «Export specification» command that writes, for every page frame and component: the tree, auto-layout, sizes, constraints, text with its style, fills and strokes bound to variables, instances with their properties and variants, the variables and styles, and a PNG of each screen. The export is committed under `design/spec/` with its date and plugin version, and implementation works from it. Direct Figma reads are for occasional spot checks only. If the token source has to update Figma variables, extend the same plugin with an import command; do not create another plugin.
+**Design specifications come from a plugin export, not from live Figma reads.** The Forma UI Builder plugin exports, for every page frame and component, the tree, auto-layout, sizes, constraints, text styles, fills and strokes bound to variables, instance properties, the variables and styles, a PNG per screen and an SVG per icon. **The plugin, the export and the design inventory are design material kept outside this repository**; task briefs give implementers their location. This repository holds only what ships: the library, the documentation site and their tooling. Direct Figma reads are for occasional spot checks only. If the token source has to update Figma variables, the same plugin gets an import command; do not create another plugin.
 
 ## Boundaries
 
