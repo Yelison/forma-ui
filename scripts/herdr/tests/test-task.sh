@@ -63,6 +63,7 @@ bad_ports "reserved marker" 'A_PORT:5000:WT' 'marker WT is reserved'
 bad_ports "port above 65535" 'A_PORT:65530:A' 'above 65535'
 bad_ports "overlapping ranges" 'A_PORT:5000:A B_PORT:5001:B' 'overlaps'
 bad_ports "leading zeros in the base" 'A_PORT:05000:A' 'without leading zeros'
+bad_ports "a base beyond the shell's integer range" 'A_PORT:9223372036854775800:A' 'up to five digits'
 bad_ports "wildcards are not expanded" '*' "entry '*'"
 ml=$(HERDR_PORTS=$'A_PORT:5000:A\nB_PORT:5010:B' bash -c '. "$1/common.sh"; port_specs' _ "$HERDR" 2>&1)
 check "ports: a list on two lines is read whole" test "$ml" = "$(printf 'A_PORT 5000 A\nB_PORT 5010 B')"
