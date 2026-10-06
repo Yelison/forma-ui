@@ -20,13 +20,21 @@ function parseChannels(color: string): [red: number, green: number, blue: number
   return [(rgb >> 16) & 0xff, (rgb >> 8) & 0xff, rgb & 0xff]
 }
 
-/** Relative luminance of a `#rgb` or `#rrggbb` color: 0 for black, 1 for white. */
+/**
+ * Relative luminance of a `#rgb` or `#rrggbb` color: 0 for black, 1 for white.
+ *
+ * @throws Error on anything but `#rgb` or `#rrggbb`, such as the `rgb(...)` that `getComputedStyle` returns.
+ */
 export function relativeLuminance(color: string): number {
   const [red, green, blue] = parseChannels(color)
   return 0.2126 * linearize(red) + 0.7152 * linearize(green) + 0.0722 * linearize(blue)
 }
 
-/** Contrast ratio of two `#rgb` or `#rrggbb` colors, from 1 (identical) to 21 (black on white), in either order. */
+/**
+ * Contrast ratio of two `#rgb` or `#rrggbb` colors, from 1 (identical) to 21 (black on white), in either order.
+ *
+ * @throws Error on anything but `#rgb` or `#rrggbb`, such as the `rgb(...)` that `getComputedStyle` returns.
+ */
 export function contrastRatio(first: string, second: string): number {
   const [firstLuminance, secondLuminance] = [relativeLuminance(first), relativeLuminance(second)]
   return (Math.max(firstLuminance, secondLuminance) + 0.05) / (Math.min(firstLuminance, secondLuminance) + 0.05)
