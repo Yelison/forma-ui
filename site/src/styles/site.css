@@ -10,6 +10,7 @@
   --site-nav-height: 72px;
   --site-content-width: 1080px;
   --site-nav-content-width: 1184px;
+  --site-drawer-width: 320px;
 }
 
 @media (min-width: 768px) {
