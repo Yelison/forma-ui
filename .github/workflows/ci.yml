@@ -32,7 +32,8 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck -w @yelison/forma-ui
-      - run: npm test -w @yelison/forma-ui
+      # The same tests as `npm test`, plus the coverage thresholds: running both would repeat the suite.
+      - run: npm run test:coverage -w @yelison/forma-ui
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
       - run: npm run build -w @yelison/forma-ui
