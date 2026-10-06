@@ -2,10 +2,15 @@
 import { readFileSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { scopedClassName } from './scripts/scoped-name.ts'
 
 // Unit tests (jsdom) are configured here; browser-mode tests have their own config, vitest.browser.config.ts.
 export default defineConfig({
   plugins: [react()],
+  css: {
+    // The class names are part of the package: see scripts/scoped-name.ts.
+    modules: { generateScopedName: scopedClassName },
+  },
   build: {
     // The token generator writes dist/tokens.css and dist/tokens.json before Vite runs; `npm run build` cleans dist first.
     emptyOutDir: false,
@@ -13,6 +18,9 @@ export default defineConfig({
       entry: 'src/index.ts',
       formats: ['es'],
       fileName: 'index',
+      // One stylesheet for every component, exported as ./styles.css. Vite extracts it instead of importing it from
+      // index.js, so importing the package stays free of side effects and the consumer decides where the CSS goes.
+      cssFileName: 'styles',
     },
     rolldownOptions: {
       // The package declares react and react-dom as peer dependencies: it never bundles a second copy of them,
