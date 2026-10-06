@@ -9,7 +9,7 @@ export interface UseThemeResult {
   resolved: ResolvedTheme
   /** Saves a preference and applies it to the document. */
   setPreference(preference: ThemePreference): void
-  /** Switches to the theme that is not painted now, starting from `resolved`. */
+  /** Switches to the theme that is not painted when it is called. Its identity changes only with the store. */
   toggle(): void
 }
 
@@ -29,9 +29,11 @@ export function useTheme(store: ThemeStore): UseThemeResult {
   const preference = useSyncExternalStore(store.subscribe, store.getPreference, getServerPreference)
   const resolved = useSyncExternalStore(store.subscribe, store.getResolved, getServerResolved)
 
+  // It reads the painted theme when it is called, not the one of the last render: two calls in a row alternate twice,
+  // and the function only changes with the store.
   const toggle = useCallback(() => {
-    store.setPreference(resolved === 'dark' ? 'light' : 'dark')
-  }, [store, resolved])
+    store.setPreference(store.getResolved() === 'dark' ? 'light' : 'dark')
+  }, [store])
 
   return { preference, resolved, setPreference: store.setPreference, toggle }
 }

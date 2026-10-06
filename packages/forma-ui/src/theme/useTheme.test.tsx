@@ -82,4 +82,21 @@ describe('useTheme', () => {
     act(() => first.result.current.setPreference('system'))
     expect(second.result.current.preference).toBe('system')
   })
+
+  it('toggles twice when it is called twice before the next render', () => {
+    const { result } = renderTheme()
+    act(() => {
+      result.current.toggle()
+      result.current.toggle()
+    })
+    expect(result.current.resolved).toBe('light')
+  })
+
+  it('keeps the same toggle when the theme changes, so a memoized child does not re-render', () => {
+    const { result } = renderTheme()
+    const { toggle } = result.current
+    act(() => result.current.setPreference('dark'))
+    expect(result.current.resolved).toBe('dark')
+    expect(result.current.toggle).toBe(toggle)
+  })
 })
