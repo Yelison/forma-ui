@@ -25,6 +25,7 @@
     "build": "npm run clean && npm run build:tokens && vite build && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run --maxWorkers=3",
+    "test:coverage": "vitest run --maxWorkers=3 --coverage",
     "test:browser": "vitest run --config vitest.browser.config.ts --maxWorkers=3"
   },
   "peerDependencies": {
@@ -40,6 +41,7 @@
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/browser-playwright": "5.0.3",
+    "@vitest/coverage-v8": "5.0.3",
     "axe-core": "~4.13.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.63.0",

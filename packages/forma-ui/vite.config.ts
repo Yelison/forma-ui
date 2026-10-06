@@ -24,5 +24,13 @@ export default defineConfig({
     setupFiles: ['./test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
     css: { modules: { classNameStrategy: 'non-scoped' } },
+    coverage: {
+      provider: 'v8',
+      // Name the sources instead of relying on what the tests import: a module no test loads still counts as 0%.
+      include: ['src/**/*.{ts,tsx}'],
+      // tokens.ts is written by scripts/build-tokens.ts, and its tests cover the generator.
+      exclude: ['src/**/*.test.{ts,tsx}', 'src/tokens/tokens.ts'],
+      thresholds: { statements: 80, branches: 75, functions: 75, lines: 80 },
+    },
   },
 })
