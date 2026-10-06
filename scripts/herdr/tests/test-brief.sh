@@ -33,8 +33,9 @@ check "fill-brief: markers follow HERDR_PORTS" test $rc -eq 0; check "fill-brief
 out=$(HERDR_PORTS='SERVER_PORT:8000:API' "$HERDR/fill-brief.sh" demo-one C "$T/other.md" 2>&1); check "fill-brief: a list without the footer's markers fails" test $? -ne 0
 check "fill-brief: the failed run left the last brief alone" grep -q "API=$((8000 + SA)) VITE=$((5000 + SA))" "$B"
 # Temporary files stay out of $TMPDIR
-mkdir -p "$T/tmpdir"; out=$(TMPDIR="$T/tmpdir" "$HERDR/fill-brief.sh" demo-one C "$T/staged.md" 2>&1); check "fill-brief: that run succeeded" test $? -eq 0
-check "fill-brief: nothing written to TMPDIR" test -z "$(ls -A "$T/tmpdir")"
+# TMPDIR is read-only: a script that wrote there would fail.
+mkdir -p "$T/tmpdir"; chmod 555 "$T/tmpdir"; out=$(TMPDIR="$T/tmpdir" "$HERDR/fill-brief.sh" demo-one C "$T/staged.md" 2>&1); check "fill-brief: that run succeeded" test $? -eq 0
+check "fill-brief: nothing written to TMPDIR" test -z "$(ls -A "$T/tmpdir")"; chmod 755 "$T/tmpdir"
 check "fill-brief: no temporary file left in the task directory" test -z "$(ls -A "$T/root/tasks/demo-one" | grep '^\.brief-')"
 # render_template keeps & / # and backslashes in values
 printf 'a __X__ b __Y__\n' >"$T/t.md"
