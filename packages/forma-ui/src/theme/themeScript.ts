@@ -11,7 +11,9 @@ const literal = (value: string) => JSON.stringify(value).replaceAll('<', '\\u003
  * prefers. Any other stored value, or none, leaves the attribute off and `prefers-color-scheme` decides, as it does
  * for `system` in `createThemeStore`.
  *
- * It has no dependencies and never throws: storage that cannot be read just leaves the page as the system has it.
+ * It has no dependencies, leaves no global behind and never throws: its only variable is block-scoped, so it neither
+ * overwrites nor clashes with a global of the page, and storage that cannot be read just leaves the page as the system
+ * has it.
  * The options are the ones of `createThemeStore`, and they must be the same. Any `storageKey` and `attribute` are
  * safe to pass, whatever characters they hold.
  *
@@ -24,7 +26,7 @@ const literal = (value: string) => JSON.stringify(value).replaceAll('<', '\\u003
  */
 export function themeScript({ storageKey, attribute = 'data-theme' }: ThemeStoreOptions): string {
   return (
-    `try{var t=localStorage.getItem(${literal(storageKey)});` +
-    `if(t==="light"||t==="dark")document.documentElement.setAttribute(${literal(attribute)},t)}catch(e){}`
+    `try{const t=localStorage.getItem(${literal(storageKey)});` +
+    `if(t==="light"||t==="dark")document.documentElement.setAttribute(${literal(attribute)},t)}catch{}`
   )
 }
