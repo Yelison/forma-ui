@@ -267,7 +267,7 @@ render_template() {
     value=${kv#*=}
     out=${out//"$open$key$close"/"$value"}
   done
-  if [[ $out =~ "$open"[A-Z][A-Z_]*"$close" ]]; then
+  if [[ $out =~ "$open"[A-Z][A-Z0-9_]*"$close" ]]; then
     die "unfilled marker ${BASH_REMATCH[0]} in $file"
   fi
   printf '%s' "$out"

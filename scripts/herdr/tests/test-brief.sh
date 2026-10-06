@@ -19,11 +19,14 @@ check "fill-brief: unfilled marker fails" test $rc -ne 0
 check "fill-brief: names the marker" says x '__NOPE__'
 check "fill-brief: the brief is untouched" cmp -s "$B" "$T/before.md"
 out=$("$HERDR/fill-brief.sh" demo-one C "$B" 2>&1); check "fill-brief: refuses its own output as source" test $? -ne 0
-# Markers of ports that this project does not have are unfilled markers: the markers of ports this project does not have (__API__, __PG__, __KC__) fail.
+# Markers of ports this project does not have (__API__, __PG__, __KC__) are unfilled markers and fail.
 for m in __API__ __PG__ __KC__; do
   printf '# x\nport %s\n' "$m" >"$T/old.md"; out=$("$HERDR/fill-brief.sh" demo-one C "$T/old.md" 2>&1); rc=$?
   check "fill-brief: $m is not a marker of this project" test $rc -ne 0; check "fill-brief: $m is named" says x "$m"
 done
+# A marker with a digit is a marker too: left unfilled it fails.
+printf '# x\nport __X1__\n' >"$T/digit.md"; out=$("$HERDR/fill-brief.sh" demo-one C "$T/digit.md" 2>&1); rc=$?
+check "fill-brief: an unfilled marker with a digit fails" test $rc -ne 0; check "fill-brief: names __X1__" says x '__X1__'
 # The markers follow HERDR_PORTS, not the code: another list, other markers.
 printf '# x\nAPI=__API__ VITE=__VITE__\n' >"$T/other.md"
 out=$(HERDR_PORTS='SERVER_PORT:8000:API DEV_SERVER_PORT:5000:VITE PLAYWRIGHT_PORT:4000:PW STORYBOOK_PORT:6000:SB' "$HERDR/fill-brief.sh" demo-one C "$T/other.md" 2>&1); rc=$?

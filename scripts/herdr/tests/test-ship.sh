@@ -59,11 +59,16 @@ s_nochecks() { mk ""; out=$(ship); rc=$?
   check "no checks: rc 0" test $rc -eq 0
   check "no checks: merged with --rebase --match-head-commit and the pushed head" grep -qx "gh pr merge 41 --rebase --match-head-commit $head" <<<"$(gh_calls)"
   check "no checks: never --auto" bash -c "! grep -q -- '--auto' '$T/state/gh/calls.log'"
-  check "no checks: no check was read" bash -c "! grep -q 'pr checks' '$T/state/gh/calls.log'"
+  check "no checks: checks are never polled (one read of their names for the warning)" test "$(grep -c 'pr checks' "$T/state/gh/calls.log")" -eq 1
+  check "no checks: warns that the PR has checks, naming them" says x 'has checks (Other, build)'
+  check "no checks: the warning does not change the merge" grep -q 'pr merge 41 --rebase' "$T/state/gh/calls.log"
   check "no checks: the head is still awaited before merging" test "$(grep -n 'headRefOid' "$T/state/gh/calls.log" | head -1 | cut -d: -f1)" -lt "$(grep -n 'pr merge' "$T/state/gh/calls.log" | head -1 | cut -d: -f1)"
   check "no checks: origin/main contains the pushed head" git --git-dir "$T/remote.git" merge-base --is-ancestor "$head" refs/heads/main
   check "no checks: task and review retired" bash -c "[ \"\$(jq -r .removed_at '$T/root/tasks/impl-a/task.json')\" != null ] && [ \"\$(jq -r .removed_at '$T/root/tasks/review-impl-a/task.json')\" != null ]"
   check "no checks: says so" says x 'No required checks configured'
+  # No checks at all: no warning.
+  mk ""; echo none >"$T/state/gh/checks"; out=$(ship --no-cleanup); check "no checks and no CI: merged" test $? -eq 0
+  check "no checks and no CI: no warning" bash -c "! grep -q 'warning' <<<'$out'"
   # Checks that exist but are not required do not stop it.
   mk ""; echo fail >"$T/state/gh/checks"; out=$(ship --no-cleanup); check "no checks: a failing check that is not required does not stop it" test $? -eq 0; }
 # Two required checks (the second has a space in its name): it waits for both; the merge is scheduled only after the

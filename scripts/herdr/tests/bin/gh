@@ -38,6 +38,7 @@ case $cmd in
             out=$(jq -c --arg n "${it%%=*}" --arg b "$b" '. + [{name:$n,bucket:$b,startedAt:"2026-01-01T00:00:00Z"}]' <<<"$out")
           done
           echo "$out" ;;
+        none) echo '[]' ;;
         absent) echo '[{"name":"Other","bucket":"pass","startedAt":"2026-01-01T00:00:00Z"}]' ;;
         queued) echo '[{"name":"build","bucket":"pass","startedAt":"2026-01-01T00:00:00Z"},{"name":"build","bucket":"pending","startedAt":"0001-01-01T00:00:00Z"}]' ;;
         queued-null) echo '[{"name":"build","bucket":"pass","startedAt":"2026-01-01T00:00:00Z"},{"name":"build","bucket":"pending","startedAt":null}]' ;;

@@ -85,7 +85,7 @@ fi
 # text in them would make the fill fail after the review worktree exists.
 for field in "the title in $IMPL_BRIEF=$TITLE" "the plan reference in $IMPL_BRIEF=$PLAN_REF" \
   "the points file ${POINTS:-(none)}=$([ -z "$POINTS" ] || cat "$POINTS")"; do
-  if [[ ${field#*=} =~ \{\{[A-Z][A-Z_]*\}\} ]]; then
+  if [[ ${field#*=} =~ \{\{[A-Z][A-Z0-9_]*\}\} ]]; then
     die "${field%%=*} contains the marker-shaped text ${BASH_REMATCH[0]}; reword it (nothing was created)"
   fi
 done
