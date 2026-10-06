@@ -336,11 +336,40 @@ test('grid styles are rounded and their colors are lowercase hex', async () => {
 
 test('an empty text has no segments key, a styled one keeps them', async () => {
   const file = makeFile('single');
-  const marker =
-    file.page.children.find((c) => c.name === 'Header') || file.dark.children[0].children[2];
-  assert.equal(marker.name, 'marker');
   const empty = await screenJson(file, file.dark);
   assert.equal(find(empty, 'marker').segments, undefined);
   assert.equal(find(empty, 'marker').characters, 'marker');
   assert.equal(find(empty, 'Label').segments.length, 2);
+});
+
+test('a VECTOR keeps its path data and stroke geometry; Figma defaults are omitted', async () => {
+  const file = makeFile('single');
+  const icon = await serializeNode(
+    createSerializeContext(file.resolver),
+    file.icon,
+    nodeKey(null, file.icon.name, 4),
+    {},
+  );
+  const [path, plain] = icon.children;
+  assert.deepEqual(path.vectorPaths, [
+    { windingRule: 'NONZERO', data: 'M 3 10 L 10 3 L 17 10 M 5 9 L 5 17 L 15 17' },
+  ]);
+  assert.equal(path.strokeWeight, 1.6);
+  assert.equal(path.strokeCap, 'ROUND');
+  assert.equal(path.strokeJoin, 'ROUND');
+  assert.equal(path.strokeMiterLimit, undefined);
+  assert.deepEqual(path.dashPattern, [2, 4.13]);
+  assert.equal(path.strokes[0].color, '#a8b7d0');
+  assert.deepEqual(plain.vectorPaths, [{ windingRule: 'EVENODD', data: 'M 0 0 L 4 4' }]);
+  for (const field of ['strokeCap', 'strokeJoin', 'strokeMiterLimit', 'dashPattern']) {
+    assert.equal(plain[field], undefined, field);
+  }
+});
+
+test('a mixed stroke cap on a vector is written as "MIXED"', async () => {
+  const file = makeFile('single');
+  file.icon.children[0].strokeCap = MIXED;
+  const icon = await serializeNode(createSerializeContext(file.resolver), file.icon, 'k', {});
+  assert.equal(icon.children[0].strokeCap, 'MIXED');
+  assert.doesNotThrow(() => stableStringify(icon));
 });

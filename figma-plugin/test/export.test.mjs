@@ -23,6 +23,12 @@ const {
 } = m;
 const text = (bytes) => Buffer.from(bytes).toString('utf8');
 
+const svgOf = async (node, options) => {
+  svgCalls.push({ name: node.name, options });
+  return `<svg xmlns="http://www.w3.org/2000/svg"><title>${node.name}</title></svg>\n`;
+};
+const svgCalls = [];
+
 // Exports a PNG of the requested scale, clipped to a maximum size like Figma does.
 function exportingNode(width, height, limit = { width: 4096, height: 4096 }) {
   const calls = [];
@@ -104,7 +110,9 @@ test('height-only clipping is detected too, and a PNG still clipped at 0.5 recor
 function exportableFile(layout = 'single') {
   const file = makeFile(layout);
   const png = (node) => {
-    node.exportAsync = exportingNode(node.width, node.height).exportAsync;
+    const raster = exportingNode(node.width, node.height);
+    node.exportAsync = (options) =>
+      options.format === 'SVG_STRING' ? svgOf(node, options) : raster.exportAsync(options);
   };
   const marker = {
     id: 'N:marker',
@@ -427,4 +435,45 @@ test('top-level names are unique across the modules concatenated into code.js', 
       `main.js declares ${name}, already declared in ${seen[name]}`,
     );
   }
+});
+
+test('icon components are also exported as SVG and listed with a hash in meta.json', async () => {
+  svgCalls.length = 0;
+  const { emitted } = await runOn(exportableFile());
+  const path = 'svg/07-forma-ui-centered-documentation/forma-website-icon-search.svg';
+  const svg = emitted.filter((e) => e.path.startsWith('svg/'));
+  assert.deepEqual(
+    svg.map((e) => e.path),
+    [path],
+  );
+  assert.equal(
+    text(svg[0].bytes),
+    '<svg xmlns="http://www.w3.org/2000/svg"><title>Forma / Website icon / search</title></svg>\n',
+  );
+  assert.deepEqual(svgCalls, [
+    { name: 'Forma / Website icon / search', options: { format: 'SVG_STRING' } },
+  ]);
+  const meta = JSON.parse(text(emitted.find((e) => e.path === 'meta.json').bytes));
+  assert.deepEqual(meta.svg, [path]);
+  assert.equal(meta.counts.svgs, 1);
+  assert.equal(meta.files[path], createHash('sha256').update(svg[0].bytes).digest('hex'));
+});
+
+test('only icon components get an SVG: not component sets, variants or screens', async () => {
+  const file = exportableFile();
+  const library = file.page.children.find((c) => c.type === 'COMPONENT' && c.name.includes('icon'));
+  const plain = { ...library, id: 'N:plain', name: 'Forma / Button helper' };
+  const fromLibrary = { ...library, id: 'N:lib', name: 'Forma / Icon / home' };
+  file.page.children.push(plain, fromLibrary);
+  const { emitted } = await runOn(file);
+  assert.deepEqual(
+    emitted
+      .filter((e) => e.path.startsWith('svg/'))
+      .map((e) => e.path)
+      .sort(),
+    [
+      'svg/07-forma-ui-centered-documentation/forma-icon-home.svg',
+      'svg/07-forma-ui-centered-documentation/forma-website-icon-search.svg',
+    ],
+  );
 });
