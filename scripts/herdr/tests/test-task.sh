@@ -46,6 +46,21 @@ check "override: the label follows HERDR_PROJECT_ID" test "$(label_of feat/task-
 out=$(HERDR_PORTS='nonsense' "$HERDR/new-task.sh" --id task-e --branch feat/task-e 2>&1); check "a malformed port list is refused" test $? -ne 0; check "malformed: says NAME:BASE:MARKER" says x 'NAME:BASE:MARKER'
 check "malformed: nothing created" test ! -e "$T/root/tasks/task-e"
 
+echo "== HERDR_PORTS is validated by content, one case per rule"
+mkdir -p "$T/globdir"; : >"$T/globdir/DEV_SERVER_PORT:5000:VITE"
+bad_ports() { # name list message
+  out=$(cd "$T/globdir" && HERDR_PORTS=$2 "$HERDR/new-task.sh" --id bad-ports --branch feat/bad-ports 2>&1); rc=$?
+  check "ports: $1: refused" test $rc -ne 0; check "ports: $1: says why" says x "$3"
+  check "ports: $1: nothing created" test ! -e "$T/root/tasks/bad-ports"
+}
+bad_ports "duplicate name" 'A_PORT:5000:A A_PORT:6000:B' 'names A_PORT twice'
+bad_ports "duplicate marker" 'A_PORT:5000:A B_PORT:6000:A' 'the marker A twice'
+bad_ports "reserved marker" 'A_PORT:5000:WT' 'marker WT is reserved'
+bad_ports "port above 65535" 'A_PORT:65530:A' 'above 65535'
+bad_ports "overlapping ranges" 'A_PORT:5000:A B_PORT:5001:B' 'overlaps'
+bad_ports "wildcards are not expanded" '*' "entry '*'"
+out=$(HERDR_PORTS='A_PORT:5000:A B_PORT:5010:B' bash -c '. "$1/common.sh"; port_specs' _ "$HERDR" 2>&1); check "ports: ranges that touch no other are accepted" test "$out" = "$(printf 'A_PORT 5000 A\nB_PORT 5010 B')"
+
 echo "== a busy configured port refuses the slot"
 SE=$(pick_slot "$SA" "$SB" "$SC" "$SD") || exit 2; BUSY=$(port_of "$SE" STORYBOOK_PORT); mkdir -p "$T/srv"
 (cd "$T/srv" && exec python3 -m http.server "$BUSY" --bind 127.0.0.1 >/dev/null 2>&1) & PID=$!

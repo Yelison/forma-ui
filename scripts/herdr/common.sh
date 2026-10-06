@@ -84,13 +84,30 @@ active_task_ids() {
 # awk reads all of ss output (no early exit), so pipefail cannot turn a SIGPIPE into a false "free".
 port_in_use() { ss -ltnH 2>/dev/null | awk -v p="$1" '$4 ~ ("[:.]" p "$") { found = 1 } END { exit !found }'; }
 
-# port_specs: the configured ports (HERDR_PORTS), one "NAME BASE MARKER" line each.
+# port_specs: the configured ports (HERDR_PORTS), one "NAME BASE MARKER" line each. Stops the script unless every entry
+# is NAME:BASE:MARKER, NAMEs and MARKERs are unique, no MARKER is one fill-brief.sh fills itself, every port of the slot
+# range is at most 65535 and no two ports can ever be the same number (their ranges base+MIN..base+MAX do not overlap).
 port_specs() {
-  local spec name base marker rest
-  for spec in $HERDR_PORTS; do
+  local -a specs los his
+  local spec name base marker rest lo hi i seen_names=" " seen_markers=" "
+  read -ra specs <<<"$HERDR_PORTS" # split into words without expanding wildcards
+  for spec in ${specs[@]+"${specs[@]}"}; do
     IFS=: read -r name base marker rest <<<"$spec"
     [[ $name =~ ^[A-Z][A-Z0-9_]*$ && $base =~ ^[0-9]+$ && $marker =~ ^[A-Z][A-Z0-9_]*$ && -z $rest ]] \
       || die "HERDR_PORTS entry '$spec' is not NAME:BASE:MARKER (upper-case NAME and MARKER, numeric BASE)"
+    case " WT BASE BASEFULL SL LANE LANE_NAME DELIVERY " in
+      *" $marker "*) die "HERDR_PORTS marker $marker is reserved (fill-brief.sh fills it with its own value)" ;;
+    esac
+    case $seen_names in *" $name "*) die "HERDR_PORTS names $name twice" ;; esac
+    case $seen_markers in *" $marker "*) die "HERDR_PORTS uses the marker $marker twice" ;; esac
+    lo=$((10#$base + SLOT_MIN)) hi=$((10#$base + SLOT_MAX))
+    [ "$hi" -le 65535 ] || die "HERDR_PORTS entry '$spec' reaches port $hi with slot $SLOT_MAX, above 65535"
+    for i in "${!los[@]}"; do
+      if [ "$lo" -le "${his[$i]}" ] && [ "${los[$i]}" -le "$hi" ]; then
+        die "HERDR_PORTS entry '$spec' ($lo-$hi) overlaps the range of another port (${los[$i]}-${his[$i]}): two slots would share a port"
+      fi
+    done
+    los+=("$lo") his+=("$hi") seen_names+="$name " seen_markers+="$marker "
     printf '%s %s %s\n' "$name" "$base" "$marker"
   done
 }
