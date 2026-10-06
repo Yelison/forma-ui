@@ -23,6 +23,8 @@ export default defineConfig({
     // Builds the library and then the site before serving them, so a spec never runs against a stale build.
     command: `npm --prefix .. run build && npm run preview -- --port ${PORT} --strictPort`,
     url: BASE_URL,
+    // The build runs here, and tsc reports its errors on stdout: pipe it so a failed build shows why.
+    stdout: 'pipe',
     // Never test a server this run did not start: if something already listens on the port, the run fails.
     reuseExistingServer: false,
     timeout: 120_000,
