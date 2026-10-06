@@ -12,6 +12,7 @@ export default defineConfig({
   test: {
     api: devServerPort ? { port: Number(devServerPort), strictPort: true } : undefined,
     include: ['test/browser/**/*.test.{ts,tsx}'],
+    setupFiles: ['./test/browser/setup.ts'],
     browser: {
       enabled: true,
       headless: true,
