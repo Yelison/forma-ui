@@ -179,7 +179,8 @@ they were applied.
 | Reviewer | Opus 5.5 | none (`--advisor none`, which `new-review.sh` always passes) |
 
 Without `--model` and `--advisor`, `new-task.sh` leaves the owner's own defaults in place, so pass them for
-implementers. Full model IDs are used instead of aliases so an update cannot move them. An advisor must rank at or above
+implementers. `new-review.sh` fixes the effort and turns the advisor off but does not pass `--model`: the reviewer
+runs the owner's default model, which is the one this policy expects (Opus 5.5); check the session header. Full model IDs are used instead of aliases so an update cannot move them. An advisor must rank at or above
 the main model. A review is already a second opinion, and every advisor call re-reads the whole conversation, which is
 why reviewers run without one.
 
