@@ -30,8 +30,8 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ Badge: expect.any(Function) })
   })
 
-  it('exports Field', () => {
-    expect(entry).toMatchObject({ Field: expect.any(Function) })
+  it('exports Field and Input', () => {
+    expect(entry).toMatchObject({ Field: expect.any(Function), Input: expect.any(Function) })
   })
 
   // An export added by accident becomes API that the next release has to keep.
