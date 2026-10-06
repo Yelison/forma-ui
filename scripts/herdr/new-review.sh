@@ -14,7 +14,8 @@ Usage: scripts/herdr/new-review.sh --task ID [--effort high|medium] [--points FI
                                    [--round N] [--slot N] [--ignore-load]
 
   --task ID       The delivered task to review (its branch HEAD is the reviewed commit)
-  --effort LEVEL  Reasoning effort of the reviewer: high (default) or medium
+  --effort LEVEL  Reasoning effort of the reviewer: high (default) or medium. With --round it changes the level the
+                  review already has (as set-effort.sh --restart does); without it a round keeps the level
   --points FILE   Extra points the coordinator wants checked, appended to the brief (markdown)
   --name NAME     Agent name (default: rev-ID, at most 32 characters)
   --lane X        Lane the report ends with (REVISIÓN X: …); default: the one in the task's brief
@@ -27,11 +28,11 @@ The review is the task review-ID; it is retired with scripts/herdr/remove-task.s
 USAGE
 }
 
-ID= EFFORT=high POINTS= NAME= NAME_GIVEN=0 LANE= ROUND= SLOT= IGNORE_LOAD=0
+ID= EFFORT=high EFFORT_GIVEN=0 POINTS= NAME= NAME_GIVEN=0 LANE= ROUND= SLOT= IGNORE_LOAD=0
 while [ $# -gt 0 ]; do
   case $1 in
     --task) need_arg "$1" $#; ID=${2:-}; shift 2 ;;
-    --effort) need_arg "$1" $#; EFFORT=${2:-}; shift 2 ;;
+    --effort) need_arg "$1" $#; EFFORT=${2:-}; EFFORT_GIVEN=1; shift 2 ;;
     --points) need_arg "$1" $#; POINTS=${2:-}; shift 2 ;;
     --name) need_arg "$1" $#; NAME=${2:-}; NAME_GIVEN=1; shift 2 ;;
     --lane) need_arg "$1" $#; LANE=${2:-}; shift 2 ;;
@@ -183,6 +184,17 @@ CUR_ROUND=$(jq -r '.review.round // 1' "$(task_json "$RID")")
 OLD_SHA=$(git -C "$TASK_WORKTREE" rev-parse HEAD)
 OLD_BASE=$(jq -r --arg d "$IMPL_BASE" '.review.base_sha // $d' "$(task_json "$RID")")
 [ "$OLD_SHA" != "$SHA" ] || die "the task is still at $SHA, which the review already covers (nothing to do)"
+
+# A new level is applied before anything moves, so a refusal (a loaded machine, a busy agent) leaves the review as it was.
+CUR_EFFORT=$(jq -r '.effort.level // empty' "$(task_json "$RID")")
+if [ "$EFFORT_GIVEN" = 1 ] && [ "$EFFORT" != "$CUR_EFFORT" ]; then
+  # set-effort.sh writes the level before it checks the load, which would leave a level the reviewer never started with.
+  [ -z "$AGENT_NAME" ] || check_load "$IGNORE_LOAD"
+  effort_args=(--id "$RID" --level "$EFFORT" --reason "round $ROUND: ${CUR_EFFORT:-no level} to $EFFORT")
+  [ -z "$AGENT_NAME" ] || effort_args+=(--restart)
+  [ "$IGNORE_LOAD" = 0 ] || effort_args+=(--ignore-load)
+  "$SCRIPT_DIR/set-effort.sh" "${effort_args[@]}" || die "could not change the effort of $RID to $EFFORT (nothing was moved)"
+fi
 
 if git -C "$TASK_WORKTREE" merge-base --is-ancestor "$OLD_SHA" "$SHA"; then
   git -C "$TASK_WORKTREE" merge --ff-only "$SHA" >/dev/null
