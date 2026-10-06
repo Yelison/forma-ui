@@ -44,7 +44,7 @@
 //     shorthands and may hold aliases in their fields. Any other string is a literal passed through unchanged.
 //   - Blank lines in the CSS separate the source files. Group and token order is the source order (JSON puts
 //     integer-like keys such as `space.4` first, ascending), and the files are read in FILE_ORDER.
-import { mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs'
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 
 export const FILE_ORDER = ['color', 'typography', 'dimensions', 'motion-effects', 'z-index'] as const
@@ -427,7 +427,13 @@ export function main(args: string[], root: string, repoRoot = resolve(root, '..'
 }
 
 // Node resolves the main module to its real path, so a symlinked invocation must be compared by real path too.
-if (process.argv[1] !== undefined && realpathSync(process.argv[1]) === import.meta.filename) {
+// Whoever imports this module may have an argv[1] that is no file at all (`node -e "await import(...)" name`).
+function isMainModule(): boolean {
+  const entry = process.argv[1]
+  return entry !== undefined && existsSync(entry) && realpathSync(entry) === import.meta.filename
+}
+
+if (isMainModule()) {
   try {
     main(process.argv.slice(2), resolve(import.meta.dirname, '..'))
   } catch (error) {

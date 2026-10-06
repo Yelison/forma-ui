@@ -77,6 +77,30 @@ describe('determinism', () => {
     }
   })
 
+  it('can be imported by a process whose argv[1] is not a file, and then writes nothing', () => {
+    const { root, cleanup } = tempRepo()
+    try {
+      mkdirSync(join(root, 'scripts'))
+      const script = join(root, 'scripts/build-tokens.ts')
+      copyFileSync(join(packageRoot, 'scripts/build-tokens.ts'), script)
+      execFileSync(
+        process.execPath,
+        [
+          '--experimental-strip-types',
+          '--disable-warning=ExperimentalWarning',
+          '--input-type=module',
+          '--eval',
+          `await import(${JSON.stringify(script)})`,
+          'no-such-file',
+        ],
+        { stdio: 'pipe' },
+      )
+      expect(existsSync(join(root, 'dist'))).toBe(false)
+    } finally {
+      cleanup()
+    }
+  })
+
   it('runs when the script is started through a symlink, as node resolves the main module by its real path', () => {
     const { workspace, root, cleanup } = tempRepo()
     try {
