@@ -10,11 +10,11 @@ belongs to a project lives in [`scripts/herdr/project.env`](../../scripts/herdr/
 
 ## Topology
 
-| Role | Git | Herdr |
-| --- | --- | --- |
-| Coordinator | The main checkout (`main`); it reviews, integrates and never implements tasks itself | The session Claude Code is started from |
-| Task A, B, … | A linked worktree on its own branch, created from a known commit | One workspace per task whose root pane opens the worktree; Claude Code runs there as a named agent |
-| Review of a task | A worktree pinned to the delivered commit | Its own workspace and agent |
+| Role             | Git                                                                                  | Herdr                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| Coordinator      | The main checkout (`main`); it reviews, integrates and never implements tasks itself | The session Claude Code is started from                                                            |
+| Task A, B, …     | A linked worktree on its own branch, created from a known commit                     | One workspace per task whose root pane opens the worktree; Claude Code runs there as a named agent |
+| Review of a task | A worktree pinned to the delivered commit                                            | Its own workspace and agent                                                                        |
 
 Rules that keep the checkouts independent:
 
@@ -36,19 +36,19 @@ Rules that keep the checkouts independent:
 variable of the same name, **including with an empty value** (`HERDR_PR_ASSIGNEE= ship.sh …` opens a pull request
 without an assignee). `HERDR_PROJECT_ENV` points the scripts at another settings file.
 
-| Variable | Default | Meaning |
-| --- | --- | --- |
-| `HERDR_PROJECT_ID` | `forma-ui` | Prefix of workspace labels (`forma-ui · <id>`) and of the Compose project |
-| `HERDR_TASKS_ROOT` | `$HOME/forma-ui-herdr` | Holds `worktrees/`, `tasks/` and `logs/`; absolute, outside the repository |
-| `HERDR_SLOT_MIN`, `HERDR_SLOT_MAX` | `1`, `9` | Range of port slots |
-| `HERDR_PORTS` | `DEV_SERVER_PORT:5280:VITE PLAYWRIGHT_PORT:4280:PW STORYBOOK_PORT:6080:SB` | Ports of a slot, as `NAME:BASE:MARKER` entries |
-| `HERDR_REQUIRED_CHECKS` | empty | Checks `ship.sh` waits for, comma-separated, exact names |
-| `HERDR_PR_ASSIGNEE` | `Yelison` | Assignee of the pull requests `ship.sh` opens |
-| `HERDR_REVIEW_MODEL` | `claude-opus-5-5` | Model of the reviewers `new-review.sh` starts |
-| `HERDR_INSTALL_DIR`, `HERDR_INSTALL_CMD` | `.`, `npm ci` | What `new-task.sh --install` runs, and where (relative to the worktree) |
-| `HERDR_COMPOSE`, `HERDR_COMPOSE_FILE` | `0`, `docker-compose.yml` | Docker Compose per task; off by default |
-| `HERDR_MAX_LOAD` | 1.5 × cores | Load-average limit (below) |
-| `HERDR_POLL_SECONDS`, `HERDR_SHIP_TIMEOUT_SECONDS` | `20`, `1800` | Polling interval and each wait of `ship.sh` |
+| Variable                                           | Default                                                                    | Meaning                                                                    |
+| -------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `HERDR_PROJECT_ID`                                 | `forma-ui`                                                                 | Prefix of workspace labels (`forma-ui · <id>`) and of the Compose project  |
+| `HERDR_TASKS_ROOT`                                 | `$HOME/forma-ui-herdr`                                                     | Holds `worktrees/`, `tasks/` and `logs/`; absolute, outside the repository |
+| `HERDR_SLOT_MIN`, `HERDR_SLOT_MAX`                 | `1`, `9`                                                                   | Range of port slots                                                        |
+| `HERDR_PORTS`                                      | `DEV_SERVER_PORT:5280:VITE PLAYWRIGHT_PORT:4280:PW STORYBOOK_PORT:6080:SB` | Ports of a slot, as `NAME:BASE:MARKER` entries                             |
+| `HERDR_REQUIRED_CHECKS`                            | empty                                                                      | Checks `ship.sh` waits for, comma-separated, exact names                   |
+| `HERDR_PR_ASSIGNEE`                                | `Yelison`                                                                  | Assignee of the pull requests `ship.sh` opens                              |
+| `HERDR_REVIEW_MODEL`                               | `claude-opus-5-5`                                                          | Model of the reviewers `new-review.sh` starts                              |
+| `HERDR_INSTALL_DIR`, `HERDR_INSTALL_CMD`           | `.`, `npm ci`                                                              | What `new-task.sh --install` runs, and where (relative to the worktree)    |
+| `HERDR_COMPOSE`, `HERDR_COMPOSE_FILE`              | `0`, `docker-compose.yml`                                                  | Docker Compose per task; off by default                                    |
+| `HERDR_MAX_LOAD`                                   | 1.5 × cores                                                                | Load-average limit (below)                                                 |
+| `HERDR_POLL_SECONDS`, `HERDR_SHIP_TIMEOUT_SECONDS` | `20`, `1800`                                                               | Polling interval and each wait of `ship.sh`                                |
 
 A malformed `HERDR_PORTS` stops every script before anything is created: entries must be `NAME:BASE:MARKER`, names
 and markers unique, the markers `WT BASE BASEFULL SL LANE LANE_NAME DELIVERY` are reserved, no port may exceed 65535
@@ -76,23 +76,23 @@ The worktree also receives a `.env.herdr` (ignored through `.env.*`) with the ta
 Slot `n` uses `base + n` for every configured port, so no two active tasks share a port, and a task and its review
 get different slots.
 
-| Variable | Port | Used by |
-| --- | --- | --- |
+| Variable          | Port     | Used by                                    |
+| ----------------- | -------- | ------------------------------------------ |
 | `DEV_SERVER_PORT` | 5280 + n | the documentation site's dev server (Vite) |
-| `PLAYWRIGHT_PORT` | 4280 + n | the preview server Playwright starts |
-| `STORYBOOK_PORT` | 6080 + n | Storybook |
+| `PLAYWRIGHT_PORT` | 4280 + n | the preview server Playwright starts       |
+| `STORYBOOK_PORT`  | 6080 + n | Storybook                                  |
 
 There is no API, database or identity-provider port. The main checkout is slot 0: the site's Vite and Playwright configs fall back to the base ports, `5280` and `4280`, when the variables are missing (never to Vite's own `5173` and `4173`), and they fail instead of moving to another port or reusing a server they did not start.
 
 **Next to Resolve.** Forma UI and Resolve may run on the same machine. Resolve's slot `n` uses Vite 5180 + n,
 Playwright 4180 + n, API 8080 + n, PostgreSQL 5440 + n and Keycloak 8180 + n. The two ranges never overlap:
 
-| Port | Forma UI slot 1-9 | Resolve slot 1-9 |
-| --- | --- | --- |
-| dev server | 5281-5289 | 5181-5189 |
-| Playwright | 4281-4289 | 4181-4189 |
-| Storybook | 6081-6089 | not used |
-| API, PostgreSQL, Keycloak | not used | 8081-8089, 5441-5449, 8181-8189 |
+| Port                      | Forma UI slot 1-9 | Resolve slot 1-9                |
+| ------------------------- | ----------------- | ------------------------------- |
+| dev server                | 5281-5289         | 5181-5189                       |
+| Playwright                | 4281-4289         | 4181-4189                       |
+| Storybook                 | 6081-6089         | not used                        |
+| API, PostgreSQL, Keycloak | not used          | 8081-8089, 5441-5449, 8181-8189 |
 
 Tasks from both projects can use their own slot 1 at once. `new-task.sh` still refuses a slot whose ports are
 listening, whoever owns them.
@@ -104,7 +104,7 @@ listening, whoever owns them.
 obeys `OMP_NUM_THREADS`). The message says the load and the limit. A new session on a saturated machine only makes
 everybody's tests flaky: wait for the other runs to finish, or pass `--ignore-load` once you have decided that this
 one cannot wait. `HERDR_MAX_LOAD` must be a number (it can be fractional). `set-effort.sh --restart` checks the load
-*before* it exits the agent; `new-review.sh --round` only checks it when it has to start a reviewer again.
+_before_ it exits the agent; `new-review.sh --round` only checks it when it has to start a reviewer again.
 
 ## Task cycle
 
@@ -129,14 +129,14 @@ one cannot wait. `HERDR_MAX_LOAD` must be a number (it can be fractional). `set-
    `## Comandos` block; and what to report instead of working around it. Write only the task-specific part in a staging
    file, with these markers wherever the task's own values go:
 
-   | Marker | Value |
-   | --- | --- |
-   | `__WT__` | the task's worktree |
-   | `__BASE__`, `__BASEFULL__` | the base commit, 7 and 40 characters |
-   | `__SL__` | the slot |
+   | Marker                         | Value                                                       |
+   | ------------------------------ | ----------------------------------------------------------- |
+   | `__WT__`                       | the task's worktree                                         |
+   | `__BASE__`, `__BASEFULL__`     | the base commit, 7 and 40 characters                        |
+   | `__SL__`                       | the slot                                                    |
    | `__VITE__`, `__PW__`, `__SB__` | the slot's ports (the `MARKER` of each `HERDR_PORTS` entry) |
-   | `__LANE__`, `__LANE_NAME__` | the lane; it ends up in `ENTREGA <lane>: LISTA` |
-   | `__DELIVERY__` | the path of the delivery file |
+   | `__LANE__`, `__LANE_NAME__`    | the lane; it ends up in `ENTREGA <lane>: LISTA`             |
+   | `__DELIVERY__`                 | the path of the delivery file                               |
 
 3. **Add the common footer.**
 
@@ -177,10 +177,10 @@ one cannot wait. `HERDR_MAX_LOAD` must be a number (it can be fractional). `set-
 The coordinator chooses the model and the effort of each agent **before** it hands the agent a task, and checks that
 they were applied.
 
-| Role | Model | Advisor |
-| --- | --- | --- |
-| Implementer | Sonnet 5.5, `--model claude-sonnet-5-5` | Opus 5.5, `--advisor claude-opus-5-5` |
-| Reviewer | Opus 5.5, `HERDR_REVIEW_MODEL` | none (`--advisor none`, which `new-review.sh` always passes) |
+| Role        | Model                                   | Advisor                                                      |
+| ----------- | --------------------------------------- | ------------------------------------------------------------ |
+| Implementer | Sonnet 5.5, `--model claude-sonnet-5-5` | Opus 5.5, `--advisor claude-opus-5-5`                        |
+| Reviewer    | Opus 5.5, `HERDR_REVIEW_MODEL`          | none (`--advisor none`, which `new-review.sh` always passes) |
 
 Without `--model` and `--advisor`, `new-task.sh` leaves the owner's own defaults in place, so pass them for
 implementers. `new-review.sh` fixes the reviewer's model with `HERDR_REVIEW_MODEL` (default `claude-opus-5-5`; empty
@@ -203,12 +203,12 @@ restarts and lets an agent be adjusted later.
 than the task's `model`, it warns and does not record `model_verified`. If the header disagrees, the file is not being
 read: do not hand over the task until it does. Do not trust what an agent says about its own effort.
 
-| Level | Typical task |
-| --- | --- |
-| `low` | Mechanical changes, copy, simple adjustments following a proven pattern |
-| `medium` (default) | Usual components, documentation, tests with clear requirements |
-| `high` | Cross-module changes, contracts, shell tooling that merges or deletes, diagnosing failures |
-| `xhigh` | Especially hard problems with real uncertainty |
+| Level              | Typical task                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------ |
+| `low`              | Mechanical changes, copy, simple adjustments following a proven pattern                    |
+| `medium` (default) | Usual components, documentation, tests with clear requirements                             |
+| `high`             | Cross-module changes, contracts, shell tooling that merges or deletes, diagnosing failures |
+| `xhigh`            | Especially hard problems with real uncertainty                                             |
 
 `max` is not used: settings files cannot hold it. Agents do not change their own level: when an escalation condition
 appears they stop at a safe point. Then, with the agent idle:
@@ -340,14 +340,14 @@ that, the main checkout). Nothing else is written to `.env.herdr`: no database, 
 
 ## Recover after a failure
 
-| Situation | What to do |
-| --- | --- |
-| The agent exited or crashed | `scripts/herdr/start-agent.sh --id <id> --name <name> --continue` starts it again in the same pane and resumes its last conversation; drop `--continue` for a fresh one. Files and commits stay, and so does the effort file. |
-| The Herdr server restarted | Workspaces come back from Herdr's saved session and Claude Code panes are resumed. Check with `scripts/herdr/status.sh`; if a pane id changed, update `tasks/<id>/task.json`. |
-| The workspace was closed but the worktree exists | `herdr worktree open --cwd <repo> --path ~/forma-ui-herdr/worktrees/<id> --no-focus`, then put the new ids in `task.json`. |
-| `task.json` is missing | Recreate it from `git worktree list`, `herdr worktree list` and `.env.herdr`; the scripts only need those fields. |
-| A prompt timed out | Read the agent (`herdr agent read`) before deciding whether to resend. |
-| Ports are busy | `ss -ltnp` shows the owner; pick another slot rather than killing processes you do not own. |
+| Situation                                        | What to do                                                                                                                                                                                                                    |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| The agent exited or crashed                      | `scripts/herdr/start-agent.sh --id <id> --name <name> --continue` starts it again in the same pane and resumes its last conversation; drop `--continue` for a fresh one. Files and commits stay, and so does the effort file. |
+| The Herdr server restarted                       | Workspaces come back from Herdr's saved session and Claude Code panes are resumed. Check with `scripts/herdr/status.sh`; if a pane id changed, update `tasks/<id>/task.json`.                                                 |
+| The workspace was closed but the worktree exists | `herdr worktree open --cwd <repo> --path ~/forma-ui-herdr/worktrees/<id> --no-focus`, then put the new ids in `task.json`.                                                                                                    |
+| `task.json` is missing                           | Recreate it from `git worktree list`, `herdr worktree list` and `.env.herdr`; the scripts only need those fields.                                                                                                             |
+| A prompt timed out                               | Read the agent (`herdr agent read`) before deciding whether to resend.                                                                                                                                                        |
+| Ports are busy                                   | `ss -ltnp` shows the owner; pick another slot rather than killing processes you do not own.                                                                                                                                   |
 
 Detaching the client keeps every pane and agent running; stopping the Herdr server or rebooting ends every process
 (worktrees, branches and the files under the tasks root survive).
