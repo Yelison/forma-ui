@@ -93,8 +93,8 @@ port_specs() {
   read -r -d '' -a specs <<<"$HERDR_PORTS" || true # every line, split into words, no wildcard expansion
   for spec in ${specs[@]+"${specs[@]}"}; do
     IFS=: read -r name base marker rest <<<"$spec"
-    [[ $name =~ ^[A-Z][A-Z0-9_]*$ && $base =~ ^[1-9][0-9]*$ && $marker =~ ^[A-Z][A-Z0-9_]*$ && -z $rest ]] \
-      || die "HERDR_PORTS entry '$spec' is not NAME:BASE:MARKER (upper-case NAME and MARKER, BASE a number without leading zeros)"
+    [[ $name =~ ^[A-Z][A-Z0-9_]*$ && $base =~ ^[1-9][0-9]{0,4}$ && $marker =~ ^[A-Z][A-Z0-9_]*$ && -z $rest ]] \
+      || die "HERDR_PORTS entry '$spec' is not NAME:BASE:MARKER (upper-case NAME and MARKER, BASE a number of up to five digits without leading zeros)"
     case " WT BASE BASEFULL SL LANE LANE_NAME DELIVERY " in
       *" $marker "*) die "HERDR_PORTS marker $marker is reserved (fill-brief.sh fills it with its own value)" ;;
     esac
