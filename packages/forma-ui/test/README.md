@@ -17,6 +17,11 @@ jsdom cannot show:
 - axe-core, which needs computed styles and layout;
 - `prefers-color-scheme` and `prefers-reduced-motion`.
 
+Some specs read the generated tokens (`dist/tokens.css` and `dist/tokens.json`) so that they test the real output of the
+token generator, not a copy of it. `dist/` is not committed: after a fresh clone, or after changing `tokens/`, run
+`npm run build:tokens -w @yelison/forma-ui` before `test:browser`. CI does it first. A spec that needs `dist/` and does
+not find it fails with that command in its message.
+
 Browser mode starts a Vite server, which takes its port from `DEV_SERVER_PORT` and fails if it is taken. Each checkout
 has its own ports (see `docs/development/herdr.md`), so pass yours inline, from `packages/forma-ui`:
 
