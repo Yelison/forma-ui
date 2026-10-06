@@ -19,7 +19,7 @@ Planning. The implementation plan lives in `docs/plans/`. Nothing in this reposi
 
 ## Design
 
-Figma file: https://www.figma.com/design/jOLY73sXOjkAXs5OxNeeBW. Page 07 holds the approved documentation site; pages 00–04 hold the library.
+The design lives in a private Figma file. Its page 07 holds the approved documentation site, and pages 00–04 hold the library.
 
 ## License
 
