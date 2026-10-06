@@ -1,0 +1,552 @@
+{
+  "boundVariables": {
+    "itemSpacing": {
+      "collection": "Forma / Dimensions",
+      "name": "space-24",
+      "value": 24
+    },
+    "paddingBottom": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingLeft": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingRight": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingTop": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    }
+  },
+  "children": [
+    {
+      "characters": "Responsive & interaction contract",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 42,
+      "id": "5:9009",
+      "key": "Responsive & interaction contract#45/Responsive & interaction contract#0",
+      "layoutSizingVertical": "HUG",
+      "name": "Responsive & interaction contract",
+      "segments": [
+        {
+          "characters": "Responsive & interaction contract",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Bold"
+          },
+          "fontSize": 30,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 42
+          },
+          "textStyle": "Forma / Title"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Title",
+      "type": "TEXT",
+      "width": 1056,
+      "x": 32,
+      "y": 32
+    },
+    {
+      "characters": "Forma UI · Shared foundations. Resolve is the first consumer.",
+      "fills": [
+        {
+          "resolved": "#6a778d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/muted"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9010",
+      "key": "Responsive & interaction contract#45/Forma UI · Shared foundations. Resolve is the first consumer.#1",
+      "layoutSizingVertical": "HUG",
+      "name": "Forma UI · Shared foundations. Resolve is the first consumer.",
+      "segments": [
+        {
+          "characters": "Forma UI · Shared foundations. Resolve is the first consumer.",
+          "fills": [
+            {
+              "resolved": "#6a778d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1056,
+      "x": 32,
+      "y": 98
+    },
+    {
+      "characters": "Centered documentation container. Desktop 1440 and tablet 1024: expanded index. Mobile 390: menu and stacked content.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9011",
+      "key": "Responsive & interaction contract#45/Centered documentation container. Desktop 1440 and tablet 1024: expand#2",
+      "layoutSizingVertical": "HUG",
+      "name": "Centered documentation container. Desktop 1440 and tablet 1024: expand",
+      "segments": [
+        {
+          "characters": "Centered documentation container. Desktop 1440 and tablet 1024: expanded index. Mobile 390: menu and stacked content.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 142
+    },
+    {
+      "characters": "Four additional desktop screens demonstrate collapsed navigation in both themes.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9012",
+      "key": "Responsive & interaction contract#45/Four additional desktop screens demonstrate collapsed navigation in bo#3",
+      "layoutSizingVertical": "HUG",
+      "name": "Four additional desktop screens demonstrate collapsed navigation in bo",
+      "segments": [
+        {
+          "characters": "Four additional desktop screens demonstrate collapsed navigation in both themes.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 186
+    },
+    {
+      "characters": "Nav icons retain accessible names. Hover/focus tooltips, Escape dismissal and a mobile drawer are implementation obligations.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9013",
+      "key": "Responsive & interaction contract#45/Nav icons retain accessible names. Hover%2Ffocus tooltips, Escape dismis#4",
+      "layoutSizingVertical": "HUG",
+      "name": "Nav icons retain accessible names. Hover/focus tooltips, Escape dismis",
+      "segments": [
+        {
+          "characters": "Nav icons retain accessible names. Hover/focus tooltips, Escape dismissal and a mobile drawer are implementation obligations.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 230
+    },
+    {
+      "characters": "Search: open with a button or Cmd/Ctrl+K; show results, empty and loading states. Do not hijack editor shortcuts.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9014",
+      "key": "Responsive & interaction contract#45/Search: open with a button or Cmd%2FCtrl+K; show results, empty and load#5",
+      "layoutSizingVertical": "HUG",
+      "name": "Search: open with a button or Cmd/Ctrl+K; show results, empty and load",
+      "segments": [
+        {
+          "characters": "Search: open with a button or Cmd/Ctrl+K; show results, empty and loading states. Do not hijack editor shortcuts.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 274
+    },
+    {
+      "characters": "Theme: light/dark/system. Preserve preference without a flash on first paint.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9015",
+      "key": "Responsive & interaction contract#45/Theme: light%2Fdark%2Fsystem. Preserve preference without a flash on first#6",
+      "layoutSizingVertical": "HUG",
+      "name": "Theme: light/dark/system. Preserve preference without a flash on first",
+      "segments": [
+        {
+          "characters": "Theme: light/dark/system. Preserve preference without a flash on first paint.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 318
+    },
+    {
+      "characters": "API docs and import paths are proposed until actual package exports are agreed.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9016",
+      "key": "Responsive & interaction contract#45/API docs and import paths are proposed until actual package exports ar#7",
+      "layoutSizingVertical": "HUG",
+      "name": "API docs and import paths are proposed until actual package exports ar",
+      "segments": [
+        {
+          "characters": "API docs and import paths are proposed until actual package exports are agreed.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 362
+    },
+    {
+      "characters": "Every screen is editable. Sidebar actions and CTAs navigate to same-page top-level frames.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9017",
+      "key": "Responsive & interaction contract#45/Every screen is editable. Sidebar actions and CTAs navigate to same-pa#8",
+      "layoutSizingVertical": "HUG",
+      "name": "Every screen is editable. Sidebar actions and CTAs navigate to same-pa",
+      "segments": [
+        {
+          "characters": "Every screen is editable. Sidebar actions and CTAs navigate to same-page top-level frames.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 406
+    },
+    {
+      "characters": "Browser breakpoints: <768 / 768–1199 / ≥1200. Test 320 and intermediate widths as well.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "5:9018",
+      "key": "Responsive & interaction contract#45/Browser breakpoints: <768 %2F 768–1199 %2F ≥1200. Test 320 and intermediat#9",
+      "layoutSizingVertical": "HUG",
+      "name": "Browser breakpoints: <768 / 768–1199 / ≥1200. Test 320 and intermediat",
+      "segments": [
+        {
+          "characters": "Browser breakpoints: <768 / 768–1199 / ≥1200. Test 320 and intermediate widths as well.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 450
+    }
+  ],
+  "counterAxisSizingMode": "FIXED",
+  "explicitVariableModes": {
+    "Forma / Color": "Light"
+  },
+  "fills": [
+    {
+      "resolved": "#f5f7fb",
+      "type": "SOLID",
+      "variable": {
+        "collection": "Forma / Color",
+        "name": "color/bg"
+      }
+    }
+  ],
+  "height": 502,
+  "id": "5:9008",
+  "itemSpacing": 24,
+  "key": "Responsive & interaction contract#45",
+  "layoutMode": "VERTICAL",
+  "layoutSizingVertical": "HUG",
+  "name": "Responsive & interaction contract",
+  "paddingBottom": 32,
+  "paddingLeft": 32,
+  "paddingRight": 32,
+  "paddingTop": 32,
+  "page": "07 · Forma UI · Centered Documentation",
+  "primaryAxisSizingMode": "AUTO",
+  "type": "FRAME",
+  "width": 1120,
+  "x": 3500,
+  "y": 20873
+}

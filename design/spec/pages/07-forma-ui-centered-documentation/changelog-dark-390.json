@@ -1,0 +1,4137 @@
+{
+  "children": [
+    {
+      "boundVariables": {
+        "itemSpacing": {
+          "collection": "Forma / Dimensions",
+          "name": "space-12",
+          "value": 12
+        },
+        "paddingBottom": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        },
+        "paddingTop": {
+          "collection": "Forma / Dimensions",
+          "name": "space-16",
+          "value": 16
+        }
+      },
+      "children": [
+        {
+          "boundVariables": {
+            "itemSpacing": {
+              "collection": "Forma / Dimensions",
+              "name": "space-8",
+              "value": 8
+            }
+          },
+          "children": [
+            {
+              "children": [
+                {
+                  "characters": "F",
+                  "fills": [
+                    {
+                      "resolved": "#ffffff",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/on-brand"
+                      }
+                    }
+                  ],
+                  "height": 20,
+                  "id": "12:23772",
+                  "key": "Changelog · dark · 390#40/Editorial top navigation#0/Wordmark#0/Forma mark#0/F#0",
+                  "layoutSizingVertical": "HUG",
+                  "name": "F",
+                  "segments": [
+                    {
+                      "characters": "F",
+                      "fills": [
+                        {
+                          "resolved": "#ffffff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/on-brand"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Semi Bold"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Strong"
+                    }
+                  ],
+                  "textAlignHorizontal": "CENTER",
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Strong",
+                  "type": "TEXT",
+                  "width": 28,
+                  "x": 0,
+                  "y": 0
+                }
+              ],
+              "cornerRadius": 6,
+              "counterAxisSizingMode": "FIXED",
+              "fills": [
+                {
+                  "resolved": "#4779ff",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/brand"
+                  }
+                }
+              ],
+              "height": 28,
+              "id": "12:23771",
+              "key": "Changelog · dark · 390#40/Editorial top navigation#0/Wordmark#0/Forma mark#0",
+              "layoutMode": "VERTICAL",
+              "name": "Forma mark",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 28,
+              "x": 0,
+              "y": 6
+            },
+            {
+              "characters": "Forma UI",
+              "fills": [
+                {
+                  "resolved": "#e7edf8",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/ink"
+                  }
+                }
+              ],
+              "height": 24,
+              "id": "12:23773",
+              "key": "Changelog · dark · 390#40/Editorial top navigation#0/Wordmark#0/Forma UI#1",
+              "layoutSizingVertical": "HUG",
+              "name": "Forma UI",
+              "segments": [
+                {
+                  "characters": "Forma UI",
+                  "fills": [
+                    {
+                      "resolved": "#e7edf8",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/ink"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Semi Bold"
+                  },
+                  "fontSize": 17,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "textStyle": "Forma / Section"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / Section",
+              "type": "TEXT",
+              "width": 84,
+              "x": 36,
+              "y": 8
+            }
+          ],
+          "counterAxisAlignItems": "CENTER",
+          "counterAxisSizingMode": "FIXED",
+          "height": 40,
+          "id": "12:23770",
+          "itemSpacing": 8,
+          "key": "Changelog · dark · 390#40/Editorial top navigation#0/Wordmark#0",
+          "layoutMode": "HORIZONTAL",
+          "name": "Wordmark",
+          "primaryAxisSizingMode": "FIXED",
+          "type": "FRAME",
+          "width": 120,
+          "x": 21,
+          "y": 16
+        },
+        {
+          "counterAxisSizingMode": "FIXED",
+          "height": 1,
+          "id": "12:23774",
+          "key": "Changelog · dark · 390#40/Editorial top navigation#0/Flexible navigation space#1",
+          "layoutMode": "VERTICAL",
+          "name": "Flexible navigation space",
+          "primaryAxisSizingMode": "FIXED",
+          "type": "FRAME",
+          "width": 90,
+          "x": 153,
+          "y": 35.5
+        },
+        {
+          "characters": "◐",
+          "fills": [
+            {
+              "resolved": "#e7edf8",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color Dark",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "height": 24,
+          "id": "12:23775",
+          "key": "Changelog · dark · 390#40/Editorial top navigation#0/◐#2",
+          "layoutSizingVertical": "HUG",
+          "name": "◐",
+          "segments": [
+            {
+              "characters": "◐",
+              "fills": [
+                {
+                  "resolved": "#e7edf8",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/ink"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Semi Bold"
+              },
+              "fontSize": 17,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 24
+              },
+              "textStyle": "Forma / Section"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Section",
+          "type": "TEXT",
+          "width": 24,
+          "x": 255,
+          "y": 24
+        },
+        {
+          "characters": "Buscar",
+          "fills": [
+            {
+              "resolved": "#a0afc5",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color Dark",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "height": 17,
+          "id": "12:23776",
+          "key": "Changelog · dark · 390#40/Editorial top navigation#0/Buscar#3",
+          "layoutSizingVertical": "HUG",
+          "name": "Buscar",
+          "segments": [
+            {
+              "characters": "Buscar",
+              "fills": [
+                {
+                  "resolved": "#a0afc5",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Regular"
+              },
+              "fontSize": 12,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 17
+              },
+              "textStyle": "Forma / Caption"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Caption",
+          "type": "TEXT",
+          "width": 44,
+          "x": 291,
+          "y": 27.5
+        },
+        {
+          "characters": "☰",
+          "fills": [
+            {
+              "resolved": "#e7edf8",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color Dark",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "height": 24,
+          "id": "12:23777",
+          "key": "Changelog · dark · 390#40/Editorial top navigation#0/☰#4",
+          "layoutSizingVertical": "HUG",
+          "name": "☰",
+          "segments": [
+            {
+              "characters": "☰",
+              "fills": [
+                {
+                  "resolved": "#e7edf8",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/ink"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Semi Bold"
+              },
+              "fontSize": 17,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 24
+              },
+              "textStyle": "Forma / Section"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Section",
+          "type": "TEXT",
+          "width": 24,
+          "x": 347,
+          "y": 24
+        }
+      ],
+      "counterAxisAlignItems": "CENTER",
+      "counterAxisSizingMode": "FIXED",
+      "height": 72,
+      "id": "12:23769",
+      "itemSpacing": 12,
+      "key": "Changelog · dark · 390#40/Editorial top navigation#0",
+      "layoutMode": "HORIZONTAL",
+      "name": "Editorial top navigation",
+      "paddingBottom": 16,
+      "paddingLeft": 20,
+      "paddingRight": 20,
+      "paddingTop": 16,
+      "primaryAxisSizingMode": "FIXED",
+      "strokeAlign": "INSIDE",
+      "strokeWeight": 1,
+      "strokes": [
+        {
+          "resolved": "#2a3951",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color Dark",
+            "name": "color/line"
+          }
+        }
+      ],
+      "type": "FRAME",
+      "width": 390,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "boundVariables": {
+        "itemSpacing": {
+          "collection": "Forma / Dimensions",
+          "name": "space-0",
+          "value": 0
+        }
+      },
+      "children": [
+        {
+          "boundVariables": {
+            "itemSpacing": {
+              "collection": "Forma / Dimensions",
+              "name": "space-24",
+              "value": 24
+            },
+            "paddingBottom": {
+              "collection": "Forma / Dimensions",
+              "name": "space-20",
+              "value": 20
+            },
+            "paddingLeft": {
+              "collection": "Forma / Dimensions",
+              "name": "space-20",
+              "value": 20
+            },
+            "paddingRight": {
+              "collection": "Forma / Dimensions",
+              "name": "space-20",
+              "value": 20
+            },
+            "paddingTop": {
+              "collection": "Forma / Dimensions",
+              "name": "space-20",
+              "value": 20
+            }
+          },
+          "children": [
+            {
+              "characters": "Documentación / Cambios",
+              "fills": [
+                {
+                  "resolved": "#a0afc5",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "height": 17,
+              "id": "12:23780",
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Documentación %2F Cambios#0",
+              "layoutSizingVertical": "HUG",
+              "name": "Documentación / Cambios",
+              "segments": [
+                {
+                  "characters": "Documentación / Cambios",
+                  "fills": [
+                    {
+                      "resolved": "#a0afc5",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/muted"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Regular"
+                  },
+                  "fontSize": 12,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 17
+                  },
+                  "textStyle": "Forma / Caption"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / Caption",
+              "type": "TEXT",
+              "width": 350,
+              "x": 20,
+              "y": 20
+            },
+            {
+              "characters": "Cambios",
+              "fills": [
+                {
+                  "resolved": "#e7edf8",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/ink"
+                  }
+                }
+              ],
+              "height": 44,
+              "id": "12:23781",
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Cambios#1",
+              "layoutSizingVertical": "HUG",
+              "name": "Cambios",
+              "segments": [
+                {
+                  "characters": "Cambios",
+                  "fills": [
+                    {
+                      "resolved": "#e7edf8",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/ink"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Bold"
+                  },
+                  "fontSize": 36,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 44
+                  },
+                  "textStyle": "Forma / EditorialHeading"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / EditorialHeading",
+              "type": "TEXT",
+              "width": 350,
+              "x": 20,
+              "y": 61
+            },
+            {
+              "characters": "Un registro claro de cómo evoluciona el sistema.",
+              "fills": [
+                {
+                  "resolved": "#a0afc5",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "height": 48,
+              "id": "12:23782",
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Un registro claro de cómo evoluciona el sistema.#2",
+              "layoutSizingVertical": "HUG",
+              "name": "Un registro claro de cómo evoluciona el sistema.",
+              "segments": [
+                {
+                  "characters": "Un registro claro de cómo evoluciona el sistema.",
+                  "fills": [
+                    {
+                      "resolved": "#a0afc5",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/muted"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Semi Bold"
+                  },
+                  "fontSize": 17,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "textStyle": "Forma / Section"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / Section",
+              "type": "TEXT",
+              "width": 350,
+              "x": 20,
+              "y": 129
+            },
+            {
+              "boundVariables": {
+                "bottomLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-panel",
+                  "value": 12
+                },
+                "bottomRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-panel",
+                  "value": 12
+                },
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                },
+                "paddingBottom": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                },
+                "paddingLeft": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                },
+                "paddingRight": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                },
+                "paddingTop": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                },
+                "topLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-panel",
+                  "value": 12
+                },
+                "topRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-panel",
+                  "value": 12
+                }
+              },
+              "children": [
+                {
+                  "characters": "Evolución del diseño",
+                  "fills": [
+                    {
+                      "resolved": "#e7edf8",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/ink"
+                      }
+                    }
+                  ],
+                  "height": 20,
+                  "id": "12:23784",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Changelog scope#3/Evolución del diseño#0",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Evolución del diseño",
+                  "segments": [
+                    {
+                      "characters": "Evolución del diseño",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Medium"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Label"
+                    }
+                  ],
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Label",
+                  "type": "TEXT",
+                  "width": 318,
+                  "x": 17,
+                  "y": 17
+                },
+                {
+                  "characters": "Este historial describe el archivo de diseño. Las versiones del paquete tendrán su propio registro al publicarse.",
+                  "fills": [
+                    {
+                      "resolved": "#a0afc5",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/muted"
+                      }
+                    }
+                  ],
+                  "height": 60,
+                  "id": "12:23785",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Changelog scope#3/Este historial describe el archivo de diseño. Las versiones del paquet#1",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Este historial describe el archivo de diseño. Las versiones del paquet",
+                  "segments": [
+                    {
+                      "characters": "Este historial describe el archivo de diseño. Las versiones del paquete tendrán su propio registro al publicarse.",
+                      "fills": [
+                        {
+                          "resolved": "#a0afc5",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/muted"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Regular"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Body"
+                    }
+                  ],
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Body",
+                  "type": "TEXT",
+                  "width": 318,
+                  "x": 17,
+                  "y": 53
+                }
+              ],
+              "cornerRadius": 12,
+              "counterAxisSizingMode": "FIXED",
+              "fills": [
+                {
+                  "resolved": "#1a2c4e",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/blue-bg"
+                  }
+                }
+              ],
+              "height": 130,
+              "id": "12:23783",
+              "itemSpacing": 16,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Changelog scope#3",
+              "layoutMode": "VERTICAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Changelog scope",
+              "paddingBottom": 16,
+              "paddingLeft": 16,
+              "paddingRight": 16,
+              "paddingTop": 16,
+              "primaryAxisSizingMode": "AUTO",
+              "strokeAlign": "INSIDE",
+              "strokeWeight": 1,
+              "strokes": [
+                {
+                  "resolved": "#2a3951",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/line"
+                  }
+                }
+              ],
+              "type": "FRAME",
+              "width": 350,
+              "x": 20,
+              "y": 201
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                }
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "fills": [
+                        {
+                          "resolved": "#4779ff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/brand"
+                          }
+                        }
+                      ],
+                      "height": 8,
+                      "id": "12:23788",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Timeline#0/Ellipse#0",
+                      "name": "Ellipse",
+                      "type": "ELLIPSE",
+                      "width": 8,
+                      "x": 0,
+                      "y": 0
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 64,
+                  "id": "12:23787",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Timeline#0",
+                  "layoutMode": "VERTICAL",
+                  "name": "Timeline",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 8,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-12",
+                      "value": 12
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-12",
+                          "value": 12
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "v0.8",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:23791",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Version metadata#0/v0.8#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "v0.8",
+                          "segments": [
+                            {
+                              "characters": "v0.8",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Semi Bold"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Strong"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Strong",
+                          "type": "TEXT",
+                          "width": 64,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Actual",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "height": 17,
+                              "id": "12:23793",
+                              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Version metadata#0/Actual#1/Actual#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Actual",
+                              "segments": [
+                                {
+                                  "characters": "Actual",
+                                  "fills": [
+                                    {
+                                      "resolved": "#9bbcff",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color Dark",
+                                        "name": "color/blue-ink"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 12,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 17
+                                  },
+                                  "textStyle": "Forma / Caption"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Caption",
+                              "type": "TEXT",
+                              "width": 76,
+                              "x": 4,
+                              "y": 4
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "fills": [
+                            {
+                              "resolved": "#1a2c4e",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-bg"
+                              }
+                            }
+                          ],
+                          "height": 28,
+                          "id": "12:23792",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Version metadata#0/Actual#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Actual",
+                          "paddingBottom": 4,
+                          "paddingLeft": 4,
+                          "paddingRight": 4,
+                          "paddingTop": 4,
+                          "primaryAxisSizingMode": "FIXED",
+                          "type": "FRAME",
+                          "width": 84,
+                          "x": 76,
+                          "y": 0
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 32,
+                      "id": "12:23790",
+                      "itemSpacing": 12,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Version metadata#0",
+                      "layoutMode": "HORIZONTAL",
+                      "name": "Version metadata",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Documentación más clara",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:23794",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Documentación más clara#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Documentación más clara",
+                      "segments": [
+                        {
+                          "characters": "Documentación más clara",
+                          "fills": [
+                            {
+                              "resolved": "#e7edf8",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 326,
+                      "x": 0,
+                      "y": 44
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Mejorado",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23796",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Mejorado change#2/Mejorado#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Mejorado",
+                          "segments": [
+                            {
+                              "characters": "Mejorado",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Primeros pasos con ejemplos, temas y verificación.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 40,
+                          "id": "12:23797",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Mejorado change#2/Primeros pasos con ejemplos, temas y verificación.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Primeros pasos con ejemplos, temas y verificación.",
+                          "segments": [
+                            {
+                              "characters": "Primeros pasos con ejemplos, temas y verificación.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:23795",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Mejorado change#2",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Mejorado change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 80
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Mejorado",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23799",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Mejorado change#3/Mejorado#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Mejorado",
+                          "segments": [
+                            {
+                              "characters": "Mejorado",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Historial organizado por versiones y tipo de cambio.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 40,
+                          "id": "12:23800",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Mejorado change#3/Historial organizado por versiones y tipo de cambio.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Historial organizado por versiones y tipo de cambio.",
+                          "segments": [
+                            {
+                              "characters": "Historial organizado por versiones y tipo de cambio.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:23798",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Mejorado change#3",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Mejorado change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 153
+                    },
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#2a3951",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:23801",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1/Release divider#4",
+                      "layoutMode": "VERTICAL",
+                      "name": "Release divider",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 226
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 227,
+                  "id": "12:23789",
+                  "itemSpacing": 12,
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4/Documentación más clara#1",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Documentación más clara",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 326,
+                  "x": 24,
+                  "y": 0
+                }
+              ],
+              "counterAxisSizingMode": "AUTO",
+              "height": 227,
+              "id": "12:23786",
+              "itemSpacing": 16,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.8#4",
+              "layoutMode": "HORIZONTAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Release v0.8",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 350,
+              "x": 20,
+              "y": 355
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                }
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "fills": [
+                        {
+                          "resolved": "#4779ff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/brand"
+                          }
+                        }
+                      ],
+                      "height": 8,
+                      "id": "12:23804",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Timeline#0/Ellipse#0",
+                      "name": "Ellipse",
+                      "type": "ELLIPSE",
+                      "width": 8,
+                      "x": 0,
+                      "y": 0
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 64,
+                  "id": "12:23803",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Timeline#0",
+                  "layoutMode": "VERTICAL",
+                  "name": "Timeline",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 8,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-12",
+                      "value": 12
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-12",
+                          "value": 12
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "v0.7",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:23807",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Version metadata#0/v0.7#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "v0.7",
+                          "segments": [
+                            {
+                              "characters": "v0.7",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Semi Bold"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Strong"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Strong",
+                          "type": "TEXT",
+                          "width": 64,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Diseño",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "height": 17,
+                              "id": "12:23809",
+                              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Version metadata#0/Diseño#1/Diseño#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Diseño",
+                              "segments": [
+                                {
+                                  "characters": "Diseño",
+                                  "fills": [
+                                    {
+                                      "resolved": "#a0afc5",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color Dark",
+                                        "name": "color/muted"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 12,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 17
+                                  },
+                                  "textStyle": "Forma / Caption"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Caption",
+                              "type": "TEXT",
+                              "width": 76,
+                              "x": 4,
+                              "y": 4
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "fills": [
+                            {
+                              "resolved": "#1d2b42",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/surface-hover"
+                              }
+                            }
+                          ],
+                          "height": 28,
+                          "id": "12:23808",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Version metadata#0/Diseño#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Diseño",
+                          "paddingBottom": 4,
+                          "paddingLeft": 4,
+                          "paddingRight": 4,
+                          "paddingTop": 4,
+                          "primaryAxisSizingMode": "FIXED",
+                          "type": "FRAME",
+                          "width": 84,
+                          "x": 76,
+                          "y": 0
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 32,
+                      "id": "12:23806",
+                      "itemSpacing": 12,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Version metadata#0",
+                      "layoutMode": "HORIZONTAL",
+                      "name": "Version metadata",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Compara todas las variantes",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:23810",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Compara todas las variantes#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Compara todas las variantes",
+                      "segments": [
+                        {
+                          "characters": "Compara todas las variantes",
+                          "fills": [
+                            {
+                              "resolved": "#e7edf8",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 326,
+                      "x": 0,
+                      "y": 44
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Actualizado",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23812",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Actualizado change#2/Actualizado#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Actualizado",
+                          "segments": [
+                            {
+                              "characters": "Actualizado",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Catálogo por filas para las nueve familias de componentes.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 40,
+                          "id": "12:23813",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Actualizado change#2/Catálogo por filas para las nueve familias de componentes.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Catálogo por filas para las nueve familias de componentes.",
+                          "segments": [
+                            {
+                              "characters": "Catálogo por filas para las nueve familias de componentes.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:23811",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Actualizado change#2",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Actualizado change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 80
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Añadido",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23815",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Añadido change#3/Añadido#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Añadido",
+                          "segments": [
+                            {
+                              "characters": "Añadido",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Referencia de Button con variantes, tamaños y seis estados.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 40,
+                          "id": "12:23816",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Añadido change#3/Referencia de Button con variantes, tamaños y seis estados.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Referencia de Button con variantes, tamaños y seis estados.",
+                          "segments": [
+                            {
+                              "characters": "Referencia de Button con variantes, tamaños y seis estados.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:23814",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Añadido change#3",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Añadido change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 153
+                    },
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#2a3951",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:23817",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1/Release divider#4",
+                      "layoutMode": "VERTICAL",
+                      "name": "Release divider",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 226
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 227,
+                  "id": "12:23805",
+                  "itemSpacing": 12,
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5/Compara todas las variantes#1",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Compara todas las variantes",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 326,
+                  "x": 24,
+                  "y": 0
+                }
+              ],
+              "counterAxisSizingMode": "AUTO",
+              "height": 227,
+              "id": "12:23802",
+              "itemSpacing": 16,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.7#5",
+              "layoutMode": "HORIZONTAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Release v0.7",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 350,
+              "x": 20,
+              "y": 606
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                }
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "fills": [
+                        {
+                          "resolved": "#4779ff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/brand"
+                          }
+                        }
+                      ],
+                      "height": 8,
+                      "id": "12:23820",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Timeline#0/Ellipse#0",
+                      "name": "Ellipse",
+                      "type": "ELLIPSE",
+                      "width": 8,
+                      "x": 0,
+                      "y": 0
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 64,
+                  "id": "12:23819",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Timeline#0",
+                  "layoutMode": "VERTICAL",
+                  "name": "Timeline",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 8,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-12",
+                      "value": 12
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-12",
+                          "value": 12
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "v0.6",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:23823",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Version metadata#0/v0.6#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "v0.6",
+                          "segments": [
+                            {
+                              "characters": "v0.6",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Semi Bold"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Strong"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Strong",
+                          "type": "TEXT",
+                          "width": 64,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Diseño",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "height": 17,
+                              "id": "12:23825",
+                              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Version metadata#0/Diseño#1/Diseño#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Diseño",
+                              "segments": [
+                                {
+                                  "characters": "Diseño",
+                                  "fills": [
+                                    {
+                                      "resolved": "#a0afc5",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color Dark",
+                                        "name": "color/muted"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 12,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 17
+                                  },
+                                  "textStyle": "Forma / Caption"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Caption",
+                              "type": "TEXT",
+                              "width": 76,
+                              "x": 4,
+                              "y": 4
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "fills": [
+                            {
+                              "resolved": "#1d2b42",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/surface-hover"
+                              }
+                            }
+                          ],
+                          "height": 28,
+                          "id": "12:23824",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Version metadata#0/Diseño#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Diseño",
+                          "paddingBottom": 4,
+                          "paddingLeft": 4,
+                          "paddingRight": 4,
+                          "paddingTop": 4,
+                          "primaryAxisSizingMode": "FIXED",
+                          "type": "FRAME",
+                          "width": 84,
+                          "x": 76,
+                          "y": 0
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 32,
+                      "id": "12:23822",
+                      "itemSpacing": 12,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Version metadata#0",
+                      "layoutMode": "HORIZONTAL",
+                      "name": "Version metadata",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Un explorador en la portada",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:23826",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Un explorador en la portada#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Un explorador en la portada",
+                      "segments": [
+                        {
+                          "characters": "Un explorador en la portada",
+                          "fills": [
+                            {
+                              "resolved": "#e7edf8",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 326,
+                      "x": 0,
+                      "y": 44
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Actualizado",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23828",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Actualizado change#2/Actualizado#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Actualizado",
+                          "segments": [
+                            {
+                              "characters": "Actualizado",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Portada B con componentes junto a su código.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:23829",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Actualizado change#2/Portada B con componentes junto a su código.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Portada B con componentes junto a su código.",
+                          "segments": [
+                            {
+                              "characters": "Portada B con componentes junto a su código.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 41,
+                      "id": "12:23827",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Actualizado change#2",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Actualizado change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 80
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Mejorado",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23831",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Mejorado change#3/Mejorado#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Mejorado",
+                          "segments": [
+                            {
+                              "characters": "Mejorado",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Fundamentos con roles de color, tipografía y espaciado.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 40,
+                          "id": "12:23832",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Mejorado change#3/Fundamentos con roles de color, tipografía y espaciado.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Fundamentos con roles de color, tipografía y espaciado.",
+                          "segments": [
+                            {
+                              "characters": "Fundamentos con roles de color, tipografía y espaciado.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:23830",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Mejorado change#3",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Mejorado change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 133
+                    },
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#2a3951",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:23833",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1/Release divider#4",
+                      "layoutMode": "VERTICAL",
+                      "name": "Release divider",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 206
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 207,
+                  "id": "12:23821",
+                  "itemSpacing": 12,
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6/Un explorador en la portada#1",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Un explorador en la portada",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 326,
+                  "x": 24,
+                  "y": 0
+                }
+              ],
+              "counterAxisSizingMode": "AUTO",
+              "height": 207,
+              "id": "12:23818",
+              "itemSpacing": 16,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.6#6",
+              "layoutMode": "HORIZONTAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Release v0.6",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 350,
+              "x": 20,
+              "y": 857
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                }
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "fills": [
+                        {
+                          "resolved": "#4779ff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/brand"
+                          }
+                        }
+                      ],
+                      "height": 8,
+                      "id": "12:23836",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Timeline#0/Ellipse#0",
+                      "name": "Ellipse",
+                      "type": "ELLIPSE",
+                      "width": 8,
+                      "x": 0,
+                      "y": 0
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 64,
+                  "id": "12:23835",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Timeline#0",
+                  "layoutMode": "VERTICAL",
+                  "name": "Timeline",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 8,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-12",
+                      "value": 12
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-12",
+                          "value": 12
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "v0.5",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:23839",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Version metadata#0/v0.5#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "v0.5",
+                          "segments": [
+                            {
+                              "characters": "v0.5",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Semi Bold"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Strong"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Strong",
+                          "type": "TEXT",
+                          "width": 64,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Diseño",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "height": 17,
+                              "id": "12:23841",
+                              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Version metadata#0/Diseño#1/Diseño#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Diseño",
+                              "segments": [
+                                {
+                                  "characters": "Diseño",
+                                  "fills": [
+                                    {
+                                      "resolved": "#a0afc5",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color Dark",
+                                        "name": "color/muted"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 12,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 17
+                                  },
+                                  "textStyle": "Forma / Caption"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Caption",
+                              "type": "TEXT",
+                              "width": 76,
+                              "x": 4,
+                              "y": 4
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "fills": [
+                            {
+                              "resolved": "#1d2b42",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/surface-hover"
+                              }
+                            }
+                          ],
+                          "height": 28,
+                          "id": "12:23840",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Version metadata#0/Diseño#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Diseño",
+                          "paddingBottom": 4,
+                          "paddingLeft": 4,
+                          "paddingRight": 4,
+                          "paddingTop": 4,
+                          "primaryAxisSizingMode": "FIXED",
+                          "type": "FRAME",
+                          "width": 84,
+                          "x": 76,
+                          "y": 0
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 32,
+                      "id": "12:23838",
+                      "itemSpacing": 12,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Version metadata#0",
+                      "layoutMode": "HORIZONTAL",
+                      "name": "Version metadata",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Ajustes de composición",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:23842",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Ajustes de composición#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Ajustes de composición",
+                      "segments": [
+                        {
+                          "characters": "Ajustes de composición",
+                          "fills": [
+                            {
+                              "resolved": "#e7edf8",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 326,
+                      "x": 0,
+                      "y": 44
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Corregido",
+                          "fills": [
+                            {
+                              "resolved": "#f2ce85",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/amber-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23844",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Corregido change#2/Corregido#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Corregido",
+                          "segments": [
+                            {
+                              "characters": "Corregido",
+                              "fills": [
+                                {
+                                  "resolved": "#f2ce85",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/amber-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Alineación del navbar y altura de controles del playground.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 40,
+                          "id": "12:23845",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Corregido change#2/Alineación del navbar y altura de controles del playground.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Alineación del navbar y altura de controles del playground.",
+                          "segments": [
+                            {
+                              "characters": "Alineación del navbar y altura de controles del playground.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:23843",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Corregido change#2",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Corregido change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 80
+                    },
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#2a3951",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:23846",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1/Release divider#3",
+                      "layoutMode": "VERTICAL",
+                      "name": "Release divider",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 153
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 154,
+                  "id": "12:23837",
+                  "itemSpacing": 12,
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7/Ajustes de composición#1",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Ajustes de composición",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 326,
+                  "x": 24,
+                  "y": 0
+                }
+              ],
+              "counterAxisSizingMode": "AUTO",
+              "height": 154,
+              "id": "12:23834",
+              "itemSpacing": 16,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.5#7",
+              "layoutMode": "HORIZONTAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Release v0.5",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 350,
+              "x": 20,
+              "y": 1088
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                }
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "fills": [
+                        {
+                          "resolved": "#4779ff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/brand"
+                          }
+                        }
+                      ],
+                      "height": 8,
+                      "id": "12:23849",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Timeline#0/Ellipse#0",
+                      "name": "Ellipse",
+                      "type": "ELLIPSE",
+                      "width": 8,
+                      "x": 0,
+                      "y": 0
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 64,
+                  "id": "12:23848",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Timeline#0",
+                  "layoutMode": "VERTICAL",
+                  "name": "Timeline",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 8,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-12",
+                      "value": 12
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-12",
+                          "value": 12
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "v0.4",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:23852",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Version metadata#0/v0.4#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "v0.4",
+                          "segments": [
+                            {
+                              "characters": "v0.4",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Semi Bold"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Strong"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Strong",
+                          "type": "TEXT",
+                          "width": 64,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Diseño",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "height": 17,
+                              "id": "12:23854",
+                              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Version metadata#0/Diseño#1/Diseño#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Diseño",
+                              "segments": [
+                                {
+                                  "characters": "Diseño",
+                                  "fills": [
+                                    {
+                                      "resolved": "#a0afc5",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color Dark",
+                                        "name": "color/muted"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 12,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 17
+                                  },
+                                  "textStyle": "Forma / Caption"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Caption",
+                              "type": "TEXT",
+                              "width": 76,
+                              "x": 4,
+                              "y": 4
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "fills": [
+                            {
+                              "resolved": "#1d2b42",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/surface-hover"
+                              }
+                            }
+                          ],
+                          "height": 28,
+                          "id": "12:23853",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Version metadata#0/Diseño#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Diseño",
+                          "paddingBottom": 4,
+                          "paddingLeft": 4,
+                          "paddingRight": 4,
+                          "paddingTop": 4,
+                          "primaryAxisSizingMode": "FIXED",
+                          "type": "FRAME",
+                          "width": 84,
+                          "x": 76,
+                          "y": 0
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 32,
+                      "id": "12:23851",
+                      "itemSpacing": 12,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Version metadata#0",
+                      "layoutMode": "HORIZONTAL",
+                      "name": "Version metadata",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Documentación centrada",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:23855",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Documentación centrada#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Documentación centrada",
+                      "segments": [
+                        {
+                          "characters": "Documentación centrada",
+                          "fills": [
+                            {
+                              "resolved": "#e7edf8",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 326,
+                      "x": 0,
+                      "y": 44
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Actualizado",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23857",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Actualizado change#2/Actualizado#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Actualizado",
+                          "segments": [
+                            {
+                              "characters": "Actualizado",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Navegación global unificada e índice junto al contenido.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 40,
+                          "id": "12:23858",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Actualizado change#2/Navegación global unificada e índice junto al contenido.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Navegación global unificada e índice junto al contenido.",
+                          "segments": [
+                            {
+                              "characters": "Navegación global unificada e índice junto al contenido.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:23856",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Actualizado change#2",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Actualizado change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 80
+                    },
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#2a3951",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:23859",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1/Release divider#3",
+                      "layoutMode": "VERTICAL",
+                      "name": "Release divider",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 153
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 154,
+                  "id": "12:23850",
+                  "itemSpacing": 12,
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8/Documentación centrada#1",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Documentación centrada",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 326,
+                  "x": 24,
+                  "y": 0
+                }
+              ],
+              "counterAxisSizingMode": "AUTO",
+              "height": 154,
+              "id": "12:23847",
+              "itemSpacing": 16,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.4#8",
+              "layoutMode": "HORIZONTAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Release v0.4",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 350,
+              "x": 20,
+              "y": 1266
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                }
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "fills": [
+                        {
+                          "resolved": "#4779ff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/brand"
+                          }
+                        }
+                      ],
+                      "height": 8,
+                      "id": "12:23862",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Timeline#0/Ellipse#0",
+                      "name": "Ellipse",
+                      "type": "ELLIPSE",
+                      "width": 8,
+                      "x": 0,
+                      "y": 0
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 64,
+                  "id": "12:23861",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Timeline#0",
+                  "layoutMode": "VERTICAL",
+                  "name": "Timeline",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 8,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-12",
+                      "value": 12
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-12",
+                          "value": 12
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "v0.1",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:23865",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Version metadata#0/v0.1#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "v0.1",
+                          "segments": [
+                            {
+                              "characters": "v0.1",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Semi Bold"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Strong"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Strong",
+                          "type": "TEXT",
+                          "width": 64,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-4",
+                              "value": 4
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Base",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "height": 17,
+                              "id": "12:23867",
+                              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Version metadata#0/Base#1/Base#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Base",
+                              "segments": [
+                                {
+                                  "characters": "Base",
+                                  "fills": [
+                                    {
+                                      "resolved": "#a0afc5",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color Dark",
+                                        "name": "color/muted"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 12,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 17
+                                  },
+                                  "textStyle": "Forma / Caption"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Caption",
+                              "type": "TEXT",
+                              "width": 76,
+                              "x": 4,
+                              "y": 4
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "fills": [
+                            {
+                              "resolved": "#1d2b42",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/surface-hover"
+                              }
+                            }
+                          ],
+                          "height": 28,
+                          "id": "12:23866",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Version metadata#0/Base#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Base",
+                          "paddingBottom": 4,
+                          "paddingLeft": 4,
+                          "paddingRight": 4,
+                          "paddingTop": 4,
+                          "primaryAxisSizingMode": "FIXED",
+                          "type": "FRAME",
+                          "width": 84,
+                          "x": 76,
+                          "y": 0
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 32,
+                      "id": "12:23864",
+                      "itemSpacing": 12,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Version metadata#0",
+                      "layoutMode": "HORIZONTAL",
+                      "name": "Version metadata",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Fundamentos compartidos",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:23868",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Fundamentos compartidos#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Fundamentos compartidos",
+                      "segments": [
+                        {
+                          "characters": "Fundamentos compartidos",
+                          "fills": [
+                            {
+                              "resolved": "#e7edf8",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 326,
+                      "x": 0,
+                      "y": 44
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-4",
+                          "value": 4
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Añadido",
+                          "fills": [
+                            {
+                              "resolved": "#9bbcff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:23870",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Añadido change#2/Añadido#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Añadido",
+                          "segments": [
+                            {
+                              "characters": "Añadido",
+                              "fills": [
+                                {
+                                  "resolved": "#9bbcff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "characters": "Tokens procedentes de Resolve y biblioteca en claro y oscuro.",
+                          "fills": [
+                            {
+                              "resolved": "#a0afc5",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color Dark",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 40,
+                          "id": "12:23871",
+                          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Añadido change#2/Tokens procedentes de Resolve y biblioteca en claro y oscuro.#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Tokens procedentes de Resolve y biblioteca en claro y oscuro.",
+                          "segments": [
+                            {
+                              "characters": "Tokens procedentes de Resolve y biblioteca en claro y oscuro.",
+                              "fills": [
+                                {
+                                  "resolved": "#a0afc5",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color Dark",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 326,
+                          "x": 0,
+                          "y": 21
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:23869",
+                      "itemSpacing": 4,
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Añadido change#2",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Añadido change",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 80
+                    },
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#2a3951",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:23872",
+                      "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1/Release divider#3",
+                      "layoutMode": "VERTICAL",
+                      "name": "Release divider",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 326,
+                      "x": 0,
+                      "y": 153
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 154,
+                  "id": "12:23863",
+                  "itemSpacing": 12,
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9/Fundamentos compartidos#1",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Fundamentos compartidos",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 326,
+                  "x": 24,
+                  "y": 0
+                }
+              ],
+              "counterAxisSizingMode": "AUTO",
+              "height": 154,
+              "id": "12:23860",
+              "itemSpacing": 16,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Release v0.1#9",
+              "layoutMode": "HORIZONTAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Release v0.1",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 350,
+              "x": 20,
+              "y": 1444
+            },
+            {
+              "boundVariables": {
+                "bottomLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "bottomRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingBottom": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingLeft": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingRight": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "paddingTop": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-8",
+                  "value": 8
+                },
+                "topLeftRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                },
+                "topRightRadius": {
+                  "collection": "Forma / Dimensions",
+                  "name": "radius-control",
+                  "value": 8
+                }
+              },
+              "children": [
+                {
+                  "characters": "Explorar componentes",
+                  "fills": [
+                    {
+                      "resolved": "#e7edf8",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/ink"
+                      }
+                    }
+                  ],
+                  "height": 40,
+                  "id": "I12:23873;1:306",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Forma %2F Button %2F dark#10/Continuar#0",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Continuar",
+                  "segments": [
+                    {
+                      "characters": "Explorar componentes",
+                      "fills": [
+                        {
+                          "resolved": "#e7edf8",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Medium"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Label"
+                    }
+                  ],
+                  "textAlignHorizontal": "CENTER",
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Label",
+                  "type": "TEXT",
+                  "width": 148,
+                  "x": 46,
+                  "y": 2
+                }
+              ],
+              "clipsContent": false,
+              "cornerRadius": 8,
+              "counterAxisAlignItems": "CENTER",
+              "counterAxisSizingMode": "FIXED",
+              "fills": [
+                {
+                  "resolved": "#141f32",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/surface"
+                  }
+                }
+              ],
+              "height": 44,
+              "id": "12:23873",
+              "instance": {
+                "component": "Variant=Secondary, State=Default",
+                "properties": {
+                  "Label#1:85": {
+                    "type": "TEXT",
+                    "value": "Explorar componentes"
+                  },
+                  "State": {
+                    "type": "VARIANT",
+                    "value": "Default"
+                  },
+                  "Variant": {
+                    "type": "VARIANT",
+                    "value": "Secondary"
+                  }
+                },
+                "set": "Forma / Button / dark",
+                "variant": {
+                  "State": "Default",
+                  "Variant": "Secondary"
+                }
+              },
+              "itemSpacing": 8,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Forma %2F Button %2F dark#10",
+              "layoutMode": "HORIZONTAL",
+              "name": "Forma / Button / dark",
+              "paddingBottom": 8,
+              "paddingLeft": 8,
+              "paddingRight": 8,
+              "paddingTop": 8,
+              "primaryAxisAlignItems": "CENTER",
+              "primaryAxisSizingMode": "FIXED",
+              "reactions": [
+                {
+                  "actions": [
+                    {
+                      "destination": "Catalog · dark · 390",
+                      "navigation": "NAVIGATE",
+                      "type": "NODE"
+                    }
+                  ],
+                  "trigger": "ON_CLICK"
+                }
+              ],
+              "strokeAlign": "INSIDE",
+              "strokeWeight": 1,
+              "strokes": [
+                {
+                  "resolved": "#2a3951",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color Dark",
+                    "name": "color/line"
+                  }
+                }
+              ],
+              "type": "INSTANCE",
+              "width": 240,
+              "x": 20,
+              "y": 1622
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                }
+              },
+              "children": [
+                {
+                  "counterAxisSizingMode": "FIXED",
+                  "fills": [
+                    {
+                      "resolved": "#2a3951",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/line"
+                      }
+                    }
+                  ],
+                  "height": 1,
+                  "id": "12:23876",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Footer#11/Divider#0",
+                  "layoutMode": "VERTICAL",
+                  "name": "Divider",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 350,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "characters": "Forma UI · Construido con cuidado",
+                  "fills": [
+                    {
+                      "resolved": "#a0afc5",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color Dark",
+                        "name": "color/muted"
+                      }
+                    }
+                  ],
+                  "height": 17,
+                  "id": "12:23877",
+                  "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Footer#11/Forma UI · Construido con cuidado#1",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Forma UI · Construido con cuidado",
+                  "segments": [
+                    {
+                      "characters": "Forma UI · Construido con cuidado",
+                      "fills": [
+                        {
+                          "resolved": "#a0afc5",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color Dark",
+                            "name": "color/muted"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Regular"
+                      },
+                      "fontSize": 12,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 17
+                      },
+                      "textStyle": "Forma / Caption"
+                    }
+                  ],
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Caption",
+                  "type": "TEXT",
+                  "width": 350,
+                  "x": 0,
+                  "y": 17
+                }
+              ],
+              "counterAxisSizingMode": "FIXED",
+              "height": 34,
+              "id": "12:23875",
+              "itemSpacing": 16,
+              "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0/Footer#11",
+              "layoutMode": "VERTICAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Footer",
+              "primaryAxisSizingMode": "AUTO",
+              "type": "FRAME",
+              "width": 350,
+              "x": 20,
+              "y": 1690
+            }
+          ],
+          "counterAxisSizingMode": "FIXED",
+          "height": 1744,
+          "id": "12:23779",
+          "itemSpacing": 24,
+          "key": "Changelog · dark · 390#40/Centered documentation container#1/Editorial content#0",
+          "layoutMode": "VERTICAL",
+          "layoutSizingVertical": "HUG",
+          "name": "Editorial content",
+          "paddingBottom": 20,
+          "paddingLeft": 20,
+          "paddingRight": 20,
+          "paddingTop": 20,
+          "primaryAxisSizingMode": "AUTO",
+          "type": "FRAME",
+          "width": 390,
+          "x": 0,
+          "y": 32
+        }
+      ],
+      "counterAxisSizingMode": "AUTO",
+      "height": 1776,
+      "id": "12:23778",
+      "key": "Changelog · dark · 390#40/Centered documentation container#1",
+      "layoutMode": "HORIZONTAL",
+      "layoutSizingVertical": "HUG",
+      "name": "Centered documentation container",
+      "paddingTop": 32,
+      "primaryAxisSizingMode": "FIXED",
+      "type": "FRAME",
+      "width": 390,
+      "x": 0,
+      "y": 72
+    }
+  ],
+  "clipsContent": false,
+  "counterAxisSizingMode": "FIXED",
+  "explicitVariableModes": {
+    "Forma / Color Dark": "Dark"
+  },
+  "fills": [
+    {
+      "resolved": "#141f32",
+      "type": "SOLID",
+      "variable": {
+        "collection": "Forma / Color Dark",
+        "name": "color/surface"
+      }
+    }
+  ],
+  "height": 1848,
+  "id": "5:8483",
+  "key": "Changelog · dark · 390#40",
+  "layoutMode": "VERTICAL",
+  "layoutSizingVertical": "HUG",
+  "name": "Changelog · dark · 390",
+  "page": "07 · Forma UI · Centered Documentation",
+  "primaryAxisSizingMode": "AUTO",
+  "type": "FRAME",
+  "width": 390,
+  "x": 6018,
+  "y": 14228
+}

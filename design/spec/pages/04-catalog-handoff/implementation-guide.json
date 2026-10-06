@@ -1,0 +1,650 @@
+{
+  "boundVariables": {
+    "itemSpacing": {
+      "collection": "Forma / Dimensions",
+      "name": "space-24",
+      "value": 24
+    },
+    "paddingBottom": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingLeft": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingRight": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    },
+    "paddingTop": {
+      "collection": "Forma / Dimensions",
+      "name": "space-32",
+      "value": 32
+    }
+  },
+  "children": [
+    {
+      "characters": "Implementation guide",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 42,
+      "id": "1:842",
+      "key": "Implementation guide#2/Implementation guide#0",
+      "layoutSizingVertical": "HUG",
+      "name": "Implementation guide",
+      "segments": [
+        {
+          "characters": "Implementation guide",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Bold"
+          },
+          "fontSize": 30,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 42
+          },
+          "textStyle": "Forma / Title"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Title",
+      "type": "TEXT",
+      "width": 1056,
+      "x": 32,
+      "y": 32
+    },
+    {
+      "characters": "Forma UI · Shared foundations. Resolve is the first consumer.",
+      "fills": [
+        {
+          "resolved": "#6a778d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/muted"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:843",
+      "key": "Implementation guide#2/Forma UI · Shared foundations. Resolve is the first consumer.#1",
+      "layoutSizingVertical": "HUG",
+      "name": "Forma UI · Shared foundations. Resolve is the first consumer.",
+      "segments": [
+        {
+          "characters": "Forma UI · Shared foundations. Resolve is the first consumer.",
+          "fills": [
+            {
+              "resolved": "#6a778d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1056,
+      "x": 32,
+      "y": 98
+    },
+    {
+      "characters": "This is a component library, not a SaaS domain application.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:844",
+      "key": "Implementation guide#2/This is a component library, not a SaaS domain application.#2",
+      "layoutSizingVertical": "HUG",
+      "name": "This is a component library, not a SaaS domain application.",
+      "segments": [
+        {
+          "characters": "This is a component library, not a SaaS domain application.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 142
+    },
+    {
+      "characters": "Canonical code tokens must reproduce the Resolve snapshot before redesign.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:845",
+      "key": "Implementation guide#2/Canonical code tokens must reproduce the Resolve snapshot before redes#3",
+      "layoutSizingVertical": "HUG",
+      "name": "Canonical code tokens must reproduce the Resolve snapshot before redes",
+      "segments": [
+        {
+          "characters": "Canonical code tokens must reproduce the Resolve snapshot before redesign.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 186
+    },
+    {
+      "characters": "React + TypeScript + CSS tokens. Storybook proposal: verify versions and fit before installation.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:846",
+      "key": "Implementation guide#2/React + TypeScript + CSS tokens. Storybook proposal: verify versions a#4",
+      "layoutSizingVertical": "HUG",
+      "name": "React + TypeScript + CSS tokens. Storybook proposal: verify versions a",
+      "segments": [
+        {
+          "characters": "React + TypeScript + CSS tokens. Storybook proposal: verify versions and fit before installation.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 230
+    },
+    {
+      "characters": "No Spring Boot or PostgreSQL required for the library.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:847",
+      "key": "Implementation guide#2/No Spring Boot or PostgreSQL required for the library.#5",
+      "layoutSizingVertical": "HUG",
+      "name": "No Spring Boot or PostgreSQL required for the library.",
+      "segments": [
+        {
+          "characters": "No Spring Boot or PostgreSQL required for the library.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 274
+    },
+    {
+      "characters": "Generic components only: Button, Field, Input, Badge, Tooltip, Dialog. TicketRow and ticket statuses remain in Resolve.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:848",
+      "key": "Implementation guide#2/Generic components only: Button, Field, Input, Badge, Tooltip, Dialog.#6",
+      "layoutSizingVertical": "HUG",
+      "name": "Generic components only: Button, Field, Input, Badge, Tooltip, Dialog.",
+      "segments": [
+        {
+          "characters": "Generic components only: Button, Field, Input, Badge, Tooltip, Dialog. TicketRow and ticket statuses remain in Resolve.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 318
+    },
+    {
+      "characters": "Release tokens + React package separately if justified. Keep CSS side effects explicit.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:849",
+      "key": "Implementation guide#2/Release tokens + React package separately if justified. Keep CSS side #7",
+      "layoutSizingVertical": "HUG",
+      "name": "Release tokens + React package separately if justified. Keep CSS side ",
+      "segments": [
+        {
+          "characters": "Release tokens + React package separately if justified. Keep CSS side effects explicit.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 362
+    },
+    {
+      "characters": "Consume via local workspace first; publish only after consumer validation.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:850",
+      "key": "Implementation guide#2/Consume via local workspace first; publish only after consumer validat#8",
+      "layoutSizingVertical": "HUG",
+      "name": "Consume via local workspace first; publish only after consumer validat",
+      "segments": [
+        {
+          "characters": "Consume via local workspace first; publish only after consumer validation.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 406
+    },
+    {
+      "characters": "Figma frames show breakpoint examples; they do not execute browser media queries.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:851",
+      "key": "Implementation guide#2/Figma frames show breakpoint examples; they do not execute browser med#9",
+      "layoutSizingVertical": "HUG",
+      "name": "Figma frames show breakpoint examples; they do not execute browser med",
+      "segments": [
+        {
+          "characters": "Figma frames show breakpoint examples; they do not execute browser media queries.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 450
+    },
+    {
+      "characters": "Resolve extraction must be coordinated with the active Tickets agents.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:852",
+      "key": "Implementation guide#2/Resolve extraction must be coordinated with the active Tickets agents.#10",
+      "layoutSizingVertical": "HUG",
+      "name": "Resolve extraction must be coordinated with the active Tickets agents.",
+      "segments": [
+        {
+          "characters": "Resolve extraction must be coordinated with the active Tickets agents.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 494
+    },
+    {
+      "characters": "Recommended pages for the documentation site: Overview, Foundations, Component API, Accessibility, Themes, Changelog.",
+      "fills": [
+        {
+          "resolved": "#17243d",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/ink"
+          }
+        }
+      ],
+      "height": 20,
+      "id": "1:853",
+      "key": "Implementation guide#2/Recommended pages for the documentation site: Overview, Foundations, C#11",
+      "layoutSizingVertical": "HUG",
+      "name": "Recommended pages for the documentation site: Overview, Foundations, C",
+      "segments": [
+        {
+          "characters": "Recommended pages for the documentation site: Overview, Foundations, Component API, Accessibility, Themes, Changelog.",
+          "fills": [
+            {
+              "resolved": "#17243d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/ink"
+              }
+            }
+          ],
+          "fontName": {
+            "family": "Inter",
+            "style": "Regular"
+          },
+          "fontSize": 14,
+          "lineHeight": {
+            "unit": "PIXELS",
+            "value": 20
+          },
+          "textStyle": "Forma / Body"
+        }
+      ],
+      "textAutoResize": "HEIGHT",
+      "textStyle": "Forma / Body",
+      "type": "TEXT",
+      "width": 1000,
+      "x": 32,
+      "y": 538
+    }
+  ],
+  "counterAxisSizingMode": "FIXED",
+  "explicitVariableModes": {
+    "Forma / Color": "Light"
+  },
+  "fills": [
+    {
+      "resolved": "#f5f7fb",
+      "type": "SOLID",
+      "variable": {
+        "collection": "Forma / Color",
+        "name": "color/bg"
+      }
+    }
+  ],
+  "height": 590,
+  "id": "1:841",
+  "itemSpacing": 24,
+  "key": "Implementation guide#2",
+  "layoutMode": "VERTICAL",
+  "layoutSizingVertical": "HUG",
+  "name": "Implementation guide",
+  "paddingBottom": 32,
+  "paddingLeft": 32,
+  "paddingRight": 32,
+  "paddingTop": 32,
+  "page": "04 · Catalog & Handoff",
+  "primaryAxisSizingMode": "AUTO",
+  "type": "FRAME",
+  "width": 1120,
+  "x": 2540,
+  "y": 100
+}

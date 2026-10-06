@@ -1,0 +1,3355 @@
+{
+  "children": [
+    {
+      "boundVariables": {
+        "itemSpacing": {
+          "collection": "Forma / Dimensions",
+          "name": "space-24",
+          "value": 24
+        },
+        "paddingBottom": {
+          "collection": "Forma / Dimensions",
+          "name": "space-20",
+          "value": 20
+        },
+        "paddingTop": {
+          "collection": "Forma / Dimensions",
+          "name": "space-20",
+          "value": 20
+        }
+      },
+      "children": [
+        {
+          "boundVariables": {
+            "itemSpacing": {
+              "collection": "Forma / Dimensions",
+              "name": "space-8",
+              "value": 8
+            }
+          },
+          "children": [
+            {
+              "children": [
+                {
+                  "characters": "F",
+                  "fills": [
+                    {
+                      "resolved": "#ffffff",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/on-brand"
+                      }
+                    }
+                  ],
+                  "height": 20,
+                  "id": "12:19068",
+                  "key": "Overview · light · 1440#5/Editorial top navigation#0/Wordmark#0/Forma mark#0/F#0",
+                  "layoutSizingVertical": "HUG",
+                  "name": "F",
+                  "segments": [
+                    {
+                      "characters": "F",
+                      "fills": [
+                        {
+                          "resolved": "#ffffff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/on-brand"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Semi Bold"
+                      },
+                      "fontSize": 14,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 20
+                      },
+                      "textStyle": "Forma / Strong"
+                    }
+                  ],
+                  "textAlignHorizontal": "CENTER",
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Strong",
+                  "type": "TEXT",
+                  "width": 28,
+                  "x": 0,
+                  "y": 0
+                }
+              ],
+              "cornerRadius": 6,
+              "counterAxisSizingMode": "FIXED",
+              "fills": [
+                {
+                  "resolved": "#3569f6",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/brand"
+                  }
+                }
+              ],
+              "height": 28,
+              "id": "12:19067",
+              "key": "Overview · light · 1440#5/Editorial top navigation#0/Wordmark#0/Forma mark#0",
+              "layoutMode": "VERTICAL",
+              "name": "Forma mark",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 28,
+              "x": 0,
+              "y": 6
+            },
+            {
+              "characters": "Forma UI",
+              "fills": [
+                {
+                  "resolved": "#17243d",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/ink"
+                  }
+                }
+              ],
+              "height": 24,
+              "id": "12:19069",
+              "key": "Overview · light · 1440#5/Editorial top navigation#0/Wordmark#0/Forma UI#1",
+              "layoutSizingVertical": "HUG",
+              "name": "Forma UI",
+              "segments": [
+                {
+                  "characters": "Forma UI",
+                  "fills": [
+                    {
+                      "resolved": "#17243d",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/ink"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Semi Bold"
+                  },
+                  "fontSize": 17,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "textStyle": "Forma / Section"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / Section",
+              "type": "TEXT",
+              "width": 120,
+              "x": 36,
+              "y": 8
+            }
+          ],
+          "counterAxisAlignItems": "CENTER",
+          "counterAxisSizingMode": "FIXED",
+          "height": 40,
+          "id": "12:19066",
+          "itemSpacing": 8,
+          "key": "Overview · light · 1440#5/Editorial top navigation#0/Wordmark#0",
+          "layoutMode": "HORIZONTAL",
+          "name": "Wordmark",
+          "primaryAxisSizingMode": "FIXED",
+          "type": "FRAME",
+          "width": 160,
+          "x": 129,
+          "y": 20
+        },
+        {
+          "boundVariables": {
+            "itemSpacing": {
+              "collection": "Forma / Dimensions",
+              "name": "space-8",
+              "value": 8
+            }
+          },
+          "children": [
+            {
+              "characters": "Documentación",
+              "fills": [
+                {
+                  "resolved": "#6a778d",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "height": 20,
+              "id": "12:19071",
+              "key": "Overview · light · 1440#5/Editorial top navigation#0/Documentación · global navigation#1/Documentación#0",
+              "layoutSizingVertical": "HUG",
+              "name": "Documentación",
+              "segments": [
+                {
+                  "characters": "Documentación",
+                  "fills": [
+                    {
+                      "resolved": "#6a778d",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/muted"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Medium"
+                  },
+                  "fontSize": 14,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 20
+                  },
+                  "textStyle": "Forma / Label"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / Label",
+              "type": "TEXT",
+              "width": 128,
+              "x": 0,
+              "y": 0
+            }
+          ],
+          "counterAxisSizingMode": "FIXED",
+          "height": 40,
+          "id": "12:19070",
+          "itemSpacing": 8,
+          "key": "Overview · light · 1440#5/Editorial top navigation#0/Documentación · global navigation#1",
+          "layoutMode": "VERTICAL",
+          "name": "Documentación · global navigation",
+          "primaryAxisSizingMode": "FIXED",
+          "reactions": [
+            {
+              "actions": [
+                {
+                  "destination": "Guides · light · 1440",
+                  "navigation": "NAVIGATE",
+                  "type": "NODE"
+                }
+              ],
+              "trigger": "ON_CLICK"
+            }
+          ],
+          "type": "FRAME",
+          "width": 128,
+          "x": 313,
+          "y": 20
+        },
+        {
+          "counterAxisSizingMode": "FIXED",
+          "height": 1,
+          "id": "12:19072",
+          "key": "Overview · light · 1440#5/Editorial top navigation#0/Flexible navigation space#2",
+          "layoutMode": "VERTICAL",
+          "name": "Flexible navigation space",
+          "primaryAxisSizingMode": "FIXED",
+          "type": "FRAME",
+          "width": 480,
+          "x": 465,
+          "y": 39.5
+        },
+        {
+          "characters": "Buscar…  ⌘ K",
+          "fills": [
+            {
+              "resolved": "#6a778d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "height": 17,
+          "id": "12:19073",
+          "key": "Overview · light · 1440#5/Editorial top navigation#0/Buscar…  ⌘ K#3",
+          "layoutSizingVertical": "HUG",
+          "name": "Buscar…  ⌘ K",
+          "segments": [
+            {
+              "characters": "Buscar…  ⌘ K",
+              "fills": [
+                {
+                  "resolved": "#6a778d",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Regular"
+              },
+              "fontSize": 12,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 17
+              },
+              "textStyle": "Forma / Caption"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Caption",
+          "type": "TEXT",
+          "width": 180,
+          "x": 969,
+          "y": 31.5
+        },
+        {
+          "characters": "Claro",
+          "fills": [
+            {
+              "resolved": "#6a778d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "height": 17,
+          "id": "12:19074",
+          "key": "Overview · light · 1440#5/Editorial top navigation#0/Claro#4",
+          "layoutSizingVertical": "HUG",
+          "name": "Claro",
+          "segments": [
+            {
+              "characters": "Claro",
+              "fills": [
+                {
+                  "resolved": "#6a778d",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Regular"
+              },
+              "fontSize": 12,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 17
+              },
+              "textStyle": "Forma / Caption"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Caption",
+          "type": "TEXT",
+          "width": 46,
+          "x": 1173,
+          "y": 31.5
+        },
+        {
+          "characters": "GitHub ↗",
+          "fills": [
+            {
+              "resolved": "#6a778d",
+              "type": "SOLID",
+              "variable": {
+                "collection": "Forma / Color",
+                "name": "color/muted"
+              }
+            }
+          ],
+          "height": 17,
+          "id": "12:19075",
+          "key": "Overview · light · 1440#5/Editorial top navigation#0/GitHub ↗#5",
+          "layoutSizingVertical": "HUG",
+          "name": "GitHub ↗",
+          "segments": [
+            {
+              "characters": "GitHub ↗",
+              "fills": [
+                {
+                  "resolved": "#6a778d",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "fontName": {
+                "family": "Inter",
+                "style": "Regular"
+              },
+              "fontSize": 12,
+              "lineHeight": {
+                "unit": "PIXELS",
+                "value": 17
+              },
+              "textStyle": "Forma / Caption"
+            }
+          ],
+          "textAutoResize": "HEIGHT",
+          "textStyle": "Forma / Caption",
+          "type": "TEXT",
+          "width": 70,
+          "x": 1243,
+          "y": 31.5
+        }
+      ],
+      "counterAxisAlignItems": "CENTER",
+      "counterAxisSizingMode": "FIXED",
+      "height": 80,
+      "id": "12:19065",
+      "itemSpacing": 24,
+      "key": "Overview · light · 1440#5/Editorial top navigation#0",
+      "layoutMode": "HORIZONTAL",
+      "name": "Editorial top navigation",
+      "paddingBottom": 20,
+      "paddingLeft": 128,
+      "paddingRight": 128,
+      "paddingTop": 20,
+      "primaryAxisSizingMode": "FIXED",
+      "strokeAlign": "INSIDE",
+      "strokeWeight": 1,
+      "strokes": [
+        {
+          "resolved": "#e4e9f1",
+          "type": "SOLID",
+          "variable": {
+            "collection": "Forma / Color",
+            "name": "color/line"
+          }
+        }
+      ],
+      "type": "FRAME",
+      "width": 1440,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "boundVariables": {
+        "itemSpacing": {
+          "collection": "Forma / Dimensions",
+          "name": "space-0",
+          "value": 0
+        }
+      },
+      "children": [
+        {
+          "boundVariables": {
+            "itemSpacing": {
+              "collection": "Forma / Dimensions",
+              "name": "space-32",
+              "value": 32
+            },
+            "paddingBottom": {
+              "collection": "Forma / Dimensions",
+              "name": "space-32",
+              "value": 32
+            },
+            "paddingTop": {
+              "collection": "Forma / Dimensions",
+              "name": "space-32",
+              "value": 32
+            }
+          },
+          "children": [
+            {
+              "characters": "FORMA UI / DESIGN SYSTEM",
+              "fills": [
+                {
+                  "resolved": "#6a778d",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "height": 17,
+              "id": "12:19078",
+              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/FORMA UI %2F DESIGN SYSTEM#0",
+              "name": "FORMA UI / DESIGN SYSTEM",
+              "segments": [
+                {
+                  "characters": "FORMA UI / DESIGN SYSTEM",
+                  "fills": [
+                    {
+                      "resolved": "#6a778d",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/muted"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Regular"
+                  },
+                  "fontSize": 12,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 17
+                  },
+                  "textStyle": "Forma / Caption"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / Caption",
+              "type": "TEXT",
+              "visible": false,
+              "width": 1080,
+              "x": 180,
+              "y": 32
+            },
+            {
+              "characters": "Diseña con intención.\nConstruye con confianza.",
+              "fills": [
+                {
+                  "resolved": "#17243d",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/ink"
+                  }
+                }
+              ],
+              "height": 120,
+              "id": "12:19079",
+              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Diseña con intención.\nConstruye con confianza.#1",
+              "layoutSizingVertical": "HUG",
+              "name": "Diseña con intención.\nConstruye con confianza.",
+              "segments": [
+                {
+                  "characters": "Diseña con intención.\nConstruye con confianza.",
+                  "fills": [
+                    {
+                      "resolved": "#17243d",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/ink"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Bold"
+                  },
+                  "fontSize": 52,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 60
+                  },
+                  "textStyle": "Forma / Display"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / Display",
+              "type": "TEXT",
+              "width": 1080,
+              "x": 180,
+              "y": 32
+            },
+            {
+              "characters": "Una biblioteca compartida, del token al componente.",
+              "fills": [
+                {
+                  "resolved": "#6a778d",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/muted"
+                  }
+                }
+              ],
+              "height": 24,
+              "id": "12:19080",
+              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Una biblioteca compartida, del token al componente.#2",
+              "layoutSizingVertical": "HUG",
+              "name": "Una biblioteca compartida, del token al componente.",
+              "segments": [
+                {
+                  "characters": "Una biblioteca compartida, del token al componente.",
+                  "fills": [
+                    {
+                      "resolved": "#6a778d",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/muted"
+                      }
+                    }
+                  ],
+                  "fontName": {
+                    "family": "Inter",
+                    "style": "Semi Bold"
+                  },
+                  "fontSize": 17,
+                  "lineHeight": {
+                    "unit": "PIXELS",
+                    "value": 24
+                  },
+                  "textStyle": "Forma / Section"
+                }
+              ],
+              "textAutoResize": "HEIGHT",
+              "textStyle": "Forma / Section",
+              "type": "TEXT",
+              "width": 1080,
+              "x": 180,
+              "y": 184
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-12",
+                  "value": 12
+                }
+              },
+              "children": [
+                {
+                  "boundVariables": {
+                    "bottomLeftRadius": {
+                      "collection": "Forma / Dimensions",
+                      "name": "radius-control",
+                      "value": 8
+                    },
+                    "bottomRightRadius": {
+                      "collection": "Forma / Dimensions",
+                      "name": "radius-control",
+                      "value": 8
+                    },
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingBottom": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingLeft": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingRight": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingTop": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "topLeftRadius": {
+                      "collection": "Forma / Dimensions",
+                      "name": "radius-control",
+                      "value": 8
+                    },
+                    "topRightRadius": {
+                      "collection": "Forma / Dimensions",
+                      "name": "radius-control",
+                      "value": 8
+                    }
+                  },
+                  "children": [
+                    {
+                      "characters": "Ver componentes",
+                      "fills": [
+                        {
+                          "resolved": "#ffffff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/on-brand"
+                          }
+                        }
+                      ],
+                      "height": 20,
+                      "id": "I12:19082;1:138",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Hero actions#3/Forma %2F Button %2F light#0/Continuar#0",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Continuar",
+                      "segments": [
+                        {
+                          "characters": "Ver componentes",
+                          "fills": [
+                            {
+                              "resolved": "#ffffff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/on-brand"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Medium"
+                          },
+                          "fontSize": 14,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 20
+                          },
+                          "textStyle": "Forma / Label"
+                        }
+                      ],
+                      "textAlignHorizontal": "CENTER",
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Label",
+                      "type": "TEXT",
+                      "width": 148,
+                      "x": 36,
+                      "y": 12
+                    }
+                  ],
+                  "clipsContent": false,
+                  "cornerRadius": 8,
+                  "counterAxisAlignItems": "CENTER",
+                  "counterAxisSizingMode": "FIXED",
+                  "fills": [
+                    {
+                      "resolved": "#3569f6",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/brand"
+                      }
+                    }
+                  ],
+                  "height": 44,
+                  "id": "12:19082",
+                  "instance": {
+                    "component": "Variant=Primary, State=Default",
+                    "properties": {
+                      "Label#1:24": {
+                        "type": "TEXT",
+                        "value": "Ver componentes"
+                      },
+                      "State": {
+                        "type": "VARIANT",
+                        "value": "Default"
+                      },
+                      "Variant": {
+                        "type": "VARIANT",
+                        "value": "Primary"
+                      }
+                    },
+                    "set": "Forma / Button / light",
+                    "variant": {
+                      "State": "Default",
+                      "Variant": "Primary"
+                    }
+                  },
+                  "itemSpacing": 8,
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Hero actions#3/Forma %2F Button %2F light#0",
+                  "layoutMode": "HORIZONTAL",
+                  "name": "Forma / Button / light",
+                  "paddingBottom": 8,
+                  "paddingLeft": 8,
+                  "paddingRight": 8,
+                  "paddingTop": 8,
+                  "primaryAxisAlignItems": "CENTER",
+                  "primaryAxisSizingMode": "FIXED",
+                  "reactions": [
+                    {
+                      "actions": [
+                        {
+                          "destination": "Catalog · light · 1440",
+                          "navigation": "NAVIGATE",
+                          "type": "NODE"
+                        }
+                      ],
+                      "trigger": "ON_CLICK"
+                    }
+                  ],
+                  "strokeAlign": "INSIDE",
+                  "strokeWeight": 1,
+                  "strokes": [
+                    {
+                      "resolved": "#e4e9f1",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/line"
+                      }
+                    }
+                  ],
+                  "type": "INSTANCE",
+                  "width": 220,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "bottomLeftRadius": {
+                      "collection": "Forma / Dimensions",
+                      "name": "radius-control",
+                      "value": 8
+                    },
+                    "bottomRightRadius": {
+                      "collection": "Forma / Dimensions",
+                      "name": "radius-control",
+                      "value": 8
+                    },
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingBottom": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingLeft": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingRight": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingTop": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "topLeftRadius": {
+                      "collection": "Forma / Dimensions",
+                      "name": "radius-control",
+                      "value": 8
+                    },
+                    "topRightRadius": {
+                      "collection": "Forma / Dimensions",
+                      "name": "radius-control",
+                      "value": 8
+                    }
+                  },
+                  "children": [
+                    {
+                      "characters": "Guía de integración",
+                      "fills": [
+                        {
+                          "resolved": "#17243d",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 20,
+                      "id": "I12:19084;1:150",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Hero actions#3/Forma %2F Button %2F light#1/Continuar#0",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Continuar",
+                      "segments": [
+                        {
+                          "characters": "Guía de integración",
+                          "fills": [
+                            {
+                              "resolved": "#17243d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Medium"
+                          },
+                          "fontSize": 14,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 20
+                          },
+                          "textStyle": "Forma / Label"
+                        }
+                      ],
+                      "textAlignHorizontal": "CENTER",
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Label",
+                      "type": "TEXT",
+                      "width": 148,
+                      "x": 36,
+                      "y": 12
+                    }
+                  ],
+                  "clipsContent": false,
+                  "cornerRadius": 8,
+                  "counterAxisAlignItems": "CENTER",
+                  "counterAxisSizingMode": "FIXED",
+                  "fills": [
+                    {
+                      "resolved": "#ffffff",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/surface"
+                      }
+                    }
+                  ],
+                  "height": 44,
+                  "id": "12:19084",
+                  "instance": {
+                    "component": "Variant=Secondary, State=Default",
+                    "properties": {
+                      "Label#1:24": {
+                        "type": "TEXT",
+                        "value": "Guía de integración"
+                      },
+                      "State": {
+                        "type": "VARIANT",
+                        "value": "Default"
+                      },
+                      "Variant": {
+                        "type": "VARIANT",
+                        "value": "Secondary"
+                      }
+                    },
+                    "set": "Forma / Button / light",
+                    "variant": {
+                      "State": "Default",
+                      "Variant": "Secondary"
+                    }
+                  },
+                  "itemSpacing": 8,
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Hero actions#3/Forma %2F Button %2F light#1",
+                  "layoutMode": "HORIZONTAL",
+                  "name": "Forma / Button / light",
+                  "paddingBottom": 8,
+                  "paddingLeft": 8,
+                  "paddingRight": 8,
+                  "paddingTop": 8,
+                  "primaryAxisAlignItems": "CENTER",
+                  "primaryAxisSizingMode": "FIXED",
+                  "reactions": [
+                    {
+                      "actions": [
+                        {
+                          "destination": "Guides · light · 1440",
+                          "navigation": "NAVIGATE",
+                          "type": "NODE"
+                        }
+                      ],
+                      "trigger": "ON_CLICK"
+                    }
+                  ],
+                  "strokeAlign": "INSIDE",
+                  "strokeWeight": 1,
+                  "strokes": [
+                    {
+                      "resolved": "#e4e9f1",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/line"
+                      }
+                    }
+                  ],
+                  "type": "INSTANCE",
+                  "width": 220,
+                  "x": 232,
+                  "y": 0
+                }
+              ],
+              "counterAxisSizingMode": "FIXED",
+              "height": 44,
+              "id": "12:19081",
+              "itemSpacing": 12,
+              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Hero actions#3",
+              "layoutMode": "HORIZONTAL",
+              "name": "Hero actions",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 1080,
+              "x": 180,
+              "y": 240
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-0",
+                  "value": 0
+                }
+              },
+              "children": [
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-8",
+                      "value": 8
+                    },
+                    "paddingBottom": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    },
+                    "paddingLeft": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    },
+                    "paddingRight": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    },
+                    "paddingTop": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "paddingBottom": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingLeft": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingRight": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingTop": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Button",
+                          "fills": [
+                            {
+                              "resolved": "#2455cd",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/blue-ink"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:19089",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0/Button#0/Button#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Button",
+                          "segments": [
+                            {
+                              "characters": "Button",
+                              "fills": [
+                                {
+                                  "resolved": "#2455cd",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/blue-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Medium"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Label"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Label",
+                          "type": "TEXT",
+                          "width": 240,
+                          "x": 8,
+                          "y": 8
+                        }
+                      ],
+                      "cornerRadius": 6,
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#ebf1ff",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/blue-bg"
+                          }
+                        }
+                      ],
+                      "height": 36,
+                      "id": "12:19088",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0/Button#0",
+                      "layoutMode": "VERTICAL",
+                      "name": "Button",
+                      "paddingBottom": 8,
+                      "paddingLeft": 8,
+                      "paddingRight": 8,
+                      "paddingTop": 8,
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 256,
+                      "x": 16,
+                      "y": 16
+                    },
+                    {
+                      "boundVariables": {
+                        "paddingBottom": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingLeft": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingRight": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingTop": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Input",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:19091",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0/Input#1/Input#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Input",
+                          "segments": [
+                            {
+                              "characters": "Input",
+                              "fills": [
+                                {
+                                  "resolved": "#6a778d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Medium"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Label"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Label",
+                          "type": "TEXT",
+                          "width": 240,
+                          "x": 8,
+                          "y": 8
+                        }
+                      ],
+                      "cornerRadius": 6,
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 36,
+                      "id": "12:19090",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0/Input#1",
+                      "layoutMode": "VERTICAL",
+                      "name": "Input",
+                      "paddingBottom": 8,
+                      "paddingLeft": 8,
+                      "paddingRight": 8,
+                      "paddingTop": 8,
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 256,
+                      "x": 280,
+                      "y": 16
+                    },
+                    {
+                      "boundVariables": {
+                        "paddingBottom": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingLeft": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingRight": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingTop": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Badge",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:19093",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0/Badge#2/Badge#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Badge",
+                          "segments": [
+                            {
+                              "characters": "Badge",
+                              "fills": [
+                                {
+                                  "resolved": "#6a778d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Medium"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Label"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Label",
+                          "type": "TEXT",
+                          "width": 240,
+                          "x": 8,
+                          "y": 8
+                        }
+                      ],
+                      "cornerRadius": 6,
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 36,
+                      "id": "12:19092",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0/Badge#2",
+                      "layoutMode": "VERTICAL",
+                      "name": "Badge",
+                      "paddingBottom": 8,
+                      "paddingLeft": 8,
+                      "paddingRight": 8,
+                      "paddingTop": 8,
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 256,
+                      "x": 544,
+                      "y": 16
+                    },
+                    {
+                      "boundVariables": {
+                        "paddingBottom": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingLeft": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingRight": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        },
+                        "paddingTop": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Tabs",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 20,
+                          "id": "12:19095",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0/Tabs#3/Tabs#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Tabs",
+                          "segments": [
+                            {
+                              "characters": "Tabs",
+                              "fills": [
+                                {
+                                  "resolved": "#6a778d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Medium"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Label"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Label",
+                          "type": "TEXT",
+                          "width": 240,
+                          "x": 8,
+                          "y": 8
+                        }
+                      ],
+                      "cornerRadius": 6,
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 36,
+                      "id": "12:19094",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0/Tabs#3",
+                      "layoutMode": "VERTICAL",
+                      "name": "Tabs",
+                      "paddingBottom": 8,
+                      "paddingLeft": 8,
+                      "paddingRight": 8,
+                      "paddingTop": 8,
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 256,
+                      "x": 808,
+                      "y": 16
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 64,
+                  "id": "12:19087",
+                  "itemSpacing": 8,
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Component selector#0",
+                  "layoutMode": "HORIZONTAL",
+                  "name": "Component selector",
+                  "paddingBottom": 16,
+                  "paddingLeft": 16,
+                  "paddingRight": 16,
+                  "paddingTop": 16,
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 1080,
+                  "x": 1,
+                  "y": 1
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-0",
+                      "value": 0
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-12",
+                          "value": 12
+                        },
+                        "paddingBottom": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-24",
+                          "value": 24
+                        },
+                        "paddingLeft": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-24",
+                          "value": 24
+                        },
+                        "paddingRight": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-24",
+                          "value": 24
+                        },
+                        "paddingTop": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-24",
+                          "value": 24
+                        }
+                      },
+                      "children": [
+                        {
+                          "boundVariables": {
+                            "bottomLeftRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "bottomRightRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "itemSpacing": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "topLeftRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "topRightRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Primary",
+                              "fills": [
+                                {
+                                  "resolved": "#ffffff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/on-brand"
+                                  }
+                                }
+                              ],
+                              "height": 20,
+                              "id": "I12:19098;1:138",
+                              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/Button stage#0/Forma %2F Button %2F light#0/Continuar#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Continuar",
+                              "segments": [
+                                {
+                                  "characters": "Primary",
+                                  "fills": [
+                                    {
+                                      "resolved": "#ffffff",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color",
+                                        "name": "color/on-brand"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Medium"
+                                  },
+                                  "fontSize": 14,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 20
+                                  },
+                                  "textStyle": "Forma / Label"
+                                }
+                              ],
+                              "textAlignHorizontal": "CENTER",
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Label",
+                              "type": "TEXT",
+                              "width": 148,
+                              "x": -4,
+                              "y": 12
+                            }
+                          ],
+                          "clipsContent": false,
+                          "cornerRadius": 8,
+                          "counterAxisAlignItems": "CENTER",
+                          "counterAxisSizingMode": "FIXED",
+                          "fills": [
+                            {
+                              "resolved": "#3569f6",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/brand"
+                              }
+                            }
+                          ],
+                          "height": 44,
+                          "id": "12:19098",
+                          "instance": {
+                            "component": "Variant=Primary, State=Default",
+                            "properties": {
+                              "Label#1:24": {
+                                "type": "TEXT",
+                                "value": "Primary"
+                              },
+                              "State": {
+                                "type": "VARIANT",
+                                "value": "Default"
+                              },
+                              "Variant": {
+                                "type": "VARIANT",
+                                "value": "Primary"
+                              }
+                            },
+                            "set": "Forma / Button / light",
+                            "variant": {
+                              "State": "Default",
+                              "Variant": "Primary"
+                            }
+                          },
+                          "itemSpacing": 8,
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/Button stage#0/Forma %2F Button %2F light#0",
+                          "layoutMode": "HORIZONTAL",
+                          "name": "Forma / Button / light",
+                          "paddingBottom": 8,
+                          "paddingLeft": 8,
+                          "paddingRight": 8,
+                          "paddingTop": 8,
+                          "primaryAxisAlignItems": "CENTER",
+                          "primaryAxisSizingMode": "FIXED",
+                          "strokeAlign": "INSIDE",
+                          "strokeWeight": 1,
+                          "strokes": [
+                            {
+                              "resolved": "#e4e9f1",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/line"
+                              }
+                            }
+                          ],
+                          "type": "INSTANCE",
+                          "width": 140,
+                          "x": 80.4,
+                          "y": 118
+                        },
+                        {
+                          "boundVariables": {
+                            "bottomLeftRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "bottomRightRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "itemSpacing": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "topLeftRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "topRightRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Secondary",
+                              "fills": [
+                                {
+                                  "resolved": "#17243d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/ink"
+                                  }
+                                }
+                              ],
+                              "height": 20,
+                              "id": "I12:19100;1:150",
+                              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/Button stage#0/Forma %2F Button %2F light#1/Continuar#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Continuar",
+                              "segments": [
+                                {
+                                  "characters": "Secondary",
+                                  "fills": [
+                                    {
+                                      "resolved": "#17243d",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color",
+                                        "name": "color/ink"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Medium"
+                                  },
+                                  "fontSize": 14,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 20
+                                  },
+                                  "textStyle": "Forma / Label"
+                                }
+                              ],
+                              "textAlignHorizontal": "CENTER",
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Label",
+                              "type": "TEXT",
+                              "width": 148,
+                              "x": -4,
+                              "y": 12
+                            }
+                          ],
+                          "clipsContent": false,
+                          "cornerRadius": 8,
+                          "counterAxisAlignItems": "CENTER",
+                          "counterAxisSizingMode": "FIXED",
+                          "fills": [
+                            {
+                              "resolved": "#ffffff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/surface"
+                              }
+                            }
+                          ],
+                          "height": 44,
+                          "id": "12:19100",
+                          "instance": {
+                            "component": "Variant=Secondary, State=Default",
+                            "properties": {
+                              "Label#1:24": {
+                                "type": "TEXT",
+                                "value": "Secondary"
+                              },
+                              "State": {
+                                "type": "VARIANT",
+                                "value": "Default"
+                              },
+                              "Variant": {
+                                "type": "VARIANT",
+                                "value": "Secondary"
+                              }
+                            },
+                            "set": "Forma / Button / light",
+                            "variant": {
+                              "State": "Default",
+                              "Variant": "Secondary"
+                            }
+                          },
+                          "itemSpacing": 8,
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/Button stage#0/Forma %2F Button %2F light#1",
+                          "layoutMode": "HORIZONTAL",
+                          "name": "Forma / Button / light",
+                          "paddingBottom": 8,
+                          "paddingLeft": 8,
+                          "paddingRight": 8,
+                          "paddingTop": 8,
+                          "primaryAxisAlignItems": "CENTER",
+                          "primaryAxisSizingMode": "FIXED",
+                          "strokeAlign": "INSIDE",
+                          "strokeWeight": 1,
+                          "strokes": [
+                            {
+                              "resolved": "#e4e9f1",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/line"
+                              }
+                            }
+                          ],
+                          "type": "INSTANCE",
+                          "width": 140,
+                          "x": 232.4,
+                          "y": 118
+                        },
+                        {
+                          "boundVariables": {
+                            "bottomLeftRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "bottomRightRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "itemSpacing": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "topLeftRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            },
+                            "topRightRadius": {
+                              "collection": "Forma / Dimensions",
+                              "name": "radius-control",
+                              "value": 8
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Ghost",
+                              "fills": [
+                                {
+                                  "resolved": "#17243d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/ink"
+                                  }
+                                }
+                              ],
+                              "height": 20,
+                              "id": "I12:19102;1:162",
+                              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/Button stage#0/Forma %2F Button %2F light#2/Continuar#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Continuar",
+                              "segments": [
+                                {
+                                  "characters": "Ghost",
+                                  "fills": [
+                                    {
+                                      "resolved": "#17243d",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color",
+                                        "name": "color/ink"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Medium"
+                                  },
+                                  "fontSize": 14,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 20
+                                  },
+                                  "textStyle": "Forma / Label"
+                                }
+                              ],
+                              "textAlignHorizontal": "CENTER",
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Label",
+                              "type": "TEXT",
+                              "width": 148,
+                              "x": -4,
+                              "y": 12
+                            }
+                          ],
+                          "clipsContent": false,
+                          "cornerRadius": 8,
+                          "counterAxisAlignItems": "CENTER",
+                          "counterAxisSizingMode": "FIXED",
+                          "height": 44,
+                          "id": "12:19102",
+                          "instance": {
+                            "component": "Variant=Ghost, State=Default",
+                            "properties": {
+                              "Label#1:24": {
+                                "type": "TEXT",
+                                "value": "Ghost"
+                              },
+                              "State": {
+                                "type": "VARIANT",
+                                "value": "Default"
+                              },
+                              "Variant": {
+                                "type": "VARIANT",
+                                "value": "Ghost"
+                              }
+                            },
+                            "set": "Forma / Button / light",
+                            "variant": {
+                              "State": "Default",
+                              "Variant": "Ghost"
+                            }
+                          },
+                          "itemSpacing": 8,
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/Button stage#0/Forma %2F Button %2F light#2",
+                          "layoutMode": "HORIZONTAL",
+                          "name": "Forma / Button / light",
+                          "paddingBottom": 8,
+                          "paddingLeft": 8,
+                          "paddingRight": 8,
+                          "paddingTop": 8,
+                          "primaryAxisAlignItems": "CENTER",
+                          "primaryAxisSizingMode": "FIXED",
+                          "type": "INSTANCE",
+                          "width": 140,
+                          "x": 384.4,
+                          "y": 118
+                        }
+                      ],
+                      "counterAxisAlignItems": "CENTER",
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#f5f7fb",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/bg"
+                          }
+                        }
+                      ],
+                      "height": 280,
+                      "id": "12:19097",
+                      "itemSpacing": 12,
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/Button stage#0",
+                      "layoutMode": "HORIZONTAL",
+                      "name": "Button stage",
+                      "paddingBottom": 24,
+                      "paddingLeft": 24,
+                      "paddingRight": 24,
+                      "paddingTop": 24,
+                      "primaryAxisAlignItems": "CENTER",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 604.8,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-16",
+                          "value": 16
+                        },
+                        "paddingBottom": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-24",
+                          "value": 24
+                        },
+                        "paddingLeft": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-24",
+                          "value": 24
+                        },
+                        "paddingRight": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-24",
+                          "value": 24
+                        },
+                        "paddingTop": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-24",
+                          "value": 24
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "JSX · Button",
+                          "fills": [
+                            {
+                              "resolved": "#a8b7d0",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/nav-text"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:19105",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/JSX sample#1/JSX · Button#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "JSX · Button",
+                          "segments": [
+                            {
+                              "characters": "JSX · Button",
+                              "fills": [
+                                {
+                                  "resolved": "#a8b7d0",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/nav-text"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 427.2,
+                          "x": 24,
+                          "y": 24
+                        },
+                        {
+                          "characters": "<Button variant=\"primary\">\n  Primary\n</Button>\n<Button variant=\"secondary\">\n  Secondary\n</Button>\n<Button variant=\"ghost\">\n  Ghost\n</Button>",
+                          "fills": [
+                            {
+                              "resolved": "#ffffff",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/nav-ink"
+                              }
+                            }
+                          ],
+                          "height": 180,
+                          "id": "12:19106",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/JSX sample#1/<Button variant=\"primary\">\n  Primary\n<%2FButton>\n<Button variant=\"second#1",
+                          "layoutSizingVertical": "HUG",
+                          "name": "<Button variant=\"primary\">\n  Primary\n</Button>\n<Button variant=\"second",
+                          "segments": [
+                            {
+                              "characters": "<Button variant=\"primary\">\n  Primary\n</Button>\n<Button variant=\"secondary\">\n  Secondary\n</Button>\n<Button variant=\"ghost\">\n  Ghost\n</Button>",
+                              "fills": [
+                                {
+                                  "resolved": "#ffffff",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/nav-ink"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 14,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 20
+                              },
+                              "textStyle": "Forma / Body"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Body",
+                          "type": "TEXT",
+                          "width": 427.2,
+                          "x": 24,
+                          "y": 57
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#111e35",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/nav"
+                          }
+                        }
+                      ],
+                      "height": 280,
+                      "id": "12:19104",
+                      "itemSpacing": 16,
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1/JSX sample#1",
+                      "layoutMode": "VERTICAL",
+                      "name": "JSX sample",
+                      "paddingBottom": 24,
+                      "paddingLeft": 24,
+                      "paddingRight": 24,
+                      "paddingTop": 24,
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 475.2,
+                      "x": 604.8,
+                      "y": 0
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 300,
+                  "id": "12:19096",
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Preview alongside code#1",
+                  "layoutMode": "HORIZONTAL",
+                  "name": "Preview alongside code",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 1080,
+                  "x": 1,
+                  "y": 65
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-12",
+                      "value": 12
+                    },
+                    "paddingBottom": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    },
+                    "paddingLeft": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    },
+                    "paddingRight": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    },
+                    "paddingTop": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    }
+                  },
+                  "children": [
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Variante",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:19109",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Variante#0/Variante#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Variante",
+                          "segments": [
+                            {
+                              "characters": "Variante",
+                              "fills": [
+                                {
+                                  "resolved": "#6a778d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 341.33,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Primary  ⌄",
+                              "fills": [
+                                {
+                                  "resolved": "#17243d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/ink"
+                                  }
+                                }
+                              ],
+                              "height": 20,
+                              "id": "12:19111",
+                              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Variante#0/Primary#1/Primary  ⌄#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Primary  ⌄",
+                              "segments": [
+                                {
+                                  "characters": "Primary  ⌄",
+                                  "fills": [
+                                    {
+                                      "resolved": "#17243d",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color",
+                                        "name": "color/ink"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 14,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 20
+                                  },
+                                  "textStyle": "Forma / Body"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Body",
+                              "type": "TEXT",
+                              "width": 325.33,
+                              "x": 9,
+                              "y": 9
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "height": 36,
+                          "id": "12:19110",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Variante#0/Primary#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Primary",
+                          "paddingBottom": 8,
+                          "paddingLeft": 8,
+                          "paddingRight": 8,
+                          "paddingTop": 8,
+                          "primaryAxisSizingMode": "FIXED",
+                          "strokeAlign": "INSIDE",
+                          "strokeWeight": 1,
+                          "strokes": [
+                            {
+                              "resolved": "#e4e9f1",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/line"
+                              }
+                            }
+                          ],
+                          "type": "FRAME",
+                          "width": 341.33,
+                          "x": 0,
+                          "y": 25
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:19108",
+                      "itemSpacing": 8,
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Variante#0",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Variante",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 341.33,
+                      "x": 16,
+                      "y": 16
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Tamaño",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:19113",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Tamaño#1/Tamaño#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Tamaño",
+                          "segments": [
+                            {
+                              "characters": "Tamaño",
+                              "fills": [
+                                {
+                                  "resolved": "#6a778d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 341.33,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Medium  ⌄",
+                              "fills": [
+                                {
+                                  "resolved": "#17243d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/ink"
+                                  }
+                                }
+                              ],
+                              "height": 20,
+                              "id": "12:19115",
+                              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Tamaño#1/Medium#1/Medium  ⌄#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Medium  ⌄",
+                              "segments": [
+                                {
+                                  "characters": "Medium  ⌄",
+                                  "fills": [
+                                    {
+                                      "resolved": "#17243d",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color",
+                                        "name": "color/ink"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 14,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 20
+                                  },
+                                  "textStyle": "Forma / Body"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Body",
+                              "type": "TEXT",
+                              "width": 325.33,
+                              "x": 9,
+                              "y": 9
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "height": 36,
+                          "id": "12:19114",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Tamaño#1/Medium#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Medium",
+                          "paddingBottom": 8,
+                          "paddingLeft": 8,
+                          "paddingRight": 8,
+                          "paddingTop": 8,
+                          "primaryAxisSizingMode": "FIXED",
+                          "strokeAlign": "INSIDE",
+                          "strokeWeight": 1,
+                          "strokes": [
+                            {
+                              "resolved": "#e4e9f1",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/line"
+                              }
+                            }
+                          ],
+                          "type": "FRAME",
+                          "width": 341.33,
+                          "x": 0,
+                          "y": 25
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:19112",
+                      "itemSpacing": 8,
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Tamaño#1",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Tamaño",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 341.33,
+                      "x": 369.33,
+                      "y": 16
+                    },
+                    {
+                      "boundVariables": {
+                        "itemSpacing": {
+                          "collection": "Forma / Dimensions",
+                          "name": "space-8",
+                          "value": 8
+                        }
+                      },
+                      "children": [
+                        {
+                          "characters": "Estado",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "height": 17,
+                          "id": "12:19117",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Estado#2/Estado#0",
+                          "layoutSizingVertical": "HUG",
+                          "name": "Estado",
+                          "segments": [
+                            {
+                              "characters": "Estado",
+                              "fills": [
+                                {
+                                  "resolved": "#6a778d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/muted"
+                                  }
+                                }
+                              ],
+                              "fontName": {
+                                "family": "Inter",
+                                "style": "Regular"
+                              },
+                              "fontSize": 12,
+                              "lineHeight": {
+                                "unit": "PIXELS",
+                                "value": 17
+                              },
+                              "textStyle": "Forma / Caption"
+                            }
+                          ],
+                          "textAutoResize": "HEIGHT",
+                          "textStyle": "Forma / Caption",
+                          "type": "TEXT",
+                          "width": 341.33,
+                          "x": 0,
+                          "y": 0
+                        },
+                        {
+                          "boundVariables": {
+                            "paddingBottom": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingLeft": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingRight": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            },
+                            "paddingTop": {
+                              "collection": "Forma / Dimensions",
+                              "name": "space-8",
+                              "value": 8
+                            }
+                          },
+                          "children": [
+                            {
+                              "characters": "Default  ⌄",
+                              "fills": [
+                                {
+                                  "resolved": "#17243d",
+                                  "type": "SOLID",
+                                  "variable": {
+                                    "collection": "Forma / Color",
+                                    "name": "color/ink"
+                                  }
+                                }
+                              ],
+                              "height": 20,
+                              "id": "12:19119",
+                              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Estado#2/Default#1/Default  ⌄#0",
+                              "layoutSizingVertical": "HUG",
+                              "name": "Default  ⌄",
+                              "segments": [
+                                {
+                                  "characters": "Default  ⌄",
+                                  "fills": [
+                                    {
+                                      "resolved": "#17243d",
+                                      "type": "SOLID",
+                                      "variable": {
+                                        "collection": "Forma / Color",
+                                        "name": "color/ink"
+                                      }
+                                    }
+                                  ],
+                                  "fontName": {
+                                    "family": "Inter",
+                                    "style": "Regular"
+                                  },
+                                  "fontSize": 14,
+                                  "lineHeight": {
+                                    "unit": "PIXELS",
+                                    "value": 20
+                                  },
+                                  "textStyle": "Forma / Body"
+                                }
+                              ],
+                              "textAutoResize": "HEIGHT",
+                              "textStyle": "Forma / Body",
+                              "type": "TEXT",
+                              "width": 325.33,
+                              "x": 9,
+                              "y": 9
+                            }
+                          ],
+                          "cornerRadius": 6,
+                          "counterAxisSizingMode": "FIXED",
+                          "height": 36,
+                          "id": "12:19118",
+                          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Estado#2/Default#1",
+                          "layoutMode": "VERTICAL",
+                          "name": "Default",
+                          "paddingBottom": 8,
+                          "paddingLeft": 8,
+                          "paddingRight": 8,
+                          "paddingTop": 8,
+                          "primaryAxisSizingMode": "FIXED",
+                          "strokeAlign": "INSIDE",
+                          "strokeWeight": 1,
+                          "strokes": [
+                            {
+                              "resolved": "#e4e9f1",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/line"
+                              }
+                            }
+                          ],
+                          "type": "FRAME",
+                          "width": 341.33,
+                          "x": 0,
+                          "y": 25
+                        }
+                      ],
+                      "counterAxisSizingMode": "FIXED",
+                      "height": 61,
+                      "id": "12:19116",
+                      "itemSpacing": 8,
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2/Estado#2",
+                      "layoutMode": "VERTICAL",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Estado",
+                      "primaryAxisSizingMode": "AUTO",
+                      "type": "FRAME",
+                      "width": 341.33,
+                      "x": 722.67,
+                      "y": 16
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 104,
+                  "id": "12:19107",
+                  "itemSpacing": 12,
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4/Explorer controls#2",
+                  "layoutMode": "HORIZONTAL",
+                  "name": "Explorer controls",
+                  "paddingBottom": 16,
+                  "paddingLeft": 16,
+                  "paddingRight": 16,
+                  "paddingTop": 16,
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 1080,
+                  "x": 1,
+                  "y": 365
+                }
+              ],
+              "cornerRadius": 8,
+              "counterAxisSizingMode": "FIXED",
+              "height": 470,
+              "id": "12:19086",
+              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Homepage component explorer#4",
+              "layoutMode": "VERTICAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Homepage component explorer",
+              "primaryAxisSizingMode": "AUTO",
+              "strokeAlign": "INSIDE",
+              "strokeWeight": 1,
+              "strokes": [
+                {
+                  "resolved": "#e4e9f1",
+                  "type": "SOLID",
+                  "variable": {
+                    "collection": "Forma / Color",
+                    "name": "color/line"
+                  }
+                }
+              ],
+              "type": "FRAME",
+              "width": 1080,
+              "x": 180,
+              "y": 316
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-24",
+                  "value": 24
+                }
+              },
+              "children": [
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    }
+                  },
+                  "children": [
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#e4e9f1",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:19122",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Tokens con significado#0/Rule#0",
+                      "layoutMode": "VERTICAL",
+                      "name": "Rule",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 344,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Tokens con significado",
+                      "fills": [
+                        {
+                          "resolved": "#17243d",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:19123",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Tokens con significado#0/Tokens con significado#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Tokens con significado",
+                      "segments": [
+                        {
+                          "characters": "Tokens con significado",
+                          "fills": [
+                            {
+                              "resolved": "#17243d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 344,
+                      "x": 0,
+                      "y": 17
+                    },
+                    {
+                      "characters": "Color, tipografía y espacio con una base común.",
+                      "fills": [
+                        {
+                          "resolved": "#6a778d",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/muted"
+                          }
+                        }
+                      ],
+                      "height": 20,
+                      "id": "12:19124",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Tokens con significado#0/Color, tipografía y espacio con una base común.#2",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Color, tipografía y espacio con una base común.",
+                      "segments": [
+                        {
+                          "characters": "Color, tipografía y espacio con una base común.",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Regular"
+                          },
+                          "fontSize": 14,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 20
+                          },
+                          "textStyle": "Forma / Body"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Body",
+                      "type": "TEXT",
+                      "width": 344,
+                      "x": 0,
+                      "y": 57
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 77,
+                  "id": "12:19121",
+                  "itemSpacing": 16,
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Tokens con significado#0",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Tokens con significado",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 344,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    }
+                  },
+                  "children": [
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#e4e9f1",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:19126",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Estados completos#1/Rule#0",
+                      "layoutMode": "VERTICAL",
+                      "name": "Rule",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 344,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Estados completos",
+                      "fills": [
+                        {
+                          "resolved": "#17243d",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:19127",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Estados completos#1/Estados completos#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Estados completos",
+                      "segments": [
+                        {
+                          "characters": "Estados completos",
+                          "fills": [
+                            {
+                              "resolved": "#17243d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 344,
+                      "x": 0,
+                      "y": 17
+                    },
+                    {
+                      "characters": "Variantes, foco, carga y acciones deshabilitadas.",
+                      "fills": [
+                        {
+                          "resolved": "#6a778d",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/muted"
+                          }
+                        }
+                      ],
+                      "height": 20,
+                      "id": "12:19128",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Estados completos#1/Variantes, foco, carga y acciones deshabilitadas.#2",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Variantes, foco, carga y acciones deshabilitadas.",
+                      "segments": [
+                        {
+                          "characters": "Variantes, foco, carga y acciones deshabilitadas.",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Regular"
+                          },
+                          "fontSize": 14,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 20
+                          },
+                          "textStyle": "Forma / Body"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Body",
+                      "type": "TEXT",
+                      "width": 344,
+                      "x": 0,
+                      "y": 57
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 77,
+                  "id": "12:19125",
+                  "itemSpacing": 16,
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Estados completos#1",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Estados completos",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 344,
+                  "x": 368,
+                  "y": 0
+                },
+                {
+                  "boundVariables": {
+                    "itemSpacing": {
+                      "collection": "Forma / Dimensions",
+                      "name": "space-16",
+                      "value": 16
+                    }
+                  },
+                  "children": [
+                    {
+                      "counterAxisSizingMode": "FIXED",
+                      "fills": [
+                        {
+                          "resolved": "#e4e9f1",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/line"
+                          }
+                        }
+                      ],
+                      "height": 1,
+                      "id": "12:19130",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Accesibilidad primero#2/Rule#0",
+                      "layoutMode": "VERTICAL",
+                      "name": "Rule",
+                      "primaryAxisSizingMode": "FIXED",
+                      "type": "FRAME",
+                      "width": 344,
+                      "x": 0,
+                      "y": 0
+                    },
+                    {
+                      "characters": "Accesibilidad primero",
+                      "fills": [
+                        {
+                          "resolved": "#17243d",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/ink"
+                          }
+                        }
+                      ],
+                      "height": 24,
+                      "id": "12:19131",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Accesibilidad primero#2/Accesibilidad primero#1",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Accesibilidad primero",
+                      "segments": [
+                        {
+                          "characters": "Accesibilidad primero",
+                          "fills": [
+                            {
+                              "resolved": "#17243d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/ink"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Semi Bold"
+                          },
+                          "fontSize": 17,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 24
+                          },
+                          "textStyle": "Forma / Section"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Section",
+                      "type": "TEXT",
+                      "width": 344,
+                      "x": 0,
+                      "y": 17
+                    },
+                    {
+                      "characters": "Teclado, nombres claros y estados comprensibles.",
+                      "fills": [
+                        {
+                          "resolved": "#6a778d",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/muted"
+                          }
+                        }
+                      ],
+                      "height": 20,
+                      "id": "12:19132",
+                      "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Accesibilidad primero#2/Teclado, nombres claros y estados comprensibles.#2",
+                      "layoutSizingVertical": "HUG",
+                      "name": "Teclado, nombres claros y estados comprensibles.",
+                      "segments": [
+                        {
+                          "characters": "Teclado, nombres claros y estados comprensibles.",
+                          "fills": [
+                            {
+                              "resolved": "#6a778d",
+                              "type": "SOLID",
+                              "variable": {
+                                "collection": "Forma / Color",
+                                "name": "color/muted"
+                              }
+                            }
+                          ],
+                          "fontName": {
+                            "family": "Inter",
+                            "style": "Regular"
+                          },
+                          "fontSize": 14,
+                          "lineHeight": {
+                            "unit": "PIXELS",
+                            "value": 20
+                          },
+                          "textStyle": "Forma / Body"
+                        }
+                      ],
+                      "textAutoResize": "HEIGHT",
+                      "textStyle": "Forma / Body",
+                      "type": "TEXT",
+                      "width": 344,
+                      "x": 0,
+                      "y": 57
+                    }
+                  ],
+                  "counterAxisSizingMode": "FIXED",
+                  "height": 77,
+                  "id": "12:19129",
+                  "itemSpacing": 16,
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5/Accesibilidad primero#2",
+                  "layoutMode": "VERTICAL",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Accesibilidad primero",
+                  "primaryAxisSizingMode": "AUTO",
+                  "type": "FRAME",
+                  "width": 344,
+                  "x": 736,
+                  "y": 0
+                }
+              ],
+              "counterAxisSizingMode": "AUTO",
+              "height": 77,
+              "id": "12:19120",
+              "itemSpacing": 24,
+              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Principles#5",
+              "layoutMode": "HORIZONTAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Principles",
+              "primaryAxisSizingMode": "FIXED",
+              "type": "FRAME",
+              "width": 1080,
+              "x": 180,
+              "y": 818
+            },
+            {
+              "boundVariables": {
+                "itemSpacing": {
+                  "collection": "Forma / Dimensions",
+                  "name": "space-16",
+                  "value": 16
+                }
+              },
+              "children": [
+                {
+                  "counterAxisSizingMode": "FIXED",
+                  "fills": [
+                    {
+                      "resolved": "#e4e9f1",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/line"
+                      }
+                    }
+                  ],
+                  "height": 1,
+                  "id": "12:19134",
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Footer#6/Divider#0",
+                  "layoutMode": "VERTICAL",
+                  "name": "Divider",
+                  "primaryAxisSizingMode": "FIXED",
+                  "type": "FRAME",
+                  "width": 1080,
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "characters": "Forma UI · Construido con cuidado",
+                  "fills": [
+                    {
+                      "resolved": "#6a778d",
+                      "type": "SOLID",
+                      "variable": {
+                        "collection": "Forma / Color",
+                        "name": "color/muted"
+                      }
+                    }
+                  ],
+                  "height": 17,
+                  "id": "12:19135",
+                  "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Footer#6/Forma UI · Construido con cuidado#1",
+                  "layoutSizingVertical": "HUG",
+                  "name": "Forma UI · Construido con cuidado",
+                  "segments": [
+                    {
+                      "characters": "Forma UI · Construido con cuidado",
+                      "fills": [
+                        {
+                          "resolved": "#6a778d",
+                          "type": "SOLID",
+                          "variable": {
+                            "collection": "Forma / Color",
+                            "name": "color/muted"
+                          }
+                        }
+                      ],
+                      "fontName": {
+                        "family": "Inter",
+                        "style": "Regular"
+                      },
+                      "fontSize": 12,
+                      "lineHeight": {
+                        "unit": "PIXELS",
+                        "value": 17
+                      },
+                      "textStyle": "Forma / Caption"
+                    }
+                  ],
+                  "textAutoResize": "HEIGHT",
+                  "textStyle": "Forma / Caption",
+                  "type": "TEXT",
+                  "width": 1080,
+                  "x": 0,
+                  "y": 17
+                }
+              ],
+              "counterAxisSizingMode": "FIXED",
+              "height": 34,
+              "id": "12:19133",
+              "itemSpacing": 16,
+              "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0/Footer#6",
+              "layoutMode": "VERTICAL",
+              "layoutSizingVertical": "HUG",
+              "name": "Footer",
+              "primaryAxisSizingMode": "AUTO",
+              "type": "FRAME",
+              "width": 1080,
+              "x": 180,
+              "y": 927
+            }
+          ],
+          "counterAxisSizingMode": "FIXED",
+          "height": 993,
+          "id": "12:19077",
+          "itemSpacing": 32,
+          "key": "Overview · light · 1440#5/Centered documentation container#1/Editorial content#0",
+          "layoutMode": "VERTICAL",
+          "layoutSizingVertical": "HUG",
+          "name": "Editorial content",
+          "paddingBottom": 32,
+          "paddingLeft": 180,
+          "paddingRight": 180,
+          "paddingTop": 32,
+          "primaryAxisSizingMode": "AUTO",
+          "type": "FRAME",
+          "width": 1440,
+          "x": 0,
+          "y": 0
+        }
+      ],
+      "counterAxisSizingMode": "AUTO",
+      "height": 993,
+      "id": "12:19076",
+      "key": "Overview · light · 1440#5/Centered documentation container#1",
+      "layoutMode": "HORIZONTAL",
+      "layoutSizingVertical": "HUG",
+      "name": "Centered documentation container",
+      "primaryAxisSizingMode": "FIXED",
+      "type": "FRAME",
+      "width": 1440,
+      "x": 0,
+      "y": 80
+    }
+  ],
+  "clipsContent": false,
+  "counterAxisSizingMode": "FIXED",
+  "explicitVariableModes": {
+    "Forma / Color": "Light"
+  },
+  "fills": [
+    {
+      "resolved": "#ffffff",
+      "type": "SOLID",
+      "variable": {
+        "collection": "Forma / Color",
+        "name": "color/surface"
+      }
+    }
+  ],
+  "height": 1073,
+  "id": "5:6320",
+  "key": "Overview · light · 1440#5",
+  "layoutMode": "VERTICAL",
+  "layoutSizingVertical": "HUG",
+  "name": "Overview · light · 1440",
+  "page": "07 · Forma UI · Centered Documentation",
+  "primaryAxisSizingMode": "AUTO",
+  "type": "FRAME",
+  "width": 1440,
+  "x": 100,
+  "y": 100
+}
