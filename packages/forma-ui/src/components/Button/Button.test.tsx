@@ -238,7 +238,13 @@ describe('the public API of Button', () => {
     expectTypeOf<ButtonProps>().toExtend<ButtonStyleOptions>()
   })
 
-  it('has exactly the props that Resolve had, with the same types', () => {
+  it('adds exactly the props that Resolve had to the native ones', () => {
+    expectTypeOf<Exclude<keyof ButtonProps, keyof ComponentProps<'button'>>>().toEqualTypeOf<
+      'icon' | 'loading' | 'loadingLabel' | 'variant' | 'block'
+    >()
+  })
+
+  it('types each of those props as Resolve did', () => {
     expectTypeOf<ButtonProps['icon']>().toEqualTypeOf<IconName | undefined>()
     expectTypeOf<ButtonProps['loading']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<ButtonProps['loadingLabel']>().toEqualTypeOf<ReactNode>()
