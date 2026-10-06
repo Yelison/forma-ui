@@ -298,8 +298,14 @@ In order, stopping at the first problem and saying what it did and did not do:
 6. It runs `git fetch origin main && git merge --ff-only origin/main` in the main checkout and prints `merged <sha>`.
 7. Unless `--no-cleanup`: sends `/exit` to the agents of the task and of `review-<id>` (an agent that is `working` or
    `blocked` is not sent anything: the script says so, after the merge, and stops) and runs
-   `remove-task.sh --id <id> --volumes` for each, the review first. It never passes `--force-leftovers`. The branches are
-   kept (a rebase merge leaves `git branch -d` unable to see them as merged).
+   `remove-task.sh --id <id> --volumes --delete-branch` for each, the review first. It never passes `--force-leftovers`.
+   GitHub's rebase merge rewrites the SHAs, so `git branch -d` would call the branches unmerged: `--delete-branch` asks
+   `git cherry main <branch>` instead. A branch with no `+` commit (every patch is in `main`), no merge commits of its own and
+   a merge into `main` that changes nothing is deleted, the task's branch and the older `review/<id>-<sha7>` branches of
+   its review (exactly that shape: `review/<id>-x-<sha7>` belongs to the task `<id>-x`). A branch is kept, with a
+   note, when it has a `+` commit or merge commits of its own, when `git cherry` fails, when merging it would change
+   `main` (`git cherry` ignores whitespace, so a change that differs only in indentation is not in `main`) or when it
+   is checked out elsewhere (then the task is still retired, with a warning).
 
 ## Retire a worktree
 
@@ -316,7 +322,7 @@ kills a process itself: stop them yourself, or rerun with `--force-leftovers`. T
 stops the task's Compose project (`--volumes` also removes its volumes, even when no container is left); with Compose
 off it never calls `docker`, and `--volumes` does nothing. It runs `herdr worktree remove` (which also closes the
 workspace) and marks the task as removed. It refuses while the checkout has uncommitted changes or a live agent, warns
-about commits that are not pushed, and only deletes the branch when `git branch -d` agrees that it is merged. Logs stay
+about commits that are not pushed when it keeps the branch, and with `--delete-branch` deletes the branch only under the conditions above (a rebase merge counts as merged; a review also loses its older `review/<id>-<sha7>` branches under the same rule), keeping the others with a note. Logs stay
 in `logs/<id>/`.
 
 ## Docker Compose
