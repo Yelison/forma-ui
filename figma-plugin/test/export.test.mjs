@@ -285,6 +285,28 @@ test('JSON files end with a newline and use sorted keys', async () => {
   }
 });
 
+test('frames whose names slugify alike get distinct paths, in document order', async () => {
+  const file = exportableFile();
+  const first = file.resolver && (await file.resolver.loadPage(SPEC_PAGES[0]));
+  const twin = (id, name) => ({ ...first.children[0], id, name, parent: first });
+  first.children.push(
+    twin('F:a', 'Nav / Item'),
+    twin('F:b', 'Nav · Item'),
+    twin('F:c', 'nav item'),
+  );
+  const { emitted } = await runOn(file);
+  const paths = emitted
+    .map((e) => e.path)
+    .filter((p) => p.startsWith('pages/00-start-here/nav-item'));
+  assert.deepEqual(paths, [
+    'pages/00-start-here/nav-item.json',
+    'pages/00-start-here/nav-item-2.json',
+    'pages/00-start-here/nav-item-3.json',
+  ]);
+  const named = emitted.find((e) => e.path === 'pages/00-start-here/nav-item-2.json');
+  assert.equal(JSON.parse(text(named.bytes)).name, 'Nav · Item');
+});
+
 test('a missing page stops the export before any file is emitted', async () => {
   const file = exportableFile();
   const load = file.resolver.loadPage;
@@ -378,14 +400,8 @@ test('the export path never mutates the file', () => {
 
 test('top-level names are unique across the modules concatenated into code.js', () => {
   const seen = {};
-  for (const name of [
-    'sha256.js',
-    'stable-stringify.js',
-    'zip.js',
-    'serialize.js',
-    'export.js',
-    'main.js',
-  ]) {
+  const modules = ['sha256.js', 'stable-stringify.js', 'zip.js', 'serialize.js', 'export.js'];
+  for (const name of modules) {
     const code = readFileSync(join(srcDir, name), 'utf8').split('// @test-exports')[0];
     for (const line of code.split('\n')) {
       const match = /^(?:async function|function|const|let|var)\s+([A-Za-z_$][\w$]*)/.exec(line);
@@ -398,5 +414,17 @@ test('top-level names are unique across the modules concatenated into code.js', 
       seen[match[1]] = name;
     }
   }
-  assert.ok(Object.keys(seen).length > 60);
+  assert.ok(Object.keys(seen).length > 40);
+  // main.js packs many statements per line, so look for each name anywhere in it.
+  const main = readFileSync(join(srcDir, 'main.js'), 'utf8');
+  for (const name of Object.keys(seen)) {
+    const declares = new RegExp(
+      `\\bfunction\\s+${name}\\b|\\b(?:const|let|var)\\s+${name}\\b|[;,{]\\s*${name}\\s*=`,
+    );
+    assert.doesNotMatch(
+      main,
+      declares,
+      `main.js declares ${name}, already declared in ${seen[name]}`,
+    );
+  }
 });
