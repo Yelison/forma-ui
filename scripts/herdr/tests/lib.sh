@@ -16,7 +16,8 @@ if [ -z "${TEST_TMP:-}" ]; then
 fi
 
 ok() { printf 'ok   %s\n' "$1"; PASS=$((PASS + 1)); }
-bad() { printf 'FAIL %s\n' "$1"; FAILED=$((FAILED + 1)); }
+# A failure shows the output the scenario captured last, which is where the reason usually is.
+bad() { printf 'FAIL %s\n' "$1"; [ -z "${out:-}" ] || printf '%s\n' "$out" | tail -n 15 | sed 's/^/     | /'; FAILED=$((FAILED + 1)); }
 check() { local name=$1; shift; if "$@"; then ok "$name"; else bad "$name"; fi; }
 # says NAME TEXT: succeeds when the variable $out contains TEXT.
 says() { grep -Fq -- "$2" <<<"$out"; }
@@ -30,6 +31,15 @@ port_of() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | sed -n
 # The configuration variables of project.env: a test that wants one sets it after mk_env, never inherits it.
 unset_config() { unset HERDR_PROJECT_ID HERDR_SLOT_MIN HERDR_SLOT_MAX HERDR_PORTS HERDR_REQUIRED_CHECKS HERDR_PR_ASSIGNEE \
   HERDR_INSTALL_DIR HERDR_INSTALL_CMD HERDR_COMPOSE HERDR_COMPOSE_FILE HERDR_REVIEW_MODEL HERDR_PROJECT_ENV HERDR_TASKS_ROOT; }
+
+# private_ports: HERDR_PORTS in a range of its own (random per call, 20000-29900, below the ephemeral ports). Scenarios that
+# cleanly retire a task need it: remove-task.sh refuses while anything listens on the slot's ports, and the real
+# bases (5280, 4280, 6080) are where other agents run Vite, Playwright and Storybook, so a listener that appears
+# there after the slot was picked made the same scenario pass or fail with the machine's load.
+private_ports() {
+  local base=$((20000 + RANDOM % 990 * 10))
+  export HERDR_PORTS="DEV_SERVER_PORT:$base:VITE PLAYWRIGHT_PORT:$((base + 10)):PW STORYBOOK_PORT:$((base + 20)):SB"
+}
 
 # Ports of a slot that something already listens on belong to other agents on this machine: pick slots that are free.
 pick_slot() {

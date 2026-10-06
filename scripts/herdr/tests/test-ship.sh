@@ -5,7 +5,7 @@
 # Slots are chosen again for every scenario: other agents on the machine start and stop servers meanwhile.
 # mk [CHECKS [COMPOSE]]: CHECKS is HERDR_REQUIRED_CHECKS (default: build; "" is none), COMPOSE is HERDR_COMPOSE (default 0).
 mk() {
-  mk_env; export HERDR_REQUIRED_CHECKS=${1-build} HERDR_COMPOSE=${2-0}
+  mk_env; private_ports; export HERDR_REQUIRED_CHECKS=${1-build} HERDR_COMPOSE=${2-0}
   SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2; mk_impl "$SA"
   "$HERDR/new-review.sh" --task impl-a --slot "$SB" >/dev/null 2>"$T/err" || { echo "mk: new-review.sh failed: $(cat "$T/err")" >&2; exit 2; }
   echo pass >"$T/state/gh/checks"
