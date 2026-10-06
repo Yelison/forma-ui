@@ -12,7 +12,8 @@ afterEach(() => {
 // Runs the script the way a page does, as the body of an inline <script>.
 const run = (script: string) => new Function(script)()
 
-// Keys that would break a naive `'${key}'`: quotes, a backslash, a line break and the end of the element itself.
+// Keys that would break a naive `'${key}'`: quotes, a backslash, line breaks (U+2028 and U+2029 are line terminators in
+// JavaScript before ES2019) and the end of the element itself.
 const hostileKeys = [
   `it's`,
   `say "hi"`,
@@ -21,6 +22,8 @@ const hostileKeys = [
   '</script><img src=x onerror=alert(1)>',
   '</SCRIPT >',
   '<!-- <script>',
+  'line\u2028separator',
+  'paragraph\u2029separator',
 ]
 
 describe('themeScript', () => {
