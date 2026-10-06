@@ -154,11 +154,12 @@ else
   log "No required checks configured: merging #$PR now."
   gh pr merge "$PR" --rebase --match-head-commit "$HEAD_SHA" >/dev/null || die "gh pr merge --rebase failed for #$PR"
 fi
+if [ "${#CHECKS[@]}" -gt 0 ]; then MERGE_NOTE="the auto-merge stays scheduled"; else MERGE_NOTE="the merge was requested: read the pull request before rerunning"; fi
 SECONDS=0
 MERGED_SHA=
 while :; do
   if ! view=$(gh pr view "$PR" --json state,mergeCommit --jq '[.state, (.mergeCommit.oid // "")] | @tsv'); then
-    [ "$SECONDS" -lt "$TIMEOUT" ] || die "gh could not read pull request #$PR in ${TIMEOUT}s; the auto-merge stays scheduled"
+    [ "$SECONDS" -lt "$TIMEOUT" ] || die "gh could not read pull request #$PR in ${TIMEOUT}s; read its state before rerunning"
     log "gh could not read #$PR; retrying…"
     sleep "$POLL"
     continue
@@ -172,7 +173,7 @@ while :; do
     gh pr checks "$PR" >&2 || true
     die "a check of #$PR failed, so the auto-merge will not run"
   fi
-  [ "$SECONDS" -lt "$TIMEOUT" ] || die "pull request #$PR was not merged in ${TIMEOUT}s (state: $state); the auto-merge stays scheduled"
+  [ "$SECONDS" -lt "$TIMEOUT" ] || die "pull request #$PR was not merged in ${TIMEOUT}s (state: $state); $MERGE_NOTE"
   sleep "$POLL"
 done
 
