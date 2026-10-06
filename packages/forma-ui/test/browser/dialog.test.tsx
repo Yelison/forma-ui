@@ -12,15 +12,15 @@ import { mount, pressEscape, pressShiftTab, pressTab } from './support'
 // - when the dialog closes, the focus goes back to the trigger through a `useRef`. The browser cannot do it: it
 //   restores the focus to the element that had it when `showModal()` ran, and that element is gone.
 function Harness() {
-  const trigger = useRef<HTMLButtonElement>(null)
-  const dialog = useRef<HTMLDialogElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const dialogRef = useRef<HTMLDialogElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [events, setEvents] = useState<string[]>([])
   const log = (name: string) => setEvents((previous) => [...previous, name])
 
   return (
     <>
-      <button ref={trigger} type="button" onClick={() => setMenuOpen(true)}>
+      <button ref={triggerRef} type="button" onClick={() => setMenuOpen(true)}>
         Actions
       </button>
       {menuOpen && (
@@ -28,19 +28,19 @@ function Harness() {
           type="button"
           onClick={() => {
             setMenuOpen(false)
-            dialog.current!.showModal()
+            dialogRef.current!.showModal()
           }}
         >
           Delete
         </button>
       )}
       <dialog
-        ref={dialog}
+        ref={dialogRef}
         aria-labelledby="title"
         onCancel={() => log('cancel')}
         onClose={() => {
           log('close')
-          trigger.current?.focus()
+          triggerRef.current?.focus()
         }}
       >
         <h2 id="title">Delete the item?</h2>

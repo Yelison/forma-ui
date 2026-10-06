@@ -18,9 +18,7 @@ jsdom cannot show:
 - `prefers-color-scheme` and `prefers-reduced-motion`.
 
 Browser mode starts a Vite server, which takes its port from `DEV_SERVER_PORT` and fails if it is taken. Each checkout
-has its own ports (see `docs/development/herdr.md`), so pass yours inline:
-
-Run it from `packages/forma-ui`:
+has its own ports (see `docs/development/herdr.md`), so pass yours inline, from `packages/forma-ui`:
 
 ```sh
 DEV_SERVER_PORT=5284 npm run test:browser
