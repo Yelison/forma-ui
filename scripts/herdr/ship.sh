@@ -152,6 +152,10 @@ if [ "${#CHECKS[@]}" -gt 0 ]; then
   log "Auto-merge (rebase) scheduled for #$PR; waiting for it…"
 else
   log "No required checks configured: merging #$PR now."
+  present=$(gh pr checks "$PR" --json name 2>/dev/null | jq -r '[.[]?.name] | unique | join(", ")' 2>/dev/null || true)
+  if [ -n "$present" ]; then
+    log "warning: HERDR_REQUIRED_CHECKS is empty but the pull request has checks ($present); none of them is awaited. List the required ones in project.env."
+  fi
   gh pr merge "$PR" --rebase --match-head-commit "$HEAD_SHA" >/dev/null || die "gh pr merge --rebase failed for #$PR"
 fi
 if [ "${#CHECKS[@]}" -gt 0 ]; then MERGE_NOTE="the auto-merge stays scheduled"; else MERGE_NOTE="the merge was requested: read the pull request before rerunning"; fi

@@ -16,6 +16,11 @@ check "bad points: refused" test $rc -ne 0
 check "bad points: names the points file" says x "badpoints.md"
 check "bad points: nothing created" bash -c "! test -e '$RB' && ! test -e '$R'"
 
+printf 'see {{X1}}\n' >"$T/digitpoints.md"
+out=$("$HERDR/new-review.sh" --task impl-a --slot "$SB" --points "$T/digitpoints.md" 2>&1); rc=$?
+check "marker-shaped points with a digit: refused" test $rc -ne 0; check "marker-shaped points with a digit: names it" says x '{{X1}}'
+check "marker-shaped points with a digit: nothing created" bash -c "! test -e '$RB' && ! test -e '$R'"
+
 echo "== first review (A1, B4)"
 out=$("$HERDR/new-review.sh" --task impl-a --slot "$SB" --points "$T/points.md" 2>&1); rc=$?
 check "first: rc 0" test $rc -eq 0
