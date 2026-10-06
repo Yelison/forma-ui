@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Creates an isolated task: a Git worktree on a new branch, a Herdr workspace that opens it, and a .env.herdr
-# with the task's own ports. Refuses to reuse a branch, a path, a task id or a port slot that already exists.
+# with the task's own ports (adapted from Resolve at c3f02f8). Refuses to reuse a branch, a path, a task id or a port slot that already exists.
 # See docs/development/herdr.md.
 set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
@@ -11,26 +11,25 @@ usage() {
   cat <<'USAGE'
 Usage: scripts/herdr/new-task.sh --id ID --branch BRANCH [options]
 
-  --id ID          Task id, [a-z0-9][a-z0-9._-]{0,39}, e.g. t0-1-tickets-follow-ups
+  --id ID          Task id, [a-z0-9][a-z0-9._-]{0,39}, e.g. h1-button-docs
   --branch NAME    Branch to create; it must not exist yet
   --base REF       Commit the branch starts from (default: main)
-  --slot N         Port slot 1-9 (default: the first free one)
-  --label TEXT     Herdr workspace label (default: "resolve · ID")
+  --slot N         Port slot (HERDR_SLOT_MIN-HERDR_SLOT_MAX, 1-9 by default; default: the first free one)
+  --label TEXT     Herdr workspace label (default: "<project> · ID")
   --effort LEVEL   Reasoning effort for the task's agent: low, medium (default), high or xhigh
   --max-effort L   Highest level the agent may run at (default: same as --effort; raise it with set-effort.sh)
   --effort-reason  One line explaining the level, stored in task.json
   --model ID       Model for the task's agent, e.g. claude-sonnet-5-5 (default: the owner's default model)
   --advisor ID     Advisor model, e.g. claude-opus-5-5, or none (default: the owner's advisor setting)
-  --install        Run `npm ci` in frontend/ once the worktree exists
+  --install        Run the install command (HERDR_INSTALL_CMD in HERDR_INSTALL_DIR) once the worktree exists
   --ignore-load    Start although the load average is above HERDR_MAX_LOAD (default 1.5 x the number of cores)
-  --no-claude-md   Do not copy the local, git-ignored CLAUDE.md into the worktree
   -h, --help       Show this help
 
-HERDR_TASKS_ROOT (default ~/resolver-herdr) holds worktrees/, tasks/ and logs/.
+HERDR_TASKS_ROOT (default ~/forma-ui-herdr) holds worktrees/, tasks/ and logs/. Project settings: project.env.
 USAGE
 }
 
-ID= BRANCH= BASE=main SLOT= LABEL= INSTALL=0 IGNORE_LOAD=0 COPY_CLAUDE_MD=1 EFFORT=medium MAX_EFFORT= EFFORT_REASON= MODEL= ADVISOR=
+ID= BRANCH= BASE=main SLOT= LABEL= INSTALL=0 IGNORE_LOAD=0 EFFORT=medium MAX_EFFORT= EFFORT_REASON= MODEL= ADVISOR=
 while [ $# -gt 0 ]; do
   case $1 in
     --id) need_arg "$1" $#; ID=${2:-}; shift 2 ;;
@@ -45,7 +44,6 @@ while [ $# -gt 0 ]; do
     --advisor) need_arg "$1" $#; ADVISOR=${2:-}; shift 2 ;;
     --install) INSTALL=1; shift ;;
     --ignore-load) IGNORE_LOAD=1; shift ;;
-    --no-claude-md) COPY_CLAUDE_MD=0; shift ;;
     -h | --help) usage; exit 0 ;;
     *) usage >&2; die "unknown argument: $1" ;;
   esac
@@ -68,7 +66,7 @@ BASE_SHA=$(git -C "$REPO" rev-parse --verify --quiet "${BASE}^{commit}") || die 
 WORKTREE="$HERDR_TASKS_ROOT/worktrees/$ID"
 TASK_DIR=$(task_dir "$ID")
 LOG_DIR="$HERDR_TASKS_ROOT/logs/$ID"
-LABEL=${LABEL:-"resolve · $ID"}
+LABEL=${LABEL:-"$HERDR_PROJECT_ID · $ID"}
 
 # Never touch something that already exists.
 if git -C "$REPO" show-ref --verify --quiet "refs/heads/$BRANCH"; then
@@ -89,13 +87,14 @@ if [ -z "$SLOT" ]; then
   done
   [ -n "$SLOT" ] || die "all port slots ($SLOT_MIN-$SLOT_MAX) are in use"
 fi
-[[ $SLOT =~ ^[0-9]$ ]] && [ "$SLOT" -ge "$SLOT_MIN" ] && [ "$SLOT" -le "$SLOT_MAX" ] || die "--slot must be between $SLOT_MIN and $SLOT_MAX"
+[[ $SLOT =~ ^[0-9]+$ ]] && [ "$SLOT" -ge "$SLOT_MIN" ] && [ "$SLOT" -le "$SLOT_MAX" ] || die "--slot must be between $SLOT_MIN and $SLOT_MAX"
 if grep -qx "$SLOT" <<<"$used_slots"; then die "slot $SLOT already belongs to another task (scripts/herdr/status.sh)"; fi
 while IFS='=' read -r key port; do
   if port_in_use "$port"; then die "slot $SLOT needs port $port ($key) but something is listening on it; choose another --slot"; fi
 done < <(slot_ports "$SLOT")
 
-COMPOSE_PROJECT="resolve-$(printf '%s' "$ID" | tr -c 'a-z0-9_-' '-')"
+COMPOSE_PROJECT=
+if compose_enabled; then COMPOSE_PROJECT="$HERDR_PROJECT_ID-$(printf '%s' "$ID" | tr -c 'a-z0-9_-' '-')"; fi
 mkdir -p "$HERDR_TASKS_ROOT/worktrees" "$TASK_DIR" "$LOG_DIR"
 log "Creating $WORKTREE on branch $BRANCH from $BASE ($BASE_SHA)…"
 if ! created=$(herdr worktree create --cwd "$REPO" --branch "$BRANCH" --base "$BASE" --path "$WORKTREE" --label "$LABEL" --no-focus); then
@@ -121,12 +120,7 @@ head_branch=$(git -C "$WORKTREE" branch --show-current)
   printf 'HERDR_TASK_WORKTREE=%q\n' "$WORKTREE"
   printf 'HERDR_TASK_LOG_DIR=%q\n' "$LOG_DIR"
   slot_ports "$SLOT"
-  printf 'COMPOSE_PROJECT_NAME=%s\n' "$COMPOSE_PROJECT"
-  printf 'DATABASE_URL=jdbc:postgresql://localhost:%s/resolve\n' $((5440 + SLOT))
-  printf 'API_PROXY_TARGET=http://localhost:%s\n' $((8080 + SLOT))
-  # OIDC sign-in against the task's own Keycloak (docker-compose service `keycloak`, `dev,oidc` profiles).
-  printf 'RESOLVE_OIDC_ISSUER=http://localhost:%s/realms/resolve\n' $((8180 + SLOT))
-  printf 'RESOLVE_PUBLIC_URL=http://localhost:%s\n' $((5180 + SLOT))
+  if [ -n "$COMPOSE_PROJECT" ]; then printf 'COMPOSE_PROJECT_NAME=%s\n' "$COMPOSE_PROJECT"; fi
 } >"$WORKTREE/.env.herdr"
 if ! git -C "$WORKTREE" check-ignore -q .env.herdr; then
   rm -f "$WORKTREE/.env.herdr"
@@ -137,23 +131,15 @@ ensure_effort_excluded "$REPO"
 write_effort_settings "$WORKTREE" "$EFFORT" "$MAX_EFFORT"
 write_model_settings "$WORKTREE" "$MODEL" "$ADVISOR"
 
-if [ "$COPY_CLAUDE_MD" = 1 ] && [ -f "$REPO/CLAUDE.md" ]; then
-  if git -C "$WORKTREE" check-ignore -q CLAUDE.md; then
-    cp "$REPO/CLAUDE.md" "$WORKTREE/CLAUDE.md"
-    log "Copied the local CLAUDE.md (ignored by git)."
-  else
-    log "warning: CLAUDE.md would not be ignored in the worktree; not copying it."
-  fi
-fi
-
 jq -n --arg id "$ID" --arg branch "$BRANCH" --arg base "$BASE" --arg base_sha "$BASE_SHA" --arg worktree "$WORKTREE" \
   --arg repo "$REPO" --arg workspace "$WORKSPACE_ID" --arg tab "$TAB_ID" --arg pane "$PANE_ID" --argjson slot "$SLOT" \
   --arg compose "$COMPOSE_PROJECT" --arg log_dir "$LOG_DIR" --arg created "$(utc_now)" \
   --arg effort "$EFFORT" --arg max_effort "$MAX_EFFORT" --arg effort_reason "$EFFORT_REASON" \
-  --arg model "$MODEL" --arg advisor "$ADVISOR" '{
+  --arg model "$MODEL" --arg advisor "$ADVISOR" \
+  --argjson ports "$(slot_ports "$SLOT" | jq -R 'split("=") | { key: (.[0] | ascii_downcase | sub("_port$"; "")), value: (.[1] | tonumber) }' | jq -s 'from_entries')" '{
     id: $id, branch: $branch, base: $base, base_sha: $base_sha, worktree: $worktree, repo: $repo,
     workspace_id: $workspace, tab_id: $tab, pane_id: $pane, slot: $slot,
-    ports: { dev_server: (5180 + $slot), playwright: (4180 + $slot), api: (8080 + $slot), postgres: (5440 + $slot) },
+    ports: $ports,
     compose_project: $compose, log_dir: $log_dir, agent: null, created_at: $created, removed_at: null,
     model: (if $model == "" then null else $model end), advisor: (if $advisor == "" then null else $advisor end),
     effort: { level: $effort, max: $max_effort, reason: $effort_reason, verified: null,
@@ -161,7 +147,13 @@ jq -n --arg id "$ID" --arg branch "$BRANCH" --arg base "$BASE" --arg base_sha "$
   }' >"$TASK_DIR/task.json"
 
 if [ "$INSTALL" = 1 ]; then
-  log "Running npm ci in $WORKTREE/frontend (log: $LOG_DIR/npm-ci.log)…"
-  (cd "$WORKTREE/frontend" && npm ci) >"$LOG_DIR/npm-ci.log" 2>&1 || die "npm ci failed; see $LOG_DIR/npm-ci.log"
+  install_dir="$WORKTREE/$HERDR_INSTALL_DIR"
+  if [ -f "$install_dir/package.json" ]; then
+    log "Running '$HERDR_INSTALL_CMD' in $install_dir (log: $LOG_DIR/install.log)…"
+    # shellcheck disable=SC2086  # the command is a word list on purpose: no shell syntax is evaluated
+    (cd "$install_dir" && $HERDR_INSTALL_CMD) >"$LOG_DIR/install.log" 2>&1 || die "'$HERDR_INSTALL_CMD' failed; see $LOG_DIR/install.log"
+  else
+    log "note: no package.json in $install_dir; the install step was skipped"
+  fi
 fi
 cat "$TASK_DIR/task.json"

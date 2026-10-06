@@ -3,9 +3,9 @@
 . "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 mk_env; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2
 mk_impl "$SA" 'PLAYWRIGHT_PORT=__PW__ npx playwright test --workers=3
-curl http://localhost:__API__/x && curl http://localhost:__API__/y
-KEYCLOAK_PORT=__KC__ docker compose -p resolve-impl-a up -d keycloak
-vite --port __VITE__ && psql -p __PG__'
+curl http://localhost:__VITE__/x && curl http://localhost:__VITE__/y
+STORYBOOK_PORT=__SB__ npx storybook dev -p __SB__
+vite --port __VITE__ && vitest --maxWorkers=3'
 R=$T/root/worktrees/review-impl-a; RB=$T/root/tasks/review-impl-a
 printf -- '- Check the `&` handling in /a/b#c\n' >"$T/points.md"
 
@@ -21,12 +21,13 @@ out=$("$HERDR/new-review.sh" --task impl-a --slot "$SB" --points "$T/points.md" 
 check "first: rc 0" test $rc -eq 0
 check "first: uses the requested slot" test "$(jq -r .slot "$RB/task.json")" = "$SB"
 cmds=$(awk '/^Commands to run/{f=1} f&&/^```sh/{b=1;next} b&&/^```/{exit} b{print}' "$RB/brief.md")
-check "A1: review ports in the commands" grep -q "PLAYWRIGHT_PORT=$((4180 + SB)) npx playwright test" <<<"$cmds"
-check "A1: API port, both occurrences" test "$(grep -o "localhost:$((8080 + SB))" <<<"$cmds" | wc -l)" -eq 2
-check "A1: keycloak, vite and postgres ports" grep -q "KEYCLOAK_PORT=$((8180 + SB))" <<<"$cmds" && grep -q "vite --port $((5180 + SB))" <<<"$cmds" && grep -q "psql -p $((5440 + SB))" <<<"$cmds"
-check "A1: compose project of the review" grep -q 'compose -p resolve-review-impl-a up' <<<"$cmds"
-check "A1: none of the implementer's ports" bash -c "! grep -Eq '\\b($((4180 + SA))|$((8080 + SA))|$((8180 + SA))|$((5180 + SA))|$((5440 + SA)))\\b' <<<'$cmds'"
-check "A1: not the implementer's project" bash -c "! grep -q 'compose -p resolve-impl-a ' <<<'$cmds'"
+check "A1: review ports in the commands" grep -q "PLAYWRIGHT_PORT=$((4280 + SB)) npx playwright test" <<<"$cmds"
+check "A1: dev server port, both occurrences" test "$(grep -o "localhost:$((5280 + SB))" <<<"$cmds" | wc -l)" -eq 2
+check "A1: storybook and vite ports" grep -q "STORYBOOK_PORT=$((6080 + SB)) npx storybook dev -p $((6080 + SB))" <<<"$cmds" && grep -q "vite --port $((5280 + SB))" <<<"$cmds"
+check "A1: the header names the review's slot and ports" grep -q "^# Your slot ($SB): DEV_SERVER_PORT=$((5280 + SB)) PLAYWRIGHT_PORT=$((4280 + SB)) STORYBOOK_PORT=$((6080 + SB))" <<<"$cmds"
+check "A1: none of the implementer's ports" bash -c "! grep -Eq '\\b($((4280 + SA))|$((5280 + SA))|$((6080 + SA)))\\b' <<<'$cmds'"
+check "A1: no Compose line when Compose is off" bash -c "! grep -qi 'compose' <<<'$cmds'"
+check "A1: the brief has no unfilled marker" bash -c "! grep -q '{{' '$RB/brief.md'"
 check "first: extra points" grep -q 'handling in /a/b#c' "$RB/brief.md"
 check "first: reviewed commit is the task's tip" test "$(jq -r .review.sha "$RB/task.json")" = "$(git -C "$W" rev-parse HEAD)"
 check "first: no advisor" test "$(jq -r '.env.CLAUDE_CODE_DISABLE_ADVISOR_TOOL' "$R/.claude/settings.local.json")" = 1
@@ -41,7 +42,8 @@ check "ff: review moved" test "$(git -C "$R" rev-parse HEAD)" = "$(git -C "$W" r
 check "ff: same branch" test "$(git -C "$R" branch --show-current)" = "review/impl-a-$(git -C "$W" rev-parse --short=7 HEAD~1)"
 check "ff: brief mentions the fixes file" grep -q 'fixes-1.md' "$RB/brief-ronda-2.md"
 check "ff: sent to the reviewer" grep -q 'brief-ronda-2.md' "$T/state/prompts.log"
-check "round 2 commands also use the review's slot" bash -c "! grep -q 'PLAYWRIGHT_PORT=$((4180 + SA))' '$RB/brief-ronda-2.md'"
+check "round 2 commands also use the review's slot" bash -c "! grep -q 'PLAYWRIGHT_PORT=$((4280 + SA))' '$RB/brief-ronda-2.md'"
+check "round 2: the review's own port is there" grep -q "PLAYWRIGHT_PORT=$((4280 + SB))" "$RB/brief-ronda-2.md"
 echo "== B1: the round must be greater than the current one"
 git -C "$W" commit -q --allow-empty -m "fix: three"
 out=$("$HERDR/new-review.sh" --task impl-a --round 2 2>&1); check "round 2 again: refused" test $? -ne 0
@@ -73,4 +75,14 @@ check "detached worktree: rc 0" test $rc -eq 0
 check "detached worktree: reviews the branch tip" test "$(git -C "$R" rev-parse HEAD)" = "$tip"
 check "detached worktree: the tip is what refs/heads says" test "$tip" = "$(git -C "$T/repo" rev-parse refs/heads/feat/impl-a)"
 check "detached worktree: review.sha recorded" test "$(jq -r .review.sha "$RB/task.json")" = "$tip"
+echo "== Compose on: the commands carry the review's project, not the implementer's"
+mk_env; export HERDR_COMPOSE=1; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2
+mk_impl "$SA" 'docker compose -p forma-ui-impl-a up -d && vite --port __VITE__'
+RB=$T/root/tasks/review-impl-a
+out=$("$HERDR/new-review.sh" --task impl-a --slot "$SB" 2>&1); rc=$?
+check "compose: review created" test $rc -eq 0
+cmds=$(awk '/^Commands to run/{f=1} f&&/^```sh/{b=1;next} b&&/^```/{exit} b{print}' "$RB/brief.md")
+check "compose: the header names the project" grep -q '^# Docker Compose: always with -p forma-ui-review-impl-a' <<<"$cmds"
+check "compose: the command uses the review's project" grep -q 'compose -p forma-ui-review-impl-a up' <<<"$cmds"
+check "compose: not the implementer's project" bash -c "! grep -q 'compose -p forma-ui-impl-a ' <<<'$cmds'"
 finish

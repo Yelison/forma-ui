@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Retires a finished task: stops its Docker Compose project, removes the worktree through Herdr and keeps the
-# branch. It refuses while the checkout has uncommitted changes or a live agent, and never forces anything.
+# Retires a finished task: stops its Docker Compose project (only when HERDR_COMPOSE=1), removes the worktree through
+# Herdr and keeps the branch. It refuses while the checkout has uncommitted changes or a live agent, and never forces
+# anything. Adapted from Resolve at c3f02f8.
 set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 # shellcheck source=common.sh
@@ -12,7 +13,7 @@ Usage: scripts/herdr/remove-task.sh --id ID [--delete-branch] [--volumes] [--for
 
   --id ID            Task to retire
   --delete-branch    Also delete the branch, only if git considers it merged (`git branch -d`)
-  --volumes          Also remove the task's Docker volumes (its database data)
+  --volumes          Also remove the task's Docker volumes; does nothing unless Compose is on (HERDR_COMPOSE=1)
   --force-leftovers  Go on although processes still listen on the slot's ports or containers of the task's Compose
                      project exist (the script lists them, and never kills anything itself)
 USAGE
@@ -57,6 +58,7 @@ find_leftovers() {
 }
 find_containers() {
   local found
+  compose_enabled && [ -n "$TASK_COMPOSE_PROJECT" ] || return 0
   command -v docker >/dev/null 2>&1 || return 0
   # A docker that cannot answer is not "no containers": say so, so the task is not retired blind.
   if ! found=$(docker ps -a --filter "label=com.docker.compose.project=$TASK_COMPOSE_PROJECT" --format '{{.ID}} {{.Names}} ({{.Status}})' 2>/dev/null); then
@@ -88,9 +90,12 @@ if [ -n "$leftovers" ]; then
   if [ "$FORCE_LEFTOVERS" = 1 ]; then
     log "Going on (--force-leftovers); nothing listed above is killed here, only the Compose project is stopped below."
   else
-    down_cmd="docker compose -p $TASK_COMPOSE_PROJECT down"
-    [ "$VOLUMES" = 0 ] || down_cmd="$down_cmd --volumes"
-    die "the task left processes or containers behind (nothing was removed). Stop them yourself ($down_cmd for the containers, the owner for the processes) or rerun with --force-leftovers"
+    if compose_enabled && [ -n "$TASK_COMPOSE_PROJECT" ]; then
+      down_cmd="docker compose -p $TASK_COMPOSE_PROJECT down"
+      [ "$VOLUMES" = 0 ] || down_cmd="$down_cmd --volumes"
+      die "the task left processes or containers behind (nothing was removed). Stop them yourself ($down_cmd for the containers, the owner for the processes) or rerun with --force-leftovers"
+    fi
+    die "the task left processes behind (nothing was removed). Stop them yourself or rerun with --force-leftovers"
   fi
 fi
 
@@ -105,15 +110,20 @@ fi
 # Without --volumes, only a project Compose still lists is stopped. With it, the volumes are removed even when no
 # container is left (compose ls derives the projects from containers, so it would not list a project that only has
 # volumes), through the project's own compose file.
+# Nothing here runs, and docker is never called, when Compose is off.
 project_listed=0
-if command -v docker >/dev/null 2>&1 \
-  && docker compose ls -a --format json 2>/dev/null | jq -e --arg n "$TASK_COMPOSE_PROJECT" '.[] | select(.Name == $n)' >/dev/null; then
-  project_listed=1
+use_compose=0
+if compose_enabled && [ -n "$TASK_COMPOSE_PROJECT" ]; then
+  use_compose=1
+  if command -v docker >/dev/null 2>&1 \
+    && docker compose ls -a --format json 2>/dev/null | jq -e --arg n "$TASK_COMPOSE_PROJECT" '.[] | select(.Name == $n)' >/dev/null; then
+    project_listed=1
+  fi
 fi
-if [ "$VOLUMES" = 1 ] || [ "$project_listed" = 1 ]; then
+if [ "$use_compose" = 1 ] && { [ "$VOLUMES" = 1 ] || [ "$project_listed" = 1 ]; }; then
   command -v docker >/dev/null 2>&1 || die "docker is required to remove the volumes of $TASK_COMPOSE_PROJECT (nothing was removed)"
-  compose_file="$TASK_WORKTREE/docker-compose.yml"
-  [ -f "$compose_file" ] || compose_file="$TASK_REPO/docker-compose.yml"
+  compose_file="$TASK_WORKTREE/$HERDR_COMPOSE_FILE"
+  [ -f "$compose_file" ] || compose_file="$TASK_REPO/$HERDR_COMPOSE_FILE"
   log "Stopping Docker Compose project $TASK_COMPOSE_PROJECT…"
   if [ "$VOLUMES" = 1 ]; then
     docker compose -p "$TASK_COMPOSE_PROJECT" -f "$compose_file" down --volumes \

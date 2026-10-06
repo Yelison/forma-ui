@@ -9,7 +9,7 @@ case $cmd in
     repo=$(opt --cwd "$@"); br=$(opt --branch "$@"); base=$(opt --base "$@"); path=$(opt --path "$@")
     n=$(( $(ls "$S/ws" | wc -l) + 1 + $(cat "$S/counter" 2>/dev/null || echo 0) )); echo "$n" >"$S/counter"
     git -C "$repo" worktree add -q -b "$br" "$path" "$base" >&2
-    jq -n --arg p "$path" --arg r "$repo" --arg b "$br" --arg pane "p$n" '{path:$p,repo:$r,branch:$b,pane:$pane}' >"$S/ws/w$n"
+    jq -n --arg p "$path" --arg r "$repo" --arg b "$br" --arg pane "p$n" --arg l "$(opt --label "$@")" '{path:$p,repo:$r,branch:$b,pane:$pane,label:$l}' >"$S/ws/w$n"
     jq -n --arg w "w$n" --arg t "t$n" --arg p "p$n" '{result:{workspace:{workspace_id:$w},tab:{tab_id:$t},root_pane:{pane_id:$p}}}' ;;
   "worktree remove")
     ws=$(opt --workspace "$@"); f="$S/ws/$ws"; [ -f "$f" ] || { echo "no workspace" >&2; exit 1; }

@@ -14,7 +14,7 @@ The implementer answered the previous round. The rules, the checks and the repor
 
 ## What you check
 
-1. **Previous findings:** each one, resolved or not, with evidence (a test, a command or the code), and whether the
+1. **Previous findings:** each one, fixed or not, with evidence (a test, a command or the code), and whether the
    decision in the file above was followed.
 2. **Regressions:** in everything the new commits touch, and that every commit still passes on its own.
 3. **Tests:** every new or changed test would fail without its change (prove it by reverting the key line locally and
@@ -26,10 +26,10 @@ Commands to run in your worktree:
 {{COMMANDS}}
 ```
 
-The machine (12 cores) is shared by three or four agents; without limits the load reaches 30:
+The machine is shared by several agents; without limits the load climbs far above its cores:
 
 - Run Vitest with `npm test -- --maxWorkers=3` and Playwright always with `--workers=3`.
-- Do not run the whole Playwright suite on the base commit (`main` is green in CI); run the specs of the feature while
+- Do not run the whole Playwright suite on the base commit (it is slow and the base is not what you review); run the specs of the feature while
   you iterate and the whole suite once, at the reviewed commit, only if the change reaches shared UI.
 - If a test times out or fails only under load, rerun it alone before drawing conclusions, and say so in the report.
 {{EXTRA_POINTS}}

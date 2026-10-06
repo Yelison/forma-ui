@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Builds tasks/<id>/brief.md from a brief the coordinator wrote (without the common part) and the shared footer
 # (scripts/herdr/brief-footer.md): the footer and the brief get the task's worktree, commits, ports, lane and
-# delivery path filled in, and the script fails if any __MARKER__ is left. See docs/development/herdr.md.
+# delivery path filled in, and the script fails if any __MARKER__ is left (adapted from Resolve at c3f02f8).
+# The port markers come from HERDR_PORTS in project.env. See docs/development/herdr.md.
 set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 # shellcheck source=common.sh
@@ -16,9 +17,12 @@ Usage: scripts/herdr/fill-brief.sh ID LANE STAGED_BRIEF
   STAGED_BRIEF   The brief without the common footer, with __MARKER__ placeholders
 
 Markers: __WT__ (worktree), __BASE__ and __BASEFULL__ (base commit, 7 and 40 characters), __SL__ (slot),
-__VITE__, __PW__, __API__, __PG__ and __KC__ (the slot's ports), __LANE__ and __LANE_NAME__, __DELIVERY__.
-Writes $HERDR_TASKS_ROOT/tasks/ID/brief.md.
+__LANE__ and __LANE_NAME__, __DELIVERY__ and the port markers of HERDR_PORTS:
 USAGE
+  port_specs | while read -r name _ marker; do printf '  __%s__  %s\n' "$marker" "$name"; done
+  printf 'Writes $HERDR_TASKS_ROOT/tasks/ID/brief.md.\n\n'
+  printf 'The footer is brief-footer.md; a marker left unfilled makes the script fail.\n\n'
+  true
 }
 
 case ${1:-} in -h | --help) usage; exit 0 ;; esac
@@ -33,13 +37,14 @@ OUT="$(task_dir "$ID")/brief.md"
 [ "$(cd "$(dirname "$SRC")" && pwd -P)/$(basename "$SRC")" != "$OUT" ] || die "the staged brief must not be $OUT itself"
 
 SLOT=$TASK_SLOT
-joined=$(mktemp) filled=$(mktemp)
+# Temporary files live in the task's own directory, never in $TMPDIR.
+joined=$(mktemp "$(task_dir "$ID")/.brief-joined.XXXXXX") filled=$(mktemp "$(task_dir "$ID")/.brief-filled.XXXXXX")
 trap 'rm -f "${joined:?}" "${filled:?}"' EXIT
 cat "$SRC" "$SCRIPT_DIR/brief-footer.md" >"$joined"
-render_template "$joined" '__' '__' \
-  "WT=$TASK_WORKTREE" "BASEFULL=$TASK_BASE_SHA" "BASE=${TASK_BASE_SHA:0:7}" "SL=$SLOT" \
-  "VITE=$((5180 + SLOT))" "PW=$((4180 + SLOT))" "API=$((8080 + SLOT))" "PG=$((5440 + SLOT))" "KC=$((8180 + SLOT))" \
-  "LANE=$LANE" "LANE_NAME=$LANE" "DELIVERY=$(task_dir "$ID")/delivery.md" >"$filled"
+values=("WT=$TASK_WORKTREE" "BASEFULL=$TASK_BASE_SHA" "BASE=${TASK_BASE_SHA:0:7}" "SL=$SLOT"
+  "LANE=$LANE" "LANE_NAME=$LANE" "DELIVERY=$(task_dir "$ID")/delivery.md")
+while read -r _ base marker; do values+=("$marker=$((base + SLOT))"); done < <(port_specs)
+render_template "$joined" '__' '__' "${values[@]}" >"$filled"
 grep -Fq 'Sin push ni PR' "$filled" || die "the filled brief lacks the 'Sin push ni PR' rule"
 grep -Fq "ENTREGA $LANE: LISTA" "$filled" || die "the filled brief lacks 'ENTREGA $LANE: LISTA'"
 cp "$filled" "$OUT"
