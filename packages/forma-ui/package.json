@@ -15,6 +15,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./base.css": "./dist/base.css",
     "./tokens.css": "./dist/tokens.css",
     "./tokens.json": "./dist/tokens.json",
     "./package.json": "./package.json"
