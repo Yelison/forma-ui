@@ -1,0 +1,435 @@
+{
+  "source": "frontend/src/styles/tokens.contrast.test.ts@c3f02f8",
+  "thresholds": {
+    "text": 4.5,
+    "nonText": 3
+  },
+  "pairs": [
+    {
+      "foreground": "ink",
+      "background": "bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+    },
+    {
+      "foreground": "ink",
+      "background": "surface",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+    },
+    {
+      "foreground": "ink",
+      "background": "surface-hover",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+    },
+    {
+      "foreground": "ink",
+      "background": "blue-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+    },
+    {
+      "foreground": "muted",
+      "background": "bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+    },
+    {
+      "foreground": "muted",
+      "background": "surface",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+    },
+    {
+      "foreground": "muted",
+      "background": "surface-hover",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+    },
+    {
+      "foreground": "muted",
+      "background": "blue-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Text without its own background (ink, muted in most components) inherits the container background: page (bg), panels, cards and menus (surface), row and menu hover (surface-hover) or selection and chips (blue-bg)."
+    },
+    {
+      "foreground": "blue-ink",
+      "background": "bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "blue-ink",
+      "background": "surface",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "blue-ink",
+      "background": "surface-hover",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "green-ink",
+      "background": "bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "green-ink",
+      "background": "surface",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "green-ink",
+      "background": "surface-hover",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "amber-ink",
+      "background": "bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "amber-ink",
+      "background": "surface",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "amber-ink",
+      "background": "surface-hover",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "red-ink",
+      "background": "bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "red-ink",
+      "background": "surface",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "red-ink",
+      "background": "surface-hover",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Semantic colors (*-ink) without their own background (field errors, metrics, notices) sit on bg, surface and surface-hover."
+    },
+    {
+      "foreground": "green-ink",
+      "background": "blue-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Highlighted Metric and selected TicketRow (deltas, urgent) also sit on blue-bg."
+    },
+    {
+      "foreground": "amber-ink",
+      "background": "blue-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Highlighted Metric and selected TicketRow (deltas, urgent) also sit on blue-bg."
+    },
+    {
+      "foreground": "red-ink",
+      "background": "blue-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Highlighted Metric and selected TicketRow (deltas, urgent) also sit on blue-bg."
+    },
+    {
+      "foreground": "blue-ink",
+      "background": "blue-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Badge and Tabs (blue-ink on blue-bg)."
+    },
+    {
+      "foreground": "green-ink",
+      "background": "green-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Badge (green-ink on green-bg)."
+    },
+    {
+      "foreground": "amber-ink",
+      "background": "amber-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Badge (amber-ink on amber-bg)."
+    },
+    {
+      "foreground": "red-ink",
+      "background": "red-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Badge (red-ink on red-bg) and Button (red-ink on red-bg)."
+    },
+    {
+      "foreground": "ink",
+      "background": "amber-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Internal notes of Message and Editor (.note, amber-bg) with inherited text."
+    },
+    {
+      "foreground": "muted",
+      "background": "amber-bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Internal notes of Message and Editor (.note, amber-bg) with inherited text."
+    },
+    {
+      "foreground": "link",
+      "background": "surface",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Links of ArticlePage (.helpText a) and ArticleProse (.prose a), always inside surface cards."
+    },
+    {
+      "foreground": "link",
+      "background": "bg",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Links of ArticlePage (.helpText a) and ArticleProse (.prose a)."
+    },
+    {
+      "foreground": "nav-text",
+      "background": "nav",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Sidebar and Tooltip (nav-text on nav)."
+    },
+    {
+      "foreground": "nav-text",
+      "background": "nav-active",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Sidebar and Tooltip (nav-text on nav-active)."
+    },
+    {
+      "foreground": "nav-ink",
+      "background": "nav",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Sidebar and Tooltip (nav-ink on nav)."
+    },
+    {
+      "foreground": "nav-ink",
+      "background": "nav-active",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Sidebar and Tooltip (nav-ink on nav-active)."
+    },
+    {
+      "foreground": "on-brand",
+      "background": "brand",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Same block with color and background: Button (on-brand on brand)."
+    },
+    {
+      "foreground": "on-brand",
+      "background": "brand-hover",
+      "kind": "text",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "Primary Button hover, which uses the brand-hover token instead of a mix."
+    },
+    {
+      "foreground": "brand",
+      "background": "surface",
+      "kind": "nonText",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "brand as the border or indicator fill of Checkbox and Radio (checked), Switch, and bars and outline of BarChart."
+    },
+    {
+      "foreground": "brand",
+      "background": "bg",
+      "kind": "nonText",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "brand as the border or indicator fill of Checkbox and Radio (checked), Switch, and bars and outline of BarChart."
+    },
+    {
+      "foreground": "brand",
+      "background": "progress-track",
+      "kind": "nonText",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "paintedAt": "brand as the progress fill of ProgressBar and Attachment upload on progress-track (token from Resolve #75)."
+    }
+  ],
+  "excluded": [
+    {
+      "subject": "disabled text",
+      "reason": "opacity .45 over any pair; deliberately not tested against 1.4.3"
+    },
+    {
+      "subject": "borders and --color-line",
+      "reason": "decorative or non-textual state; governed by 1.4.11 (3:1), not 1.4.3"
+    },
+    {
+      "subject": "--color-disabled",
+      "reason": "decorative or non-textual state; governed by 1.4.11 (3:1), not 1.4.3"
+    },
+    {
+      "subject": "--color-focus",
+      "reason": "decorative or non-textual state; governed by 1.4.11 (3:1), not 1.4.3"
+    },
+    {
+      "subject": "--color-overlay",
+      "reason": "decorative or non-textual state; governed by 1.4.11 (3:1), not 1.4.3"
+    },
+    {
+      "subject": "brand as text",
+      "reason": "brand is no longer painted as text; links use the link token"
+    }
+  ]
+}
