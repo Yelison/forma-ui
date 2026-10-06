@@ -50,7 +50,10 @@ without an assignee). `HERDR_PROJECT_ENV` points the scripts at another settings
 | `HERDR_MAX_LOAD` | 1.5 × cores | Load-average limit (below) |
 | `HERDR_POLL_SECONDS`, `HERDR_SHIP_TIMEOUT_SECONDS` | `20`, `1800` | Polling interval and each wait of `ship.sh` |
 
-A malformed `HERDR_PORTS` stops every script before anything is created. The footer of the briefs
+A malformed `HERDR_PORTS` stops every script before anything is created: entries must be `NAME:BASE:MARKER`, names
+and markers unique, the markers `WT BASE BASEFULL SL LANE LANE_NAME DELIVERY` are reserved, no port may exceed 65535
+in the slot range, and the ranges `base + MIN … base + MAX` of two ports must not overlap. The list is split into words
+without expanding wildcards. With `HERDR_REQUIRED_CHECKS` empty, `ship.sh` warns when the pull request has checks. The footer of the briefs
 (`scripts/herdr/brief-footer.md`) uses the `__VITE__`, `__PW__` and `__SB__` markers: a project that renames or drops a
 port updates the footer in the same change, and `fill-brief.sh` fails until it does.
 
@@ -351,6 +354,14 @@ It needs `jq`, `git`, `ss` and `python3`, runs one copy at a time, exits non-zer
 `ALL TESTS PASSED` otherwise. It takes a few minutes. `HERDR_TEST_KEEP=1` keeps the temporary directory;
 `HERDR_SCRIPTS_SRC=<dir>` runs the tests against a modified copy of `scripts/herdr`, to check that a scenario fails
 without its fix. Run it after changing anything under `scripts/herdr/`; it is not part of CI.
+
+## Known limitations
+
+- Ports are recomputed from the `HERDR_PORTS` in force, not read back from the task's `task.json`, when
+  `remove-task.sh` looks for leftovers and when `new-review.sh` rewrites the commands of a review. Do not change
+  `HERDR_PORTS`, `HERDR_SLOT_MIN` or `HERDR_SLOT_MAX` while tasks are active.
+- With no required checks, `ship.sh` merges without waiting for any check: keep `HERDR_REQUIRED_CHECKS` in line with the
+  branch protection of `main` once there is CI.
 
 ## Notes
 
