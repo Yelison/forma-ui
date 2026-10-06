@@ -305,10 +305,15 @@ test('nodes are keyed by name path plus sibling index, with the id as secondary 
   assert.equal(nodeKey('p#0', 'Forma / Button 100%', 2), 'p#0/Forma %2F Button 100%25#2');
 });
 
-test('a COMPONENT never has its componentPropertyDefinitions read', async () => {
+test('a variant never has its componentPropertyDefinitions read; a standalone component does', async () => {
   const file = makeFile('single');
   const ctx = createSerializeContext(file.resolver);
-  await assert.doesNotReject(
-    serializeNode(ctx, file.primary, nodeKey(null, file.primary.name, 0), {}),
-  );
+  const variant = await serializeNode(ctx, file.primary, nodeKey(null, file.primary.name, 0), {});
+  assert.equal(variant.propertyDefinitions, undefined);
+  const icon = await serializeNode(ctx, file.icon, nodeKey(null, file.icon.name, 4), {});
+  assert.deepEqual(icon.propertyDefinitions, {
+    'Label#2:0': { type: 'TEXT', defaultValue: 'Search' },
+  });
+  const { components } = serializeComponents(ctx);
+  assert.deepEqual(components[0].propertyDefinitions, icon.propertyDefinitions);
 });
