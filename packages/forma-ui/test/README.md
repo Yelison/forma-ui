@@ -20,9 +20,18 @@ jsdom cannot show:
 Browser mode starts a Vite server, which takes its port from `DEV_SERVER_PORT` and fails if it is taken. Each checkout
 has its own ports (see `docs/development/herdr.md`), so pass yours inline:
 
+Run it from `packages/forma-ui`:
+
 ```sh
 DEV_SERVER_PORT=5284 npm run test:browser
 DEV_SERVER_PORT=5284 npm run test:browser -- --sequence.shuffle   # the tests must not depend on the order
+```
+
+From the repository root, name the workspace so that the options reach Vitest (`npm run test:browser -- --x` at the
+root does not forward them):
+
+```sh
+DEV_SERVER_PORT=5284 npm run test:browser -w @yelison/forma-ui -- --sequence.shuffle
 ```
 
 `test/browser/setup.ts` runs after every test: it closes open dialogs, unmounts the React trees, returns the focus to
@@ -49,9 +58,10 @@ it('has no axe violations', async () => {
 ```
 
 `expectNoAxeViolations(root, options?)` runs axe-core on a node that is attached to the document and rejects with the
-rule, impact, selector, HTML and fix of every violation. Always `await` it. It disables only the rules that describe a
-page rather than a component (`region`, `landmark-one-main`, `page-has-heading-one`); `options` is passed to
-`axe.run`, and its `rules` are merged over those defaults.
+rule, impact, selector, HTML and fix of every violation. Always `await` it. In jsdom it throws instead of passing,
+because axe cannot see styles or layout there. It disables only the rules that describe a page rather than a
+component (`region`, `landmark-one-main`, `page-has-heading-one`); `options` is passed to `axe.run`, and its `rules`
+are merged over those defaults.
 
 Axe finds a subset of the problems: it does not replace the keyboard and screen-reader checks that the component specs
 assert.
