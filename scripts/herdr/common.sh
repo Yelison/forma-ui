@@ -90,17 +90,17 @@ port_in_use() { ss -ltnH 2>/dev/null | awk -v p="$1" '$4 ~ ("[:.]" p "$") { foun
 port_specs() {
   local -a specs los his
   local spec name base marker rest lo hi i seen_names=" " seen_markers=" "
-  read -ra specs <<<"$HERDR_PORTS" # split into words without expanding wildcards
+  read -r -d '' -a specs <<<"$HERDR_PORTS" || true # every line, split into words, no wildcard expansion
   for spec in ${specs[@]+"${specs[@]}"}; do
     IFS=: read -r name base marker rest <<<"$spec"
-    [[ $name =~ ^[A-Z][A-Z0-9_]*$ && $base =~ ^[0-9]+$ && $marker =~ ^[A-Z][A-Z0-9_]*$ && -z $rest ]] \
-      || die "HERDR_PORTS entry '$spec' is not NAME:BASE:MARKER (upper-case NAME and MARKER, numeric BASE)"
+    [[ $name =~ ^[A-Z][A-Z0-9_]*$ && $base =~ ^[1-9][0-9]*$ && $marker =~ ^[A-Z][A-Z0-9_]*$ && -z $rest ]] \
+      || die "HERDR_PORTS entry '$spec' is not NAME:BASE:MARKER (upper-case NAME and MARKER, BASE a number without leading zeros)"
     case " WT BASE BASEFULL SL LANE LANE_NAME DELIVERY " in
       *" $marker "*) die "HERDR_PORTS marker $marker is reserved (fill-brief.sh fills it with its own value)" ;;
     esac
     case $seen_names in *" $name "*) die "HERDR_PORTS names $name twice" ;; esac
     case $seen_markers in *" $marker "*) die "HERDR_PORTS uses the marker $marker twice" ;; esac
-    lo=$((10#$base + SLOT_MIN)) hi=$((10#$base + SLOT_MAX))
+    lo=$((base + SLOT_MIN)) hi=$((base + SLOT_MAX))
     [ "$hi" -le 65535 ] || die "HERDR_PORTS entry '$spec' reaches port $hi with slot $SLOT_MAX, above 65535"
     for i in "${!los[@]}"; do
       if [ "$lo" -le "${his[$i]}" ] && [ "${los[$i]}" -le "$hi" ]; then
