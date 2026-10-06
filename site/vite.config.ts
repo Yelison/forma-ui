@@ -25,8 +25,11 @@ function themeFirstPaint(): Plugin {
 
 // The site imports @yelison/forma-ui the way a consumer does: through the workspace link and the package's exports
 // map, which point at the built dist/. There is deliberately no alias to the library's sources.
-export default defineConfig({
+export default defineConfig(({ isPreview }) => ({
   base: siteBasePath,
+  // The preview stands in for GitHub Pages: a path is answered by its own HTML file (scripts/emit-route-html.ts) or by
+  // 404, never by the app shell. The dev server has no such files, so it keeps the single-page fallback.
+  appType: isPreview ? 'mpa' : 'spa',
   plugins: [react(), themeFirstPaint()],
   server: {
     port: devServerPort,
@@ -42,4 +45,4 @@ export default defineConfig({
     include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts'],
     css: { modules: { classNameStrategy: 'non-scoped' } },
   },
-})
+}))
