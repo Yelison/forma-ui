@@ -429,7 +429,14 @@ async function updateExisting(){
  return {createdOrUpdatedNodeIds:ids,websitePageId:result.page.id,screens:result.screenCount||40,prototypeLinks:result.wired||0,alreadyExisted:result.skipped||false};
 }
 figma.ui.onmessage=async m=>{
- if(!['build','update'].includes(m.type)||running)return;running=true;
+ if(!['build','update','export'].includes(m.type)||running)return;running=true;
+ if(m.type==='export'){
+ try{const summary=await runExport({resolver:makeFigmaResolver(figma),emit:(path,bytes)=>figma.ui.postMessage({type:'file',path,bytes}),progress:message=>figma.ui.postMessage({type:'progress',message:'Exportando: '+message}),now:()=>new Date().toISOString(),version:SPEC_PLUGIN_VERSION});
+ figma.ui.postMessage({type:'export-done',count:summary.fileCount,message:'Exportación lista: '+summary.fileCount+' archivos. Se descarga como forma-ui-spec.zip.'});}
+ catch(e){figma.ui.postMessage({type:'error',message:'No se pudo exportar: '+String(e.message||e)+'\nEl archivo de Figma no se modificó.'});}
+ finally{running=false;}
+ return;
+ }
  try{if(m.type==='build'&&figma.root.children.some(p=>p.name==='00 · Start here'))throw Error('Ya existe Forma UI. Usa Actualizar para conservar la biblioteca.');
  m.type==='update'?await updateExisting():await build();figma.ui.postMessage({type:'done',message:m.type==='update'?'Listo: componentes corregidos y 40 pantallas en 07 · Forma UI · Centered Documentation. Revisa visualmente antes de publicar.':'Base creada. Pulsa Actualizar para añadir las pantallas web.'});}
  catch(e){figma.ui.postMessage({type:'error',message:'No se pudo completar: '+String(e.message||e)+'\nLas páginas anteriores se conservan. Si hubo salida parcial, revísala antes de ejecutar otra vez.'});}
