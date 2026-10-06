@@ -1,30 +1,19 @@
-/// <reference types="vite/client" />
 import type { ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { page, userEvent } from 'vitest/browser'
 import { expectNoAxeViolations } from '../axe'
 import { Input } from '../../src/components/Input/Input'
-import { emulateMedia, mount, pressTab } from './support'
-
-// The real output of the token generator, so colors, the focus ring and the control height are the shipped ones.
-const built = import.meta.glob<string>('../../dist/tokens.css', { query: '?raw', import: 'default', eager: true })
-const tokensCss = built['../../dist/tokens.css']
-if (tokensCss === undefined)
-  throw new Error('dist/tokens.css is missing: run `npm run build:tokens -w @yelison/forma-ui`')
+import { emulateMedia, loadTokens, mount, pressTab } from './support'
 
 const root = document.documentElement
-let tokens: HTMLStyleElement
 
 beforeEach(() => {
-  tokens = document.createElement('style')
-  tokens.textContent = tokensCss
-  document.head.append(tokens)
+  loadTokens()
   // A consuming app paints the page; without it the dark theme's light text would sit on the default white.
   document.body.style.background = 'var(--color-bg)'
 })
 
 afterEach(() => {
-  tokens.remove()
   document.body.style.removeProperty('background')
   root.removeAttribute('data-theme')
 })
@@ -36,6 +25,7 @@ const states: Record<string, ReactNode> = {
   'read-only': <Input label="Email" hint="Managed by your admin" defaultValue="ada@example.com" readOnly />,
 }
 
+// The tokens are the generated ones, so colors, the focus ring and the control height are the shipped ones.
 describe('Input accessibility', () => {
   describe.each(['light', 'dark'] as const)('in the %s theme', (theme) => {
     beforeEach(async () => {

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { describe, expect, it } from 'vitest'
-import { emulateMedia, mount, reset } from './support'
+import { emulateMedia, loadStyles, loadTokens, mount, readBuilt, reset } from './support'
 
 describe('reset between tests', () => {
   it('closes dialogs, unmounts the React tree, returns the focus to the body and clears the media emulation', async () => {
@@ -67,5 +67,25 @@ describe('the page between two tests', { shuffle: false }, () => {
     expect(document.body.children).toHaveLength(0)
     expect(document.activeElement).toBe(document.body)
     expect(matchMedia('(prefers-color-scheme: dark)').matches).toBe(false)
+  })
+})
+
+describe('the built stylesheets', () => {
+  const styleTexts = () => Array.from(document.head.querySelectorAll('style'), (style) => style.textContent)
+
+  it('adds the built files to the page, once each, and reset() takes them away again', async () => {
+    loadTokens()
+    loadTokens()
+    loadStyles()
+
+    expect(styleTexts().filter((text) => text === readBuilt('tokens.css'))).toHaveLength(1)
+    expect(styleTexts()).toContain(readBuilt('styles.css'))
+    expect(getComputedStyle(document.documentElement).getPropertyValue('--color-bg')).not.toBe('')
+
+    await reset()
+
+    expect(styleTexts()).not.toContain(readBuilt('tokens.css'))
+    expect(styleTexts()).not.toContain(readBuilt('styles.css'))
+    expect(getComputedStyle(document.documentElement).getPropertyValue('--color-bg')).toBe('')
   })
 })

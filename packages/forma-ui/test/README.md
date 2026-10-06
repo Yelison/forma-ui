@@ -17,10 +17,10 @@ jsdom cannot show:
 - axe-core, which needs computed styles and layout;
 - `prefers-color-scheme` and `prefers-reduced-motion`.
 
-Some specs read the generated tokens (`dist/tokens.css` and `dist/tokens.json`) so that they test the real output of the
-token generator, not a copy of it. `dist/` is not committed: after a fresh clone, or after changing `tokens/`, run
-`npm run build:tokens -w @yelison/forma-ui` before `test:browser`. CI does it first. A spec that needs `dist/` and does
-not find it fails with that command in its message.
+Some specs read the built files (`dist/tokens.css`, `dist/tokens.json`, `dist/styles.css`) so that they test the real
+output of the build, not a copy of it. `dist/` is not committed: after a fresh clone, or after changing `tokens/`, run
+`npm run build:tokens -w @yelison/forma-ui` (or `npm run build`, which `styles.css` needs) before `test:browser`. CI does
+it first. A spec that needs `dist/` and does not find it fails with that command in its message.
 
 Browser mode starts a Vite server, which takes its port from `DEV_SERVER_PORT` and fails if it is taken. Each checkout
 has its own ports (see `docs/development/herdr.md`), so pass yours inline, from `packages/forma-ui`:
@@ -45,6 +45,9 @@ Helpers, all in `test/browser/support.tsx`:
 - `mount(ui)` renders a React tree synchronously; `reset()` unmounts it.
 - `pressTab()`, `pressShiftTab()`, `pressEscape()`; for anything else use `userEvent` from `vitest/browser`.
 - `emulateMedia({ colorScheme, reducedMotion })`.
+- `loadTokens()` adds the generated `dist/tokens.css` to the page and `loadStyles()` adds the built `dist/styles.css`.
+  `readBuilt(name)` reads a built file. `reset()` removes what they added. A missing file fails with the command that
+  writes it.
 
 `dialog.test.tsx` is the pattern for a component on a native dialog: open it with a real click, assert that the focus
 enters and never reaches the page behind, that `Escape` fires `cancel`, and that the focus returns to the trigger.
