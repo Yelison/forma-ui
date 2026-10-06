@@ -6,7 +6,7 @@ This is Task 0.3a of the v0.1 plan (`docs/plans/2026-10-06-forma-ui-v0.1.md`): t
 
 - Every fact was read from Resolve's pinned commit `c3f02f8` through Git (`git show c3f02f8:<path>`, `ls-tree`, `log`, `grep … c3f02f8`). Nothing was read from a working tree and nothing from Resolve was executed. The pinned commit is dated 2026-10-06 (`docs: describe the demo as not deployed and the demo password as mandatory`).
 - **Paths are relative to Resolve's repository root.** A path alone is the citation; `(commit)` after a claim cites a commit that is reachable from `c3f02f8`.
-- Counts of product areas come from parsing the real import statements (see [Method](#method-used-to-count-product-areas)), not from `git grep "<Name"`.
+- Counts of product areas come from parsing the real import statements (see [Method](#52-method-used-to-count-product-areas)), not from `git grep "<Name"`.
 - What could not be checked from Git alone is in [Unverified](#unverified), not in the body.
 - Where the code disagrees with the plan's §1.2 summary, the code wins and the difference is listed in [Differences from the plan](#differences-from-plan-12).
 - Spanish strings are quoted exactly. They are Resolve's current behavior and, per `CLAUDE.md`, must stay available as Resolve's own strings when it adopts the package.
@@ -20,7 +20,7 @@ This is Task 0.3a of the v0.1 plan (`docs/plans/2026-10-06-forma-ui-v0.1.md`): t
 | React | Declared `^19.2.8` for `react` and `react-dom`; the lockfile resolves `19.3.0` for both. Both are `dependencies`, not peers (Resolve is an application). | `frontend/package.json`, `frontend/package-lock.json` |
 | TypeScript | Declared `~6.0.2`, resolved `6.0.3`. | same |
 | `tsconfig` flags (app) | `target` and `lib` `ES2023` (+`DOM`), `module: esnext`, `moduleResolution: bundler`, `jsx: react-jsx`, `types: ["vite/client"]`, `allowImportingTsExtensions`, `allowArbitraryExtensions`, `verbatimModuleSyntax`, `moduleDetection: force`, `noEmit`, `skipLibCheck`, `strict`, `noUncheckedIndexedAccess`, `noUnusedLocals`, `noUnusedParameters`, `erasableSyntaxOnly`, `noFallthroughCasesInSwitch`. No `paths` and no `baseUrl`, so there are no path aliases. | `frontend/tsconfig.app.json` |
-| `tsconfig` flags (node, e2e) | The node project (`vite.config.ts`, `playwright.config.ts`, `src/test/globalSetup.ts`) uses `module: nodenext` with the same strictness flags minus `strict`; the e2e project (`e2e`, `e2e-smoke`) sets `strict` but not `noUncheckedIndexedAccess`. `tsconfig.json` only holds project references. | `frontend/tsconfig.node.json`, `frontend/tsconfig.e2e.json`, `frontend/tsconfig.json` |
+| `tsconfig` flags (node, e2e) | The node project (`vite.config.ts`, `playwright.config.ts`, `src/test/globalSetup.ts`) uses `module: nodenext` with the same strictness flags as the app project minus `strict` and `noUncheckedIndexedAccess`; the e2e project (`e2e`, `e2e-smoke`) sets `strict`, `noUnusedLocals` and `noUnusedParameters` but lacks `noUncheckedIndexedAccess`, `erasableSyntaxOnly` and `noFallthroughCasesInSwitch`. `tsconfig.json` only holds project references. | `frontend/tsconfig.node.json`, `frontend/tsconfig.e2e.json`, `frontend/tsconfig.json` |
 | Vite | Declared `^8.3.0`, resolved `8.3.2`, with `@vitejs/plugin-react` `6.1.1`. The config reads `DEV_SERVER_PORT` and `API_PROXY_TARGET` from the environment and proxies `/api` for both `vite` and `vite preview`. It has no `build.lib` section, so there is no library build. | `frontend/vite.config.ts` |
 | Vitest | Declared `^5.0.3`, resolved `5.0.3`. `environment: 'jsdom'` (jsdom `29.1.1`), `globalSetup` `src/test/globalSetup.ts` (sets `process.env.TZ = 'UTC'`), `setupFiles` `src/test/setup.ts`, `include: ['src/**/*.test.{ts,tsx}']`, `passWithNoTests`, `css.modules.classNameStrategy: 'non-scoped'`. | `frontend/vite.config.ts`, `frontend/src/test/globalSetup.ts` |
 | Vitest setup | `src/test/setup.ts` loads `@testing-library/jest-dom/vitest`; polyfills `HTMLDialogElement.showModal` (only sets the `open` attribute) and `close` (removes it and dispatches `close`); polyfills `window.matchMedia` so that no query matches; after each test it runs `cleanup()`, `localStorage.clear()` and removes `data-theme` from `<html>`. | `frontend/src/test/setup.ts` |
@@ -35,7 +35,7 @@ This is Task 0.3a of the v0.1 plan (`docs/plans/2026-10-06-forma-ui-v0.1.md`): t
 | axe | Absent: no `axe-core`, `@axe` or `jest-axe` in `frontend/`. Accessibility is asserted through Testing Library roles and names and through Playwright specs. | same grep |
 | i18n | No i18n library (`i18next`, `react-intl`, `lingui`, `formatjs` return nothing). `index.html` hard-codes `<html lang="es">` and all copy is Spanish. Formatting goes through `Intl` with a fixed locale: `frontend/src/lib/format.ts` sets `const LOCALE = 'es'`. | `frontend/index.html`, `frontend/src/lib/format.ts` |
 | Fonts | Inter, through `@fontsource-variable/inter` `5.3.0` (license field `OFL-1.1` in the lockfile), imported by `@import '@fontsource-variable/inter'` on the first line of `global.css`. The family stack is `'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif`. | `frontend/package-lock.json`, `frontend/src/styles/global.css` |
-| Icons | No icon library. 23 bespoke stroke paths in `frontend/src/components/ui/Icon/paths.ts`, whose header says «Generado desde los componentes «Resolve/Icon/*» de Figma. No editar a mano.» The file carries no third-party license notice. Resolve itself is MIT (`LICENSE`, «Copyright (c) 2026 Yelison Ortiz»). | `frontend/src/components/ui/Icon/paths.ts`, `LICENSE` |
+| Icons | No icon library. 23 bespoke icons (34 stroke paths) in `frontend/src/components/ui/Icon/paths.ts`, whose header says «Generado desde los componentes «Resolve/Icon/*» de Figma. No editar a mano.» The file carries no third-party license notice. Resolve itself is MIT (`LICENSE`, «Copyright (c) 2026 Yelison Ortiz»). | `frontend/src/components/ui/Icon/paths.ts`, `LICENSE` |
 | CI | `.github/workflows/ci.yml` runs the frontend job (`npm ci`, `api:types` plus a `git diff --exit-code`, `lint`, `format:check`, `typecheck`, `coverage`, `build`), a Playwright e2e job and a full-stack smoke job, plus backend jobs. | `.github/workflows/ci.yml` |
 
 ## 2. Tokens
@@ -283,7 +283,9 @@ Behavior:
 
 Tests (`Button.test.tsx`), each asserted in jsdom: `type="button"` by default; `onClick` fires; while `loading` the button has name `Enviando…`, `aria-busy="true"`, is not `disabled` and ignores clicks; a `disabled` button ignores clicks; `IconButton` exposes its `label` as its accessible name. Not covered: variants, `block`, `icon`, a custom `loadingLabel`, `aria-disabled` and hover or focus styles.
 
-Literals breaking ADR criterion 4 (`Button.module.css`): spinner `width: 16px; height: 16px`, spinner `border: 2px`, `animation: spin 0.8s`, and `.iconButton:disabled { opacity: 0.45 }`.
+Literal sizes breaking ADR criterion 4 (`Button.module.css`): spinner `width: 16px; height: 16px`.
+
+Other literal values that are not tokenized (`Button.module.css`; not counted by the ADR's rule, which excludes borders, but relevant when tokenizing): spinner `border: 2px`, `animation: spin 0.8s` and `.iconButton:disabled { opacity: 0.45 }`.
 
 ### 4.2 Badge
 
@@ -331,7 +333,7 @@ Source: `Modal/Modal.tsx`, `Modal/Modal.module.css`, `shared/useModalDialog.ts`,
 - Size: `width: min(440px, calc(100% - 2 * var(--space-16)))`, wide `min(640px, …)`, `max-height: calc(100dvh - 2 * var(--space-16))`. The backdrop is `color-mix(in srgb, var(--color-overlay) calc(var(--overlay-opacity) * 100%), transparent)`. An enter animation of `var(--duration-base)` goes from `translateY(8px) scale(0.98)` with opacity 0.
 - Tests (`Modal.test.tsx`, jsdom, with the `showModal` polyfill): the dialog is labeled by its title and described by its description, and `<html>` gets `scroll-locked`; a synthetic `cancel` event calls `onClose` once, removes the dialog, returns focus to the trigger and removes `scroll-locked`; a click on the content does not close it, a press and click on the dialog element does; a native `dialog.close()` calls `onClose` once; closing from the parent does not call `onClose`.
 - **Focus containment is not asserted in jsdom** (the polyfill only sets `open`). It is asserted in Chromium by `e2e/knowledge.spec.ts` («…el diálogo de despublicar no deja salir el foco con Tab y cierra con Escape», line 442), which accepts focus either inside the dialog or on `body` during the wrap-around, and by `e2e/shell.spec.ts` for the mobile drawer, which also uses `useModalDialog` («móvil: el drawer se abre, atrapa el foco, se cierra con Escape y devuelve el foco», line 4).
-- Literals breaking criterion 4: `440px`, `640px`, `translateY(8px)` and `scale(0.98)` (the latter unitless).
+- Literal sizes breaking criterion 4: `440px`, `640px` and `translateY(8px)`. Other literal value not tokenized: `scale(0.98)` (unitless).
 
 ### 4.6 Icon
 
@@ -377,18 +379,20 @@ Criteria columns: **1** = three or more direct areas (and unchanged for a phase)
 
 | Component | 1 · areas at `c3f02f8` (at `aa9b11e`) | 1 · unchanged for a phase | 2 · JSDoc | 3 · domain | 4 · CSS literal sizes | 5 · own test | 5 · catalog | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Button | 8 (6) | no, 2 commits since `aa9b11e` | 3/3 (`ButtonProps`) + 3/3 (`ButtonStyleOptions`) | none | `16px`, `2px`, `0.8s` | yes | yes | fails 1 (stability), 4 |
-| IconButton | 2 (2) | no (same file as Button) | 2/2 | none | `opacity: 0.45` (a literal, but not a size) | yes (in `Button.test.tsx`) | yes | fails 1 (areas, stability) |
+| Button | 8 (6) | no, 2 commits since `aa9b11e` | 3/3 (`ButtonProps`) + 3/3 (`ButtonStyleOptions`) | none | `16px` | yes | yes | fails 1 (stability), 4 |
+| IconButton | 2 (2) | no (same file as Button) | 2/2 | none | none (`opacity: 0.45` is not a size; see the note below) | yes (in `Button.test.tsx`) | yes | fails 1 (areas, stability) |
 | Badge | 4 (4) | no, 1 commit | 1/1 | none | `28px` | yes | yes | fails 1 (stability), 4 |
 | Field | 0 (0) | no, 1 commit | 3/3 + 7/7 | none | none | yes (7, shared) | none: excepted in the parity test | fails 1 (areas, stability), 5 (no catalog entry) |
 | Input | 5 (3) | no, 1 commit | 4/4 | none | none | none in its folder | yes | fails 1 (stability), 5 (no test file in its folder) |
 | Tooltip | 0 (0) | no, 1 commit | 6/6 + 4/4 | none | `240px`, `z-index: 90` | yes | yes | fails 1 (areas, stability), 4 |
 | Modal | 4 (2) | no, 1 commit | 8/8 | none | `440px`, `640px`, `8px` | yes | yes | fails 1 (stability), 4 |
 | Icon | 4 (3) | no, 1 commit | 3/3 | none | none (TSX defaults only) | yes | yes | fails 1 (stability) |
-| Checkbox | 0 (0) | no, 1 commit | 3/3 | none | `10px`, `2px`, `1px` in `Checkbox.module.css`; `36px`, `20px` in `shared/choice.module.css` | yes | yes | fails 1 (areas, stability), 4 |
-| Switch | 1 (0) | no, 1 commit | 1/1 | none | `36px`, `22px`, `18px`, `2px`, `14px`; plus `shared/choice.module.css` | none in its folder | yes | fails 1 (areas, stability), 4, 5 |
+| Checkbox | 0 (0) | no, 1 commit | 3/3 | none | `10px` in `Checkbox.module.css`; `36px`, `20px` in `shared/choice.module.css` | yes | yes | fails 1 (areas, stability), 4 |
+| Switch | 1 (0) | no, 1 commit | 1/1 | none | `36px`, `22px`, `18px`, `14px`; plus `36px`, `20px` in `shared/choice.module.css` | none in its folder | yes | fails 1 (areas, stability), 4, 5 |
 | Tabs | 4 (2) | no, 1 commit | 3/3 + 6/6 | none | none (`outline-offset: 4px` is an outline property, excluded) | yes | yes | fails 1 (stability) |
 | NavItem | 0 (0) | no, 1 commit | 6/6 | none beyond `react-router` (`NavLink`), which breaks the library rule, not criterion 3 | none (`outline-offset: -2px` is excluded) | yes | yes | fails 1 (areas, stability) |
+
+Other literal values that are not tokenized (not sizes under the ADR's rule, which excludes borders, outlines and 1–2 px offsets, but relevant for tokenization): Button spinner `border: 2px` and `0.8s`; IconButton `opacity: 0.45`; Modal `scale(0.98)`; Checkbox `height: 2px` (indeterminate bar) and `border-radius: 1px`; Switch `margin-left: 2px`; `shared/choice.module.css` `opacity: 0.45`.
 
 Reading the table:
 
