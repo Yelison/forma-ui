@@ -1,4 +1,5 @@
 .badge {
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   min-height: var(--badge-min-height);
