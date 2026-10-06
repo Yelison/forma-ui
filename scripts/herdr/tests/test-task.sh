@@ -47,20 +47,28 @@ out=$(HERDR_PORTS='nonsense' "$HERDR/new-task.sh" --id task-e --branch feat/task
 check "malformed: nothing created" test ! -e "$T/root/tasks/task-e"
 
 echo "== HERDR_PORTS is validated by content, one case per rule"
+# Its own environment: a rule that stops refusing would create a task, and that must not take a slot from the later sections.
+mk_env
 mkdir -p "$T/globdir"; : >"$T/globdir/DEV_SERVER_PORT:5000:VITE"
-bad_ports() { # name list message
-  out=$(cd "$T/globdir" && HERDR_PORTS=$2 "$HERDR/new-task.sh" --id bad-ports --branch feat/bad-ports 2>&1); rc=$?
+BADN=0
+bad_ports() { # name list message; every case has its own task id, so a rule that stops refusing cannot hide the others
+  local id; BADN=$((BADN + 1)); id=bad-ports-$BADN
+  out=$(cd "$T/globdir" && HERDR_PORTS=$2 "$HERDR/new-task.sh" --id "$id" --branch "feat/$id" 2>&1); rc=$?
   check "ports: $1: refused" test $rc -ne 0; check "ports: $1: says why" says x "$3"
-  check "ports: $1: nothing created" test ! -e "$T/root/tasks/bad-ports"
+  check "ports: $1: nothing created" test ! -e "$T/root/tasks/$id"
 }
 bad_ports "duplicate name" 'A_PORT:5000:A A_PORT:6000:B' 'names A_PORT twice'
 bad_ports "duplicate marker" 'A_PORT:5000:A B_PORT:6000:A' 'the marker A twice'
 bad_ports "reserved marker" 'A_PORT:5000:WT' 'marker WT is reserved'
 bad_ports "port above 65535" 'A_PORT:65530:A' 'above 65535'
 bad_ports "overlapping ranges" 'A_PORT:5000:A B_PORT:5001:B' 'overlaps'
+bad_ports "leading zeros in the base" 'A_PORT:05000:A' 'without leading zeros'
 bad_ports "wildcards are not expanded" '*' "entry '*'"
+ml=$(HERDR_PORTS=$'A_PORT:5000:A\nB_PORT:5010:B' bash -c '. "$1/common.sh"; port_specs' _ "$HERDR" 2>&1)
+check "ports: a list on two lines is read whole" test "$ml" = "$(printf 'A_PORT 5000 A\nB_PORT 5010 B')"
 out=$(HERDR_PORTS='A_PORT:5000:A B_PORT:5010:B' bash -c '. "$1/common.sh"; port_specs' _ "$HERDR" 2>&1); check "ports: ranges that touch no other are accepted" test "$out" = "$(printf 'A_PORT 5000 A\nB_PORT 5010 B')"
 
+mk_env; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2; SC=$(pick_slot "$SA" "$SB") || exit 2; SD=$(pick_slot "$SA" "$SB" "$SC") || exit 2
 echo "== a busy configured port refuses the slot"
 SE=$(pick_slot "$SA" "$SB" "$SC" "$SD") || exit 2; BUSY=$(port_of "$SE" STORYBOOK_PORT); mkdir -p "$T/srv"
 (cd "$T/srv" && exec python3 -m http.server "$BUSY" --bind 127.0.0.1 >/dev/null 2>&1) & PID=$!
