@@ -62,8 +62,8 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npm run build
       - run: npx playwright install --with-deps chromium
+      # The Playwright web server builds the library and the site before serving them.
       - run: npm run e2e
         env:
           CI: 'true'
