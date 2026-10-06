@@ -1,4 +1,5 @@
-import { cpSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { copyFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -8,6 +9,22 @@ import { type TokenName, tokenNames } from './tokens.ts'
 
 const packageRoot = resolve(import.meta.dirname, '../..')
 const sources = () => loadSources(join(packageRoot, 'tokens'))
+
+// A throwaway repository layout, so a test that goes wrong writes into the temp directory and never into this repo:
+// <workspace>/repo/packages/forma-ui holds a copy of the tokens, and <workspace>/figma is outside the repository.
+function tempRepo() {
+  const workspace = mkdtempSync(join(tmpdir(), 'forma-tokens-'))
+  const repo = join(workspace, 'repo')
+  const root = join(repo, 'packages', 'forma-ui')
+  cpSync(join(packageRoot, 'tokens'), join(root, 'tokens'), { recursive: true })
+  return {
+    workspace,
+    repo,
+    root,
+    outside: join(workspace, 'figma', 'variables.json'),
+    cleanup: () => rmSync(workspace, { recursive: true, force: true }),
+  }
+}
 
 // A copy of the real sources, edited through `tree`: the groups of every file side by side (`tree.color.link`).
 function edited(edit: (tree: Record<string, any>) => void): SourceFile[] {
@@ -44,22 +61,37 @@ describe('determinism', () => {
   })
 
   it('writes the same bytes when the command runs twice, and records no date', () => {
-    const workspace = mkdtempSync(join(tmpdir(), 'forma-tokens-'))
+    const { root, outside, cleanup } = tempRepo()
     try {
-      const root = join(workspace, 'package')
-      const figma = join(workspace, 'figma', 'variables.json')
-      cpSync(join(packageRoot, 'tokens'), join(root, 'tokens'), { recursive: true })
       const written = () =>
         ['dist/tokens.css', 'dist/tokens.json', 'src/tokens/tokens.ts']
           .map((file) => readFileSync(join(root, file), 'utf8'))
-          .concat(readFileSync(figma, 'utf8'))
-      main(['--figma', figma], root)
+          .concat(readFileSync(outside, 'utf8'))
+      main(['--figma', outside], root)
       const first = written()
-      main(['--figma', figma], root)
+      main(['--figma', outside], root)
       expect(written()).toEqual(first)
       expect(first.join('\n')).not.toMatch(/\d{4}-\d{2}-\d{2}/)
     } finally {
-      rmSync(workspace, { recursive: true, force: true })
+      cleanup()
+    }
+  })
+
+  it('runs when the script is started through a symlink, as node resolves the main module by its real path', () => {
+    const { workspace, root, cleanup } = tempRepo()
+    try {
+      mkdirSync(join(root, 'scripts'))
+      copyFileSync(join(packageRoot, 'scripts/build-tokens.ts'), join(root, 'scripts/build-tokens.ts'))
+      const link = join(workspace, 'linked-package')
+      symlinkSync(root, link)
+      execFileSync(
+        process.execPath,
+        ['--experimental-strip-types', '--disable-warning=ExperimentalWarning', join(link, 'scripts/build-tokens.ts')],
+        { stdio: 'pipe' },
+      )
+      expect(existsSync(join(root, 'dist/tokens.css'))).toBe(true)
+    } finally {
+      cleanup()
     }
   })
 
@@ -113,6 +145,22 @@ describe('errors', () => {
       shadow.popover.$value = '0 8px 24px {color.overlay}'
     })
     expect(() => generate(files)).toThrow(/Token "shadow\.popover".*an alias must fill the whole value/)
+  })
+
+  it('fails on a token that holds other tokens', () => {
+    const files = edited(({ z }) => {
+      z.menu.extra = { $type: 'number', $value: 1 }
+    })
+    expect(() => generate(files)).toThrow(/token "z\.menu" cannot contain other tokens/)
+  })
+
+  it('fails on a cycle that only exists under a media query, naming the condition', () => {
+    const files = edited(({ touch }) => {
+      touch.target.$value = '{control.height}'
+    })
+    expect(() => generate(files)).toThrow(
+      /Alias cycle: control\.height -> touch\.target -> control\.height.*@media \(max-width: 767\.98px\)/,
+    )
   })
 
   it('fails on a token without a type', () => {
@@ -194,8 +242,36 @@ describe('--figma output', () => {
     expect(figma.skipped.map((entry) => entry.name)).toEqual(['focus/ring', 'shadow/popover'])
   })
 
-  it('refuses a path inside the package', () => {
-    expect(() => main(['--figma', join(packageRoot, 'figma.json')], packageRoot)).toThrow(/outside the package/)
+  it('resolves aliases in the weight, size and line height of a text style', () => {
+    const files = edited(({ font }) => {
+      font.body.$value.fontWeight = '{z.menu}'
+      font.body.$value.fontSize = '{space.12}'
+      font.body.$value.lineHeight = '{space.20}'
+    })
+    const { textStyles } = JSON.parse(generate(files).figma) as typeof figma
+    expect(textStyles.find((style) => style.name === 'font/body')).toMatchObject({
+      fontWeight: 80,
+      fontSize: 12,
+      lineHeight: 20,
+    })
+  })
+
+  describe('refuses to write inside the repository', () => {
+    it.each([
+      ['inside the package', (t: ReturnType<typeof tempRepo>) => join(t.root, 'figma.json')],
+      ['at the repository root', (t: ReturnType<typeof tempRepo>) => join(t.repo, 'figma.json')],
+      ['in another folder of the repository', (t: ReturnType<typeof tempRepo>) => join(t.repo, 'site', 'figma.json')],
+      ['with a name that starts with two dots', (t: ReturnType<typeof tempRepo>) => join(t.root, '..figma.json')],
+    ])('%s', (_name, target) => {
+      const t = tempRepo()
+      try {
+        const path = target(t)
+        expect(() => main(['--figma', path], t.root)).toThrow(/outside the repository/)
+        expect(existsSync(path)).toBe(false)
+      } finally {
+        t.cleanup()
+      }
+    })
   })
 })
 
