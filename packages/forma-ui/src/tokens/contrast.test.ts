@@ -117,7 +117,8 @@ describe('contrast contract on the token source', () => {
 })
 
 // What the contract leaves out on purpose, as Resolve does (`excluded` in contrast-pairs.json). Disabled text, at
-// opacity .45 over any pair, has no pair to check, so it is a known limitation and is documented as one.
+// opacity .45 over any pair, has no pair to check: it is recorded only in `excluded` today, and belongs in the
+// Foundations reference as a known limitation (plan task 4.5).
 describe('exclusions of the contrast contract', () => {
   const excludedTokens = contract.excluded.flatMap(({ subject }) =>
     [...subject.matchAll(/--color-([a-z-]+)/g)].map((match) => match[1]),
