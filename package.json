@@ -3,16 +3,18 @@
   "private": true,
   "version": "0.0.0",
   "workspaces": [
-    "packages/forma-ui"
+    "packages/forma-ui",
+    "site"
   ],
   "scripts": {
-    "build": "npm run build -w @yelison/forma-ui",
-    "lint": "oxlint packages",
-    "format": "prettier --write packages package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
-    "format:check": "prettier --check packages package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
+    "build": "npm run build -w @yelison/forma-ui && npm run build -w forma-ui-site",
+    "lint": "oxlint packages site",
+    "format": "prettier --write packages site package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
+    "format:check": "prettier --check packages site package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm test --workspaces --if-present",
     "test:browser": "npm run test:browser -w @yelison/forma-ui",
+    "e2e": "npm run e2e -w forma-ui-site",
     "pack:check": "npm pack --dry-run -w @yelison/forma-ui"
   },
   "devDependencies": {
