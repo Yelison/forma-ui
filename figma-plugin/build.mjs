@@ -11,7 +11,7 @@ export const HEADER =
   '// Source: figma-plugin/src/*.js. Regenerate with: node figma-plugin/build.mjs\n';
 
 // Modules are plain scripts concatenated in this order into one scope.
-export const CODE_MODULES = ['main.js'];
+export const CODE_MODULES = ['sha256.js', 'stable-stringify.js', 'zip.js', 'main.js'];
 
 // Everything from this marker to the end of a module is Node-only (test exports).
 const TEST_EXPORTS = '// @test-exports';
