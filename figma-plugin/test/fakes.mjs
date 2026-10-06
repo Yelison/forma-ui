@@ -284,6 +284,7 @@ export function makeFile(layout = 'single') {
     width: 24,
     height: 24,
     variantProperties: null,
+    componentPropertyDefinitions: { 'Label#2:0': { type: 'TEXT', defaultValue: 'Search' } },
   });
 
   const page = node('PAGE', '07 · Forma UI · Centered Documentation', {}, [

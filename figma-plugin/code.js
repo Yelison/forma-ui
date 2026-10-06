@@ -592,11 +592,16 @@ async function serializeNode(ctx, node, key, parentModes) {
 
   if (node.type === 'TEXT') await serializeText(ctx, node, out);
   if (node.type === 'INSTANCE') out.instance = await serializeInstance(ctx, node);
-  // componentPropertyDefinitions throws on a COMPONENT; only a set has it.
-  if (node.type === 'COMPONENT_SET')
-    out.propertyDefinitions = serializePropertyDefinitions(ctx, node.componentPropertyDefinitions);
+  // componentPropertyDefinitions throws on a variant (a COMPONENT inside a set); a set and a
+  // standalone component have it.
+  const inSet = node.parent && node.parent.type === 'COMPONENT_SET';
+  if (node.type === 'COMPONENT_SET' || (node.type === 'COMPONENT' && !inSet)) {
+    const definitions = serializePropertyDefinitions(ctx, node.componentPropertyDefinitions);
+    if (node.type === 'COMPONENT_SET' || Object.keys(definitions).length) {
+      out.propertyDefinitions = definitions;
+    }
+  }
   if (node.type === 'COMPONENT') {
-    const inSet = node.parent && node.parent.type === 'COMPONENT_SET';
     const variant = node.variantProperties || (inSet ? parseVariantName(node.name) : null);
     if (variant && Object.keys(variant).length) out.variant = variant;
   }
@@ -615,8 +620,7 @@ async function serializeNode(ctx, node, key, parentModes) {
     }
   }
 
-  const standalone =
-    node.type === 'COMPONENT' && !(node.parent && node.parent.type === 'COMPONENT_SET');
+  const standalone = node.type === 'COMPONENT' && !inSet;
   if (node.type === 'COMPONENT_SET' || standalone) ctx.components.push({ page: ctx.page, out });
   return out;
 }
