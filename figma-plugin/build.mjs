@@ -1,4 +1,4 @@
-// Builds figma-plugin/code.js (and ui.html, once it has a template) from figma-plugin/src.
+// Builds figma-plugin/code.js and ui.html from figma-plugin/src.
 // Plain Node, no dependencies. Usage: node figma-plugin/build.mjs
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -16,6 +16,7 @@ export const CODE_MODULES = [
   'stable-stringify.js',
   'zip.js',
   'serialize.js',
+  'export.js',
   'main.js',
 ];
 
@@ -30,7 +31,8 @@ export function stripTestExports(source) {
 export function generate(dir = root) {
   const read = (name) => readFileSync(join(dir, 'src', name), 'utf8');
   const code = HEADER + CODE_MODULES.map((m) => stripTestExports(read(m))).join('\n');
-  return { 'code.js': code };
+  const ui = read('ui.template.html').replace('/*@@zip*/', () => stripTestExports(read('zip.js')));
+  return { 'code.js': code, 'ui.html': ui };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

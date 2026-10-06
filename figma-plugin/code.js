@@ -722,6 +722,234 @@ function serializeComponents(ctx) {
   return { sets: entries('set'), components: entries('component') };
 }
 
+// «Export specification»: walks the pages without changing anything and emits the files of the
+// spec zip (meta, variables, styles, components, one JSON and one PNG per top-level frame).
+// Depends on sha256.js, stable-stringify.js, zip.js (utf8Encode) and serialize.js.
+const SPEC_PLUGIN_VERSION = '0.9';
+const SPEC_PAGES = [
+  '00 · Start here',
+  '01 · Foundations',
+  '02 · Components Light',
+  '03 · Components Dark',
+  '04 · Catalog & Handoff',
+  '07 · Forma UI · Centered Documentation',
+];
+const SPEC_FRAME_TYPES = {
+  FRAME: 1,
+  COMPONENT: 1,
+  COMPONENT_SET: 1,
+  INSTANCE: 1,
+  SECTION: 1,
+  GROUP: 1,
+};
+const PNG_SCALES = [1, 0.5];
+
+// ASCII path segment; the real name stays inside the JSON.
+function slugify(text) {
+  const slug = String(text)
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return slug || 'unnamed';
+}
+
+function uniqueSlug(text, used) {
+  const base = slugify(text);
+  let slug = base;
+  for (let n = 2; used[slug]; n++) slug = base + '-' + n;
+  used[slug] = true;
+  return slug;
+}
+
+function classifyFrame(name) {
+  if (/ · (light|dark) · \d+( · collapsed)?$/.test(name)) return 'screen';
+  if (name === 'Responsive & interaction contract') return 'contract';
+  if (name.indexOf('Forma / Website icon /') === 0) return 'icon';
+  return 'other';
+}
+
+// Width and height from the IHDR chunk of a PNG.
+function pngSize(bytes) {
+  const signature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+  const isIhdr =
+    bytes[12] === 0x49 && bytes[13] === 0x48 && bytes[14] === 0x44 && bytes[15] === 0x52;
+  if (bytes.length < 24 || signature.some((b, i) => bytes[i] !== b) || !isIhdr) {
+    throw new Error('Not a PNG');
+  }
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  return { width: view.getUint32(16, false), height: view.getUint32(20, false) };
+}
+
+// Exports at scale 1; if Figma clipped the image (the header size differs from the node size),
+// retries at 0.5 and records the scale actually obtained.
+async function exportPng(node) {
+  let last = null;
+  for (const scale of PNG_SCALES) {
+    const bytes = await node.exportAsync({
+      format: 'PNG',
+      constraint: { type: 'SCALE', value: scale },
+      useAbsoluteBounds: true,
+    });
+    const size = pngSize(bytes);
+    const fits =
+      Math.abs(size.width - Math.round(node.width * scale)) <= 1 &&
+      Math.abs(size.height - Math.round(node.height * scale)) <= 1;
+    last = { bytes, scale, width: size.width, height: size.height, clamped: !fits };
+    if (fits) return last;
+  }
+  const actual = Math.min(last.width / node.width, last.height / node.height);
+  last.scale = Math.round(actual * 10000) / 10000;
+  return last;
+}
+
+// deps: { resolver, emit(path, bytes), progress(message), now(), version }
+async function runExport(deps) {
+  const resolver = deps.resolver;
+  const pages = [];
+  const missing = [];
+  for (const name of SPEC_PAGES) {
+    const page = await resolver.loadPage(name);
+    if (page) pages.push(page);
+    else missing.push(name);
+  }
+  if (missing.length) throw new Error('Faltan páginas: ' + missing.join(', '));
+
+  const ctx = createSerializeContext(resolver);
+  const files = {};
+  const write = (path, bytes) => {
+    files[path] = sha256Hex(bytes);
+    deps.emit(path, bytes);
+  };
+  const writeJson = (path, value) => write(path, utf8Encode(stableStringify(value)));
+
+  const pageMeta = [];
+  const png = { requestedScale: PNG_SCALES[0], files: {}, skipped: [] };
+  const usedPageSlugs = {};
+  for (const page of pages) {
+    const pageSlug = uniqueSlug(page.name, usedPageSlugs);
+    const usedFrameSlugs = {};
+    const meta = { name: page.name, slug: pageSlug, frames: 0, skipped: 0, kinds: {} };
+    ctx.page = page.name;
+    for (let i = 0; i < page.children.length; i++) {
+      const child = page.children[i];
+      if (!SPEC_FRAME_TYPES[child.type]) {
+        meta.skipped++;
+        continue;
+      }
+      deps.progress(page.name + ' · ' + child.name);
+      const frameSlug = uniqueSlug(child.name, usedFrameSlugs);
+      const tree = await serializeNode(ctx, child, nodeKey(null, child.name, i), {});
+      writeJson(
+        'pages/' + pageSlug + '/' + frameSlug + '.json',
+        Object.assign({ page: page.name }, tree),
+      );
+      const pngPath = 'png/' + pageSlug + '/' + frameSlug + '.png';
+      if (child.visible === false) {
+        png.skipped.push(pngPath);
+      } else {
+        const image = await exportPng(child);
+        write(pngPath, image.bytes);
+        png.files[pngPath] = {
+          scale: image.scale,
+          width: image.width,
+          height: image.height,
+          clamped: image.clamped,
+        };
+      }
+      meta.frames++;
+      const kind = classifyFrame(child.name);
+      meta.kinds[kind] = (meta.kinds[kind] || 0) + 1;
+    }
+    pageMeta.push(meta);
+  }
+
+  deps.progress('Variables y estilos');
+  const variables = await serializeVariables(ctx);
+  writeJson('variables.json', variables);
+  const styles = await serializeStyles(ctx);
+  writeJson('styles.json', styles);
+  const components = serializeComponents(ctx);
+  writeJson('components.json', components);
+
+  const colorNames = {};
+  let variableCount = 0;
+  const perCollection = {};
+  for (const collection of variables.collections) {
+    perCollection[collection.name] = collection.variables.length;
+    variableCount += collection.variables.length;
+    for (const v of collection.variables)
+      if (v.name.indexOf('color/') === 0) colorNames[v.name] = true;
+  }
+  const pngInfo = Object.keys(png.files).map((p) => png.files[p]);
+  const scales = {};
+  for (const info of pngInfo) scales[info.scale] = (scales[info.scale] || 0) + 1;
+  const sum = (key) => pageMeta.reduce((n, p) => n + (p.kinds[key] || 0), 0);
+  const meta = {
+    plugin: { name: 'Forma UI Builder', version: deps.version },
+    exportedAt: deps.now(),
+    modeLayout:
+      perCollection['Forma / Color Dark'] === undefined
+        ? 'single-collection'
+        : 'separate-collections',
+    pages: pageMeta,
+    counts: {
+      pages: pageMeta.length,
+      frames: pageMeta.reduce((n, p) => n + p.frames, 0),
+      screens: sum('screen'),
+      contractFrames: sum('contract'),
+      icons: sum('icon'),
+      componentSets: components.sets.length,
+      variants: components.sets.reduce((n, s) => n + (s.children ? s.children.length : 0), 0),
+      components: components.components.length,
+      collections: variables.collections.length,
+      variables: variableCount,
+      variablesByCollection: perCollection,
+      colorVariables: Object.keys(colorNames).length,
+      textStyles: styles.text.length,
+      pngs: pngInfo.length,
+    },
+    png: {
+      requestedScale: png.requestedScale,
+      scales,
+      clamped: Object.keys(png.files).filter((p) => png.files[p].clamped),
+      skipped: png.skipped,
+      files: png.files,
+    },
+    files,
+  };
+  // meta.json is not hashed into itself, so it bypasses write().
+  deps.emit('meta.json', utf8Encode(stableStringify(meta)));
+  return { fileCount: Object.keys(files).length + 1, meta };
+}
+
+// Adapts the real figma object to the resolver the serializer expects.
+function makeFigmaResolver(figma) {
+  return {
+    mixed: figma.mixed,
+    getVariableById: (id) => figma.variables.getVariableByIdAsync(id),
+    getCollectionById: (id) => figma.variables.getVariableCollectionByIdAsync(id),
+    getStyleById: (id) => figma.getStyleByIdAsync(id),
+    getNodeById: (id) => figma.getNodeByIdAsync(id),
+    getMainComponent: (node) => node.getMainComponentAsync(),
+    getTextSegments: async (node, fields) => node.getStyledTextSegments(fields),
+    localCollections: () => figma.variables.getLocalVariableCollectionsAsync(),
+    localVariables: () => figma.variables.getLocalVariablesAsync(),
+    localStyles: async () => ({
+      text: await figma.getLocalTextStylesAsync(),
+      paint: await figma.getLocalPaintStylesAsync(),
+      effect: await figma.getLocalEffectStylesAsync(),
+      grid: await figma.getLocalGridStylesAsync(),
+    }),
+    loadPage: async (name) => {
+      const page = figma.root.children.find((p) => p.name === name);
+      if (page) await page.loadAsync();
+      return page || null;
+    },
+  };
+}
+
 const COLORS = {"bg":{"light":"#f5f7fb","dark":"#0b1220"},"surface":{"light":"#ffffff","dark":"#141f32"},"ink":{"light":"#17243d","dark":"#e7edf8"},"muted":{"light":"#6a778d","dark":"#a0afc5"},"line":{"light":"#e4e9f1","dark":"#2a3951"},"nav":{"light":"#111e35","dark":"#0a101c"},"nav-active":{"light":"#263b5d","dark":"#233652"},"nav-text":{"light":"#a8b7d0","dark":"#a8b7d0"},"brand":{"light":"#3569f6","dark":"#4779ff"},"blue-bg":{"light":"#ebf1ff","dark":"#1a2c4e"},"blue-ink":{"light":"#2455cd","dark":"#9bbcff"},"green-bg":{"light":"#e7f6ee","dark":"#173a30"},"green-ink":{"light":"#187349","dark":"#8edcb5"},"amber-bg":{"light":"#fff3dd","dark":"#3d311b"},"amber-ink":{"light":"#94600d","dark":"#f2ce85"},"red-bg":{"light":"#fdecec","dark":"#3f242b"},"red-ink":{"light":"#b63535","dark":"#ffacb3"},"on-brand":{"light":"#ffffff","dark":"#ffffff"},"nav-ink":{"light":"#ffffff","dark":"#ffffff"},"focus":{"light":"#3569f6","dark":"#9bbcff"},"surface-hover":{"light":"#edf2fa","dark":"#1d2b42"},"disabled":{"light":"#d2dae7","dark":"#34445c"},"overlay":{"light":"#0b1220","dark":"#000000"}};
 
 figma.showUI(__html__, {width:380,height:420,themeColors:true});
@@ -1153,7 +1381,14 @@ async function updateExisting(){
  return {createdOrUpdatedNodeIds:ids,websitePageId:result.page.id,screens:result.screenCount||40,prototypeLinks:result.wired||0,alreadyExisted:result.skipped||false};
 }
 figma.ui.onmessage=async m=>{
- if(!['build','update'].includes(m.type)||running)return;running=true;
+ if(!['build','update','export'].includes(m.type)||running)return;running=true;
+ if(m.type==='export'){
+ try{const summary=await runExport({resolver:makeFigmaResolver(figma),emit:(path,bytes)=>figma.ui.postMessage({type:'file',path,bytes}),progress:message=>figma.ui.postMessage({type:'progress',message:'Exportando: '+message}),now:()=>new Date().toISOString(),version:SPEC_PLUGIN_VERSION});
+ figma.ui.postMessage({type:'export-done',count:summary.fileCount,message:'Exportación lista: '+summary.fileCount+' archivos. Se descarga como forma-ui-spec.zip.'});}
+ catch(e){figma.ui.postMessage({type:'error',message:'No se pudo exportar: '+String(e.message||e)+'\nEl archivo de Figma no se modificó.'});}
+ finally{running=false;}
+ return;
+ }
  try{if(m.type==='build'&&figma.root.children.some(p=>p.name==='00 · Start here'))throw Error('Ya existe Forma UI. Usa Actualizar para conservar la biblioteca.');
  m.type==='update'?await updateExisting():await build();figma.ui.postMessage({type:'done',message:m.type==='update'?'Listo: componentes corregidos y 40 pantallas en 07 · Forma UI · Centered Documentation. Revisa visualmente antes de publicar.':'Base creada. Pulsa Actualizar para añadir las pantallas web.'});}
  catch(e){figma.ui.postMessage({type:'error',message:'No se pudo completar: '+String(e.message||e)+'\nLas páginas anteriores se conservan. Si hubo salida parcial, revísala antes de ejecutar otra vez.'});}
