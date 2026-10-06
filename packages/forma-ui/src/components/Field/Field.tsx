@@ -1,4 +1,3 @@
-/// <reference types="vite/client" />
 import { useId, type ReactNode } from 'react'
 import { cx } from '../../lib/cx.js'
 import styles from './Field.module.css'
