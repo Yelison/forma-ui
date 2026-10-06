@@ -19,8 +19,10 @@ export { Field, type FieldControlProps, type FieldProps } from './components/Fie
 export { Input, type InputProps } from './components/Input/index.js'
 export {
   Button,
+  IconButton,
   buttonClassName,
   type ButtonProps,
+  type IconButtonProps,
   type ButtonStyleOptions,
   type ButtonVariant,
 } from './components/Button/index.js'
