@@ -1,0 +1,115 @@
+.bar {
+  border-block-end: 1px solid var(--color-line);
+}
+
+.inner {
+  --column-width: var(--site-nav-content-width);
+  display: flex;
+  align-items: center;
+  gap: var(--space-24);
+  min-height: var(--site-nav-height);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  /* Page 07 gives the wordmark a fixed width, which keeps Documentation where the design has it. A minimum, not a fixed
+     width, so a wider fallback font can still grow it. */
+  min-width: var(--site-wordmark-width);
+  min-height: var(--touch-target);
+  color: var(--color-ink);
+  font: var(--font-section);
+  text-decoration: none;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--site-mark-size);
+  height: var(--site-mark-size);
+  border-radius: var(--site-mark-radius);
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  font: var(--font-strong);
+}
+
+/* Below 768 px the links are in the drawer. */
+.links,
+.github {
+  display: none;
+}
+
+.link,
+.github {
+  position: relative;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: var(--touch-target);
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.link {
+  display: inline-flex;
+  font: var(--font-label);
+}
+
+.github {
+  margin-inline-start: auto;
+  font: var(--font-caption);
+}
+
+.link:hover,
+.github:hover {
+  color: var(--color-ink);
+}
+
+/* The section the page belongs to: blue text, as in page 07, and an underline, so it does not rest on color alone. */
+.link[aria-current] {
+  color: var(--color-blue-ink);
+}
+
+.link[aria-current]::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 2px;
+  background: var(--color-brand);
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-ink);
+  font: var(--font-section);
+  cursor: pointer;
+}
+
+.menuButton:hover {
+  background: var(--color-surface-hover);
+}
+
+@media (min-width: 768px) {
+  .links {
+    display: flex;
+  }
+
+  .github {
+    display: inline-flex;
+  }
+
+  .menuButton {
+    display: none;
+  }
+}
