@@ -477,3 +477,20 @@ test('only icon components get an SVG: not component sets, variants or screens',
     ],
   );
 });
+
+test('icon components whose names slugify alike get distinct SVG paths', async () => {
+  const file = exportableFile();
+  const library = file.page.children.find((c) => c.type === 'COMPONENT' && c.name.includes('icon'));
+  file.page.children.push(
+    { ...library, id: 'N:a', name: 'Forma / Icon / a-b' },
+    { ...library, id: 'N:b', name: 'Forma / Icon / a · b' },
+  );
+  const { emitted } = await runOn(file);
+  const paths = emitted
+    .map((e) => e.path)
+    .filter((p) => p.startsWith('svg/') && p.includes('forma-icon-a-b'));
+  assert.deepEqual(paths.sort(), [
+    'svg/07-forma-ui-centered-documentation/forma-icon-a-b-2.svg',
+    'svg/07-forma-ui-centered-documentation/forma-icon-a-b.svg',
+  ]);
+});
