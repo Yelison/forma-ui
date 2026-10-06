@@ -36,8 +36,7 @@ jobs:
       - run: npm run typecheck -w @yelison/forma-ui
       # The same tests as `npm test`, plus the coverage thresholds: running both would repeat the suite.
       - run: npm run test:coverage -w @yelison/forma-ui
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:browser
+      # The full build comes before the browser specs, which load the built dist/tokens.css and dist/styles.css.
       - run: npm run build -w @yelison/forma-ui
       # Every file that `exports` promises must be in dist/: a build step that stops emitting one still exits 0.
       - run: |
@@ -48,6 +47,8 @@ jobs:
           console.log('Export targets present: ' + targets(require('./package.json').exports).length)
           "
         working-directory: packages/forma-ui
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
 
   site:
     name: Site

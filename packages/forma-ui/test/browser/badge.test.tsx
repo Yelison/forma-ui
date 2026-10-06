@@ -2,28 +2,18 @@ import type { CSSProperties } from 'react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { Badge, type BadgeTone } from '../../src/components/Badge'
 import { expectNoAxeViolations } from '../axe'
-import { mount } from './support'
+import { loadTokens, mount } from './support'
 
 // Axe computes contrast from the real styles, so the page gets the generated tokens, as a consumer's does.
-const built = import.meta.glob<string>('../../dist/tokens.css', { query: '?raw', import: 'default', eager: true })
-const tokensCss = built['../../dist/tokens.css']
-if (tokensCss === undefined)
-  throw new Error('dist/tokens.css is missing: run `npm run build:tokens -w @yelison/forma-ui`')
-
 const tones: BadgeTone[] = ['blue', 'green', 'amber', 'red', 'neutral']
 const themes = ['light', 'dark'] as const
 const root = document.documentElement
 
-let stylesheet: HTMLStyleElement
-
 beforeEach(() => {
-  stylesheet = document.createElement('style')
-  stylesheet.textContent = tokensCss
-  document.head.append(stylesheet)
+  loadTokens()
 })
 
 afterEach(() => {
-  stylesheet.remove()
   root.removeAttribute('data-theme')
 })
 

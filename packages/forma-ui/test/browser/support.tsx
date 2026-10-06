@@ -1,3 +1,4 @@
+/// <reference types="vite/types/importMeta.d.ts" />
 import type { ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
@@ -72,12 +73,55 @@ export function mount(ui: ReactNode): HTMLElement {
   return container
 }
 
+// Built files
+//
+// Specs that depend on how the package looks load what `npm run build` writes into dist/, the files a consumer imports,
+// instead of a copy that could drift. dist/ is not committed, so a missing file fails with the command that writes it.
+
+const builtFiles = import.meta.glob<string>('../../dist/{tokens.css,tokens.json,styles.css}', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
+
+const builtBy = { 'tokens.css': 'build:tokens', 'tokens.json': 'build:tokens', 'styles.css': 'build' } as const
+type BuiltFile = keyof typeof builtBy
+
+/** The text of a built file of the package, as a consumer receives it. */
+export function readBuilt(name: BuiltFile): string {
+  const content = builtFiles[`../../dist/${name}`]
+  if (content === undefined)
+    throw new Error(`dist/${name} is missing: run \`npm run ${builtBy[name]} -w @yelison/forma-ui\``)
+  return content
+}
+
+const loadedStylesheets = new Map<BuiltFile, HTMLStyleElement>()
+
+function loadStylesheet(name: 'tokens.css' | 'styles.css') {
+  if (loadedStylesheets.has(name)) return
+  const stylesheet = document.createElement('style')
+  stylesheet.textContent = readBuilt(name)
+  document.head.append(stylesheet)
+  loadedStylesheets.set(name, stylesheet)
+}
+
+/** Adds the generated `tokens.css` to the page, as a consumer imports it. `reset()` removes it. */
+export const loadTokens = () => loadStylesheet('tokens.css')
+
+/**
+ * Adds the built `styles.css` to the page: the component rules a consumer receives, under the `forma-` class names.
+ * The runner already applies each component's CSS Module, so this only proves anything where the runner does not
+ * (see vitest.browser.config.ts). `reset()` removes it.
+ */
+export const loadStyles = () => loadStylesheet('styles.css')
+
 // Reset between tests
 
 /**
  * Leaves the page as a test file starts: no React tree, no open <dialog>, nothing in the body, the focus on the
- * body and no emulated media preference. setup.ts runs it after every test, so a test never inherits the focus,
- * the dialogs or the media preferences of the previous one, whatever the order.
+ * body, no stylesheet added by `loadTokens()` or `loadStyles()` and no emulated media preference. setup.ts runs it
+ * after every test, so a test never inherits the focus, the dialogs or the media preferences of the previous one,
+ * whatever the order.
  */
 export async function reset() {
   // Closing a dialog restores the focus synchronously, while the dialog is still in the document. Its `close` event
@@ -85,6 +129,8 @@ export async function reset() {
   for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[open]')) dialog.close()
   for (const root of roots) flushSync(() => root.unmount())
   roots.clear()
+  for (const stylesheet of loadedStylesheets.values()) stylesheet.remove()
+  loadedStylesheets.clear()
   // Removing the focused node is what returns the focus to the body; there is nothing left to blur.
   document.body.replaceChildren()
   await resetMedia()

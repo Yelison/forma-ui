@@ -10,25 +10,16 @@ import {
   type IconButtonProps,
 } from '../../src/components/Button'
 import { expectNoAxeViolations } from '../axe'
-import { emulateMedia, mount, pressTab } from './support'
+import { emulateMedia, loadTokens, mount, pressTab } from './support'
 
 // Axe computes contrast from the real styles, so the page gets the generated tokens, as a consumer's does.
-const built = import.meta.glob<string>('../../dist/tokens.css', { query: '?raw', import: 'default', eager: true })
-const tokensCss = built['../../dist/tokens.css']
-if (tokensCss === undefined)
-  throw new Error('dist/tokens.css is missing: run `npm run build:tokens -w @yelison/forma-ui`')
-
 const variants: ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger']
 const states = ['default', 'disabled', 'loading'] as const
 const themes = ['light', 'dark'] as const
 const root = document.documentElement
 
-let stylesheet: HTMLStyleElement
-
 beforeEach(() => {
-  stylesheet = document.createElement('style')
-  stylesheet.textContent = tokensCss
-  document.head.append(stylesheet)
+  loadTokens()
 })
 
 // The stylesheet of a consumer, appended after the library's own, as the README tells a consumer to load it.
@@ -41,7 +32,6 @@ function loadConsumerCss(css: string) {
 }
 
 afterEach(() => {
-  stylesheet.remove()
   consumerStylesheet?.remove()
   consumerStylesheet = undefined
   root.removeAttribute('data-theme')
