@@ -6,6 +6,8 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   build: {
+    // The token generator writes dist/tokens.css and dist/tokens.json before Vite runs; `npm run build` cleans dist first.
+    emptyOutDir: false,
     lib: {
       entry: 'src/index.ts',
       formats: ['es'],
