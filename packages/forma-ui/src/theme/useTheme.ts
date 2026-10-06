@@ -1,5 +1,5 @@
 import { useCallback, useSyncExternalStore } from 'react'
-import type { ResolvedTheme, ThemePreference, ThemeStore } from './themeStore'
+import type { ResolvedTheme, ThemePreference, ThemeStore } from './themeStore.js'
 
 /** What {@link useTheme} returns. */
 export interface UseThemeResult {
