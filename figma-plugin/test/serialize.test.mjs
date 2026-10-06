@@ -317,3 +317,30 @@ test('a variant never has its componentPropertyDefinitions read; a standalone co
   const { components } = serializeComponents(ctx);
   assert.deepEqual(components[0].propertyDefinitions, icon.propertyDefinitions);
 });
+
+test('grid styles are rounded and their colors are lowercase hex', async () => {
+  const file = makeFile('single');
+  const { grid } = await serializeStyles(createSerializeContext(file.resolver));
+  assert.deepEqual(grid[0].layoutGrids, [
+    {
+      alignment: 'STRETCH',
+      color: '#ff00001a',
+      count: 12,
+      gutterSize: 16,
+      offset: 24.13,
+      pattern: 'COLUMNS',
+      visible: true,
+    },
+  ]);
+});
+
+test('an empty text has no segments key, a styled one keeps them', async () => {
+  const file = makeFile('single');
+  const marker =
+    file.page.children.find((c) => c.name === 'Header') || file.dark.children[0].children[2];
+  assert.equal(marker.name, 'marker');
+  const empty = await screenJson(file, file.dark);
+  assert.equal(find(empty, 'marker').segments, undefined);
+  assert.equal(find(empty, 'marker').characters, 'marker');
+  assert.equal(find(empty, 'Label').segments.length, 2);
+});

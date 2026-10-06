@@ -334,7 +334,23 @@ export function makeFile(layout = 'single') {
       ],
       paint: [],
       effect: [],
-      grid: [],
+      grid: [
+        {
+          id: 'S:grid',
+          name: 'Forma / Columns',
+          layoutGrids: [
+            {
+              pattern: 'COLUMNS',
+              alignment: 'STRETCH',
+              count: 12,
+              gutterSize: 16.004,
+              offset: 24.126,
+              visible: true,
+              color: { r: 1, g: 0, b: 0, a: 0.1 },
+            },
+          ],
+        },
+      ],
     }),
   };
   return { resolver, collections, variables, nodes, page, dark, light, detail, set, icon, primary };
