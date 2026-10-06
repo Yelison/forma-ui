@@ -1,0 +1,104 @@
+.button {
+  /* The library ships no reset, so the box model is set here: the painted height is `--button-height`, border included. */
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  min-height: var(--button-height);
+  padding: 0 var(--space-8);
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  font: var(--font-label);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.button:disabled,
+.button[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+/* After the rule above: a loading button is `aria-disabled` too, but it shows that it is working. */
+.button[aria-busy='true'] {
+  cursor: progress;
+}
+
+.block {
+  width: 100%;
+}
+
+.primary {
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+}
+
+.primary:not(:disabled, [aria-disabled='true']):hover {
+  background: var(--color-brand-hover);
+}
+
+.secondary {
+  background: var(--color-surface);
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--color-ink);
+}
+
+.danger {
+  background: var(--color-red-bg);
+  color: var(--color-red-ink);
+}
+
+.secondary:not(:disabled, [aria-disabled='true']):hover,
+.ghost:not(:disabled, [aria-disabled='true']):hover,
+.danger:not(:disabled, [aria-disabled='true']):hover {
+  background: var(--color-surface-hover);
+}
+
+.button:disabled {
+  background: var(--color-disabled);
+  border-color: transparent;
+}
+
+.secondary:disabled,
+.danger:disabled,
+.ghost:disabled {
+  color: var(--color-muted);
+}
+
+.spinner {
+  box-sizing: border-box;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: var(--radius-round);
+  /* No token holds the turn's duration: it stays as Resolve had it. */
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* The label and `aria-busy` already say that the button is working, so the ring may stand still. */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

@@ -34,6 +34,10 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ Field: expect.any(Function), Input: expect.any(Function) })
   })
 
+  it('exports Button and the class names that make a link look like one', () => {
+    expect(entry).toMatchObject({ Button: expect.any(Function), buttonClassName: expect.any(Function) })
+  })
+
   // An export added by accident becomes API that the next release has to keep.
   it('keeps the internal helpers out of the public API', () => {
     for (const internal of ['cx', 'computePosition', 'lockScroll', 'useFloating', 'useModalDialog']) {
