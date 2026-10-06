@@ -44,8 +44,9 @@
 //     shorthands and may hold aliases in their fields. Any other string is a literal passed through unchanged.
 //   - Blank lines in the CSS separate the source files. Group and token order is the source order (JSON puts
 //     integer-like keys such as `space.4` first, ascending), and the files are read in FILE_ORDER.
-import { existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs'
-import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
+import { readFileSync, readdirSync } from 'node:fs'
+import { isAbsolute, join, relative, resolve, sep } from 'node:path'
+import { isMainModule, write } from './script-utils.ts'
 
 export const FILE_ORDER = ['color', 'typography', 'dimensions', 'motion-effects', 'z-index'] as const
 
@@ -404,11 +405,6 @@ export function generate(files: SourceFile[]): Outputs {
   return { json, css: buildCss(tokens), ts: buildTs(tokens), figma: buildFigma(tokens) }
 }
 
-function write(path: string, content: string) {
-  mkdirSync(dirname(path), { recursive: true })
-  writeFileSync(path, content)
-}
-
 function isInside(directory: string, path: string): boolean {
   const rel = relative(directory, path)
   return !(rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel))
@@ -432,14 +428,7 @@ export function main(args: string[], root: string, repoRoot = resolve(root, '..'
   if (figma !== undefined) write(figma, outputs.figma)
 }
 
-// Node resolves the main module to its real path, so a symlinked invocation must be compared by real path too.
-// Whoever imports this module may have an argv[1] that is no file at all (`node -e "await import(...)" name`).
-function isMainModule(): boolean {
-  const entry = process.argv[1]
-  return entry !== undefined && existsSync(entry) && realpathSync(entry) === import.meta.filename
-}
-
-if (isMainModule()) {
+if (isMainModule(import.meta.filename)) {
   try {
     main(process.argv.slice(2), resolve(import.meta.dirname, '..'))
   } catch (error) {

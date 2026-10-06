@@ -10,9 +10,9 @@
 //   src/components/Icon/paths.ts   `iconPaths` and `IconName`. Committed; CI regenerates it and fails on any diff.
 //
 // The script sticks to erasable TypeScript, so type stripping can run it (see build-tokens.ts).
-import { existsSync, mkdirSync, realpathSync, writeFileSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import { isMainModule, write } from './script-utils.ts'
 
 export const SOURCE = 'design/resolve-c3f02f8/icon-paths.ts'
 export const OUTPUT = 'src/components/Icon/paths.ts'
@@ -67,22 +67,11 @@ export async function loadSource(repoRoot: string): Promise<IconPaths> {
   return validate(module.iconPaths)
 }
 
-function write(path: string, text: string): void {
-  mkdirSync(dirname(path), { recursive: true })
-  writeFileSync(path, text)
-}
-
 export async function main(root: string, repoRoot = resolve(root, '..', '..')): Promise<void> {
   write(join(root, OUTPUT), generate(await loadSource(repoRoot)))
 }
 
-// Node resolves the main module to its real path, so a symlinked invocation must be compared by real path too.
-function isMainModule(): boolean {
-  const entry = process.argv[1]
-  return entry !== undefined && existsSync(entry) && realpathSync(entry) === import.meta.filename
-}
-
-if (isMainModule()) {
+if (isMainModule(import.meta.filename)) {
   try {
     await main(resolve(import.meta.dirname, '..'))
   } catch (error) {

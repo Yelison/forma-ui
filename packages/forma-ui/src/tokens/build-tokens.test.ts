@@ -26,6 +26,13 @@ function tempRepo() {
   }
 }
 
+// The generator and the helpers it imports, so that the copy can run on its own.
+function copyScripts(root: string) {
+  for (const file of ['build-tokens.ts', 'script-utils.ts']) {
+    copyFileSync(join(packageRoot, 'scripts', file), join(root, 'scripts', file))
+  }
+}
+
 // A copy of the real sources, edited through `tree`: the groups of every file side by side (`tree.color.link`).
 function edited(edit: (tree: Record<string, any>) => void): SourceFile[] {
   const files = structuredClone(sources())
@@ -82,7 +89,7 @@ describe('determinism', () => {
     try {
       mkdirSync(join(root, 'scripts'))
       const script = join(root, 'scripts/build-tokens.ts')
-      copyFileSync(join(packageRoot, 'scripts/build-tokens.ts'), script)
+      copyScripts(root)
       execFileSync(
         process.execPath,
         [
@@ -105,7 +112,7 @@ describe('determinism', () => {
     const { workspace, root, cleanup } = tempRepo()
     try {
       mkdirSync(join(root, 'scripts'))
-      copyFileSync(join(packageRoot, 'scripts/build-tokens.ts'), join(root, 'scripts/build-tokens.ts'))
+      copyScripts(root)
       const link = join(workspace, 'linked-package')
       symlinkSync(root, link)
       execFileSync(
