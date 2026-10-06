@@ -83,6 +83,30 @@ check "detached worktree: rc 0" test $rc -eq 0
 check "detached worktree: reviews the branch tip" test "$(git -C "$R" rev-parse HEAD)" = "$tip"
 check "detached worktree: the tip is what refs/heads says" test "$tip" = "$(git -C "$T/repo" rev-parse refs/heads/feat/impl-a)"
 check "detached worktree: review.sha recorded" test "$(jq -r .review.sha "$RB/task.json")" = "$tip"
+echo "== round 6: --effort changes the level of the review"
+git -C "$W" checkout -q feat/impl-a; git -C "$W" commit -q --allow-empty -m "fix: six"
+out=$("$HERDR/new-review.sh" --task impl-a --round 6 2>&1); rc=$?
+check "round without --effort: rc 0" test $rc -eq 0
+check "round without --effort: keeps the level of the first round" test "$(jq -r .effort.level "$RB/task.json")" = high
+check "round without --effort: no entry in the history" test "$(jq -r '.effort.history | length' "$RB/task.json")" = 1
+git -C "$W" commit -q --allow-empty -m "fix: seven"; : >"$T/state/calls.log"
+out=$("$HERDR/new-review.sh" --task impl-a --round 7 --effort medium 2>&1); rc=$?
+check "round --effort: rc 0" test $rc -eq 0
+check "round --effort: settings.local.json has the new level" test "$(jq -r '.modelSettings["claude-opus-5-5"].effortLevel' "$R/.claude/settings.local.json")" = medium
+check "round --effort: task.json records it" test "$(jq -r .effort.level "$RB/task.json")" = medium
+check "round --effort: the history says why" test "$(jq -r '.effort.history[-1].reason' "$RB/task.json")" = "round 7: high to medium"
+check "round --effort: the reviewer was restarted to apply it" grep -q 'start rev-impl-a .*-- --continue' "$T/state/calls.log"
+check "round --effort: the round brief was still sent" grep -q 'brief-ronda-7.md' "$T/state/prompts.log"
+check "round --effort: the review moved" test "$(git -C "$R" rev-parse HEAD)" = "$(git -C "$W" rev-parse HEAD)"
+git -C "$W" commit -q --allow-empty -m "fix: eight"; : >"$T/state/calls.log"
+out=$("$HERDR/new-review.sh" --task impl-a --round 8 --effort medium 2>&1); rc=$?
+check "round --effort with the same level: rc 0" test $rc -eq 0
+check "round --effort with the same level: no restart" bash -c "! grep -q 'start ' '$T/state/calls.log'"
+git -C "$W" commit -q --allow-empty -m "fix: nine"; before=$(git -C "$R" rev-parse HEAD)
+out=$(HERDR_MAX_LOAD=0 "$HERDR/new-review.sh" --task impl-a --round 9 --effort high 2>&1); rc=$?
+check "round --effort on a loaded machine: refused" test $rc -ne 0
+check "round --effort on a loaded machine: nothing moved" test "$(git -C "$R" rev-parse HEAD)" = "$before"
+check "round --effort on a loaded machine: the level is unchanged" test "$(jq -r .effort.level "$RB/task.json")" = medium
 echo "== Compose on: the commands carry the review's project, not the implementer's"
 mk_env; export HERDR_COMPOSE=1; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2
 mk_impl "$SA" 'docker compose -p forma-ui-impl-a up -d && vite --port __VITE__'

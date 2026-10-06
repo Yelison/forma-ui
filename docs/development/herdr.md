@@ -244,11 +244,14 @@ The reviewed commit is what the task's branch points at, its base is the task's 
 refused before anything is created. The review id must be a valid task id, so the task id has at most 33 characters.
 
 **Next rounds.** The implementer does not touch the reviewed commit while the review runs; fixes go on new commits.
-For the next round run `new-review.sh --task <id> --round N [--points …]`, with N greater than the review's current
+For the next round run `new-review.sh --task <id> --round N [--effort high|medium] [--points …]`, with N greater than the review's current
 round. It refuses while the reviewer is `working` or `blocked`, while the review worktree has changes, or if the task
 did not move. It moves the review worktree to the task's new `HEAD` (`git merge --ff-only`, or, if the history was
 rewritten, a new branch `review/<id>-<sha7>` and a `git range-diff` hint), writes `brief-ronda-N.md` and sends it to the
-reviewer, which is started again with `--continue` if it had exited. When every finding is low, the reviewer also
+reviewer, which is started again with `--continue` if it had exited. A round keeps the effort of the first one unless
+`--effort` names another level: then, before anything moves, the level is applied as `set-effort.sh` does (settings file
+and `effort.history` in the review's `task.json`; with a live reviewer it is restarted with `--restart`, with none the
+level applies when it starts again). A refusal there, such as a loaded machine, leaves the review where it was. When every finding is low, the reviewer also
 writes `fixes-proposal.md` for the coordinator to approve or annotate.
 
 ## Follow progress
