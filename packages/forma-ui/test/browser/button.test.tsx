@@ -398,7 +398,7 @@ describe('IconButton painting', () => {
 })
 
 describe('IconButton icons', () => {
-  it('draws the double arrow as two icons that overlap by a third of their box, not side by side', () => {
+  it('draws the double arrow as two overlapping icons, each 30% of a box after the previous one', () => {
     const { icons, drawings } = mountIconButton(iconButtons[0] as IconButtonProps)
 
     const [first, second] = drawings.map((drawing) => drawing.getBoundingClientRect())
