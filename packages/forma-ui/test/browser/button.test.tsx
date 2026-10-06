@@ -1,7 +1,14 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
-import { Button, buttonClassName, type ButtonProps, type ButtonVariant } from '../../src/components/Button'
+import {
+  Button,
+  IconButton,
+  buttonClassName,
+  type ButtonProps,
+  type ButtonVariant,
+  type IconButtonProps,
+} from '../../src/components/Button'
 import { expectNoAxeViolations } from '../axe'
 import { emulateMedia, mount, pressTab } from './support'
 
@@ -120,7 +127,10 @@ describe('Button keyboard and focus', () => {
 
 // The tokens are resolved by the browser itself: a probe takes the computed value of `var(--token)`, in rgb, as the
 // button's own colors are reported.
-function resolved(property: 'color' | 'background-color' | 'border-top-color' | 'outline-color', token: string) {
+function resolved(
+  property: 'color' | 'background-color' | 'border-top-color' | 'outline-color' | 'width',
+  token: string,
+) {
   const probe = document.createElement('span')
   probe.style.setProperty(property, `var(${token})`)
   document.body.append(probe)
@@ -271,5 +281,145 @@ describe('Button spinner', () => {
 
     const { width, height } = spinnerOf(button).getBoundingClientRect()
     expect([width, height]).toEqual([Number.parseFloat(size), Number.parseFloat(size)])
+  })
+})
+
+// The three icon buttons of Resolve's sidebar: the double arrow that collapses it, the same mirrored that expands it,
+// and the single arrow that closes the drawer.
+const iconButtons: IconButtonProps[] = [
+  { icon: ['arrow', 'arrow'], label: 'Collapse the sidebar' },
+  { icon: ['arrow', 'arrow'], flip: true, label: 'Expand the sidebar' },
+  { icon: 'arrow', label: 'Close the menu' },
+]
+
+function mountIconButton(props: IconButtonProps, style?: CSSProperties) {
+  const container = mount(
+    <Page style={style}>
+      <IconButton {...props} />
+    </Page>,
+  )
+  const button = container.querySelector('button')
+  if (!button) throw new Error('the icon button did not render')
+  const icons = button.querySelector('span')
+  if (!icons) throw new Error('the icon button has no icons')
+  return { container, button, icons, drawings: [...button.querySelectorAll('svg')] }
+}
+
+describe('IconButton accessibility', () => {
+  it.each(themes.flatMap((theme) => iconButtons.map((props) => ({ theme, props, name: props.label }))))(
+    'has no axe violations for "$name" in the $theme theme',
+    async ({ theme, props }) => {
+      root.setAttribute('data-theme', theme)
+      const { container } = mountIconButton(props)
+
+      await expectNoAxeViolations(container)
+    },
+  )
+
+  it.each(themes)('has no axe violations when it is disabled in the %s theme', async (theme) => {
+    root.setAttribute('data-theme', theme)
+    const { container } = mountIconButton({ icon: 'bell', label: 'Notifications', disabled: true })
+
+    await expectNoAxeViolations(container)
+  })
+})
+
+describe('IconButton painting', () => {
+  // The target is a token that a consumer can raise: a literal 44 would pass until someone does.
+  it.each(['36px', '52px'])('is %s wide and tall when --touch-target says so', (size) => {
+    const { button } = mountIconButton({ icon: 'bell', label: 'Notifications' }, {
+      '--touch-target': size,
+    } as CSSProperties)
+
+    const { width, height } = button.getBoundingClientRect()
+    expect([width, height]).toEqual([Number.parseFloat(size), Number.parseFloat(size)])
+  })
+
+  it('is muted at rest, and inked on a surface-hover background on hover', async () => {
+    const { button } = mountIconButton({ icon: 'bell', label: 'Notifications' }, {
+      '--duration-fast': '0s',
+    } as CSSProperties)
+    expect(getComputedStyle(button).color).toBe(resolved('color', '--color-muted'))
+    expect(getComputedStyle(button).backgroundColor).toBe(transparent)
+
+    await userEvent.hover(button)
+
+    await expect.poll(() => getComputedStyle(button).color).toBe(resolved('color', '--color-ink'))
+    expect(getComputedStyle(button).backgroundColor).toBe(resolved('background-color', '--color-surface-hover'))
+  })
+
+  it('fades when it is disabled, and does not react to hover', async () => {
+    const container = mount(
+      <Page style={{ '--duration-fast': '0s' } as CSSProperties}>
+        <IconButton icon="bell" label="Available" />
+        <IconButton icon="bell" label="Disabled" disabled />
+      </Page>,
+    )
+    const [available, disabled] = container.querySelectorAll('button')
+
+    await userEvent.hover(available as HTMLButtonElement)
+    await expect
+      .poll(() => getComputedStyle(available as HTMLButtonElement).color)
+      .toBe(resolved('color', '--color-ink'))
+    await userEvent.hover(disabled as HTMLButtonElement, { force: true })
+
+    expect(getComputedStyle(disabled as HTMLButtonElement).opacity).toBe('0.45')
+    expect(getComputedStyle(disabled as HTMLButtonElement).color).toBe(resolved('color', '--color-muted'))
+  })
+
+  it('draws the focus ring when the keyboard reaches it, and skips it when it is disabled', async () => {
+    root.setAttribute('data-theme', 'dark')
+    const container = mount(
+      <Page>
+        <IconButton icon="bell" label="Disabled" disabled />
+        <IconButton icon="bell" label="Notifications" />
+      </Page>,
+    )
+    const [, button] = container.querySelectorAll('button')
+
+    await pressTab()
+
+    expect(document.activeElement).toBe(button)
+    const style = getComputedStyle(button as HTMLButtonElement)
+    expect([style.outlineStyle, style.outlineWidth, style.outlineOffset]).toEqual(['solid', '2px', '2px'])
+    expect(style.outlineColor).toBe(resolved('outline-color', '--color-focus'))
+  })
+})
+
+describe('IconButton icons', () => {
+  it('draws the double arrow as two icons that overlap by a third of their box, not side by side', () => {
+    const { icons, drawings } = mountIconButton(iconButtons[0] as IconButtonProps)
+
+    const [first, second] = drawings.map((drawing) => drawing.getBoundingClientRect())
+    if (!first || !second) throw new Error('the double arrow has fewer than two icons')
+    // 20 px icons: each box starts 6 px after the previous one, so the pair is 26 px wide, as in Resolve.
+    expect(second.left - first.left).toBeCloseTo(6, 1)
+    expect(second.left).toBeLessThan(first.right)
+    expect(icons.getBoundingClientRect().width).toBeCloseTo(26, 1)
+  })
+
+  it('centers the group in the button', () => {
+    const { button, icons } = mountIconButton(iconButtons[0] as IconButtonProps)
+
+    const group = icons.getBoundingClientRect()
+    const box = button.getBoundingClientRect()
+    expect(group.left + group.width / 2).toBeCloseTo(box.left + box.width / 2, 1)
+    expect(group.top + group.height / 2).toBeCloseTo(box.top + box.height / 2, 1)
+  })
+
+  it('mirrors the group horizontally with flip, and only then', () => {
+    const [collapse, expand, close] = iconButtons.map((props) => mountIconButton(props))
+
+    expect(getComputedStyle(expand?.icons as HTMLElement).transform).toBe('matrix(-1, 0, 0, 1, 0, 0)')
+    expect(getComputedStyle(collapse?.icons as HTMLElement).transform).toBe('none')
+    expect(getComputedStyle(close?.icons as HTMLElement).transform).toBe('none')
+  })
+
+  it('keeps the box of a mirrored group where it was', () => {
+    const [collapse, expand] = iconButtons.map((props) => mountIconButton(props))
+
+    const plain = collapse?.icons.getBoundingClientRect()
+    const mirrored = expand?.icons.getBoundingClientRect()
+    expect([mirrored?.width, mirrored?.height]).toEqual([plain?.width, plain?.height])
   })
 })
