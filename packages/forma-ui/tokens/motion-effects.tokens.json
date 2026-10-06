@@ -1,0 +1,35 @@
+{
+  "duration": {
+    "fast": {
+      "$type": "duration",
+      "$value": "120ms"
+    },
+    "base": {
+      "$type": "duration",
+      "$value": "200ms"
+    }
+  },
+  "overlay": {
+    "opacity": {
+      "$type": "number",
+      "$value": 0.55
+    }
+  },
+  "focus": {
+    "ring": {
+      "$type": "border",
+      "$value": {
+        "width": "2px",
+        "style": "solid",
+        "color": "{color.focus}"
+      }
+    }
+  },
+  "shadow": {
+    "popover": {
+      "$type": "shadow",
+      "$value": "0 8px 24px rgb(11 18 32 / 0.16)",
+      "$description": "A CSS literal passed through unchanged (decision D10); making it theme-aware is a later change."
+    }
+  }
+}

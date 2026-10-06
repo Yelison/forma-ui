@@ -1,0 +1,321 @@
+{
+  "color": {
+    "bg": {
+      "$type": "color",
+      "$value": "#f5f7fb",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#f5f7fb",
+            "dark": "#0b1220"
+          }
+        }
+      }
+    },
+    "surface": {
+      "$type": "color",
+      "$value": "#ffffff",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#ffffff",
+            "dark": "#141f32"
+          }
+        }
+      }
+    },
+    "ink": {
+      "$type": "color",
+      "$value": "#17243d",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#17243d",
+            "dark": "#e7edf8"
+          }
+        }
+      }
+    },
+    "muted": {
+      "$type": "color",
+      "$value": "#616d81",
+      "$description": "Adjusted to AA in code (Resolve #14); not in Figma. The contrast test guards it.",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#616d81",
+            "dark": "#a0afc5"
+          }
+        }
+      }
+    },
+    "line": {
+      "$type": "color",
+      "$value": "#e4e9f1",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#e4e9f1",
+            "dark": "#2a3951"
+          }
+        }
+      }
+    },
+    "nav": {
+      "$type": "color",
+      "$value": "#111e35",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#111e35",
+            "dark": "#0a101c"
+          }
+        }
+      }
+    },
+    "nav-active": {
+      "$type": "color",
+      "$value": "#263b5d",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#263b5d",
+            "dark": "#233652"
+          }
+        }
+      }
+    },
+    "nav-text": {
+      "$type": "color",
+      "$value": "#a8b7d0",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#a8b7d0",
+            "dark": "#a8b7d0"
+          }
+        }
+      }
+    },
+    "brand": {
+      "$type": "color",
+      "$value": "#3569f6",
+      "$description": "Dark value darkened to AA against on-brand in code (Resolve #65); not in Figma.",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#3569f6",
+            "dark": "#3068ff"
+          }
+        }
+      }
+    },
+    "brand-hover": {
+      "$type": "color",
+      "$value": "#3161e0",
+      "$description": "Primary hover, adjusted in code (Resolve #65); not in Figma.",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#3161e0",
+            "dark": "#2a5ee6"
+          }
+        }
+      }
+    },
+    "link": {
+      "$type": "color",
+      "$value": "{color.blue-ink}",
+      "$description": "Brand text: semantic token from code (Resolve #65); not in Figma.",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "{color.blue-ink}",
+            "dark": "{color.blue-ink}"
+          }
+        }
+      }
+    },
+    "blue-bg": {
+      "$type": "color",
+      "$value": "#ebf1ff",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#ebf1ff",
+            "dark": "#1a2c4e"
+          }
+        }
+      }
+    },
+    "blue-ink": {
+      "$type": "color",
+      "$value": "#2455cd",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#2455cd",
+            "dark": "#9bbcff"
+          }
+        }
+      }
+    },
+    "green-bg": {
+      "$type": "color",
+      "$value": "#e7f6ee",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#e7f6ee",
+            "dark": "#173a30"
+          }
+        }
+      }
+    },
+    "green-ink": {
+      "$type": "color",
+      "$value": "#187349",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#187349",
+            "dark": "#8edcb5"
+          }
+        }
+      }
+    },
+    "amber-bg": {
+      "$type": "color",
+      "$value": "#fff3dd",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#fff3dd",
+            "dark": "#3d311b"
+          }
+        }
+      }
+    },
+    "amber-ink": {
+      "$type": "color",
+      "$value": "#94600d",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#94600d",
+            "dark": "#f2ce85"
+          }
+        }
+      }
+    },
+    "red-bg": {
+      "$type": "color",
+      "$value": "#fdecec",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#fdecec",
+            "dark": "#3f242b"
+          }
+        }
+      }
+    },
+    "red-ink": {
+      "$type": "color",
+      "$value": "#b63535",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#b63535",
+            "dark": "#ffacb3"
+          }
+        }
+      }
+    },
+    "on-brand": {
+      "$type": "color",
+      "$value": "#ffffff",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#ffffff",
+            "dark": "#ffffff"
+          }
+        }
+      }
+    },
+    "nav-ink": {
+      "$type": "color",
+      "$value": "#ffffff",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#ffffff",
+            "dark": "#ffffff"
+          }
+        }
+      }
+    },
+    "focus": {
+      "$type": "color",
+      "$value": "#3569f6",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#3569f6",
+            "dark": "#9bbcff"
+          }
+        }
+      }
+    },
+    "surface-hover": {
+      "$type": "color",
+      "$value": "#edf2fa",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#edf2fa",
+            "dark": "#1d2b42"
+          }
+        }
+      }
+    },
+    "disabled": {
+      "$type": "color",
+      "$value": "#d2dae7",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#d2dae7",
+            "dark": "#34445c"
+          }
+        }
+      }
+    },
+    "overlay": {
+      "$type": "color",
+      "$value": "#0b1220",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#0b1220",
+            "dark": "#000000"
+          }
+        }
+      }
+    },
+    "progress-track": {
+      "$type": "color",
+      "$value": "{color.line}",
+      "$description": "Progress track from code (Resolve #75); the dark tone is darker than line so brand keeps 3:1; not in Figma.",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "{color.line}",
+            "dark": "#202b3d"
+          }
+        }
+      }
+    }
+  }
+}

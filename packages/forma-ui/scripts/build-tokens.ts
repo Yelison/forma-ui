@@ -1,0 +1,374 @@
+// Token generator: reads tokens/*.tokens.json (Design Tokens Community Group format) and writes the outputs below.
+//
+//   node --experimental-strip-types scripts/build-tokens.ts [--figma <path>]
+//
+// The flag is needed on Node 22.6 to 22.17 (engines starts at 22.12); later versions accept and ignore it.
+// The script sticks to erasable TypeScript, relative `.ts` imports and `import type`, so type stripping can run it.
+//
+// Outputs (all deterministic: source order, fixed formatting, no timestamps):
+//   dist/tokens.css          Resolve's block structure: `:root` (light and every mode-less token), the viewport
+//                            overrides, the two identical dark blocks, aliases as `var(--name)`.
+//   dist/tokens.json         `{ light, dark }`, each mapping a CSS custom property name to its resolved value (no
+//                            `var()`). A token with a viewport override reports its base (desktop) value.
+//   src/tokens/tokens.ts     `tokenNames` and `TokenName`. Committed; CI regenerates it and fails on any diff.
+//   <path> (--figma)         The input of the Figma variables import (plan task 1.4). Never committed, never inside the
+//                            package: the Figma material lives outside this repository. Format:
+//                              {
+//                                "modes": ["light", "dark"],
+//                                "variables": [{
+//                                  "name": "color/bg",                        token path, `/`-separated
+//                                  "cssName": "--color-bg",
+//                                  "type": "COLOR" | "FLOAT" | "STRING",      color; dimension, duration, number; fontFamily
+//                                  "codeSyntax": { "WEB": "var(--color-bg)" },
+//                                  "values": { "light": { "value": "#f5f7fb", "alias": "color/x" }, "dark": { ... } }
+//                                }],                                          `value` is resolved (px and ms as numbers);
+//                                                                             `alias` appears when the raw value is an alias
+//                                "textStyles": [{ "name": "font/body", "cssName": "--font-body", "fontFamily": "...",
+//                                                 "fontWeight": 400, "fontSize": 14, "lineHeight": 20 }],
+//                                "skipped": [{ "name": "shadow/popover", "reason": "..." }]   no Figma variable type
+//                              }
+//
+// Source rules:
+//   - The CSS name is `--` plus the token path joined with `-` (`color.blue-ink` is `--color-blue-ink`).
+//   - `$value` is the light value. A token with `$extensions.forma.modes` carries both `light` and `dark` (`light`
+//     must equal `$value`) and goes into the light block and into both dark blocks. A token without modes is theme-neutral.
+//   - `$extensions.forma.media` maps a media condition to a replacement value, emitted after `:root`.
+//   - An alias fills a whole value (`{color.blue-ink}`). Composites (`typography`, `border`) are formatted as CSS
+//     shorthands and may hold aliases in their fields. Any other string is a literal passed through unchanged.
+//   - Blank lines in the CSS separate the source files. Group and token order is the source order (JSON puts integer-like keys such as `space.4` first, ascending),
+//     and the files are read in FILE_ORDER.
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { dirname, join, relative, resolve } from 'node:path'
+
+export const FILE_ORDER = ['color', 'typography', 'dimensions', 'motion-effects', 'z-index'] as const
+
+const MODES = ['light', 'dark'] as const
+type Mode = (typeof MODES)[number]
+
+export interface SourceFile {
+  file: string
+  data: unknown
+}
+
+export interface Outputs {
+  css: string
+  ts: string
+  json: string
+  figma: string
+}
+
+interface Token {
+  file: string
+  path: string
+  cssName: string
+  type: string
+  value: unknown
+  modes: Record<Mode, unknown> | undefined
+  media: [condition: string, value: unknown][]
+}
+
+const SOURCE_NOTE = 'tokens/*.tokens.json'
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+export function loadSources(tokensDir: string): SourceFile[] {
+  const expected = FILE_ORDER.map((name) => `${name}.tokens.json`)
+  const found = readdirSync(tokensDir).filter((name) => name.endsWith('.tokens.json'))
+  const unknown = found.filter((name) => !expected.includes(name))
+  if (unknown.length > 0) {
+    throw new Error(`Token files missing from FILE_ORDER in build-tokens.ts: ${unknown.sort().join(', ')}`)
+  }
+  return expected.map((file) => ({ file, data: JSON.parse(readFileSync(join(tokensDir, file), 'utf8')) as unknown }))
+}
+
+function collect(
+  node: Record<string, unknown>,
+  path: string[],
+  inherited: string | undefined,
+  file: string,
+  out: Token[],
+) {
+  const type = typeof node.$type === 'string' ? node.$type : inherited
+  for (const [key, child] of Object.entries(node)) {
+    if (key.startsWith('$')) continue
+    const childPath = [...path, key]
+    const dotted = childPath.join('.')
+    if (!isRecord(child)) throw new Error(`${file}: "${dotted}" is neither a token nor a group`)
+    if (!('$value' in child)) {
+      collect(child, childPath, type, file, out)
+      continue
+    }
+    const tokenType = typeof child.$type === 'string' ? child.$type : type
+    if (tokenType === undefined) throw new Error(`${file}: token "${dotted}" has no $type`)
+    const forma = isRecord(child.$extensions) && isRecord(child.$extensions.forma) ? child.$extensions.forma : {}
+    let modes: Token['modes']
+    if (forma.modes !== undefined) {
+      const declared = forma.modes
+      if (!isRecord(declared) || Object.keys(declared).sort().join() !== [...MODES].sort().join()) {
+        throw new Error(`${file}: token "${dotted}" must define exactly the modes ${MODES.join(' and ')}`)
+      }
+      if (JSON.stringify(declared.light) !== JSON.stringify(child.$value)) {
+        throw new Error(`${file}: token "${dotted}" has a $value that differs from its light mode`)
+      }
+      modes = { light: declared.light, dark: declared.dark }
+    }
+    const media = isRecord(forma.media) ? Object.entries(forma.media) : []
+    out.push({
+      file,
+      path: dotted,
+      cssName: `--${childPath.join('-')}`,
+      type: tokenType,
+      value: child.$value,
+      modes,
+      media,
+    })
+  }
+}
+
+function parse(files: SourceFile[]): Map<string, Token> {
+  const tokens: Token[] = []
+  for (const { file, data } of files) {
+    if (!isRecord(data)) throw new Error(`${file}: the root must be an object`)
+    collect(data, [], undefined, file, tokens)
+  }
+  const byPath = new Map<string, Token>()
+  const byCssName = new Map<string, Token>()
+  for (const token of tokens) {
+    const clash = byPath.get(token.path) ?? byCssName.get(token.cssName)
+    if (clash) throw new Error(`Token "${token.path}" collides with "${clash.path}" (${token.cssName})`)
+    byPath.set(token.path, token)
+    byCssName.set(token.cssName, token)
+  }
+  return byPath
+}
+
+type Ref = (target: string, where: string) => string
+
+// Formats a raw token value as CSS text; `ref` decides what an alias becomes.
+function render(value: unknown, token: Token, where: string, ref: Ref): string {
+  if (typeof value === 'number') return String(value)
+  if (typeof value === 'string') {
+    const alias = /^\{([^{}]+)\}$/.exec(value)
+    if (alias) return ref(alias[1] as string, where)
+    if (/[{}]/.test(value))
+      throw new Error(`Token "${token.path}" (${where}): an alias must fill the whole value, got "${value}"`)
+    return value
+  }
+  if (isRecord(value)) {
+    const part = (key: string) => {
+      if (value[key] === undefined)
+        throw new Error(`Token "${token.path}" (${where}): the ${token.type} value has no "${key}"`)
+      return render(value[key], token, `${where}.${key}`, ref)
+    }
+    if (token.type === 'typography')
+      return `${part('fontWeight')} ${part('fontSize')}/${part('lineHeight')} ${part('fontFamily')}`
+    if (token.type === 'border') return `${part('width')} ${part('style')} ${part('color')}`
+  }
+  throw new Error(`Token "${token.path}" (${where}): unsupported ${token.type} value`)
+}
+
+function valueIn(token: Token, mode: Mode): { raw: unknown; where: string } {
+  return token.modes
+    ? { raw: token.modes[mode], where: `$extensions.forma.modes.${mode}` }
+    : { raw: token.value, where: '$value' }
+}
+
+function lookup(tokens: Map<string, Token>, from: Token, target: string, where: string): Token {
+  const found = tokens.get(target)
+  if (!found)
+    throw new Error(`Token "${from.path}" (${where}): alias {${target}} points to a token that does not exist`)
+  return found
+}
+
+function resolveIn(
+  tokens: Map<string, Token>,
+  token: Token,
+  mode: Mode,
+  stack: string[],
+  raw?: { raw: unknown; where: string },
+): string {
+  if (stack.includes(token.path)) throw new Error(`Alias cycle: ${[...stack, token.path].join(' -> ')}`)
+  const { raw: value, where } = raw ?? valueIn(token, mode)
+  return render(value, token, where, (target, w) =>
+    resolveIn(tokens, lookup(tokens, token, target, w), mode, [...stack, token.path]),
+  )
+}
+
+function cssValue(tokens: Map<string, Token>, token: Token, raw: unknown, where: string): string {
+  return render(raw, token, where, (target, w) => `var(${lookup(tokens, token, target, w).cssName})`)
+}
+
+function declarations(tokens: Token[], valueOf: (token: Token) => string, indent: string): string {
+  const lines: string[] = []
+  let group: string | undefined
+  for (const token of tokens) {
+    if (group !== undefined && token.file !== group) lines.push('')
+    group = token.file
+    lines.push(`${indent}${token.cssName}: ${valueOf(token)};`)
+  }
+  return lines.join('\n')
+}
+
+function buildCss(tokens: Map<string, Token>): string {
+  const all = [...tokens.values()]
+  const light = declarations(all, (t) => cssValue(tokens, t, valueIn(t, 'light').raw, valueIn(t, 'light').where), '  ')
+  const modal = all.filter((t) => t.modes)
+  const dark = (indent: string) =>
+    declarations(modal, (t) => cssValue(tokens, t, valueIn(t, 'dark').raw, valueIn(t, 'dark').where), indent)
+
+  const conditions = [...new Set(all.flatMap((t) => t.media.map(([condition]) => condition)))]
+  const overrides = conditions.map((condition) => {
+    const members = all.filter((t) => t.media.some(([c]) => c === condition))
+    const body = declarations(
+      members,
+      (t) => {
+        const [, raw] = t.media.find(([c]) => c === condition) as [string, unknown]
+        return cssValue(tokens, t, raw, `$extensions.forma.media["${condition}"]`)
+      },
+      '    ',
+    )
+    return `@media ${condition} {\n  :root {\n${body}\n  }\n}\n`
+  })
+
+  return [
+    `/* Generated by scripts/build-tokens.ts from ${SOURCE_NOTE}. Do not edit by hand:`,
+    ' * change the source and run `npm run build:tokens -w @yelison/forma-ui`. */',
+    '',
+    ':root {',
+    '  color-scheme: light;',
+    '',
+    light,
+    '}',
+    '',
+    ...overrides,
+    '@media (prefers-color-scheme: dark) {',
+    "  :root:not([data-theme='light']) {",
+    '    color-scheme: dark;',
+    '',
+    dark('    '),
+    '  }',
+    '}',
+    '',
+    ":root[data-theme='dark'] {",
+    '  color-scheme: dark;',
+    '',
+    dark('  '),
+    '}',
+    '',
+  ].join('\n')
+}
+
+function buildTs(tokens: Map<string, Token>): string {
+  return [
+    `// Generated by scripts/build-tokens.ts from ${SOURCE_NOTE}. Do not edit by hand.`,
+    'export const tokenNames = [',
+    ...[...tokens.values()].map((t) => `  '${t.cssName}',`),
+    '] as const',
+    '',
+    'export type TokenName = (typeof tokenNames)[number]',
+    '',
+  ].join('\n')
+}
+
+function buildJson(tokens: Map<string, Token>): string {
+  const theme = (mode: Mode) =>
+    Object.fromEntries([...tokens.values()].map((t) => [t.cssName, resolveIn(tokens, t, mode, [])]))
+  return `${JSON.stringify({ light: theme('light'), dark: theme('dark') }, null, 2)}\n`
+}
+
+const FIGMA_TYPES: Record<string, 'COLOR' | 'FLOAT' | 'STRING'> = {
+  color: 'COLOR',
+  dimension: 'FLOAT',
+  duration: 'FLOAT',
+  number: 'FLOAT',
+  fontFamily: 'STRING',
+}
+
+function figmaNumber(token: Token, resolved: string): number {
+  const match = /^(-?\d+(?:\.\d+)?)(?:px|ms)?$/.exec(resolved)
+  if (!match) throw new Error(`Token "${token.path}": cannot turn "${resolved}" into a number for Figma`)
+  return Number(match[1])
+}
+
+function buildFigma(tokens: Map<string, Token>): string {
+  const variables: unknown[] = []
+  const textStyles: unknown[] = []
+  const skipped: unknown[] = []
+  for (const token of tokens.values()) {
+    const name = token.path.replaceAll('.', '/')
+    if (token.type === 'typography') {
+      const value = token.value as Record<string, unknown>
+      textStyles.push({
+        name,
+        cssName: token.cssName,
+        fontFamily: resolveIn(tokens, token, 'light', [], { raw: value.fontFamily, where: '$value.fontFamily' }),
+        fontWeight: Number(value.fontWeight),
+        fontSize: figmaNumber(token, String(value.fontSize)),
+        lineHeight: figmaNumber(token, String(value.lineHeight)),
+      })
+      continue
+    }
+    const figmaType = FIGMA_TYPES[token.type]
+    if (!figmaType) {
+      skipped.push({ name, reason: `no Figma variable type for ${token.type}` })
+      continue
+    }
+    const values = Object.fromEntries(
+      MODES.map((mode) => {
+        const { raw } = valueIn(token, mode)
+        const resolved = resolveIn(tokens, token, mode, [])
+        const alias = typeof raw === 'string' ? /^\{([^{}]+)\}$/.exec(raw)?.[1] : undefined
+        const value = figmaType === 'FLOAT' ? figmaNumber(token, resolved) : resolved
+        return [mode, alias === undefined ? { value } : { value, alias: alias.replaceAll('.', '/') }]
+      }),
+    )
+    variables.push({
+      name,
+      cssName: token.cssName,
+      type: figmaType,
+      codeSyntax: { WEB: `var(${token.cssName})` },
+      values,
+    })
+  }
+  return `${JSON.stringify({ modes: MODES, variables, textStyles, skipped }, null, 2)}\n`
+}
+
+export function generate(files: SourceFile[]): Outputs {
+  const tokens = parse(files)
+  // JSON first: resolving every token in both modes is what reports missing aliases and cycles.
+  const json = buildJson(tokens)
+  return { json, css: buildCss(tokens), ts: buildTs(tokens), figma: buildFigma(tokens) }
+}
+
+function write(path: string, content: string) {
+  mkdirSync(dirname(path), { recursive: true })
+  writeFileSync(path, content)
+}
+
+// `root` is the package directory: tokens/ is read from it, dist/ and src/tokens/ are written into it.
+export function main(args: string[], root: string): void {
+  let figma: string | undefined
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--figma' && args[i + 1] !== undefined) figma = resolve(args[++i] as string)
+    else throw new Error(`Unknown or incomplete argument "${args[i]}". Usage: build-tokens.ts [--figma <path>]`)
+  }
+  if (figma !== undefined && !relative(root, figma).startsWith('..')) {
+    throw new Error('--figma must point outside the package: the Figma material is kept outside this repository')
+  }
+  const outputs = generate(loadSources(join(root, 'tokens')))
+  write(join(root, 'dist', 'tokens.css'), outputs.css)
+  write(join(root, 'dist', 'tokens.json'), outputs.json)
+  write(join(root, 'src', 'tokens', 'tokens.ts'), outputs.ts)
+  if (figma !== undefined) write(figma, outputs.figma)
+}
+
+if (process.argv[1] !== undefined && resolve(process.argv[1]) === import.meta.filename) {
+  try {
+    main(process.argv.slice(2), resolve(import.meta.dirname, '..'))
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error)
+    process.exitCode = 1
+  }
+}

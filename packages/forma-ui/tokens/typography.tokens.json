@@ -1,0 +1,90 @@
+{
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "$value": "'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif",
+      "$description": "Decision D12: the package does not bundle Inter. `Inter Variable` matches @fontsource-variable/inter; `Inter` matches a self-hosted copy."
+    },
+    "caption": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 400,
+        "fontSize": "12px",
+        "lineHeight": "17px"
+      }
+    },
+    "body": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 400,
+        "fontSize": "14px",
+        "lineHeight": "20px"
+      }
+    },
+    "label": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 500,
+        "fontSize": "14px",
+        "lineHeight": "20px"
+      }
+    },
+    "strong": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 600,
+        "fontSize": "14px",
+        "lineHeight": "20px"
+      }
+    },
+    "section": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 600,
+        "fontSize": "17px",
+        "lineHeight": "24px"
+      }
+    },
+    "title": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 700,
+        "fontSize": "30px",
+        "lineHeight": "42px"
+      }
+    },
+    "title-mobile": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 700,
+        "fontSize": "24px",
+        "lineHeight": "32px"
+      }
+    },
+    "metric": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 600,
+        "fontSize": "30px",
+        "lineHeight": "42px"
+      }
+    },
+    "logo": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family}",
+        "fontWeight": 700,
+        "fontSize": "25px",
+        "lineHeight": "35px"
+      }
+    }
+  }
+}
