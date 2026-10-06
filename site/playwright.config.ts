@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Another checkout may be serving its own preview build at the same time (see docs/development/herdr.md).
-const PORT = Number(process.env.PLAYWRIGHT_PORT || 4173)
+// Another checkout may be serving its own preview build at the same time (see docs/development/herdr.md): each one
+// takes its own port from the environment. Without it the port is the base of PLAYWRIGHT_PORT (slot 0, the main
+// checkout), never Vite's own 4173, which Resolve's checkouts use.
+const PORT = Number(process.env.PLAYWRIGHT_PORT || 4280)
 
 // The site is published under /forma-ui/, so the base URL ends with it and specs navigate with relative paths.
 const BASE_URL = `http://localhost:${PORT}/forma-ui/`
@@ -21,7 +23,8 @@ export default defineConfig({
     // Builds the library and then the site before serving them, so a spec never runs against a stale build.
     command: `npm --prefix .. run build && npm run preview -- --port ${PORT} --strictPort`,
     url: BASE_URL,
-    reuseExistingServer: !process.env.CI,
+    // Never test a server this run did not start: if something already listens on the port, the run fails.
+    reuseExistingServer: false,
     timeout: 120_000,
   },
 })
