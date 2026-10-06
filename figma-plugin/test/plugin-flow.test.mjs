@@ -21,7 +21,10 @@ const { SPEC_PAGES, SPEC_PLUGIN_VERSION } = loadModules(
 
 function fakeFigma(file, { dropPage } = {}) {
   const png = (node) => {
-    node.exportAsync = async () => fakePng(node.width, node.height);
+    node.exportAsync = async (options) =>
+      options.format === 'SVG_STRING'
+        ? `<svg>${node.name}</svg>`
+        : fakePng(node.width, node.height);
   };
   file.page.children.forEach((c) => c.type !== 'TEXT' && png(c));
   const pages = SPEC_PAGES.map((name, i) => {
@@ -154,6 +157,7 @@ test('export through code.js: files stream to the ui, which downloads one valid 
   const names = entries.map((e) => e.name);
   assert.deepEqual(names, names.slice().sort());
   assert.deepEqual(names, files.map((f) => f.path).sort());
+  assert.ok(names.includes('svg/07-forma-ui-centered-documentation/forma-website-icon-search.svg'));
   for (const entry of entries)
     assert.equal(entry.crc, nodeCrc32(Buffer.from(entry.data)), entry.name);
   // "Download again" saves the same blob once more.

@@ -552,6 +552,22 @@ async function serializeText(ctx, node, out) {
   }
 }
 
+const VECTOR_TYPES = { VECTOR: 1, BOOLEAN_OPERATION: 1, STAR: 1, LINE: 1, ELLIPSE: 1, POLYGON: 1 };
+
+// Path data and stroke geometry, so icons can be rebuilt from the export. Stroke settings that
+// equal Figma's defaults are omitted.
+function serializeVector(ctx, node, out) {
+  if (Array.isArray(node.vectorPaths) && node.vectorPaths.length) {
+    out.vectorPaths = node.vectorPaths.map((p) => ({ windingRule: p.windingRule, data: p.data }));
+  }
+  setIf(out, 'strokeCap', unmix(ctx, node.strokeCap), 'NONE');
+  setIf(out, 'strokeJoin', unmix(ctx, node.strokeJoin), 'MITER');
+  setIf(out, 'strokeMiterLimit', unmix(ctx, node.strokeMiterLimit), 4);
+  if (Array.isArray(node.dashPattern) && node.dashPattern.length) {
+    out.dashPattern = node.dashPattern.map(round2);
+  }
+}
+
 // Serializes one node and its subtree. `key` is the name path plus sibling index;
 // `parentModes` is the parent's effective { collectionId: modeId } map.
 async function serializeNode(ctx, node, key, parentModes) {
@@ -585,6 +601,7 @@ async function serializeNode(ctx, node, key, parentModes) {
     setIf(out, 'strokeWeight', unmix(ctx, node.strokeWeight));
     setIf(out, 'strokeAlign', node.strokeAlign);
   }
+  if (VECTOR_TYPES[node.type]) serializeVector(ctx, node, out);
   const effects = serializeEffects(node.effects);
   if (effects) out.effects = effects;
   const bound = await serializeBoundVariables(ctx, node, node);
@@ -623,7 +640,8 @@ async function serializeNode(ctx, node, key, parentModes) {
   }
 
   const standalone = node.type === 'COMPONENT' && !inSet;
-  if (node.type === 'COMPONENT_SET' || standalone) ctx.components.push({ page: ctx.page, out });
+  if (node.type === 'COMPONENT_SET' || standalone)
+    ctx.components.push({ page: ctx.page, out, node });
   return out;
 }
 
@@ -763,6 +781,8 @@ const SPEC_FRAME_TYPES = {
   GROUP: 1,
 };
 const PNG_SCALES = [1, 0.5];
+// Standalone icon components are also exported as SVG, so their paths can be rebuilt.
+const ICON_COMPONENT = /^Forma \/ (Website icon|Icon) \//;
 
 // ASCII path segment; the real name stays inside the JSON.
 function slugify(text) {
@@ -846,10 +866,12 @@ async function runExport(deps) {
 
   const pageMeta = [];
   const png = { requestedScale: PNG_SCALES[0], files: {}, skipped: [] };
+  const svgFiles = [];
   const usedPageSlugs = {};
   for (const page of pages) {
     const pageSlug = uniqueSlug(page.name, usedPageSlugs);
     const usedFrameSlugs = {};
+    const usedSvgSlugs = {};
     const meta = { name: page.name, slug: pageSlug, frames: 0, skipped: 0, kinds: {} };
     ctx.page = page.name;
     for (let i = 0; i < page.children.length; i++) {
@@ -860,6 +882,7 @@ async function runExport(deps) {
       }
       deps.progress(page.name + ' · ' + child.name);
       const frameSlug = uniqueSlug(child.name, usedFrameSlugs);
+      const seen = ctx.components.length;
       const tree = await serializeNode(ctx, child, nodeKey(null, child.name, i), {});
       writeJson(
         'pages/' + pageSlug + '/' + frameSlug + '.json',
@@ -877,6 +900,14 @@ async function runExport(deps) {
           height: image.height,
           clamped: image.clamped,
         };
+      }
+      for (const entry of ctx.components.slice(seen)) {
+        if (entry.out.type !== 'COMPONENT' || !ICON_COMPONENT.test(entry.out.name)) continue;
+        const svg = await entry.node.exportAsync({ format: 'SVG_STRING' });
+        if (typeof svg !== 'string') throw new Error('SVG export of ' + entry.out.name + ' failed');
+        const svgPath = 'svg/' + pageSlug + '/' + uniqueSlug(entry.out.name, usedSvgSlugs) + '.svg';
+        write(svgPath, utf8Encode(svg));
+        svgFiles.push(svgPath);
       }
       meta.frames++;
       const kind = classifyFrame(child.name);
@@ -929,6 +960,7 @@ async function runExport(deps) {
       colorVariables: Object.keys(colorNames).length,
       textStyles: styles.text.length,
       pngs: pngInfo.length,
+      svgs: svgFiles.length,
     },
     png: {
       requestedScale: png.requestedScale,
@@ -937,6 +969,7 @@ async function runExport(deps) {
       skipped: png.skipped,
       files: png.files,
     },
+    svg: svgFiles,
     files,
   };
   // meta.json is not hashed into itself, so it bypasses write().

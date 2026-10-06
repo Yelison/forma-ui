@@ -286,6 +286,27 @@ export function makeFile(layout = 'single') {
     variantProperties: null,
     componentPropertyDefinitions: { 'Label#2:0': { type: 'TEXT', defaultValue: 'Search' } },
   });
+  const stroke = [{ type: 'SOLID', color: rgb('#a8b7d0') }];
+  const vector = (name, props) =>
+    node('VECTOR', name, { width: 14, height: 14, strokes: stroke, strokeWeight: 1.6, ...props });
+  const searchPath = vector('Path', {
+    vectorPaths: [{ windingRule: 'NONZERO', data: 'M 3 10 L 10 3 L 17 10 M 5 9 L 5 17 L 15 17' }],
+    strokeCap: 'ROUND',
+    strokeJoin: 'ROUND',
+    strokeMiterLimit: 4,
+    dashPattern: [2, 4.126],
+  });
+  const plainPath = vector('Plain', {
+    vectorPaths: [{ windingRule: 'EVENODD', data: 'M 0 0 L 4 4' }],
+    strokeCap: 'NONE',
+    strokeJoin: 'MITER',
+    strokeMiterLimit: 4,
+    dashPattern: [],
+  });
+  for (const child of [searchPath, plainPath]) {
+    icon.children.push(child);
+    child.parent = icon;
+  }
 
   const page = node('PAGE', '07 · Forma UI · Centered Documentation', {}, [
     dark,

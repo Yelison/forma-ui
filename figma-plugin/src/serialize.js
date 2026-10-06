@@ -353,6 +353,22 @@ async function serializeText(ctx, node, out) {
   }
 }
 
+const VECTOR_TYPES = { VECTOR: 1, BOOLEAN_OPERATION: 1, STAR: 1, LINE: 1, ELLIPSE: 1, POLYGON: 1 };
+
+// Path data and stroke geometry, so icons can be rebuilt from the export. Stroke settings that
+// equal Figma's defaults are omitted.
+function serializeVector(ctx, node, out) {
+  if (Array.isArray(node.vectorPaths) && node.vectorPaths.length) {
+    out.vectorPaths = node.vectorPaths.map((p) => ({ windingRule: p.windingRule, data: p.data }));
+  }
+  setIf(out, 'strokeCap', unmix(ctx, node.strokeCap), 'NONE');
+  setIf(out, 'strokeJoin', unmix(ctx, node.strokeJoin), 'MITER');
+  setIf(out, 'strokeMiterLimit', unmix(ctx, node.strokeMiterLimit), 4);
+  if (Array.isArray(node.dashPattern) && node.dashPattern.length) {
+    out.dashPattern = node.dashPattern.map(round2);
+  }
+}
+
 // Serializes one node and its subtree. `key` is the name path plus sibling index;
 // `parentModes` is the parent's effective { collectionId: modeId } map.
 async function serializeNode(ctx, node, key, parentModes) {
@@ -386,6 +402,7 @@ async function serializeNode(ctx, node, key, parentModes) {
     setIf(out, 'strokeWeight', unmix(ctx, node.strokeWeight));
     setIf(out, 'strokeAlign', node.strokeAlign);
   }
+  if (VECTOR_TYPES[node.type]) serializeVector(ctx, node, out);
   const effects = serializeEffects(node.effects);
   if (effects) out.effects = effects;
   const bound = await serializeBoundVariables(ctx, node, node);
@@ -424,7 +441,8 @@ async function serializeNode(ctx, node, key, parentModes) {
   }
 
   const standalone = node.type === 'COMPONENT' && !inSet;
-  if (node.type === 'COMPONENT_SET' || standalone) ctx.components.push({ page: ctx.page, out });
+  if (node.type === 'COMPONENT_SET' || standalone)
+    ctx.components.push({ page: ctx.page, out, node });
   return out;
 }
 
