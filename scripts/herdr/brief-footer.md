@@ -25,6 +25,23 @@ Los de la ficha, en inglés, Conventional Commits; cada uno pasa por sí solo la
 - Cuando añadas o cambies texto, comprueba el resultado con el pseudo-idioma (textos que faltan y desbordes a 320 px).
 - Documentación del repositorio, código, commits y planes, en inglés.
 
+## Calidad (proyecto de portafolio)
+
+Forma UI forma parte de un portafolio público: el código se lee tanto como se usa. La calidad, la estructura y la optimización son requisitos, no extras.
+
+- **Estructura:** módulos pequeños con una sola responsabilidad; un componente por carpeta con su CSS, sus tests y su `index.ts`; sin código muerto, sin duplicación y sin abstracciones especulativas.
+- **Nombres:** claros y del dominio, en inglés; sin abreviaturas crípticas.
+- **Tipos:** API pública tipada con JSDoc en cada prop exportada; sin `any`, sin `as` innecesarios y sin `@ts-ignore`. Los tipos se exportan junto a los componentes.
+- **React:** sin re-renders innecesarios (estado colocado donde se usa, callbacks estables solo cuando importan) y sin efectos donde basta el render. Refs y eventos nativos antes que estado.
+- **CSS:** tokens y no literales; selectores planos de CSS Modules; sin `!important`; sin estilos globales desde la biblioteca.
+- **Peso:** nada que impida el tree-shaking (sin efectos secundarios al importar, exports con nombre). Comprueba que el peso del build no crece sin motivo y anótalo en la entrega.
+- **Tests:** se leen como documentación del comportamiento. Consultas por rol y nombre accesible, sin detalles de implementación ni snapshots grandes.
+- **Comentarios:** explican el porqué, no el qué, al nivel de los del repositorio.
+
+## Comprobar cada commit por separado
+
+Comprueba cada commit con una orden literal propia, en un directorio nuevo: `D=$(mktemp -d <scratchpad>/c1.XXXXXX) && git archive <sha> | tar -x -C "$D" && cd "$D" && npm ci && npm run …`. Usa una llamada por commit, sin `rm`, sin funciones de shell y sin `bash -c` con órdenes guardadas en variables (el clasificador de permisos los bloquea). Los directorios temporales se pueden quedar.
+
 ## Autocomprobación antes de entregar
 
 Los revisores encuentran casi siempre estos defectos (`AGENTS.md`, «Self-check before delivering»). Compruébalos tú y cita la evidencia en la entrega:
