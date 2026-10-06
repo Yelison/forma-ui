@@ -43,9 +43,12 @@ function fakeFigma(file, { dropPage } = {}) {
   }).filter((p) => p.name !== dropPage);
   const r = file.resolver;
   const posted = [];
+  const shown = [];
   const figma = {
     mixed: r.mixed,
-    showUI() {},
+    showUI(html, options) {
+      shown.push({ html, options });
+    },
     ui: { postMessage: (m) => posted.push(m) },
     root: { children: pages },
     variables: {
@@ -68,7 +71,7 @@ function fakeFigma(file, { dropPage } = {}) {
     (n.children || []).forEach(walk);
   };
   pages.forEach((p) => p.children.forEach(walk));
-  return { figma, posted };
+  return { figma, posted, shown };
 }
 
 function loadPlugin(figma) {
@@ -193,4 +196,14 @@ test('build and update messages still behave as before in the ui', () => {
   ui.send({ type: 'done', message: 'Listo' });
   assert.equal(ui.el('status').textContent, 'Listo');
   assert.ok(!ui.el('update').disabled);
+});
+
+test('the window is tall enough for three buttons, the status line and the download link', () => {
+  const { figma, shown } = fakeFigma(makeFile('single'));
+  loadPlugin(figma);
+  assert.equal(shown.length, 1);
+  assert.equal(shown[0].html, '<html>');
+  assert.equal(shown[0].options.width, 380);
+  assert.ok(shown[0].options.height >= 520, `height ${shown[0].options.height}`);
+  assert.equal(shown[0].options.themeColors, true);
 });
