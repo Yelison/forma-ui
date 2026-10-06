@@ -18,8 +18,8 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    // Serves the existing build: run `npm run build` first (the library, then the site), as the CI job does.
-    command: `npm run preview -- --port ${PORT} --strictPort`,
+    // Builds the library and then the site before serving them, so a spec never runs against a stale build.
+    command: `npm --prefix .. run build && npm run preview -- --port ${PORT} --strictPort`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
