@@ -44,6 +44,7 @@ without an assignee). `HERDR_PROJECT_ENV` points the scripts at another settings
 | `HERDR_PORTS` | `DEV_SERVER_PORT:5280:VITE PLAYWRIGHT_PORT:4280:PW STORYBOOK_PORT:6080:SB` | Ports of a slot, as `NAME:BASE:MARKER` entries |
 | `HERDR_REQUIRED_CHECKS` | empty | Checks `ship.sh` waits for, comma-separated, exact names |
 | `HERDR_PR_ASSIGNEE` | `Yelison` | Assignee of the pull requests `ship.sh` opens |
+| `HERDR_REVIEW_MODEL` | `claude-opus-5-5` | Model of the reviewers `new-review.sh` starts |
 | `HERDR_INSTALL_DIR`, `HERDR_INSTALL_CMD` | `.`, `npm ci` | What `new-task.sh --install` runs, and where (relative to the worktree) |
 | `HERDR_COMPOSE`, `HERDR_COMPOSE_FILE` | `0`, `docker-compose.yml` | Docker Compose per task; off by default |
 | `HERDR_MAX_LOAD` | 1.5 × cores | Load-average limit (below) |
@@ -176,11 +177,12 @@ they were applied.
 | Role | Model | Advisor |
 | --- | --- | --- |
 | Implementer | Sonnet 5.5, `--model claude-sonnet-5-5` | Opus 5.5, `--advisor claude-opus-5-5` |
-| Reviewer | Opus 5.5 | none (`--advisor none`, which `new-review.sh` always passes) |
+| Reviewer | Opus 5.5, `HERDR_REVIEW_MODEL` | none (`--advisor none`, which `new-review.sh` always passes) |
 
 Without `--model` and `--advisor`, `new-task.sh` leaves the owner's own defaults in place, so pass them for
-implementers. `new-review.sh` fixes the effort and turns the advisor off but does not pass `--model`: the reviewer
-runs the owner's default model, which is the one this policy expects (Opus 5.5); check the session header. Full model IDs are used instead of aliases so an update cannot move them. An advisor must rank at or above
+implementers. `new-review.sh` fixes the reviewer's model with `HERDR_REVIEW_MODEL` (default `claude-opus-5-5`; empty
+leaves the owner's default) and always passes `--advisor none`, so `start-agent.sh` records and shows the model of the
+session header. Full model IDs are used instead of aliases so an update cannot move them. An advisor must rank at or above
 the main model. A review is already a second opinion, and every advisor call re-reads the whole conversation, which is
 why reviewers run without one.
 

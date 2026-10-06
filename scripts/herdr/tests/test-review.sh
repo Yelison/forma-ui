@@ -30,6 +30,8 @@ check "A1: no Compose line when Compose is off" bash -c "! grep -qi 'compose' <<
 check "A1: the brief has no unfilled marker" bash -c "! grep -q '{{' '$RB/brief.md'"
 check "first: extra points" grep -q 'handling in /a/b#c' "$RB/brief.md"
 check "first: reviewed commit is the task's tip" test "$(jq -r .review.sha "$RB/task.json")" = "$(git -C "$W" rev-parse HEAD)"
+check "model: task.json records the reviewer model" test "$(jq -r .model "$RB/task.json")" = claude-opus-5-5
+check "model: settings.local.json fixes it" test "$(jq -r .model "$R/.claude/settings.local.json")" = claude-opus-5-5
 check "first: no advisor" test "$(jq -r '.env.CLAUDE_CODE_DISABLE_ADVISOR_TOOL' "$R/.claude/settings.local.json")" = 1
 out=$("$HERDR/new-review.sh" --task impl-a 2>&1); check "again without --round: refused" test $? -ne 0
 out=$("$HERDR/new-review.sh" --task impl-a --round 2 2>&1); check "round without new commits: refused" test $? -ne 0
@@ -79,8 +81,10 @@ echo "== Compose on: the commands carry the review's project, not the implemente
 mk_env; export HERDR_COMPOSE=1; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2
 mk_impl "$SA" 'docker compose -p forma-ui-impl-a up -d && vite --port __VITE__'
 RB=$T/root/tasks/review-impl-a
+export HERDR_REVIEW_MODEL=model-override-x
 out=$("$HERDR/new-review.sh" --task impl-a --slot "$SB" 2>&1); rc=$?
 check "compose: review created" test $rc -eq 0
+check "model: HERDR_REVIEW_MODEL overrides the default" test "$(jq -r .model "$RB/task.json")" = model-override-x
 cmds=$(awk '/^Commands to run/{f=1} f&&/^```sh/{b=1;next} b&&/^```/{exit} b{print}' "$RB/brief.md")
 check "compose: the header names the project" grep -q '^# Docker Compose: always with -p forma-ui-review-impl-a' <<<"$cmds"
 check "compose: the command uses the review's project" grep -q 'compose -p forma-ui-review-impl-a up' <<<"$cmds"

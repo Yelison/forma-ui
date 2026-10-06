@@ -143,6 +143,7 @@ if [ -z "$ROUND" ]; then
   new_args=(--id "$RID" --branch "$BRANCH" --base "$SHA" --advisor none --effort "$EFFORT"
     --effort-reason "independent review of $ID at $SHA7" --install --ignore-load)
   [ -z "$SLOT" ] || new_args+=(--slot "$SLOT")
+  [ -z "$HERDR_REVIEW_MODEL" ] || new_args+=(--model "$HERDR_REVIEW_MODEL")
   "$SCRIPT_DIR/new-task.sh" "${new_args[@]}" >/dev/null
   load_task "$RID"
   REVIEW_DIR=$(task_dir "$RID")
