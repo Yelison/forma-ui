@@ -12,7 +12,11 @@ usage() {
 Usage: scripts/herdr/remove-task.sh --id ID [--delete-branch] [--volumes] [--force-leftovers]
 
   --id ID            Task to retire
-  --delete-branch    Also delete the branch, only if git considers it merged (`git branch -d`)
+  --delete-branch    Also delete the branch when everything on it is already in main (`git cherry main BRANCH`
+                     shows no `+` commit, so a rebase merge counts, and merging it would change nothing), together
+                     with a review's older review/<id>-<sha7> branches. A branch is kept, with a note, when it has a
+                     `+` commit or merge commits of its own, when `git cherry` fails, when merging it would change
+                     main or when it is checked out elsewhere
   --volumes          Also remove the task's Docker volumes; does nothing unless Compose is on (HERDR_COMPOSE=1)
   --force-leftovers  Go on although processes still listen on the slot's ports or containers of the task's Compose
                      project exist (the script lists them, and never kills anything itself)
@@ -68,6 +72,55 @@ find_containers() {
   [ -z "$found" ] || awk '{ print "  container " $0 }' <<<"$found"
 }
 
+# Is everything on BRANCH already in main? `git cherry` compares patches, so it still says yes after GitHub's rebase
+# merge rewrote the SHAs (where `git branch -d` says no): a branch without a "+" line has nothing left to lose. It
+# does not compare merge commits, so a branch with merges of its own is kept too, and so is one `git cherry` cannot
+# judge or whose merge into main would change anything: nothing is deleted on a doubt. Returns 1, with the reason
+# logged, when the branch is kept.
+delete_if_in_main() {
+  local branch=$1 cherry merges
+  git -C "$TASK_REPO" show-ref --verify --quiet "refs/heads/$branch" || return 0
+  if ! cherry=$(git -C "$TASK_REPO" cherry main "$branch"); then
+    log "warning: git cherry could not compare $branch with main; the branch is kept"
+    return 1
+  fi
+  if grep -q '^+' <<<"$cherry"; then
+    log "Branch $branch kept: it has commits that are not in main."
+    return 1
+  fi
+  merges=$(git -C "$TASK_REPO" rev-list --merges --count "main..$branch") || merges=unknown
+  if [ "$merges" != 0 ]; then
+    log "Branch $branch kept: it has merge commits of its own, which git cherry does not compare."
+    return 1
+  fi
+  # The patch ids of `git cherry` ignore whitespace, so a branch whose change differs from main's only in indentation
+  # would pass: it must also merge into main without changing anything (a conflict changes it too, and keeps the branch).
+  merged_tree=$(git -C "$TASK_REPO" merge-tree --write-tree main "$branch" 2>/dev/null | head -n 1) || merged_tree=
+  if [ -z "$merged_tree" ] || [ "$merged_tree" != "$(git -C "$TASK_REPO" rev-parse 'main^{tree}')" ]; then
+    log "Branch $branch kept: merging it into main would change main, so its content is not all there."
+    return 1
+  fi
+  # The worktree is already gone: a branch that cannot be deleted (checked out elsewhere) is a warning, not a stop.
+  if ! git -C "$TASK_REPO" branch -q -D "$branch"; then
+    log "warning: could not delete $branch (is it checked out in another worktree?); the branch is kept"
+    return 1
+  fi
+  log "Branch $branch deleted: its content is in main."
+}
+
+# What a kept task branch leaves behind, said only when it is kept. How many commits it holds beyond main is
+# "unknown" when git cannot tell (no main), never 0.
+note_kept_branch() {
+  local branch=$1 ahead unpushed
+  ahead=$(git -C "$TASK_REPO" rev-list --count "main..$branch" 2>/dev/null) || ahead=unknown
+  if git -C "$TASK_REPO" rev-parse --verify --quiet "$branch@{upstream}" >/dev/null; then
+    unpushed=$(git -C "$TASK_REPO" rev-list --count "$branch@{upstream}..$branch")
+    [ "$unpushed" = 0 ] || log "note: $unpushed commit(s) of $branch are not pushed yet; the branch is kept"
+  else
+    log "note: $branch has no upstream; its $ahead commit(s) beyond main stay in the local branch"
+  fi
+}
+
 require_herdr
 need ss
 [ -n "$ID" ] || { usage >&2; die "--id is required"; }
@@ -97,14 +150,6 @@ if [ -n "$leftovers" ]; then
     fi
     die "the task left processes behind (nothing was removed). Stop them yourself or rerun with --force-leftovers"
   fi
-fi
-
-ahead=$(git -C "$TASK_REPO" rev-list --count "main..$TASK_BRANCH" 2>/dev/null || echo 0)
-if git -C "$TASK_REPO" rev-parse --verify --quiet "$TASK_BRANCH@{upstream}" >/dev/null; then
-  unpushed=$(git -C "$TASK_REPO" rev-list --count "$TASK_BRANCH@{upstream}..$TASK_BRANCH")
-  [ "$unpushed" = 0 ] || log "note: $unpushed commit(s) of $TASK_BRANCH are not pushed yet; the branch is kept"
-else
-  log "note: $TASK_BRANCH has no upstream; its $ahead commit(s) beyond main stay in the local branch"
 fi
 
 # Without --volumes, only a project Compose still lists is stopped. With it, the volumes are removed even when no
@@ -146,9 +191,19 @@ if git -C "$TASK_REPO" worktree list --porcelain | grep -Fqx "worktree $TASK_WOR
 fi
 
 if [ "$DELETE_BRANCH" = 1 ]; then
-  git -C "$TASK_REPO" branch -d "$TASK_BRANCH" || die "git refused to delete $TASK_BRANCH (not merged); the branch is kept"
+  delete_if_in_main "$TASK_BRANCH" || note_kept_branch "$TASK_BRANCH"
+  # A review moves to a new branch (review/<id>-<sha7>, as new-review.sh names it) when the task is rebased: the older
+  # ones go with it. Exactly that shape: review/<id>-x-<sha7> belongs to the task <id>-x.
+  review_of=$(jq -r '.review.of // empty' "$(task_json "$ID")")
+  if [ -n "$review_of" ]; then
+    while IFS= read -r old_branch; do
+      [ "$old_branch" != "$TASK_BRANCH" ] && [[ ${old_branch#"review/$review_of-"} =~ ^[0-9a-f]{7}$ ]] || continue
+      delete_if_in_main "$old_branch" || true
+    done < <(git -C "$TASK_REPO" for-each-ref --format='%(refname:short)' "refs/heads/review/$review_of-*")
+  fi
 else
-  log "Branch $TASK_BRANCH kept ($ahead commit(s) beyond main)."
+  note_kept_branch "$TASK_BRANCH"
+  log "Branch $TASK_BRANCH kept."
 fi
 update_task "$ID" '.removed_at = $at' --arg at "$(utc_now)"
 log "Task $ID retired. Logs stay in $TASK_LOG_DIR."

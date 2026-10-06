@@ -5,6 +5,7 @@
 #            | queued (an older passed run and a rerun that has not started, with Go's zero time) | queued-null (same, startedAt null)
 #            | requeue:N (N polls like queued, then pass)
 #   merge    (absent) | never (the PR stays OPEN after the auto-merge is scheduled) | closed (it ends CLOSED, unmerged)
+#   rewrite  (present) the merge lands as new commits with the same patches, like GitHub's rebase merge (new SHAs)
 #   stale    N: `pr view --json headRefOid` shows an old head for the first N polls
 set -euo pipefail
 G=${FAKE_STATE:?}/gh; mkdir -p "$G"
@@ -53,7 +54,12 @@ case $cmd in
   # Scheduling the auto-merge is what merges (like GitHub, once the required checks pass); `pr view` only reports.
   "pr merge") : >"$G/auto"; cat "$G/polls" 2>/dev/null >"$G/merge-polls" || echo 0 >"$G/merge-polls"
     if [ "$(cat "$G/merge" 2>/dev/null || echo merged)" = merged ]; then
-      git --git-dir "${FAKE_REMOTE:?}" update-ref refs/heads/main "$(git --git-dir "$FAKE_REMOTE" rev-parse "refs/heads/$(jq -r .head "$G/pr.json")")"
+      tip=$(git --git-dir "${FAKE_REMOTE:?}" rev-parse "refs/heads/$(jq -r .head "$G/pr.json")")
+      if [ -f "$G/rewrite" ]; then # one commit on top of main with the branch's tree: the patch is the same, the SHA is not
+        tip=$(GIT_COMMITTER_NAME=GitHub GIT_COMMITTER_EMAIL=noreply@github.com git --git-dir "$FAKE_REMOTE" commit-tree \
+          -p refs/heads/main -m "$(git --git-dir "$FAKE_REMOTE" log -1 --format=%B "$tip")" "$tip^{tree}")
+      fi
+      git --git-dir "$FAKE_REMOTE" update-ref refs/heads/main "$tip"
     fi ;;
   "pr view")
     head=$(jq -r .head "$G/pr.json")

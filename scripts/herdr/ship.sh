@@ -200,10 +200,10 @@ retire() {
   occupant=$(agent_in_pane "$TASK_PANE" || true)
   if [ -n "$occupant" ]; then
     name=$(jq -r '.name // empty' <<<"$occupant")
-    [ -n "$name" ] || die "the agent in $TASK_PANE has no name; exit it by hand, then: scripts/herdr/remove-task.sh --id $id --volumes"
+    [ -n "$name" ] || die "the agent in $TASK_PANE has no name; exit it by hand, then: scripts/herdr/remove-task.sh --id $id --volumes --delete-branch"
     state=$(jq -r '.agent_status // "unknown"' <<<"$occupant")
     case $state in
-      working | blocked) die "'$name' is $state, so it was not sent /exit; #$PR is merged (main at $MERGED_SHA). Let it finish, then run: scripts/herdr/remove-task.sh --id $id --volumes" ;;
+      working | blocked) die "'$name' is $state, so it was not sent /exit; #$PR is merged (main at $MERGED_SHA). Let it finish, then run: scripts/herdr/remove-task.sh --id $id --volumes --delete-branch" ;;
     esac
     log "Exiting '$name'…"
     herdr agent prompt "$name" "/exit" >/dev/null || true
@@ -211,10 +211,10 @@ retire() {
       [ -z "$(agent_in_pane "$TASK_PANE" || true)" ] && break
       sleep 1
     done
-    [ -z "$(agent_in_pane "$TASK_PANE" || true)" ] || die "'$name' did not exit; #$PR is merged. Then run: scripts/herdr/remove-task.sh --id $id --volumes"
+    [ -z "$(agent_in_pane "$TASK_PANE" || true)" ] || die "'$name' did not exit; #$PR is merged. Then run: scripts/herdr/remove-task.sh --id $id --volumes --delete-branch"
   fi
-  "$SCRIPT_DIR/remove-task.sh" --id "$id" --volumes \
-    || die "#$PR is merged (main at $MERGED_SHA) but '$id' was not retired; deal with what it reported and run: scripts/herdr/remove-task.sh --id $id --volumes"
+  "$SCRIPT_DIR/remove-task.sh" --id "$id" --volumes --delete-branch \
+    || die "#$PR is merged (main at $MERGED_SHA) but '$id' was not retired; deal with what it reported and run: scripts/herdr/remove-task.sh --id $id --volumes --delete-branch"
 }
 retire "review-$ID"
 retire "$ID"

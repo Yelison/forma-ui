@@ -150,11 +150,31 @@ s_race() { mk; ship --no-cleanup >/dev/null; advance_main; rebase_branch "feat: 
   real=$(command -v git)
   push_shim "\"$real\" --git-dir \"$T/remote.git\" update-ref refs/heads/feat/impl-a $other"
   out=$(PATH="$T/shim:$PATH" ship --no-cleanup); check "race: rejected" test $? -ne 0; check "race: message" says x 'nothing was forced'; check "race: remote kept the raced commit" test "$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)" = "$other"; }
+# GitHub's rebase merge rewrites the SHAs: `git branch -d` no longer sees the branches as merged, `git cherry` does.
+s_rewritten() { mk; touch "$T/state/gh/rewrite"
+  # review/impl-a-1111111 holds the same patch as the task (merged); review/impl-a-2222222 holds a commit that is nowhere else.
+  git -C "$T/repo" branch review/impl-a-1111111 feat/impl-a
+  git -C "$T/repo" branch review/impl-a-2222222 feat/impl-a
+  git -C "$T/repo" worktree add -q "$T/own" review/impl-a-2222222; echo notes >"$T/own/only-here.txt"; git -C "$T/own" add only-here.txt; git -C "$T/own" commit -q -m "review: only here"
+  git -C "$T/repo" worktree remove "$T/own"
+  tip=$(git -C "$W" rev-parse HEAD); review_branch=$(jq -r .branch "$T/root/tasks/review-impl-a/task.json")
+  out=$(ship); rc=$?
+  check "rewritten: rc 0" test $rc -eq 0
+  check "rewritten: main has other SHAs than the branch" test "$(git -C "$T/repo" rev-parse HEAD)" != "$tip"
+  check "rewritten: the task's branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/feat/impl-a"
+  check "rewritten: the review's branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/$review_branch"
+  check "rewritten: an older review branch with the same patch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/review/impl-a-1111111"
+  check "rewritten: a review branch with its own commit is kept" git -C "$T/repo" rev-parse -q --verify refs/heads/review/impl-a-2222222
+  check "rewritten: says why the branch is kept" says x 'review/impl-a-2222222 kept'; }
+# An agent without a name cannot be sent /exit: the command it prints to retry keeps the branches' deletion.
+s_noname() { mk; jq 'del(.name)' "$T/state/agents/rev-impl-a" >"$T/x" && mv "$T/x" "$T/state/agents/rev-impl-a"
+  out=$(ship); check "nameless agent: stops" test $? -ne 0
+  check "nameless agent: the retry command deletes the branch too" says x 'remove-task.sh --id review-impl-a --volumes --delete-branch'; }
 # A reviewer that is still working is not sent /exit.
 s_working() { mk; jq '.agent_status="working"' "$T/state/agents/rev-impl-a" >"$T/x" && mv "$T/x" "$T/state/agents/rev-impl-a"
   out=$(ship); check "working agent: stops" test $? -ne 0; check "working agent: says so" says x 'is working, so it was not sent /exit'; check "working agent: no /exit sent" bash -c "! grep -q '/exit' '$T/state/prompts.log' 2>/dev/null"
   check "working agent: the merge is reported" says x "merged "; check "working agent: reviewer still live" test -e "$T/state/agents/rev-impl-a"; }
 
-scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working)
+scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname)
 for s in "${scen[@]}"; do echo "== $s"; "s_$s"; done
 finish

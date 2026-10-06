@@ -43,6 +43,50 @@ check "volumes: down --volumes ran for the project" grep -q 'compose -p forma-ui
 new left-c; rm -f "$T/state/docker.log"; out=$("$HERDR/remove-task.sh" --id left-c 2>&1)
 check "no --volumes and no project: compose is left alone" bash -c "! grep -q 'down' '$T/state/docker.log'"
 
+echo "== --delete-branch: what is in main goes, what is only here stays"
+has_branch() { git -C "$T/repo" rev-parse -q --verify "refs/heads/$1" >/dev/null; }
+# The same patch as the branch's commit, on main, under another SHA (what GitHub's rebase merge does).
+land_rewritten() { GIT_COMMITTER_NAME=GitHub GIT_COMMITTER_EMAIL=noreply@github.com git -C "$T/repo" cherry-pick "$1" >/dev/null; }
+# commit_in TASK FILE: one commit that adds FILE in the task's worktree.
+commit_in() { echo "$2" >"$T/root/worktrees/$1/$2"; git -C "$T/root/worktrees/$1" add "$2"; git -C "$T/root/worktrees/$1" commit -q -m "feat: $2"; }
+new br-a; commit_in br-a a.txt; land_rewritten feat/br-a
+out=$("$HERDR/remove-task.sh" --id br-a --delete-branch 2>&1); check "cherry: merged under other SHAs: retired" removed br-a
+check "cherry: merged under other SHAs: the branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/feat/br-a"
+check "cherry: a deleted branch is not described as staying" bash -c "! grep -qE 'stay in the local branch|not pushed yet|kept' <<<'$out'"
+new br-b; commit_in br-b b.txt
+out=$("$HERDR/remove-task.sh" --id br-b --delete-branch 2>&1); check "cherry: a commit that is not in main: retired" removed br-b
+check "cherry: a commit that is not in main: the branch is kept" has_branch feat/br-b; check "cherry: a commit that is not in main: says so" says x 'feat/br-b kept'
+check "cherry: a kept branch says what it leaves behind" says x 'stay in the local branch'
+new br-c; commit_in br-c c.txt; land_rewritten feat/br-c
+out=$("$HERDR/remove-task.sh" --id br-c 2>&1); check "no --delete-branch: the branch stays even when merged" has_branch feat/br-c
+# A review's branches: only review/<id>-<sha7> is its own; review/<id>-x-<sha7> belongs to the task <id>-x.
+new review-pc; jq '.review = { of: "pc" }' "$T/root/tasks/review-pc/task.json" >"$T/x" && mv "$T/x" "$T/root/tasks/review-pc/task.json"
+git -C "$T/repo" branch review/pc-1234567 main; git -C "$T/repo" branch review/pc-x-1234567 main; git -C "$T/repo" branch review/pc-abcdef0 main
+git -C "$T/repo" worktree add -q "$T/inuse" review/pc-abcdef0
+out=$("$HERDR/remove-task.sh" --id review-pc --delete-branch 2>&1); rc=$?
+check "review sweep: rc 0 although a branch is in use" test $rc -eq 0; check "review sweep: the task is retired" removed review-pc
+check "review sweep: its own older branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/review/pc-1234567"
+check "review sweep: another task's branch (pc-x) is not touched" has_branch review/pc-x-1234567
+check "review sweep: a branch in use is kept, with a warning" says x 'could not delete review/pc-abcdef0'; check "review sweep: the branch in use is still there" has_branch review/pc-abcdef0
+git -C "$T/repo" worktree remove "$T/inuse"
+# git cherry cannot judge: nothing is deleted on a doubt (main is called trunk for a moment).
+new br-d; commit_in br-d d.txt; git -C "$T/repo" branch -m main trunk
+out=$("$HERDR/remove-task.sh" --id br-d --delete-branch 2>&1); git -C "$T/repo" branch -m trunk main
+check "cherry fails: retired" removed br-d; check "cherry fails: the branch is kept" has_branch feat/br-d; check "cherry fails: says so" says x 'git cherry could not compare feat/br-d with main'
+# git cherry skips merge commits: a branch with a merge of its own is kept although every other commit is in main.
+new br-e; commit_in br-e e.txt; git -C "$T/root/worktrees/br-e" branch side main; git -C "$T/root/worktrees/br-e" switch -q side; commit_in br-e side.txt
+git -C "$T/root/worktrees/br-e" switch -q feat/br-e; git -C "$T/root/worktrees/br-e" merge -q --no-ff side -m "merge side"
+land_rewritten "feat/br-e~1"; land_rewritten side
+out=$("$HERDR/remove-task.sh" --id br-e --delete-branch 2>&1); check "merge commit: retired" removed br-e
+check "merge commit: the branch is kept" has_branch feat/br-e; check "merge commit: says why" says x 'merge commits of its own'
+# The patch ids of git cherry ignore whitespace: a change that differs from main's only in indentation is not in main.
+new br-f; printf 'a:\n  value: 1\n' >"$T/root/worktrees/br-f/c.yml"; git -C "$T/root/worktrees/br-f" add c.yml; git -C "$T/root/worktrees/br-f" commit -q -m "feat: indented"
+printf 'a:\nvalue: 1\n' >"$T/repo/c.yml"; git -C "$T/repo" add c.yml; git -C "$T/repo" -c user.name=GitHub -c user.email=noreply@github.com commit -q -m "feat: flat"
+check "whitespace: git cherry alone would call the branch merged" test "$(git -C "$T/repo" cherry main feat/br-f | grep -c '^+')" -eq 0
+out=$("$HERDR/remove-task.sh" --id br-f --delete-branch 2>&1); check "whitespace: retired" removed br-f
+check "whitespace: the branch is kept" has_branch feat/br-f; check "whitespace: says why" says x 'merging it into main would change main'
+check "whitespace: a kept branch is announced once" test "$(grep -c 'feat/br-f kept' <<<"$out")" -eq 1
+
 echo "== forced"
 new left-d; echo "abc123 forma-ui-left-d-postgres-1 (Up 2 minutes)" >"$T/state/containers"; echo forma-ui-left-d >"$T/state/compose-projects"; rm -f "$T/state/docker.log"
 out=$("$HERDR/remove-task.sh" --id left-d --force-leftovers 2>&1); rc=$?
