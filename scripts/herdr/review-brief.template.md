@@ -22,10 +22,16 @@ verified findings.
    and do not restate the implementation.
 5. **Commits:** Conventional Commits in English with the `Co-Authored-By` trailer; every commit passes on its own
    (check out each one in your worktree and return to `{{SHA}}` at the end).
-6. **Quality:** readability and the repository's conventions: tokens instead of literal values, accessibility
-   (keyboard, visible focus, labels, announcements), and the language rules of `CLAUDE.md` (no copy hard-coded in one
-   language: site strings in both Spanish and English through the i18n mechanism, library strings with English defaults
-   overridable by props or a provider, English URLs that do not change with the language).
+6. **Quality (portfolio project):** report quality findings with a severity, not only bugs. Check:
+   - structure: small single-purpose modules, no duplication, dead code or speculative abstraction;
+   - naming;
+   - typed public API with JSDoc, no `any` and no needless casts;
+   - React: needless re-renders and effects;
+   - CSS: tokens instead of literal values, flat CSS Modules and no global styles from the library;
+   - tree-shaking and bundle size;
+   - accessibility;
+   - tests that read as documentation;
+   - comments that explain why.
 
 Commands to run in your worktree:
 
@@ -71,4 +77,4 @@ Un commit nuevo encima de `{{SHA}}`, trailer `Co-Authored-By: Claude Sonnet 5.5 
 
 If any finding is medium or high, do not write it: those decisions are the coordinator's.
 
-End your turn with a single line: `REVISIÓN {{LANE}}: <verdict>` and the path of the report.
+Write `REVISIÓN {{LANE}}: <verdict>` as the **last line of the report file**, and also end your turn with that line and the path of the report.
