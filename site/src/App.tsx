@@ -1,12 +1,19 @@
-import { version } from '@yelison/forma-ui'
+import { Route, Routes } from 'react-router'
+import { Layout } from './chrome/Layout'
+import { NotFound } from './pages/NotFound'
+import { RoutePage } from './pages/RoutePage'
+import { routes } from './routes'
 
-// Placeholder page: it proves that the site builds against the built package. The documentation site, with its
-// i18n mechanism and bilingual copy, replaces it in Phase 4; until then it renders only the product name and a version.
+/** The site: one page for each route of the manifest, and the not-found page for any other path. */
 export function App() {
   return (
-    <main>
-      <h1>Forma UI</h1>
-      <p data-testid="library-version">{version}</p>
-    </main>
+    <Layout>
+      <Routes>
+        {routes.map((route) => (
+          <Route key={route.path} path={route.path} element={<RoutePage route={route} />} />
+        ))}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Layout>
   )
 }

@@ -1,0 +1,54 @@
+/*
+ * What the documentation site adds to the library's tokens: the two editorial type styles of page 07 (Display and
+ * EditorialHeading, which are not Resolve's headings) and the measures of its layout. Resolve's own tokens come from
+ * @yelison/forma-ui and are not redefined here.
+ */
+:root {
+  --site-font-display: 700 52px/60px var(--font-family);
+  --site-font-editorial-heading: 700 36px/44px var(--font-family);
+  --site-gutter: var(--space-20);
+  --site-nav-height: 72px;
+  --site-content-width: 1080px;
+  --site-nav-content-width: 1184px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --site-gutter: var(--space-32);
+    --site-nav-height: 80px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: var(--font-body);
+}
+
+/*
+ * The centered column of page 07: the content and the footer use it as is, the top bar widens it with --column-width.
+ * It is a plain class, not a CSS Modules composition, which Vite's PostCSS pipeline warns about.
+ */
+.site-column {
+  width: 100%;
+  max-width: calc(var(--column-width, var(--site-content-width)) + 2 * var(--site-gutter));
+  margin-inline: auto;
+  padding-inline: var(--site-gutter);
+}
+
+a {
+  color: var(--color-link);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--space-2);
+}
