@@ -1,0 +1,12 @@
+node_modules/
+dist/
+coverage/
+storybook-static/
+playwright-report/
+test-results/
+*.tgz
+.env
+.env.*
+!.env.example
+.DS_Store
+.claude/settings.local.json
