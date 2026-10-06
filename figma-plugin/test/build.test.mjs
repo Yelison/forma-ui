@@ -16,3 +16,12 @@ test('generated files are up to date with build.mjs', () => {
     );
   }
 });
+
+test('generated plugin files carry no owner-only copy, page-05 deletion or console.log', () => {
+  const forbidden =
+    /Tickets agents|plan limit|Pendientes|Spring Boot|05 · Documentation Website|console\.log/;
+  for (const name of ['code.js', 'ui.html']) {
+    const text = readFileSync(join(root, name), 'utf8');
+    assert.doesNotMatch(text, forbidden, `${name} still contains removed copy`);
+  }
+});

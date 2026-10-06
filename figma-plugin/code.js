@@ -99,7 +99,7 @@ async function build(){
  }
  await figma.setCurrentPageAsync(pages['00 · Start here']);const cover=await docs(pages['00 · Start here'],'Forma UI');
  await text(cover,'Un lenguaje visual. Varios productos.','light','Title',1000);
- for(const line of ['v0.1 · Fundamentos + nueve familias de componentes.','Origen: Resolve tokens.css y global.css; valores preservados.','Usar instancias y variables; no separar ni duplicar componentes.','Primero validar en Resolve. Después ampliar para Draftroom.','Este archivo documenta presentación. El código define semántica, teclado y comportamiento.','Estados de hover/pressed y familias nuevas son propuestas: comparar con CSS antes de publicar.','Pendientes: importar el conjunto completo de iconos, Code Connect, QA visual en Figma y auditoría de contraste.'])await text(cover,line,'light','Body',1000);
+ for(const line of ['v0.1 · Fundamentos + nueve familias de componentes.','Origen: Resolve tokens.css y global.css; valores preservados.','Usar instancias y variables; no separar ni duplicar componentes.','Primero validar en Resolve. Después ampliar para Draftroom.','Este archivo documenta presentación. El código define semántica, teclado y comportamiento.','Estados de hover/pressed y familias nuevas son propuestas: comparar con CSS antes de publicar.'])await text(cover,line,'light','Body',1000);
  await figma.setCurrentPageAsync(pages['01 · Foundations']);const f=await docs(pages['01 · Foundations'],'Foundations');
  for(const theme of ['light','dark']){
  await text(f,theme==='light'?'Claro':'Oscuro','light','Section',1000);
@@ -120,9 +120,9 @@ async function build(){
  await text(root,'Accessibility: visible focus; meaningful labels; dialogs trap/return focus; tooltips on hover and focus with Escape; disabled and loading semantics; reduced motion; status not expressed by color alone.',theme,'Body',1000);
  }
  const handoff=await docs(page,'Implementation guide');handoff.x=2540;
- for(const line of ['This is a component library, not a SaaS domain application.','Canonical code tokens must reproduce the Resolve snapshot before redesign.','React + TypeScript + CSS tokens. Storybook proposal: verify versions and fit before installation.','No Spring Boot or PostgreSQL required for the library.','Generic components only: Button, Field, Input, Badge, Tooltip, Dialog. TicketRow and ticket statuses remain in Resolve.','Release tokens + React package separately if justified. Keep CSS side effects explicit.','Consume via local workspace first; publish only after consumer validation.','Figma frames show breakpoint examples; they do not execute browser media queries.','Resolve extraction must be coordinated with the active Tickets agents.','Recommended pages for the documentation site: Overview, Foundations, Component API, Accessibility, Themes, Changelog.'])await text(handoff,line,'light','Body',1000);
+ for(const line of ['This is a component library, not a SaaS domain application.','Canonical code tokens must reproduce the Resolve snapshot before redesign.','React + TypeScript + CSS tokens. Storybook proposal: verify versions and fit before installation.','Generic components only: Button, Field, Input, Badge, Tooltip, Dialog. TicketRow and ticket statuses remain in Resolve.','Release tokens + React package separately if justified. Keep CSS side effects explicit.','Consume via local workspace first; publish only after consumer validation.','Figma frames show breakpoint examples; they do not execute browser media queries.','Recommended pages for the documentation site: Overview, Foundations, Component API, Accessibility, Themes, Changelog.'])await text(handoff,line,'light','Body',1000);
  figma.currentPage.selection=[handoff];figma.viewport.scrollAndZoomIntoView([handoff]);
- return {createdNodeIds:ids,pages:Object.values(pages).map(p=>({id:p.id,name:p.name})),components:Object.values(sets).reduce((n,v)=>n+Object.values(v).reduce((s,x)=>s+x.children.length,0),0),themeModes:foundation.darkCollection===foundation.semantic?'Light/Dark':'Separate Light/Dark collections (plan limit)'};
+ return {createdNodeIds:ids,pages:Object.values(pages).map(p=>({id:p.id,name:p.name})),components:Object.values(sets).reduce((n,v)=>n+Object.values(v).reduce((s,x)=>s+x.children.length,0),0),themeModes:foundation.darkCollection===foundation.semantic?'Light/Dark':'Separate Light/Dark collections'};
 }
 async function hydrate(){
  ids.length=0;
@@ -427,14 +427,13 @@ async function updateExisting(){
  await hydrate();for(const [name,size,height] of [['Display',52,60],['EditorialHeading',36,44]]){if(!styles[name]){const s=figma.createTextStyle();s.name='Forma / '+name;s.fontName={family:'Inter',style:'Bold'};s.fontSize=size;s.lineHeight={unit:'PIXELS',value:height};styles[name]=s;}}
  figma.ui.postMessage({type:'progress',message:'Preparando la web editorial…'});await repairComponents();
  const result=await buildWebsite();await figma.setCurrentPageAsync(result.page);
- const obsolete=figma.root.children.find(p=>p.name==='05 · Documentation Website');if(obsolete)obsolete.remove();
  const first=result.page.children.find(n=>n.name==='Overview · light · 1440');if(first){figma.currentPage.selection=[first];figma.viewport.scrollAndZoomIntoView([first]);}
  return {createdOrUpdatedNodeIds:ids,websitePageId:result.page.id,screens:result.screenCount||40,prototypeLinks:result.wired||0,alreadyExisted:result.skipped||false};
 }
 figma.ui.onmessage=async m=>{
  if(!['build','update'].includes(m.type)||running)return;running=true;
  try{if(m.type==='build'&&figma.root.children.some(p=>p.name==='00 · Start here'))throw Error('Ya existe Forma UI. Usa Actualizar para conservar la biblioteca.');
- const result=m.type==='update'?await updateExisting():await build();figma.ui.postMessage({type:'done',message:m.type==='update'?'Listo: componentes corregidos y 40 pantallas en 07 · Forma UI · Centered Documentation. Revisa visualmente antes de publicar.':'Base creada. Pulsa Actualizar para añadir las pantallas web.'});console.log('Forma UI build',result);}
+ m.type==='update'?await updateExisting():await build();figma.ui.postMessage({type:'done',message:m.type==='update'?'Listo: componentes corregidos y 40 pantallas en 07 · Forma UI · Centered Documentation. Revisa visualmente antes de publicar.':'Base creada. Pulsa Actualizar para añadir las pantallas web.'});}
  catch(e){figma.ui.postMessage({type:'error',message:'No se pudo completar: '+String(e.message||e)+'\nLas páginas anteriores se conservan. Si hubo salida parcial, revísala antes de ejecutar otra vez.'});}
  finally{running=false;}
 };
