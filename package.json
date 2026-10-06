@@ -9,8 +9,8 @@
   "scripts": {
     "build": "npm run build -w @yelison/forma-ui && npm run build -w forma-ui-site",
     "lint": "oxlint packages site",
-    "format": "prettier --write packages site package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
-    "format:check": "prettier --check packages site package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
+    "format": "prettier --write .github packages site package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
+    "format:check": "prettier --check .github packages site package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm test --workspaces --if-present",
     "test:browser": "npm run test:browser -w @yelison/forma-ui",
