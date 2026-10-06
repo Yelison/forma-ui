@@ -17,3 +17,10 @@ export { Badge, type BadgeProps, type BadgeTone } from './components/Badge/index
 export { Icon, type IconName, type IconProps } from './components/Icon/index.js'
 export { Field, type FieldControlProps, type FieldProps } from './components/Field/index.js'
 export { Input, type InputProps } from './components/Input/index.js'
+export {
+  Button,
+  buttonClassName,
+  type ButtonProps,
+  type ButtonStyleOptions,
+  type ButtonVariant,
+} from './components/Button/index.js'
