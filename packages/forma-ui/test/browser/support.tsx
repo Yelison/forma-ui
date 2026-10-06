@@ -28,17 +28,31 @@ export interface MediaPreferences {
   reducedMotion?: 'reduce' | 'no-preference'
 }
 
-/** Emulates `prefers-color-scheme` and `prefers-reduced-motion`; `matchMedia` and CSS media queries follow. */
-export async function emulateMedia({ colorScheme, reducedMotion }: MediaPreferences) {
+// The protocol replaces the whole list of emulated features on every call, so the module keeps what is emulated.
+let emulatedMedia: MediaPreferences = {}
+
+async function applyEmulatedMedia() {
   const features = []
-  if (colorScheme) features.push({ name: 'prefers-color-scheme', value: colorScheme })
-  if (reducedMotion) features.push({ name: 'prefers-reduced-motion', value: reducedMotion })
+  if (emulatedMedia.colorScheme) features.push({ name: 'prefers-color-scheme', value: emulatedMedia.colorScheme })
+  if (emulatedMedia.reducedMotion) features.push({ name: 'prefers-reduced-motion', value: emulatedMedia.reducedMotion })
   await cdp().send('Emulation.setEmulatedMedia', { features })
+}
+
+/**
+ * Emulates `prefers-color-scheme` and `prefers-reduced-motion`; `matchMedia` and CSS media queries follow.
+ *
+ * Each call adds to the previous ones: `emulateMedia({ colorScheme: 'dark' })` followed by
+ * `emulateMedia({ reducedMotion: 'reduce' })` emulates both. Pass a value again to change it.
+ */
+export async function emulateMedia(preferences: MediaPreferences) {
+  emulatedMedia = { ...emulatedMedia, ...preferences }
+  await applyEmulatedMedia()
 }
 
 async function resetMedia() {
   // An empty list clears every emulated feature, so the browser's own preferences apply again.
-  await cdp().send('Emulation.setEmulatedMedia', { features: [] })
+  emulatedMedia = {}
+  await applyEmulatedMedia()
 }
 
 // React tree
@@ -66,8 +80,9 @@ export function mount(ui: ReactNode): HTMLElement {
  * the dialogs or the media preferences of the previous one, whatever the order.
  */
 export async function reset() {
-  // Dialogs first: closing one while it is still in the document fires its `close` event and settles the focus.
-  for (const dialog of document.querySelectorAll('dialog[open]')) (dialog as HTMLDialogElement).close()
+  // Closing a dialog restores the focus synchronously, while the dialog is still in the document. Its `close` event
+  // is queued and arrives later, at a node that is already detached: a spec cannot wait for it after `reset()`.
+  for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[open]')) dialog.close()
   for (const root of roots) flushSync(() => root.unmount())
   roots.clear()
   // Removing the focused node is what returns the focus to the body; there is nothing left to blur.

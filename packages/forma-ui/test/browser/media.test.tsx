@@ -20,6 +20,14 @@ describe('media emulation', () => {
     expect(matches('(prefers-reduced-motion: reduce)')).toBe(true)
   })
 
+  it('keeps the earlier preferences when it is called again for another one', async () => {
+    await emulateMedia({ colorScheme: 'dark' })
+    await emulateMedia({ reducedMotion: 'reduce' })
+
+    expect(matches('(prefers-color-scheme: dark)')).toBe(true)
+    expect(matches('(prefers-reduced-motion: reduce)')).toBe(true)
+  })
+
   it('applies to CSS media queries, not only to matchMedia', async () => {
     const style = document.createElement('style')
     style.textContent = '@media (prefers-color-scheme: dark) { #probe { color: rgb(1, 2, 3) } }'

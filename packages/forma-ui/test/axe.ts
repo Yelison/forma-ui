@@ -14,10 +14,15 @@ export type AxeOptions = RunOptions
  * Runs axe-core on `root` and rejects with a readable message when it finds violations.
  *
  * It must run in the real browser (specs in test/browser/): axe needs computed styles, the accessibility tree and
- * layout, which jsdom does not implement. `root` must be attached to the document. `options` goes to `axe.run`;
- * its `rules` are merged over the defaults, so a spec can disable one more rule or re-enable one of the three above.
+ * layout, which jsdom does not implement, so it throws there instead of reporting a result that means nothing.
+ * `root` must be attached to the document. `options` goes to `axe.run`; its `rules` are merged over the defaults, so
+ * a spec can disable one more rule or re-enable one of the three above.
  */
 export async function expectNoAxeViolations(root: Element, options: AxeOptions = {}): Promise<void> {
+  // In jsdom axe finds no violations because it cannot compute styles or layout: a green result would mean nothing.
+  if (navigator.userAgent.includes('jsdom')) {
+    throw new Error('expectNoAxeViolations needs a real browser: write the spec in test/browser/, not in src/.')
+  }
   const rules = Object.fromEntries(PAGE_LEVEL_RULES.map((id) => [id, { enabled: false }]))
   const { violations } = await axe.run(root, {
     resultTypes: ['violations'],
