@@ -47,6 +47,8 @@ jobs:
           console.log('Export targets present: ' + targets(require('./package.json').exports).length)
           "
         working-directory: packages/forma-ui
+      # The built package as a consumer receives it: nodenext compile, CSS exports and the rules behind the classes.
+      - run: npm run check:consumer -w @yelison/forma-ui
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
 
