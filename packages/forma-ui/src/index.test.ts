@@ -26,6 +26,10 @@ describe('package entry point', () => {
     })
   })
 
+  it('exports Badge', () => {
+    expect(entry).toMatchObject({ Badge: expect.any(Function) })
+  })
+
   // An export added by accident becomes API that the next release has to keep.
   it('keeps the internal helpers out of the public API', () => {
     for (const internal of ['cx', 'computePosition', 'lockScroll', 'useFloating', 'useModalDialog']) {

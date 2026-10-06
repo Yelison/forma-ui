@@ -6,6 +6,7 @@ import styles from './Badge.module.css'
 /** The color roles a badge can take. */
 export type BadgeTone = 'blue' | 'green' | 'amber' | 'red' | 'neutral'
 
+/** Props of {@link Badge}: the native `span` attributes plus the tone. */
 export interface BadgeProps extends ComponentProps<'span'> {
   /** Color of the badge. Defaults to `neutral`. */
   tone?: BadgeTone
