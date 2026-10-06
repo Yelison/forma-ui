@@ -145,7 +145,7 @@ test('an independent unzip tool accepts the zip and extracts identical bytes', (
 });
 
 test('new modules stay portable to the Figma sandbox (no Node globals, no ?. or ??)', () => {
-  for (const name of ['stable-stringify.js', 'sha256.js', 'zip.js']) {
+  for (const name of ['stable-stringify.js', 'sha256.js', 'zip.js', 'serialize.js']) {
     const code = readFileSync(join(srcDir, name), 'utf8').split('// @test-exports')[0];
     assert.doesNotMatch(
       code,
