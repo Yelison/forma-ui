@@ -37,6 +37,7 @@ check "first: extra points" grep -q 'handling in /a/b#c' "$RB/brief.md"
 check "first: reviewed commit is the task's tip" test "$(jq -r .review.sha "$RB/task.json")" = "$(git -C "$W" rev-parse HEAD)"
 check "model: task.json records the reviewer model" test "$(jq -r .model "$RB/task.json")" = claude-opus-5-5
 check "model: settings.local.json fixes it" test "$(jq -r .model "$R/.claude/settings.local.json")" = claude-opus-5-5
+check "model: the session header matches, so it is recorded as verified" test "$(jq -r '.model_verified.header' "$RB/task.json")" = "Opus 5.5"
 check "first: no advisor" test "$(jq -r '.env.CLAUDE_CODE_DISABLE_ADVISOR_TOOL' "$R/.claude/settings.local.json")" = 1
 out=$("$HERDR/new-review.sh" --task impl-a 2>&1); check "again without --round: refused" test $? -ne 0
 out=$("$HERDR/new-review.sh" --task impl-a --round 2 2>&1); check "round without new commits: refused" test $? -ne 0

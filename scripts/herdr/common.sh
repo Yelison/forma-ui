@@ -232,6 +232,15 @@ write_model_settings() {
   fi
 }
 
+# model_display ID: how the session header names a model ID (claude-opus-5-5 -> "Opus 5.5"), or the ID itself when it
+# has no such shape.
+model_display() {
+  local out
+  out=$(sed -E 's/^claude-//; s/-([0-9]+)-([0-9]+)(-[0-9]+)?$/ \1.\2/' <<<"$1")
+  [ "$out" = "$1" ] && { printf '%s\n' "$1"; return; }
+  printf '%s%s\n' "$(tr '[:lower:]' '[:upper:]' <<<"${out:0:1}")" "${out:1}"
+}
+
 # Model the agent's session header reports (the part before " with … effort"), or nothing.
 agent_model() { agent_effort "$1" | sed -E 's/^ +//; s/ with [a-z]+ effort$//'; }
 

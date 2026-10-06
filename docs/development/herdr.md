@@ -199,7 +199,8 @@ restarts and lets an agent be adjusted later.
 `~/.claude/settings.json`, which changes every other session. Do not choose a row in `/advisor` either.
 
 **Verification.** `start-agent.sh` reads the session header (`Sonnet 5.5 with medium effort`) and records it under
-`effort.verified`; `status.sh` shows `level/max` and a ✓ once verified. If the header disagrees, the file is not being
+`effort.verified`; `status.sh` shows `level/max` and a ✓ once verified. It does the same with the model: if the header names a model other
+than the task's `model`, it warns and does not record `model_verified`. If the header disagrees, the file is not being
 read: do not hand over the task until it does. Do not trust what an agent says about its own effort.
 
 | Level | Typical task |
