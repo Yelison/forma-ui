@@ -1,4 +1,3 @@
-/// <reference types="vite/client" />
 import type { ComponentProps, ReactNode } from 'react'
 import { cx } from '../../lib/cx.js'
 import { Field } from '../Field/Field.js'
