@@ -1,0 +1,89 @@
+/* The UA styles of a modal dialog center it in a box with margins; the drawer is a full-height panel on the end edge. */
+.drawer {
+  inset: 0 0 0 auto;
+  width: min(100%, var(--site-drawer-width));
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-inline-start: 1px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.drawer::backdrop {
+  background: color-mix(in srgb, var(--color-overlay) calc(var(--overlay-opacity) * 100%), transparent);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  height: 100%;
+  padding: var(--space-16) var(--site-gutter);
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.title {
+  margin: 0;
+  font: var(--font-section);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-ink);
+  font: var(--font-section);
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--color-surface-hover);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  min-height: var(--touch-target);
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-control);
+  color: var(--color-muted);
+  font: var(--font-label);
+  text-decoration: none;
+}
+
+.link:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-ink);
+}
+
+/* NavLink marks the page that is open with aria-current. */
+.link[aria-current='page'] {
+  background: var(--color-blue-bg);
+  color: var(--color-blue-ink);
+}
