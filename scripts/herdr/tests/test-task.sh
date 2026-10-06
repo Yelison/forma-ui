@@ -7,7 +7,9 @@ new() { local id=$1; shift; "$HERDR/new-task.sh" --id "$id" --branch "feat/$id" 
 label_of() { jq -rs --arg b "$1" '.[] | select(.branch == $b) | .label' "$T"/state/ws/*; }
 
 echo "== ports come from the configuration, one slot per task"
-out=$(new task-a --slot "$SA"); check "task a: created" test $? -eq 0
+# CLAUDE.md is versioned in Forma UI: the worktree has it from the checkout and new-task.sh says nothing about it.
+echo "# project rules" >"$T/repo/CLAUDE.md"; git -C "$T/repo" add CLAUDE.md; git -C "$T/repo" commit -qm "docs: CLAUDE.md"
+out=$(new task-a --slot "$SA"); check "task a: created" test $? -eq 0; OUT_A=$out
 out=$(new task-b --slot "$SB"); check "task b: created" test $? -eq 0
 check "task a: DEV_SERVER_PORT is 5280 + slot" grep -qx "DEV_SERVER_PORT=$((5280 + SA))" "$T/root/worktrees/task-a/.env.herdr"
 check "task a: PLAYWRIGHT_PORT is 4280 + slot" grep -qx "PLAYWRIGHT_PORT=$((4280 + SA))" "$T/root/worktrees/task-a/.env.herdr"
@@ -23,7 +25,9 @@ check "env: no Compose, database or API variables" bash -c "! grep -qE 'COMPOSE_
 check "env: not tracked by git" bash -c "git -C '$T/root/worktrees/task-a' check-ignore -q .env.herdr"
 check "task.json: no Compose project" test -z "$(jq -r '.compose_project // empty' "$T/root/tasks/task-a/task.json")"
 check "label: the project id" test "$(label_of feat/task-a)" = "forma-ui · task-a"
-check "no CLAUDE.md warning or copy" bash -c "! grep -qi 'CLAUDE.md' <<<'$out' && ! test -e '$T/root/worktrees/task-b/CLAUDE.md.copy'"
+check "CLAUDE.md: new-task.sh does not mention it" bash -c "! grep -qi 'CLAUDE.md' <<<'$OUT_A'"
+check "CLAUDE.md: the worktree has the versioned file, unchanged" cmp -s "$T/repo/CLAUDE.md" "$T/root/worktrees/task-a/CLAUDE.md"
+check "CLAUDE.md: it is tracked in the worktree" git -C "$T/root/worktrees/task-a" ls-files --error-unmatch CLAUDE.md >/dev/null
 out=$("$HERDR/new-task.sh" --id task-x --branch feat/task-x --slot 3 --no-claude-md 2>&1); check "--no-claude-md no longer exists" test $? -ne 0
 
 echo "== Compose on: only COMPOSE_PROJECT_NAME is added"
