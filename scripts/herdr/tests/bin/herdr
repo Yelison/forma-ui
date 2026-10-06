@@ -25,7 +25,9 @@ case $cmd in
     pane=$(jq -r .pane_id "$f")
     for w in "$S"/ws/*; do [ "$(jq -r .pane "$w")" = "$pane" ] && wt=$(jq -r .path "$w"); done
     lvl=$(jq -r '.modelSettings["claude-sonnet-5-5"].effortLevel // "medium"' "$wt/.claude/settings.local.json" 2>/dev/null || echo medium)
-    echo "Sonnet 5.5 with $lvl effort" ;;
+    mdl=$(jq -r '.model // "claude-sonnet-5-5"' "$wt/.claude/settings.local.json" 2>/dev/null || echo claude-sonnet-5-5)
+    name=$(sed -E 's/^claude-//; s/-([0-9]+)-([0-9]+)(-[0-9]+)?$/ \1.\2/' <<<"$mdl")
+    echo "${FAKE_AGENT_MODEL:-${name^}} with $lvl effort" ;;
   "agent prompt") name=$1; printf '%s\t%s\n' "$name" "$2" >>"$S/prompts.log"; [ "$2" = "/exit" ] && { rm -f "$S/agents/$name"; echo "exit $name" >>"$S/events.log"; }; echo '{}' ;;
   "agent wait") exit 0 ;;
   "agent send-keys") exit 0 ;;

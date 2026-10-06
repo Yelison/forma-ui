@@ -77,7 +77,12 @@ expected_model=$(jq -r '.model // empty' "$(task_json "$ID")")
 if [ -n "$expected_model" ]; then
   shown=$(agent_model "$NAME")
   log "Session model: ${shown:-unknown} (task asks for $expected_model)."
-  update_task "$ID" '.model_verified = { at: $at, header: $h }' --arg at "$(utc_now)" --arg h "$shown"
+  if [ "${shown,,}" = "$(model_display "$expected_model" | tr '[:upper:]' '[:lower:]')" ]; then
+    update_task "$ID" '.model_verified = { at: $at, header: $h }' --arg at "$(utc_now)" --arg h "$shown"
+  else
+    update_task "$ID" 'del(.model_verified)'
+    log "warning: the task asks for $expected_model, the session header says '${shown:-nothing}': the model was not verified."
+  fi
 fi
 expected=$(jq -r '.effort.level // empty' "$(task_json "$ID")")
 header=$(agent_effort "$NAME")

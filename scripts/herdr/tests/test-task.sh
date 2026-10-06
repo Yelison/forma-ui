@@ -76,6 +76,18 @@ out=$(HERDR_SLOT_MIN=$SF HERDR_SLOT_MAX=$SF new task-h); check "a one-slot range
 check "a one-slot range: the first free slot is the only one" test "$(jq -r .slot "$T/root/tasks/task-h/task.json")" = "$SF"
 out=$(HERDR_SLOT_MIN=$SF HERDR_SLOT_MAX=$SF new task-i); check "a one-slot range, taken: refused" test $? -ne 0; check "range taken: says all slots are in use" says x "all port slots ($SF-$SF) are in use"
 
+echo "== start-agent compares the session header with the model of the task"
+mk_env; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2
+out=$(new model-a --slot "$SA" --model claude-opus-5-5); out=$("$HERDR/start-agent.sh" --id model-a --name ma 2>&1)
+check "model match: recorded" test "$(jq -r '.model_verified.header // empty' "$T/root/tasks/model-a/task.json")" = "Opus 5.5"
+check "model match: no warning" bash -c "! grep -q 'was not verified' <<<'$out'"
+out=$(new model-b --slot "$SB" --model claude-opus-5-5); out=$(FAKE_AGENT_MODEL="Sonnet 5.5" "$HERDR/start-agent.sh" --id model-b --name mb 2>&1)
+check "model mismatch: warns, naming the asked model" says x 'asks for claude-opus-5-5'
+check "model mismatch: warns, naming the shown model" says x "says 'Sonnet 5.5'"
+check "model mismatch: not recorded as verified" test -z "$(jq -r '.model_verified // empty' "$T/root/tasks/model-b/task.json")"
+check "model mismatch: the agent still started" test -e "$T/state/agents/mb"
+check "model_display: IDs map to header names" test "$(. "$HERDR/common.sh"; model_display claude-sonnet-5-5; model_display claude-haiku-4-5-20251001)" = "$(printf 'Sonnet 5.5\nHaiku 4.5')"
+
 echo "== install step: HERDR_INSTALL_CMD in HERDR_INSTALL_DIR, skipped without a package.json"
 mk_env; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2; SC=$(pick_slot "$SA" "$SB") || exit 2
 out=$(new inst-a --install --slot "$SA"); rc=$?
