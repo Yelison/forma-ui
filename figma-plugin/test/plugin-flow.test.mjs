@@ -100,7 +100,11 @@ function uiEnvironment() {
     }),
     body: { appendChild() {} },
   };
-  const URL = { createObjectURL: (blob) => (blobs.push(blob), 'blob:spec-' + blobs.length) };
+  const revoked = [];
+  const URL = {
+    createObjectURL: (blob) => (blobs.push(blob), 'blob:spec-' + blobs.length),
+    revokeObjectURL: (url) => revoked.push(url),
+  };
   new Function('window', 'document', 'parent', 'URL', 'Blob', script)(
     window,
     document,
@@ -114,6 +118,7 @@ function uiEnvironment() {
     posted,
     downloads,
     blobs,
+    revoked,
     send: (m) => window.onmessage({ data: { pluginMessage: m } }),
   };
 }
@@ -210,4 +215,18 @@ test('the window is tall enough for three buttons, the status line and the downl
   assert.equal(shown[0].options.width, 380);
   assert.ok(shown[0].options.height >= 520, `height ${shown[0].options.height}`);
   assert.equal(shown[0].options.themeColors, true);
+});
+
+test('a second export revokes the first download URL; the first export revokes nothing', () => {
+  const ui = uiEnvironment();
+  const exportOnce = () => {
+    ui.el('export').onclick();
+    ui.send({ type: 'file', path: 'meta.json', bytes: new Uint8Array([1]) });
+    ui.send({ type: 'export-done', count: 1, message: 'Listo' });
+  };
+  exportOnce();
+  assert.deepEqual(ui.revoked, []);
+  exportOnce();
+  assert.deepEqual(ui.revoked, ['blob:spec-1']);
+  assert.equal(ui.blobs.length, 2);
 });
