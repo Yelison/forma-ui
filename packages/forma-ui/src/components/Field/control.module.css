@@ -1,0 +1,57 @@
+/* The box shared by Input and the other text controls; :where() leaves it without specificity so each control can adjust it. */
+:where(.control) {
+  box-sizing: border-box; /* the library ships no global reset, and width: 100% must include the border */
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0 var(--space-12);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: var(--font-body);
+  transition:
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+.control::placeholder {
+  color: var(--color-muted);
+  opacity: 1;
+}
+
+.control:hover:not(:disabled, :focus, [readonly]) {
+  background: var(--color-surface-hover);
+}
+
+.control:focus-visible {
+  border-color: var(--color-focus);
+  outline: var(--focus-ring);
+  outline-offset: 0;
+}
+
+.control[aria-invalid='true'] {
+  border-color: var(--color-red-ink);
+}
+
+.control[aria-invalid='true']:focus-visible {
+  outline-color: var(--color-red-ink);
+}
+
+/* Read-only is not disabled: the value stays readable, selectable and focusable, so it keeps the ink colour and
+   changes the border style instead of dimming. The dashed border keeps the cue from relying on colour alone. */
+.control[readonly] {
+  border-style: dashed;
+  background: var(--color-bg);
+}
+
+.control:disabled {
+  background: var(--color-bg);
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .control {
+    transition: none;
+  }
+}

@@ -1,0 +1,22 @@
+.field {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.label {
+  font: var(--font-label);
+  color: var(--color-ink);
+}
+
+.hint {
+  font: var(--font-caption);
+  color: var(--color-muted);
+}
+
+.error {
+  font: var(--font-caption);
+  color: var(--color-red-ink);
+}
