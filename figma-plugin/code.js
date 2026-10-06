@@ -1,5 +1,202 @@
 // GENERATED FILE. Do not edit by hand.
 // Source: figma-plugin/src/*.js. Regenerate with: node figma-plugin/build.mjs
+// SHA-256 of a Uint8Array as lowercase hex. Pure, no platform crypto (the plugin sandbox has none).
+const SHA256_K = [
+  0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+  0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+  0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+  0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+  0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+  0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+  0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+  0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+];
+
+function sha256Hex(bytes) {
+  const length = bytes.length;
+  const padded = new Uint8Array(((length + 9 + 63) >> 6) << 6);
+  padded.set(bytes);
+  padded[length] = 0x80;
+  const view = new DataView(padded.buffer);
+  view.setUint32(padded.length - 8, Math.floor(length / 0x20000000), false);
+  view.setUint32(padded.length - 4, (length << 3) >>> 0, false);
+  const h = [
+    0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
+  ];
+  const w = new Array(64);
+  const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+  for (let offset = 0; offset < padded.length; offset += 64) {
+    for (let i = 0; i < 16; i++) w[i] = view.getUint32(offset + i * 4, false);
+    for (let i = 16; i < 64; i++) {
+      const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+      const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+    }
+    let [a, b, c, d, e, f, g, hh] = h;
+    for (let i = 0; i < 64; i++) {
+      const t1 =
+        (hh +
+          (rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25)) +
+          ((e & f) ^ (~e & g)) +
+          SHA256_K[i] +
+          w[i]) |
+        0;
+      const t2 = ((rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) | 0;
+      hh = g;
+      g = f;
+      f = e;
+      e = (d + t1) | 0;
+      d = c;
+      c = b;
+      b = a;
+      a = (t1 + t2) | 0;
+    }
+    const next = [a, b, c, d, e, f, g, hh];
+    for (let i = 0; i < 8; i++) h[i] = (h[i] + next[i]) | 0;
+  }
+  return h.map((x) => ('00000000' + (x >>> 0).toString(16)).slice(-8)).join('');
+}
+
+// Deterministic JSON: keys sorted, 2-space indent, trailing newline.
+// Throws on values JSON.stringify would drop or distort silently (symbols such as figma.mixed,
+// NaN, Infinity), so a leaked figma.mixed fails the export instead of vanishing.
+function sortForJson(value, path) {
+  const kind = typeof value;
+  if (kind === 'symbol') {
+    throw new Error('Symbol at ' + path + ': convert figma.mixed before serializing');
+  }
+  if (kind === 'function' || kind === 'bigint')
+    throw new Error('Unserializable ' + kind + ' at ' + path);
+  if (kind === 'number' && !isFinite(value)) throw new Error('Non-finite number at ' + path);
+  if (Array.isArray(value)) {
+    return value.map((item, i) =>
+      sortForJson(item === undefined ? null : item, path + '[' + i + ']'),
+    );
+  }
+  if (value !== null && kind === 'object') {
+    const out = {};
+    for (const key of Object.keys(value).sort()) {
+      if (value[key] !== undefined) out[key] = sortForJson(value[key], path + '.' + key);
+    }
+    return out;
+  }
+  return value;
+}
+
+function stableStringify(value) {
+  return JSON.stringify(sortForJson(value, '$'), null, 2) + '\n';
+}
+
+// STORE-mode ZIP writer: no compression, own CRC-32, fixed DOS date (1980-01-01 00:00:00) so the
+// same files always give the same bytes. Also a pure UTF-8 encoder, since the plugin sandbox may
+// lack the platform one.
+function utf8Encode(text) {
+  const out = [];
+  for (let i = 0; i < text.length; i++) {
+    let cp = text.charCodeAt(i);
+    if (cp >= 0xd800 && cp <= 0xdbff && i + 1 < text.length) {
+      const low = text.charCodeAt(i + 1);
+      if (low >= 0xdc00 && low <= 0xdfff) {
+        cp = 0x10000 + ((cp - 0xd800) << 10) + (low - 0xdc00);
+        i++;
+      }
+    }
+    if (cp >= 0xd800 && cp <= 0xdfff) cp = 0xfffd;
+    if (cp < 0x80) out.push(cp);
+    else if (cp < 0x800) out.push(0xc0 | (cp >> 6), 0x80 | (cp & 63));
+    else if (cp < 0x10000) out.push(0xe0 | (cp >> 12), 0x80 | ((cp >> 6) & 63), 0x80 | (cp & 63));
+    else {
+      out.push(
+        0xf0 | (cp >> 18),
+        0x80 | ((cp >> 12) & 63),
+        0x80 | ((cp >> 6) & 63),
+        0x80 | (cp & 63),
+      );
+    }
+  }
+  return Uint8Array.from(out);
+}
+
+let crcTable = null;
+function crc32(bytes) {
+  if (!crcTable) {
+    crcTable = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+      crcTable[n] = c >>> 0;
+    }
+  }
+  let crc = 0xffffffff;
+  for (let i = 0; i < bytes.length; i++) crc = crcTable[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+const ZIP_DOS_TIME = 0;
+const ZIP_DOS_DATE = (0 << 9) | (1 << 5) | 1; // 1980-01-01
+const ZIP_UTF8_FLAG = 0x0800;
+
+// files: [{ path, bytes }] written in the given order. Returns a Uint8Array.
+function zipStore(files) {
+  if (files.length > 0xffff) throw new Error('Too many files for a plain ZIP');
+  const seen = {};
+  const entries = files.map((file) => {
+    const path = file.path;
+    if (!path || path.charAt(0) === '/' || path.split('/').indexOf('..') !== -1) {
+      throw new Error('Invalid zip path: ' + path);
+    }
+    if (seen[path]) throw new Error('Duplicate zip path: ' + path);
+    seen[path] = true;
+    return { name: utf8Encode(path), bytes: file.bytes, crc: crc32(file.bytes), offset: 0 };
+  });
+  let size = 22;
+  for (const e of entries) size += 30 + e.name.length + e.bytes.length + 46 + e.name.length;
+  if (size > 0xffffffff) throw new Error('Zip larger than 4 GB');
+  const out = new Uint8Array(size);
+  const view = new DataView(out.buffer);
+  let pos = 0;
+  for (const e of entries) {
+    e.offset = pos;
+    view.setUint32(pos, 0x04034b50, true);
+    view.setUint16(pos + 4, 20, true);
+    view.setUint16(pos + 6, ZIP_UTF8_FLAG, true);
+    view.setUint16(pos + 8, 0, true);
+    view.setUint16(pos + 10, ZIP_DOS_TIME, true);
+    view.setUint16(pos + 12, ZIP_DOS_DATE, true);
+    view.setUint32(pos + 14, e.crc, true);
+    view.setUint32(pos + 18, e.bytes.length, true);
+    view.setUint32(pos + 22, e.bytes.length, true);
+    view.setUint16(pos + 26, e.name.length, true);
+    view.setUint16(pos + 28, 0, true);
+    out.set(e.name, pos + 30);
+    out.set(e.bytes, pos + 30 + e.name.length);
+    pos += 30 + e.name.length + e.bytes.length;
+  }
+  const directoryStart = pos;
+  for (const e of entries) {
+    view.setUint32(pos, 0x02014b50, true);
+    view.setUint16(pos + 4, 20, true);
+    view.setUint16(pos + 6, 20, true);
+    view.setUint16(pos + 8, ZIP_UTF8_FLAG, true);
+    view.setUint16(pos + 10, 0, true);
+    view.setUint16(pos + 12, ZIP_DOS_TIME, true);
+    view.setUint16(pos + 14, ZIP_DOS_DATE, true);
+    view.setUint32(pos + 16, e.crc, true);
+    view.setUint32(pos + 20, e.bytes.length, true);
+    view.setUint32(pos + 24, e.bytes.length, true);
+    view.setUint16(pos + 28, e.name.length, true);
+    view.setUint32(pos + 42, e.offset, true);
+    out.set(e.name, pos + 46);
+    pos += 46 + e.name.length;
+  }
+  view.setUint32(pos, 0x06054b50, true);
+  view.setUint16(pos + 8, entries.length, true);
+  view.setUint16(pos + 10, entries.length, true);
+  view.setUint32(pos + 12, pos - directoryStart, true);
+  view.setUint32(pos + 16, directoryStart, true);
+  return out;
+}
+
 const COLORS = {"bg":{"light":"#f5f7fb","dark":"#0b1220"},"surface":{"light":"#ffffff","dark":"#141f32"},"ink":{"light":"#17243d","dark":"#e7edf8"},"muted":{"light":"#6a778d","dark":"#a0afc5"},"line":{"light":"#e4e9f1","dark":"#2a3951"},"nav":{"light":"#111e35","dark":"#0a101c"},"nav-active":{"light":"#263b5d","dark":"#233652"},"nav-text":{"light":"#a8b7d0","dark":"#a8b7d0"},"brand":{"light":"#3569f6","dark":"#4779ff"},"blue-bg":{"light":"#ebf1ff","dark":"#1a2c4e"},"blue-ink":{"light":"#2455cd","dark":"#9bbcff"},"green-bg":{"light":"#e7f6ee","dark":"#173a30"},"green-ink":{"light":"#187349","dark":"#8edcb5"},"amber-bg":{"light":"#fff3dd","dark":"#3d311b"},"amber-ink":{"light":"#94600d","dark":"#f2ce85"},"red-bg":{"light":"#fdecec","dark":"#3f242b"},"red-ink":{"light":"#b63535","dark":"#ffacb3"},"on-brand":{"light":"#ffffff","dark":"#ffffff"},"nav-ink":{"light":"#ffffff","dark":"#ffffff"},"focus":{"light":"#3569f6","dark":"#9bbcff"},"surface-hover":{"light":"#edf2fa","dark":"#1d2b42"},"disabled":{"light":"#d2dae7","dark":"#34445c"},"overlay":{"light":"#0b1220","dark":"#000000"}};
 
 figma.showUI(__html__, {width:380,height:420,themeColors:true});
