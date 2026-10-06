@@ -31,8 +31,19 @@ beforeEach(() => {
   document.head.append(stylesheet)
 })
 
+// The stylesheet of a consumer, appended after the library's own, as the README tells a consumer to load it.
+let consumerStylesheet: HTMLStyleElement | undefined
+
+function loadConsumerCss(css: string) {
+  consumerStylesheet = document.createElement('style')
+  consumerStylesheet.textContent = css
+  document.head.append(consumerStylesheet)
+}
+
 afterEach(() => {
   stylesheet.remove()
+  consumerStylesheet?.remove()
+  consumerStylesheet = undefined
   root.removeAttribute('data-theme')
 })
 
@@ -421,5 +432,30 @@ describe('IconButton icons', () => {
     const plain = collapse?.icons.getBoundingClientRect()
     const mirrored = expand?.icons.getBoundingClientRect()
     expect([mirrored?.width, mirrored?.height]).toEqual([plain?.width, plain?.height])
+  })
+})
+
+// Resolve's sidebar paints its toggle with its own `.toggle:hover`. The states of the library carry no specificity, so a
+// class of the consumer decides, whichever way round the colors go.
+describe('A class of the consumer on top of the library', () => {
+  const instant = { '--duration-fast': '0s' } as CSSProperties
+
+  it('changes the colors of an IconButton at rest and on hover', async () => {
+    loadConsumerCss('.toggle { color: rgb(1, 2, 3) } .toggle:hover { color: rgb(4, 5, 6) }')
+    const { button } = mountIconButton({ icon: 'bell', label: 'Notifications', className: 'toggle' }, instant)
+    expect(getComputedStyle(button).color).toBe('rgb(1, 2, 3)')
+
+    await userEvent.hover(button)
+
+    await expect.poll(() => getComputedStyle(button).color).toBe('rgb(4, 5, 6)')
+  })
+
+  it.each(variants)('changes the hover background of a %s Button', async (variant) => {
+    loadConsumerCss('.accent:hover { background: rgb(7, 8, 9) }')
+    const { button } = mountButton({ variant, className: 'accent' }, instant)
+
+    await userEvent.hover(button)
+
+    await expect.poll(() => getComputedStyle(button).backgroundColor).toBe('rgb(7, 8, 9)')
   })
 })

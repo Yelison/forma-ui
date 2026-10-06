@@ -1,3 +1,7 @@
+/*
+ * The states (hover, disabled and busy) are wrapped in `:where()`, which adds no specificity: a consumer's own class,
+ * such as `.toggle:hover`, then wins over them as long as its stylesheet comes after the library's, as the README says.
+ */
 .button {
   /* The library ships no reset, so the box model is set here: the painted height is `--button-height`, border included. */
   box-sizing: border-box;
@@ -23,13 +27,12 @@
   outline-offset: 2px;
 }
 
-.button:disabled,
-.button[aria-disabled='true'] {
+.button:where(:disabled, [aria-disabled='true']) {
   cursor: not-allowed;
 }
 
 /* After the rule above: a loading button is `aria-disabled` too, but it shows that it is working. */
-.button[aria-busy='true'] {
+.button:where([aria-busy='true']) {
   cursor: progress;
 }
 
@@ -42,7 +45,7 @@
   color: var(--color-on-brand);
 }
 
-.primary:not(:disabled, [aria-disabled='true']):hover {
+.primary:where(:not(:disabled, [aria-disabled='true']):hover) {
   background: var(--color-brand-hover);
 }
 
@@ -62,20 +65,20 @@
   color: var(--color-red-ink);
 }
 
-.secondary:not(:disabled, [aria-disabled='true']):hover,
-.ghost:not(:disabled, [aria-disabled='true']):hover,
-.danger:not(:disabled, [aria-disabled='true']):hover {
+.secondary:where(:not(:disabled, [aria-disabled='true']):hover),
+.ghost:where(:not(:disabled, [aria-disabled='true']):hover),
+.danger:where(:not(:disabled, [aria-disabled='true']):hover) {
   background: var(--color-surface-hover);
 }
 
-.button:disabled {
+.button:where(:disabled) {
   background: var(--color-disabled);
   border-color: transparent;
 }
 
-.secondary:disabled,
-.danger:disabled,
-.ghost:disabled {
+.secondary:where(:disabled),
+.danger:where(:disabled),
+.ghost:where(:disabled) {
   color: var(--color-muted);
 }
 

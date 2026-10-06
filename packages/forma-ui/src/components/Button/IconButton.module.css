@@ -1,3 +1,4 @@
+/* The states are wrapped in `:where()` so that a consumer's own class wins over them: see Button.module.css. */
 .iconButton {
   box-sizing: border-box;
   display: inline-grid;
@@ -21,13 +22,13 @@
   outline-offset: 2px;
 }
 
-.iconButton:not(:disabled):hover {
+.iconButton:where(:not(:disabled):hover) {
   background: var(--color-surface-hover);
   color: var(--color-ink);
 }
 
 /* No token holds the disabled opacity: it stays as Resolve had it. */
-.iconButton:disabled {
+.iconButton:where(:disabled) {
   cursor: not-allowed;
   opacity: 0.45;
 }
