@@ -10,9 +10,10 @@ import {
   type IconButtonProps,
 } from '../../src/components/Button'
 import { expectNoAxeViolations } from '../axe'
-import { emulateMedia, loadTokens, mount, pressTab } from './support'
+import { emulateMedia, loadStyles, loadTokens, mount, pressTab } from './support'
 
-// Axe computes contrast from the real styles, so the page gets the generated tokens, as a consumer's does.
+// Axe computes contrast from the real styles, so the page gets the generated tokens and the built styles.css, as a
+// consumer's does: what is checked is the CSS the package ships, not the module the runner would serve.
 const variants: ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger']
 const states = ['default', 'disabled', 'loading'] as const
 const themes = ['light', 'dark'] as const
@@ -20,6 +21,7 @@ const root = document.documentElement
 
 beforeEach(() => {
   loadTokens()
+  loadStyles()
 })
 
 // The stylesheet of a consumer, appended after the library's own, as the README tells a consumer to load it.

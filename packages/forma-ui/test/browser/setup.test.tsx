@@ -89,3 +89,25 @@ describe('the built stylesheets', () => {
     expect(getComputedStyle(document.documentElement).getPropertyValue('--color-bg')).toBe('')
   })
 })
+
+describe('the CSS Modules of the runner while the built styles are loaded', () => {
+  // The runner marks the style it injects for a component's CSS Module with `data-vite-dev-id`.
+  it('switches them off so that the built styles alone apply, and back on after reset()', async () => {
+    const runnerStyle = document.createElement('style')
+    runnerStyle.dataset.viteDevId = '/package/src/components/Probe/Probe.module.css'
+    runnerStyle.textContent = '.probe { display: none }'
+    document.head.append(runnerStyle)
+    try {
+      const probe = mount(<p className="probe" />).firstElementChild!
+      expect(getComputedStyle(probe).display).toBe('none')
+
+      loadStyles()
+      expect(getComputedStyle(probe).display).toBe('block')
+
+      await reset()
+      expect(runnerStyle.sheet!.disabled).toBe(false)
+    } finally {
+      runnerStyle.remove()
+    }
+  })
+})
