@@ -29,7 +29,7 @@ slot_port_numbers() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; slot_ports "$1
 port_of() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | sed -n "s/^$2=//p" ); }
 # The configuration variables of project.env: a test that wants one sets it after mk_env, never inherits it.
 unset_config() { unset HERDR_PROJECT_ID HERDR_SLOT_MIN HERDR_SLOT_MAX HERDR_PORTS HERDR_REQUIRED_CHECKS HERDR_PR_ASSIGNEE \
-  HERDR_INSTALL_DIR HERDR_INSTALL_CMD HERDR_COMPOSE HERDR_COMPOSE_FILE HERDR_PROJECT_ENV HERDR_TASKS_ROOT; }
+  HERDR_INSTALL_DIR HERDR_INSTALL_CMD HERDR_COMPOSE HERDR_COMPOSE_FILE HERDR_REVIEW_MODEL HERDR_PROJECT_ENV HERDR_TASKS_ROOT; }
 
 # Ports of a slot that something already listens on belong to other agents on this machine: pick slots that are free.
 pick_slot() {
