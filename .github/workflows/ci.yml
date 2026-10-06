@@ -26,8 +26,10 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      # The generated files that are committed (src/tokens/tokens.ts) must match what the generator writes now.
+      # The generated files that are committed (src/tokens/tokens.ts, src/components/Icon/paths.ts) must match what
+      # the generators write now.
       - run: npm run build:tokens -w @yelison/forma-ui
+      - run: npm run build:icons -w @yelison/forma-ui
       - run: git diff --exit-code
       - run: npm run lint
       - run: npm run format:check

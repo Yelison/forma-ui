@@ -23,7 +23,8 @@
   "scripts": {
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "build:tokens": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/build-tokens.ts",
-    "build": "npm run clean && npm run build:tokens && vite build && tsc -p tsconfig.build.json",
+    "build:icons": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-icons.ts",
+    "build": "npm run clean && npm run build:tokens && npm run build:icons && vite build && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run --maxWorkers=3",
     "test:coverage": "vitest run --maxWorkers=3 --coverage",
