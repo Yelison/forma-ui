@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Takes a reviewed task to main: checks the branch, pushes it (never a push without a lease), opens or reuses the pull
-# request, waits for `Full-stack smoke`, schedules the auto-merge (rebase), waits for it, fast-forwards the main
-# checkout and retires the task and its review. It never merges locally and never schedules a merge before the smoke
-# check is green. See docs/development/herdr.md.
+# request, waits for every check of HERDR_REQUIRED_CHECKS, merges it (rebase), waits for it, fast-forwards the main
+# checkout and retires the task and its review. It never merges locally and never merges before the required checks
+# are green. Without required checks it merges at once, without --auto (GitHub refuses --auto then); with them it
+# schedules the auto-merge. Adapted from Resolve at c3f02f8. See docs/development/herdr.md.
 set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 # shellcheck source=common.sh
@@ -17,8 +18,8 @@ Usage: scripts/herdr/ship.sh --task ID --title TITLE --body FILE [--no-cleanup]
   --body FILE     Pull request description
   --no-cleanup    Keep the task and its review (skip /exit and remove-task.sh)
 
-Environment: HERDR_PR_ASSIGNEE (assignee of a new PR), HERDR_POLL_SECONDS (default 20) and
-HERDR_SHIP_TIMEOUT_SECONDS (each wait, default 1800).
+Environment: HERDR_REQUIRED_CHECKS (comma-separated check names to wait for; empty: none), HERDR_PR_ASSIGNEE
+(assignee of a new PR), HERDR_POLL_SECONDS (default 20) and HERDR_SHIP_TIMEOUT_SECONDS (each wait, default 1800).
 USAGE
 }
 
@@ -117,32 +118,42 @@ while :; do
   sleep "$POLL"
 done
 
-# Smoke first. gh pr checks exits non-zero while checks are pending or failed, so read its JSON and decide here.
-smoke_bucket() {
-  # The most recent run if the check ran more than once (reruns); but a run that has not started (pending, or no
-  # start time, or Go's zero time) is a rerun in the queue, which counts as the newest: wait for it.
+# Required checks. gh pr checks exits non-zero while checks are pending or failed, so read its JSON and decide here.
+mapfile -t CHECKS < <(required_checks)
+check_bucket() {
+  # The bucket of the check called $1: the most recent run if it ran more than once (reruns); but a run that has not
+  # started (pending, or no start time, or Go's zero time) is a rerun in the queue, which counts as the newest: wait.
   gh pr checks "$PR" --json name,bucket,startedAt 2>/dev/null \
-    | jq -r '[.[]? | select(.name == "Full-stack smoke")] as $r
+    | jq -r --arg n "$1" '[.[]? | select(.name == $n)] as $r
         | if ($r | length) == 0 then "absent"
           elif any($r[]; .bucket == "pending" or ((.startedAt // "") == "") or ((.startedAt // "") | startswith("0001-"))) then "pending"
           else ($r | sort_by(.startedAt) | last | .bucket) end' 2>/dev/null || true
 }
-SECONDS=0
-while :; do
-  bucket=$(smoke_bucket)
-  case ${bucket:-absent} in
-    pass) log "Full-stack smoke passed."; break ;;
-    fail | cancel | skipping)
-      gh pr checks "$PR" >&2 || true
-      die "Full-stack smoke is '$bucket' on pull request #$PR; the merge was not scheduled" ;;
-  esac
-  [ "$SECONDS" -lt "$TIMEOUT" ] || { gh pr checks "$PR" >&2 || true; die "Full-stack smoke did not finish in ${TIMEOUT}s (last state: ${bucket:-absent}); the merge was not scheduled"; }
-  log "Waiting for Full-stack smoke (${bucket:-absent})…"
-  sleep "$POLL"
-done
-
-gh pr merge "$PR" --auto --rebase --match-head-commit "$HEAD_SHA" >/dev/null || die "gh pr merge --auto --rebase failed for #$PR"
-log "Auto-merge (rebase) scheduled for #$PR; waiting for it…"
+if [ "${#CHECKS[@]}" -gt 0 ]; then
+  SECONDS=0
+  while :; do
+    waiting=()
+    for name in "${CHECKS[@]}"; do
+      bucket=$(check_bucket "$name")
+      case ${bucket:-absent} in
+        pass) ;;
+        fail | cancel | skipping)
+          gh pr checks "$PR" >&2 || true
+          die "required check '$name' is '$bucket' on pull request #$PR; the merge was not scheduled" ;;
+        *) waiting+=("$name (${bucket:-absent})") ;;
+      esac
+    done
+    [ "${#waiting[@]}" -gt 0 ] || { log "Required checks passed: ${CHECKS[*]}."; break; }
+    [ "$SECONDS" -lt "$TIMEOUT" ] || { gh pr checks "$PR" >&2 || true; die "required checks did not finish in ${TIMEOUT}s (waiting for: ${waiting[*]}); the merge was not scheduled"; }
+    log "Waiting for required checks: ${waiting[*]}…"
+    sleep "$POLL"
+  done
+  gh pr merge "$PR" --auto --rebase --match-head-commit "$HEAD_SHA" >/dev/null || die "gh pr merge --auto --rebase failed for #$PR"
+  log "Auto-merge (rebase) scheduled for #$PR; waiting for it…"
+else
+  log "No required checks configured: merging #$PR now."
+  gh pr merge "$PR" --rebase --match-head-commit "$HEAD_SHA" >/dev/null || die "gh pr merge --rebase failed for #$PR"
+fi
 SECONDS=0
 MERGED_SHA=
 while :; do
@@ -157,7 +168,7 @@ while :; do
     MERGED) MERGED_SHA=${view#*$'\t'}; break ;;
     CLOSED) die "pull request #$PR was closed without merging" ;;
   esac
-  if gh pr checks "$PR" --json bucket 2>/dev/null | jq -e '[.[]? | select(.bucket == "fail")] | length > 0' >/dev/null 2>&1; then
+  if [ "${#CHECKS[@]}" -gt 0 ] && gh pr checks "$PR" --json bucket 2>/dev/null | jq -e '[.[]? | select(.bucket == "fail")] | length > 0' >/dev/null 2>&1; then
     gh pr checks "$PR" >&2 || true
     die "a check of #$PR failed, so the auto-merge will not run"
   fi

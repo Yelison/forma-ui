@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 # Shared helpers for the Herdr task scripts (docs/development/herdr.md). Source it; do not run it.
+# Adapted from Resolve at c3f02f8; project values live in project.env.
 set -euo pipefail
 
-HERDR_TASKS_ROOT="${HERDR_TASKS_ROOT:-$HOME/resolver-herdr}"
-SLOT_MIN=1
-SLOT_MAX=9
+# Project settings (project.env); environment variables override them. HERDR_PROJECT_ENV points at another file.
+HERDR_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
+HERDR_PROJECT_ENV=${HERDR_PROJECT_ENV:-$HERDR_DIR/project.env}
+[ -f "$HERDR_PROJECT_ENV" ] || { printf 'error: project settings not found: %s\n' "$HERDR_PROJECT_ENV" >&2; exit 1; }
+# shellcheck source=project.env
+. "$HERDR_PROJECT_ENV"
+SLOT_MIN=$HERDR_SLOT_MIN
+SLOT_MAX=$HERDR_SLOT_MAX
+[[ $SLOT_MIN =~ ^[0-9]+$ && $SLOT_MAX =~ ^[0-9]+$ ]] && [ "$SLOT_MIN" -le "$SLOT_MAX" ] \
+  || { printf 'error: HERDR_SLOT_MIN and HERDR_SLOT_MAX must be numbers with MIN <= MAX\n' >&2; exit 1; }
 
 log() { printf '%s\n' "$*" >&2; }
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }
@@ -44,7 +52,7 @@ load_task() {
   TASK_WORKSPACE=$(jq -r '.workspace_id' "$file")
   TASK_PANE=$(jq -r '.pane_id' "$file")
   TASK_SLOT=$(jq -r '.slot' "$file")
-  TASK_COMPOSE_PROJECT=$(jq -r '.compose_project' "$file")
+  TASK_COMPOSE_PROJECT=$(jq -r '.compose_project // empty' "$file")
   TASK_LOG_DIR=$(jq -r '.log_dir' "$file")
   TASK_AGENT=$(jq -r '.agent // empty' "$file")
   TASK_REMOVED_AT=$(jq -r '.removed_at // empty' "$file")
@@ -76,15 +84,41 @@ active_task_ids() {
 # awk reads all of ss output (no early exit), so pipefail cannot turn a SIGPIPE into a false "free".
 port_in_use() { ss -ltnH 2>/dev/null | awk -v p="$1" '$4 ~ ("[:.]" p "$") { found = 1 } END { exit !found }'; }
 
+# port_specs: the configured ports (HERDR_PORTS), one "NAME BASE MARKER" line each.
+port_specs() {
+  local spec name base marker rest
+  for spec in $HERDR_PORTS; do
+    IFS=: read -r name base marker rest <<<"$spec"
+    [[ $name =~ ^[A-Z][A-Z0-9_]*$ && $base =~ ^[0-9]+$ && $marker =~ ^[A-Z][A-Z0-9_]*$ && -z $rest ]] \
+      || die "HERDR_PORTS entry '$spec' is not NAME:BASE:MARKER (upper-case NAME and MARKER, numeric BASE)"
+    printf '%s %s %s\n' "$name" "$base" "$marker"
+  done
+}
+
 # slot_ports N: the ports of a slot, one KEY=VALUE per line.
 slot_ports() {
-  local slot=$1
-  printf 'DEV_SERVER_PORT=%s\n' $((5180 + slot))
-  printf 'PLAYWRIGHT_PORT=%s\n' $((4180 + slot))
-  printf 'SERVER_PORT=%s\n' $((8080 + slot))
-  printf 'POSTGRES_PORT=%s\n' $((5440 + slot))
-  printf 'KEYCLOAK_PORT=%s\n' $((8180 + slot))
+  local slot=$1 name base _
+  while read -r name base _; do
+    printf '%s=%s\n' "$name" $((base + slot))
+  done < <(port_specs)
 }
+
+# Is Docker Compose on for this project? (HERDR_COMPOSE=1)
+compose_enabled() { [ "${HERDR_COMPOSE:-0}" = 1 ]; }
+
+# Checks ship.sh waits for, one name per line (HERDR_REQUIRED_CHECKS, comma-separated; names may contain spaces).
+required_checks() {
+  local item
+  [ -n "${HERDR_REQUIRED_CHECKS//[[:space:],]/}" ] || return 0
+  while IFS= read -r item; do
+    item=${item#"${item%%[![:space:]]*}"}
+    item=${item%"${item##*[![:space:]]}"}
+    [ -z "$item" ] || printf '%s\n' "$item"
+  done < <(tr ',' '\n' <<<"$HERDR_REQUIRED_CHECKS")
+}
+
+# A malformed HERDR_PORTS stops every script here, before anything is created.
+port_specs >/dev/null
 
 # Live agent (JSON) hosted by a pane, or nothing.
 agent_in_pane() { herdr agent list | jq -c --arg p "$1" '.result.agents[]? | select(.pane_id == $p)'; }
@@ -120,7 +154,7 @@ check_load() {
 # Reasoning effort per task (docs/development/herdr.md, "Reasoning effort per task").
 # Levels a settings file accepts; `max` only exists as a launch flag or environment variable, so tasks do not use it.
 EFFORT_LEVELS="low medium high xhigh"
-# Models whose per-model entry is written, so the level holds whichever of them the session resolves to.
+# Models whose per-model entry is written, so the level holds whichever of them the session picks.
 EFFORT_MODELS="claude-sonnet-5-5 claude-opus-5-5 claude-fable-5-1"
 
 valid_effort() { case " $EFFORT_LEVELS " in *" $1 "*) return 0 ;; *) return 1 ;; esac; }

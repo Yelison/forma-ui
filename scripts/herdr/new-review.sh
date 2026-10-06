@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Creates the independent review of a delivered task (review-<id>: a worktree pinned to the task's HEAD, effort
 # fixed, no advisor), fills the review brief and starts the reviewer. With --round N it moves the existing review
-# to the task's new HEAD and sends the reviewer a round brief. See docs/development/herdr.md.
+# to the task's new HEAD and sends the reviewer a round brief. Adapted from Resolve at c3f02f8.
+# See docs/development/herdr.md.
 set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 # shellcheck source=common.sh
@@ -19,7 +20,7 @@ Usage: scripts/herdr/new-review.sh --task ID [--effort high|medium] [--points FI
   --lane X        Lane the report ends with (REVISIÓN X: …); default: the one in the task's brief
   --round N       The review already exists and the task advanced: move it to the new HEAD (N >= 2), write
                   brief-ronda-N.md with the points and send it to the reviewer
-  --slot N        Port slot 1-9 for the review (default: new-task.sh picks the first free one); first run only
+  --slot N        Port slot for the review (default: new-task.sh picks the first free one); first run only
   --ignore-load   Start the reviewer although the load average is above HERDR_MAX_LOAD
 
 The review is the task review-ID; it is retired with scripts/herdr/remove-task.sh like any other task.
@@ -96,7 +97,8 @@ review_commands() {
   local -a impl_ports new_ports
   ports=$(slot_ports "$slot" | paste -sd' ')
   cmds=$(awk '/^## Comandos/{ f = 1; next } f && /^## /{ exit } f && /^```/{ if (inb) exit; inb = 1; next } f && inb { print }' "$IMPL_BRIEF")
-  printf '# Your slot (%s): %s\n# Docker Compose: always with -p %s\n' "$slot" "$ports" "$project"
+  printf '# Your slot (%s): %s\n' "$slot" "$ports"
+  if [ -n "$project" ]; then printf '# Docker Compose: always with -p %s\n' "$project"; fi
   if [ -z "$cmds" ]; then
     printf '# The implementer brief lists no commands: take them from its acceptance criteria.\ngit log --oneline %s..%s\ngit diff --stat %s..%s\n' \
       "$TASK_BASE_SHA" "$SHA" "$TASK_BASE_SHA" "$SHA"
@@ -112,14 +114,16 @@ review_commands() {
     cmds=$(sed -E "s/\b$from\b/$to/g" <<<"$cmds")
   done
   # Twice, because two occurrences separated by a single character share it.
-  for i in 1 2; do
-    cmds=$(sed -E "s/(^|[^A-Za-z0-9_-])$IMPL_PROJECT([^A-Za-z0-9_-]|\$)/\1$project\2/g" <<<"$cmds")
-  done
+  if [ -n "$IMPL_PROJECT" ] && [ -n "$project" ]; then
+    for i in 1 2; do
+      cmds=$(sed -E "s/(^|[^A-Za-z0-9_-])$IMPL_PROJECT([^A-Za-z0-9_-]|\$)/\1$project\2/g" <<<"$cmds")
+    done
+  fi
   for i in "${!impl_ports[@]}"; do
     from=${impl_ports[$i]#*=}
     if grep -Eq "\b$from\b" <<<"$cmds"; then die "the review commands still carry the implementer's port $from"; fi
   done
-  if grep -Eq "(^|[^A-Za-z0-9_-])$IMPL_PROJECT([^A-Za-z0-9_-]|\$)" <<<"$cmds"; then die "the review commands still carry the implementer's Compose project $IMPL_PROJECT"; fi
+  if [ -n "$IMPL_PROJECT" ] && grep -Eq "(^|[^A-Za-z0-9_-])$IMPL_PROJECT([^A-Za-z0-9_-]|\$)" <<<"$cmds"; then die "the review commands still carry the implementer's Compose project $IMPL_PROJECT"; fi
   printf '%s\n' "$cmds"
 }
 

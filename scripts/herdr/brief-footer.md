@@ -1,33 +1,43 @@
 
 ## Commits
 
-Los de la ficha, en inglés, Conventional Commits; cada uno compila y pasa por sí solo las comprobaciones de su capa (si la cobertura del contrato obliga a juntar contrato e implementación de una operación, hazlo y explícalo). Trailer: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Identidad de git ya configurada. **Sin push ni PR.** Formatea solo tus archivos (`npm run format` o Prettier sobre las rutas autorizadas, nunca sobre `src` entero: reformatearía archivos generados).
+Los de la ficha, en inglés, Conventional Commits; cada uno pasa por sí solo las comprobaciones de su capa, porque el repositorio funde con rebase y todos los commits llegan a `main`. Trailer: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Identidad de git ya configurada. **Sin push ni PR.** Formatea solo tus archivos (Prettier sobre las rutas autorizadas, nunca sobre un directorio de código entero: reformatearía archivos ajenos o generados).
 
 ## Uso de la máquina (varios agentes en paralelo)
 
-- **No ejecutes la batería completa de Playwright sobre la base**: `main` ya está en verde en la CI. Para confirmar la base basta `npm test` (o `./mvnw -B verify` si tocas backend).
-- Mientras iteras, ejecuta solo las specs de tu feature (`npx playwright test e2e/<feature>.spec.ts`); la batería completa, **una vez**, antes de entregar.
-- Vitest con `npm test -- --maxWorkers=3` y Playwright siempre con `--workers=3` (la máquina, de 12 núcleos, la comparten tres o cuatro agentes; sin límite la carga llega a 30). Si un test falla solo bajo carga, repítelo aislado antes de tocar código y anótalo en la entrega.
+- **Tus puertos** (slot `__SL__`): sitio y Vite `__VITE__`, Playwright `__PW__`, Storybook `__SB__`. No uses otros ni toques procesos que no arrancaste. Están también en `.env.herdr`, pero puede que el modo automático no te deje leerlo: pásalos en línea (`PLAYWRIGHT_PORT=__PW__ npx playwright test --workers=3`).
+- **No ejecutes la batería completa de Playwright sobre la base**: es lenta y la base no es lo que se revisa. Para confirmar la base basta Vitest.
+- Mientras iteras, ejecuta solo las specs de tu cambio; la batería e2e completa, **una vez**, antes de entregar.
+- Vitest con `--maxWorkers=3` y Playwright siempre con `--workers=3`: la máquina la comparten varios agentes y sin límite la carga se dispara. Si un test falla solo bajo carga, repítelo aislado antes de tocar código y anótalo en la entrega.
 
 ## Mutaciones y órdenes peligrosas
 
-- **Antes de mutar código para comprobar un test, haz commit** (o guarda una copia del archivo en tu scratchpad) y restaura desde ese commit o esa copia. Nunca restaures con `git checkout -- <archivo>` sobre un archivo con cambios sin commitear: ya se perdió trabajo así tres veces.
+- **Antes de mutar código para comprobar un test, haz commit** (o guarda una copia del archivo en tu scratchpad) y restaura desde ese commit o esa copia. Nunca restaures con `git checkout -- <archivo>` sobre un archivo con cambios sin commitear: se ha perdido trabajo así.
 - En cualquier `rm`, usa rutas literales o variables protegidas (`"${DIR:?}"/x`): una orden con una variable que podría quedar vacía se queda esperando aprobación y, sin nadie mirando, se deniega y te atasca.
-- `docker compose` siempre con tu proyecto (`-p <COMPOSE_PROJECT_NAME de .env.herdr>`); no toques contenedores ni procesos que no arrancaste. Antes de entregar, comprueba que los puertos de tu slot están libres.
+- No toques procesos que no arrancaste y nunca uses `pkill -f` ni `pgrep -f`: para lo tuyo, por PID. Antes de entregar, comprueba que los puertos de tu slot están libres.
+
+## Idioma (CLAUDE.md, «Language and URLs»)
+
+- Ningún texto visible fijo en un solo idioma: contenido, `aria-label`, tooltips, anuncios de regiones vivas, `<title>` y meta descripción.
+- Los textos del sitio pasan por el mecanismo de i18n, con español e inglés añadidos a la vez; una página no está terminada con un solo idioma. Plurales con ICU y fechas y números con `Intl`; nunca frases construidas por concatenación. Respeta el glosario de términos fijos (nombres de componentes, `token`, `variant`; Forma UI no se traduce).
+- Los componentes de la biblioteca reciben sus textos internos (etiqueta de cierre de un diálogo, de carga de un botón…) por props o provider, con valores por defecto en inglés.
+- URL y slugs en inglés e iguales en los dos idiomas; el idioma nunca cambia una ruta.
+- Cuando añadas o cambies texto, comprueba el resultado con el pseudo-idioma (textos que faltan y desbordes a 320 px).
+- Documentación del repositorio, código, commits y planes, en inglés.
 
 ## Autocomprobación antes de entregar
 
-Los revisores encuentran casi siempre estos defectos. Compruébalos tú y cita la evidencia en la entrega:
+Los revisores encuentran casi siempre estos defectos (`AGENTS.md`, «Self-check before delivering»). Compruébalos tú y cita la evidencia en la entrega:
 
 - **Tests que fallan sin su arreglo:** para cada test nuevo, una mutación que lo hace fallar (anótala). Un test que pasa sin el cambio no cuenta.
-- **Sin saltos de layout:** con la petición retenida (`page.route`), mide que el contenido siguiente no se mueve al llegar los datos, en la primera carga y al cambiar filtros o periodos. El esqueleto reserva la altura real: componentes reales ocultos o un token compartido, nunca números mágicos.
-- **Anchos de CLAUDE.md:** 320, 390, 767, 768, 1024, 1199, 1200 y 1440 px, en ambos temas: sin scroll horizontal, sin textos recortados (nombres de 120 caracteres), controles táctiles de 44 px por debajo de 768 px.
-- **Foco:** tras cerrar un diálogo, borrar o perder el disparador, el foco va a un sitio con sentido (nunca a `body`); con teclado se llega a todo.
-- **Anuncios:** errores, avisos y cambios de estado asíncronos en una región viva o asociados al campo (`aria-describedby`), con textos distintos para botones con la misma acción («Reintentar…»).
-- **Matriz §2.1:** carga, vacío, sin resultados, error con reintento, sin permisos y página fuera de rango, cada uno con su test; los errores de una parte no ocultan las demás.
-- **Contrato:** los mocks de e2e y de tests unitarios cumplen el esquema (`additionalProperties: false`: ni campos de más ni de menos).
-- **Roles:** lo que un rol no puede hacer no se muestra; lo que se muestra mientras `/me` carga es lo del rol con menos permisos.
-- **Commits:** cada uno pasa por sí solo, y si un cambio rompe un e2e, el e2e cambia en el mismo commit.
+- **Sin saltos de layout** cuando llegan los datos o cambia un filtro; el espacio se reserva con la altura real, no con números mágicos.
+- **Anchos:** 320, 390, 767, 768, 1024, 1199, 1200 y 1440 px, en los temas claro y oscuro: sin scroll horizontal ni textos recortados.
+- **Foco:** nunca en `body`; tras cerrar un diálogo o perder el disparador, el foco va a un sitio con sentido, y con teclado se llega a todo con foco visible.
+- **Anuncios:** errores, avisos y cambios de estado asíncronos en una región viva o asociados al campo (`aria-describedby`).
+- **Todos los estados:** carga, vacío, error con reintento, deshabilitado y de solo lectura (son estados distintos), cada uno con su test.
+- **Una mutación por test nuevo**, anotada en la entrega.
+- **Idioma:** las reglas de la sección anterior, con el pseudo-idioma pasado.
+- **Commits:** cada uno pasa por sí solo, y si un cambio rompe un test, el test cambia en el mismo commit.
 
 ## Entrega
 
@@ -35,4 +45,4 @@ Los revisores encuentran casi siempre estos defectos. Compruébalos tú y cita l
 
 ## Comunica al coordinador
 
-Escribe `blocked.md` y termina con `BLOQUEO __LANE__: …` si necesitas un archivo reservado o una dependencia, si un test falla en el commit base, si el plan contradice el código de forma que cambie el alcance, o si un paso pide permisos o configuración global. No ejecutes `/effort` con ningún nivel ni elijas una fila en `/advisor`. Nunca uses `rm` con variables que puedan quedar vacías. No mates procesos que no hayas arrancado tú, y nunca uses `pkill -f`: para lo tuyo por PID. Limpia tus contenedores al terminar.
+Escribe `blocked.md` y termina con `BLOQUEO __LANE__: …` si necesitas un archivo reservado o una dependencia, si un test falla en el commit base, si el plan contradice el código de forma que cambie el alcance, o si un paso pide permisos o configuración global. No ejecutes `/effort` con ningún nivel ni elijas una fila en `/advisor`. Nunca uses `rm` con variables que puedan quedar vacías. Limpia tus procesos al terminar.

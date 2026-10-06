@@ -3,8 +3,10 @@
 . "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 # Slots are chosen again for every scenario: other agents on the machine start and stop servers meanwhile.
+# mk [CHECKS [COMPOSE]]: CHECKS is HERDR_REQUIRED_CHECKS (default: build; "" is none), COMPOSE is HERDR_COMPOSE (default 0).
 mk() {
-  mk_env; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2; mk_impl "$SA"
+  mk_env; export HERDR_REQUIRED_CHECKS=${1-build} HERDR_COMPOSE=${2-0}
+  SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2; mk_impl "$SA"
   "$HERDR/new-review.sh" --task impl-a --slot "$SB" >/dev/null 2>"$T/err" || { echo "mk: new-review.sh failed: $(cat "$T/err")" >&2; exit 2; }
   echo pass >"$T/state/gh/checks"
 }
@@ -28,28 +30,69 @@ s_dirty() { mk; touch "$W/x"; out=$(ship); check "dirty: refused" test $? -ne 0;
 s_noorigin() { mk; git clone -q "$T/remote.git" "$T/other"; git -C "$T/other" -c user.name=o -c user.email=o@x commit -q --allow-empty -m "main moved"; git -C "$T/other" push -q origin main
   out=$(ship); check "stale base: refused" test $? -ne 0; check "stale base: says rebase" says x 'does not contain origin/main'; check "stale base: nothing pushed" bash -c "! git --git-dir '$T/remote.git' rev-parse -q --verify refs/heads/feat/impl-a"; check "stale base: no gh" test -z "$(gh_calls)"; }
 s_happy() { mk; echo pending:2 >"$T/state/gh/checks"
-  out=$(HERDR_PR_ASSIGNEE=Yelison ship); rc=$?
+  out=$(ship); rc=$?
   check "happy: rc 0" test $rc -eq 0; check "happy: pushed" remote_has feat/impl-a
-  check "happy: assignee" grep -q -- '--assignee Yelison' <<<"$(gh_calls)"
+  check "happy: the default assignee comes from project.env" grep -q -- '--assignee Yelison' <<<"$(gh_calls)"
   head=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
   check "happy: merge scheduled with --auto --rebase and the pushed head" grep -q "pr merge 41 --auto --rebase --match-head-commit $head" <<<"$(gh_calls)"
   check "happy: origin/main contains the pushed head" git --git-dir "$T/remote.git" merge-base --is-ancestor "$head" refs/heads/main
   check "happy: the state of the PR is read before the first /exit" test "$(grep -n 'pr view 41 --json state' "$T/state/events.log" | head -1 | cut -d: -f1)" -lt "$(grep -n '^exit ' "$T/state/events.log" | head -1 | cut -d: -f1)"
-  check "happy: merge after the smoke polls" test "$(grep -n 'pr merge' "$T/state/gh/calls.log" | cut -d: -f1)" -gt "$(grep -n 'pr checks' "$T/state/gh/calls.log" | tail -1 | cut -d: -f1)"
+  check "happy: merge after the check polls" test "$(grep -n 'pr merge' "$T/state/gh/calls.log" | cut -d: -f1)" -gt "$(grep -n 'pr checks' "$T/state/gh/calls.log" | tail -1 | cut -d: -f1)"
   want=$head
   check "happy: prints the pushed commit as merged" grep -qx "merged $want" <<<"$out"
   check "happy: main checkout fast-forwarded" test "$(git -C "$T/repo" rev-parse HEAD)" = "$want"
   check "happy: task retired" retired impl-a; check "happy: review retired" retired review-impl-a
   check "happy: worktrees gone" bash -c "! test -e '$W' && ! test -e '$T/root/worktrees/review-impl-a'"
   check "happy: reviewer sent /exit" grep -q '/exit' "$T/state/prompts.log"
-  check "happy: volumes removed for each task" test "$(grep -c 'down --volumes' "$T/state/docker.log")" -eq 2; }
+  check "happy: Compose is off, so docker is never called" test ! -e "$T/state/docker.log"; }
+# Compose on: ship retires both tasks with `down --volumes`.
+s_compose() { mk build 1; out=$(ship); rc=$?
+  check "compose: rc 0" test $rc -eq 0
+  check "compose: volumes removed for each task" test "$(grep -c 'down --volumes' "$T/state/docker.log")" -eq 2; }
+# The assignee is an environment override too: an empty value means no assignee.
+s_assignee() { mk; out=$(HERDR_PR_ASSIGNEE= ship --no-cleanup); check "no assignee: rc 0" test $? -eq 0
+  check "no assignee: the PR was created" grep -q 'pr create' <<<"$(gh_calls)"
+  check "no assignee: no --assignee" bash -c "! grep -q -- '--assignee' '$T/state/gh/calls.log'"; }
+# No required checks (Forma UI has no CI yet): merge at once, rebase, pinned to the head, never --auto, no check polling.
+s_nochecks() { mk ""; out=$(ship); rc=$?
+  head=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
+  check "no checks: rc 0" test $rc -eq 0
+  check "no checks: merged with --rebase --match-head-commit and the pushed head" grep -qx "gh pr merge 41 --rebase --match-head-commit $head" <<<"$(gh_calls)"
+  check "no checks: never --auto" bash -c "! grep -q -- '--auto' '$T/state/gh/calls.log'"
+  check "no checks: no check was read" bash -c "! grep -q 'pr checks' '$T/state/gh/calls.log'"
+  check "no checks: the head is still awaited before merging" test "$(grep -n 'headRefOid' "$T/state/gh/calls.log" | head -1 | cut -d: -f1)" -lt "$(grep -n 'pr merge' "$T/state/gh/calls.log" | head -1 | cut -d: -f1)"
+  check "no checks: origin/main contains the pushed head" git --git-dir "$T/remote.git" merge-base --is-ancestor "$head" refs/heads/main
+  check "no checks: task and review retired" bash -c "[ \"\$(jq -r .removed_at '$T/root/tasks/impl-a/task.json')\" != null ] && [ \"\$(jq -r .removed_at '$T/root/tasks/review-impl-a/task.json')\" != null ]"
+  check "no checks: says so" says x 'No required checks configured'
+  # Checks that exist but are not required do not stop it.
+  mk ""; echo fail >"$T/state/gh/checks"; out=$(ship --no-cleanup); check "no checks: a failing check that is not required does not stop it" test $? -eq 0; }
+# Two required checks (the second has a space in its name): it waits for both; the merge is scheduled only after the
+# last one passed.
+s_two() { mk "unit tests, e2e"; echo 'list:unit tests=pass,e2e=pending@4' >"$T/state/gh/checks"; rm -f "$T/state/gh/polls"; out=$(ship); rc=$?
+  check "two checks: rc 0" test $rc -eq 0
+  check "two checks: waited while the second was pending" says x 'Waiting for required checks: e2e (pending)'
+  check "two checks: merge scheduled with --auto" grep -q 'pr merge 41 --auto --rebase --match-head-commit' <<<"$(gh_calls)"
+  check "two checks: the merge came after the last pending read" test "$(cat "$T/state/gh/merge-polls")" -ge 5
+  check "two checks: both are named when they pass" says x 'Required checks passed: unit tests e2e'
+  # A required check that never shows up is waited for until the timeout, with no merge.
+  mk "unit tests, e2e"; echo 'list:unit tests=pass' >"$T/state/gh/checks"; out=$(HERDR_SHIP_TIMEOUT_SECONDS=1 ship)
+  check "two checks: one absent: gives up" test $? -ne 0; check "two checks: one absent: names it" says x 'e2e (absent)'
+  check "two checks: one absent: no merge" bash -c "! grep -q 'pr merge' '$T/state/gh/calls.log'"; }
+# One red check stops the merge even though the other passed.
+s_twored() { mk "unit tests, e2e"
+  for spec in 'list:unit tests=pass,e2e=fail' 'list:unit tests=fail,e2e=pass' 'list:unit tests=fail,e2e=pending@9'; do
+    rm -f "$T/state/gh/calls.log" "$T/state/gh/polls"; echo "$spec" >"$T/state/gh/checks"; out=$(ship)
+    check "red [$spec]: refused" test $? -ne 0; check "red [$spec]: names the red check" says x "required check '"
+    check "red [$spec]: no merge scheduled" bash -c "! grep -q 'pr merge' '$T/state/gh/calls.log'"
+  done
+  check "red: the task is kept" test "$(jq -r .removed_at "$T/root/tasks/impl-a/task.json")" = null; }
 s_reuse() { mk; echo '{"number":41,"head":"feat/impl-a","state":"OPEN"}' >"$T/state/gh/pr.json"
   out=$(ship --no-cleanup); check "reuse: rc 0" test $? -eq 0; check "reuse: no pr create" bash -c "! grep -q 'pr create' '$T/state/gh/calls.log'"; check "reuse: says so" says x 'Reusing pull request #41'
   check "no-cleanup: not retired" bash -c "[ \"\$(jq -r .removed_at '$T/root/tasks/impl-a/task.json')\" = null ]"; check "no-cleanup: worktree kept" test -d "$W"; }
 s_red() { mk; echo fail >"$T/state/gh/checks"; out=$(ship)
-  check "red: refused" test $? -ne 0; check "red: says smoke" says x 'Full-stack smoke is'; check "red: no merge scheduled" bash -c "! grep -q 'pr merge' '$T/state/gh/calls.log'"; check "red: task kept" test "$(jq -r .removed_at "$T/root/tasks/impl-a/task.json")" = null; }
+  check "red: refused" test $? -ne 0; check "red: says which check" says x "required check 'build' is"; check "red: no merge scheduled" bash -c "! grep -q 'pr merge' '$T/state/gh/calls.log'"; check "red: task kept" test "$(jq -r .removed_at "$T/root/tasks/impl-a/task.json")" = null; }
 s_absent() { mk; echo absent >"$T/state/gh/checks"; out=$(HERDR_SHIP_TIMEOUT_SECONDS=1 ship)
-  check "absent smoke: times out" test $? -ne 0; check "absent smoke: no merge" bash -c "! grep -q 'pr merge' '$T/state/gh/calls.log'"; }
+  check "absent check: times out" test $? -ne 0; check "absent check: no merge" bash -c "! grep -q 'pr merge' '$T/state/gh/calls.log'"; }
 s_multi() { mk; echo multi >"$T/state/gh/checks"; out=$(ship --no-cleanup)
   check "latest run counts: an old failure does not stop a newer pass" test $? -eq 0; check "latest run: merge scheduled" grep -q 'pr merge' "$T/state/gh/calls.log"; }
 # B6: a rerun that is still in the queue counts as the newest run, whatever its start time looks like.
@@ -107,6 +150,6 @@ s_working() { mk; jq '.agent_status="working"' "$T/state/agents/rev-impl-a" >"$T
   out=$(ship); check "working agent: stops" test $? -ne 0; check "working agent: says so" says x 'is working, so it was not sent /exit'; check "working agent: no /exit sent" bash -c "! grep -q '/exit' '$T/state/prompts.log' 2>/dev/null"
   check "working agent: the merge is reported" says x "merged "; check "working agent: reviewer still live" test -e "$T/state/agents/rev-impl-a"; }
 
-scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin happy reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working)
+scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working)
 for s in "${scen[@]}"; do echo "== $s"; "s_$s"; done
 finish

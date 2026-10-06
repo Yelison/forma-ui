@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Shared by the scenario files of scripts/herdr/tests: a disposable environment (a git repository with a local bare
 # remote, a HERDR_TASKS_ROOT of its own, and fake herdr/gh/docker/npm first in PATH) and a tiny assertion kit.
-# Nothing here touches GitHub, a real Herdr, Docker or ~/resolver-herdr. Do not run it with sudo or as a library
+# Nothing here touches GitHub, a real Herdr, Docker or the real tasks root. Do not run it with sudo or as a library
 # of anything else.
 set -uo pipefail
 TESTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
@@ -22,13 +22,22 @@ check() { local name=$1; shift; if "$@"; then ok "$name"; else bad "$name"; fi; 
 says() { grep -Fq -- "$2" <<<"$out"; }
 finish() { printf 'passed=%s failed=%s\n' "$PASS" "$FAILED"; [ "$FAILED" -eq 0 ]; }
 
+# The slots and the ports come from the project settings of the scripts under test, like the scripts read them.
+slot_range() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; seq "$SLOT_MIN" "$SLOT_MAX" ); }
+slot_port_numbers() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | cut -d= -f2 ); }
+# port_of SLOT NAME: the port the configuration gives NAME in SLOT.
+port_of() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | sed -n "s/^$2=//p" ); }
+# The configuration variables of project.env: a test that wants one sets it after mk_env, never inherits it.
+unset_config() { unset HERDR_PROJECT_ID HERDR_SLOT_MIN HERDR_SLOT_MAX HERDR_PORTS HERDR_REQUIRED_CHECKS HERDR_PR_ASSIGNEE \
+  HERDR_INSTALL_DIR HERDR_INSTALL_CMD HERDR_COMPOSE HERDR_COMPOSE_FILE HERDR_PROJECT_ENV HERDR_TASKS_ROOT; }
+
 # Ports of a slot that something already listens on belong to other agents on this machine: pick slots that are free.
 pick_slot() {
   local s p busy
-  for s in 1 2 3 4 5 6 7 8 9; do
+  for s in $(slot_range); do
     case " $* " in *" $s "*) continue ;; esac
     busy=0
-    for p in $((5180 + s)) $((4180 + s)) $((8080 + s)) $((5440 + s)) $((8180 + s)); do
+    for p in $(slot_port_numbers "$s"); do
       ss -ltnH | awk -v p="$p" '$4 ~ ("[:.]" p "$") { f = 1 } END { exit !f }' && busy=1
     done
     [ "$busy" = 0 ] && { echo "$s"; return; }
@@ -45,19 +54,20 @@ mk_env() {
   (
     cd "$T/repo" || exit 1
     git config user.name Tester; git config user.email tester@example.com
-    printf '.env.*\nCLAUDE.md\n' >.gitignore
-    mkdir -p frontend scripts; echo '{}' >frontend/package.json; echo 'services: {}' >docker-compose.yml
+    printf '.env.*\n' >.gitignore
+    mkdir -p scripts
     cp -r "$SCRIPTS_SRC" scripts/herdr
     rm -rf scripts/herdr/tests
     git add -A; git commit -qm "chore: base"
     git remote add origin "$T/remote.git"; git push -q -u origin main
   ) || return 1
   mkdir -p "$T/root" "$T/state"
+  unset_config
   export PATH="$TESTS_DIR/bin:$PATH"
   export HERDR_ENV=1 HERDR_TASKS_ROOT="$T/root" FAKE_STATE="$T/state" FAKE_REMOTE="$T/remote.git"
   export HERDR_HEADER_ATTEMPTS=1 HERDR_MAX_LOAD=1000 HERDR_POLL_SECONDS=0 HERDR_SHIP_TIMEOUT_SECONDS=5
   export HERDR="$T/repo/scripts/herdr"
-  unset HERDR_PR_ASSIGNEE FAKE_DOCKER_FAIL
+  unset FAKE_DOCKER_FAIL
   case $HERDR_TASKS_ROOT in "$TEST_TMP"/*) ;; *) echo "refusing: HERDR_TASKS_ROOT is outside the test directory" >&2; exit 2 ;; esac
   for tool in gh herdr docker npm; do
     [ "$(command -v "$tool")" = "$TESTS_DIR/bin/$tool" ] || { echo "refusing: $tool is not the fake" >&2; exit 2; }
@@ -72,7 +82,8 @@ mk_impl() {
   "$HERDR/new-task.sh" --id impl-a --branch feat/impl-a --slot "$slot" --effort medium --effort-reason r >/dev/null 2>"$T/err" \
     || { echo "mk_impl: new-task.sh failed: $(cat "$T/err")" >&2; exit 2; }
   printf '# Tarea C · Demo\n\n- Id: `impl-a` · plan §3\n\n## Comandos\n\n```sh\n%s\n```\n' "$cmds" >"$T/staged.md"
-  "$HERDR/fill-brief.sh" impl-a C "$T/staged.md" >/dev/null 2>&1 || return 1
+  "$HERDR/fill-brief.sh" impl-a C "$T/staged.md" >/dev/null 2>"$T/err" \
+    || { echo "mk_impl: fill-brief.sh failed: $(cat "$T/err")" >&2; exit 2; }
   echo delivered >"$T/root/tasks/impl-a/delivery.md"
   git -C "$W" commit -q --allow-empty -m "feat: one"
   echo body >"$T/body.md"
