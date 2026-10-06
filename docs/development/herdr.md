@@ -82,7 +82,7 @@ get different slots.
 | `PLAYWRIGHT_PORT` | 4280 + n | the preview server Playwright starts |
 | `STORYBOOK_PORT` | 6080 + n | Storybook |
 
-There is no API, database or identity-provider port. The main checkout keeps its tools' own defaults.
+There is no API, database or identity-provider port. The main checkout is slot 0: the site's Vite and Playwright configs fall back to the base ports, `5280` and `4280`, when the variables are missing (never to Vite's own `5173` and `4173`), and they fail instead of moving to another port or reusing a server they did not start.
 
 **Next to Resolve.** Forma UI and Resolve may run on the same machine. Resolve's slot `n` uses Vite 5180 + n,
 Playwright 4180 + n, API 8080 + n, PostgreSQL 5440 + n and Keycloak 8180 + n. The two ranges never overlap:
