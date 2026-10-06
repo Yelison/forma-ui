@@ -7,8 +7,11 @@
 // 2. The tarball is unpacked into the node_modules of a throwaway project (scripts/consumer/) that resolves the
 //    package through its `exports`, with `moduleResolution: nodenext`.
 // 3. The project is compiled, so the declarations resolve, and then run: it renders the sample components.
-// 4. Every file the consumer imports (tokens.css, styles.css) must resolve through `exports`, `index.js` must not
-//    import CSS, and every class a rendered component carries must have a rule in styles.css.
+// 4. Every CSS file the README tells the consumer to import must resolve through `exports`, `index.js` must not import
+//    CSS, every class of styles.css must start with `forma-`, and every class a rendered component carries must have
+//    a rule there.
+// 5. The build lists the classes of each CSS module in dist/css-modules.json (it is not packed). A module none of
+//    whose classes is rendered fails the check: the component is missing from scripts/consumer/main.tsx.
 //
 // This is the seed of the pack-check of the plan (Task 5.1), which grows it: the same tarball and project, plus the
 // list of packed files, the declarations of every export, the absence of `react` in `dependencies` and a bundler
@@ -92,11 +95,18 @@ if (foreign.length > 0) fail(`styles.css has classes without the forma- prefix: 
 const rendered = new Set(Array.from(markup.matchAll(/class="([^"]*)"/g), (match) => match[1]!.split(/\s+/)).flat())
 const unstyled = [...rendered].filter((name) => !selectors.includes(name))
 if (unstyled.length > 0) fail(`rendered classes with no rule in styles.css: ${unstyled.join(', ')}`)
-if (rendered.size === 0 && selectors.length > 0)
+
+// The build lists the classes each CSS module generated (vite.config.ts). A module none of whose classes is rendered
+// is a component whose rules this check never compares with its markup.
+const manifestPath = join(packageRoot, 'dist', 'css-modules.json')
+if (!existsSync(manifestPath)) fail('dist/css-modules.json is missing: run `npm run build` first')
+const modules = Object.entries(JSON.parse(readFileSync(manifestPath, 'utf8')) as Record<string, string[]>)
+const unrendered = modules.filter(([, names]) => !names.some((name) => rendered.has(name))).map(([path]) => path)
+if (unrendered.length > 0)
   fail(
-    'styles.css has rules but the consumer renders no component with them: add the component to scripts/consumer/main.tsx',
+    `no class of these CSS modules is rendered: ${unrendered.join(', ')}. Add the component to scripts/consumer/main.tsx`,
   )
 
 console.log(
-  `Consumer check passed: nodenext compile, ${consumedFiles.length} CSS exports, ${rendered.size} rendered classes with rules in styles.css (${new Set(selectors).size} unique classes shipped).`,
+  `Consumer check passed: nodenext compile, ${consumedFiles.length} CSS exports, ${rendered.size} rendered classes with rules in styles.css, one or more for each of the ${modules.length} CSS modules (${new Set(selectors).size} unique classes shipped).`,
 )

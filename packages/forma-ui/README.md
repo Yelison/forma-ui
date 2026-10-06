@@ -34,6 +34,9 @@ restyle through the tokens, and pass your own `className` to a component.
 
 `npm run check:consumer` packs the package, installs it into a throwaway project, compiles that project with
 `moduleResolution: nodenext` and runs it. It fails if a CSS export does not resolve, if `index.js` imports CSS, if a
-class in `styles.css` lacks the `forma-` prefix or if a rendered component carries a class with no rule. A component
-that ships CSS is added to `scripts/consumer/main.tsx`. This script is the seed of the pack-check (plan, Task 5.1),
-which adds the packed file list, the declarations of every export and a bundler build of the consumer.
+class in `styles.css` lacks the `forma-` prefix, if a rendered component carries a class with no rule or if a CSS
+module has no class rendered at all. The build lists the classes of every module in `dist/css-modules.json`, which is
+not packed. A component that ships CSS is added to `scripts/consumer/main.tsx`.
+
+This script is the seed of the pack-check (plan, Task 5.1), which adds the packed file list, the declarations of every
+export and a bundler build of the consumer.

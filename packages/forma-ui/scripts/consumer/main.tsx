@@ -5,7 +5,7 @@ import { Badge, Button, FormaProvider, IconButton, Input } from '@yelison/forma-
 import { renderToStaticMarkup } from 'react-dom/server'
 
 // One sample per component that has styles. A component that ships CSS is added here, with the props it needs; the
-// script fails when styles.css has rules and nothing rendered below uses one.
+// script fails when no class of one of the CSS modules of the build is rendered below.
 const samples = (
   <>
     <Badge tone="blue">New</Badge>

@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { scopedClassName } from './scripts/scoped-name.ts'
+import { cssModulesManifest, scopedClassName } from './scripts/scoped-name.ts'
 
 // Unit tests (jsdom) are configured here; browser-mode tests have their own config, vitest.browser.config.ts.
 export default defineConfig({
@@ -27,6 +27,18 @@ export default defineConfig({
       // nor of the JSX runtime. The pattern covers subpaths such as react/jsx-runtime and react-dom/client.
       external: [/^react(-dom)?($|\/)/],
       plugins: [
+        {
+          // The classes each CSS module generated, for scripts/check-consumer.ts. It is a build product, not a part
+          // of the package: package.json leaves it out of `files`.
+          name: 'emit-css-modules-manifest',
+          generateBundle() {
+            this.emitFile({
+              type: 'asset',
+              fileName: 'css-modules.json',
+              source: `${JSON.stringify(cssModulesManifest(), null, 2)}\n`,
+            })
+          },
+        },
         {
           // base.css is exported on its own (./base.css) and no module imports it, so Vite would never see it.
           // Importing it from index.ts would instead put its rules in a bundled stylesheet and make the entry

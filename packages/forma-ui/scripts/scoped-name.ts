@@ -16,17 +16,24 @@
 // its origin (`file#class`), and the build fails when the same name arrives from another origin. The names of
 // base.css, which the package ships next to styles.css, are reserved.
 //
+// The registry also tells the build which classes each module generated: manifest() feeds dist/css-modules.json, which
+// scripts/check-consumer.ts reads to require that every CSS module has a rendered class.
+//
 // The script sticks to erasable TypeScript so that it can run under Node's type stripping too.
 
 const baseCssNames = ['forma-scroll-locked', 'forma-visually-hidden']
 
 const kebab = (text: string) => text.replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase()
 
-/** A function with the signature of Vite's `generateScopedName`, with a registry of its own. */
-export function createScopedClassName() {
+/**
+ * A `generateScopedName` for Vite, as `scopedClassName`, and the `manifest` of the classes it has generated, both over
+ * a registry of their own.
+ */
+export function createScopedClassNames() {
   const origins = new Map(baseCssNames.map((name) => [name, 'base.css']))
+  const modules = new Map<string, Set<string>>()
 
-  return (className: string, filename: string): string => {
+  function scopedClassName(className: string, filename: string): string {
     const start = filename.lastIndexOf('/src/')
     // A CSS module outside src/ would get a name that depends on where the repository is checked out.
     if (start === -1) throw new Error(`CSS module outside src/: ${filename}`)
@@ -46,8 +53,18 @@ export function createScopedClassName() {
     if (known !== undefined && known !== origin)
       throw new Error(`The class name ${name} comes from ${known} and from ${origin}: rename one of the two.`)
     origins.set(name, origin)
+    modules.set(modulePath, (modules.get(modulePath) ?? new Set()).add(name))
     return name
   }
+
+  /** The generated names of each CSS module (its path under src/): classes and keyframes, in a stable order. */
+  function manifest(): Record<string, string[]> {
+    return Object.fromEntries(
+      [...modules].sort(([a], [b]) => a.localeCompare(b)).map(([modulePath, names]) => [modulePath, [...names].sort()]),
+    )
+  }
+
+  return { scopedClassName, manifest }
 }
 
-export const scopedClassName = createScopedClassName()
+export const { scopedClassName, manifest: cssModulesManifest } = createScopedClassNames()
