@@ -163,6 +163,16 @@ describe('errors', () => {
     )
   })
 
+  it('fails on a cycle under a media query that passes through a dark value, naming the mode', () => {
+    const files = edited(({ color, control }) => {
+      color.ink.$extensions.forma.modes.dark = '{control.height}'
+      control.height.$extensions.forma.media['(max-width: 767.98px)'] = '{color.ink}'
+    })
+    expect(() => generate(files)).toThrow(
+      /Alias cycle: color\.ink -> control\.height -> color\.ink.*@media \(max-width: 767\.98px\).*dark mode/,
+    )
+  })
+
   it('fails on a token without a type', () => {
     const files = edited(({ z }) => {
       delete z.menu.$type

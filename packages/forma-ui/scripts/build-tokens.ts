@@ -289,17 +289,19 @@ function underMedia(tokens: Map<string, Token>, condition: string): Map<string, 
   )
 }
 
-// An alias cycle can exist only under a media condition, where the CSS would turn both variables invalid.
+// An alias cycle can exist only under a media condition, in one mode, where the CSS would turn both variables invalid.
 function checkMediaCycles(tokens: Map<string, Token>): void {
   const conditions = new Set([...tokens.values()].flatMap((token) => token.media.map(([condition]) => condition)))
   for (const condition of conditions) {
     const view = underMedia(tokens, condition)
-    for (const token of view.values()) {
-      try {
-        resolveIn(view, token, 'light', [])
-      } catch (error) {
-        const message = error instanceof Error ? error.message : String(error)
-        throw new Error(`${message} (with the overrides of @media ${condition} applied)`)
+    for (const mode of MODES) {
+      for (const token of view.values()) {
+        try {
+          resolveIn(view, token, mode, [])
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error)
+          throw new Error(`${message} (with the overrides of @media ${condition} applied, in ${mode} mode)`)
+        }
       }
     }
   }
