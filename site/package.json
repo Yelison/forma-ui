@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -p tsconfig.json && vite build",
+    "build": "tsc -p tsconfig.json && vite build && npm run emit:routes",
+    "emit:routes": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/emit-route-html.ts",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json",
     "check:messages": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/check-messages.ts",
