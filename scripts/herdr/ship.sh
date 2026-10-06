@@ -99,12 +99,16 @@ PR=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number //
 if [ -n "$PR" ]; then
   log "Reusing pull request #$PR (its title and description are left as they are)."
 else
-  create_args=(--base main --head "$BRANCH" --title "$TITLE" --body-file "$BODY")
-  [ -z "${HERDR_PR_ASSIGNEE:-}" ] || create_args+=(--assignee "$HERDR_PR_ASSIGNEE")
-  url=$(gh pr create "${create_args[@]}" | awk 'NF { last = $0 } END { print last }')
+  url=$(gh pr create --base main --head "$BRANCH" --title "$TITLE" --body-file "$BODY" | awk 'NF { last = $0 } END { print last }')
   PR=${url##*/}
   [[ $PR =~ ^[0-9]+$ ]] || die "could not read the pull request number from: $url"
   log "Opened pull request #$PR: $url"
+  # Not `gh pr create --assignee`: with a long body it failed twice with a GraphQL error. The pull request exists by
+  # now, so an assignee that cannot be set is a warning, not a reason to stop.
+  if [ -n "${HERDR_PR_ASSIGNEE:-}" ]; then
+    gh pr edit "$PR" --add-assignee "$HERDR_PR_ASSIGNEE" >/dev/null \
+      || log "warning: could not assign #$PR to $HERDR_PR_ASSIGNEE; the pull request is open and the merge goes on. Assign it by hand"
+  fi
 fi
 
 # The PR must show the commit that was just pushed before its checks mean anything (GitHub updates it a moment

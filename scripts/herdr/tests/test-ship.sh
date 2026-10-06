@@ -32,7 +32,8 @@ s_noorigin() { mk; git clone -q "$T/remote.git" "$T/other"; git -C "$T/other" -c
 s_happy() { mk; echo pending:2 >"$T/state/gh/checks"
   out=$(ship); rc=$?
   check "happy: rc 0" test $rc -eq 0; check "happy: pushed" remote_has feat/impl-a
-  check "happy: the default assignee comes from project.env" grep -q -- '--assignee Yelison' <<<"$(gh_calls)"
+  check "happy: the default assignee comes from project.env, set after the PR exists" grep -q -- 'pr edit 41 --add-assignee Yelison' <<<"$(gh_calls)"
+  check "happy: pr create carries no --assignee" bash -c "! grep -- 'pr create' '$T/state/gh/calls.log' | grep -q -- '--assignee'"
   head=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
   check "happy: merge scheduled with --auto --rebase and the pushed head" grep -q "pr merge 41 --auto --rebase --match-head-commit $head" <<<"$(gh_calls)"
   check "happy: origin/main contains the pushed head" git --git-dir "$T/remote.git" merge-base --is-ancestor "$head" refs/heads/main
@@ -52,7 +53,10 @@ s_compose() { mk build 1; out=$(ship); rc=$?
 # The assignee is an environment override too: an empty value means no assignee.
 s_assignee() { mk; out=$(HERDR_PR_ASSIGNEE= ship --no-cleanup); check "no assignee: rc 0" test $? -eq 0
   check "no assignee: the PR was created" grep -q 'pr create' <<<"$(gh_calls)"
-  check "no assignee: no --assignee" bash -c "! grep -q -- '--assignee' '$T/state/gh/calls.log'"; }
+  check "no assignee: no --assignee" bash -c "! grep -q -- 'assignee' '$T/state/gh/calls.log'"
+  # An assignee that cannot be set does not stop the merge: the PR exists.
+  mk; touch "$T/state/gh/edit-fails"; out=$(ship --no-cleanup); check "assignee fails: rc 0" test $? -eq 0
+  check "assignee fails: warns" says x 'could not assign #41 to Yelison'; check "assignee fails: still merged" grep -q 'pr merge 41' "$T/state/gh/calls.log"; }
 # No required checks (Forma UI has no CI yet): merge at once, rebase, pinned to the head, never --auto, no check polling.
 s_nochecks() { mk ""; out=$(ship); rc=$?
   head=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
