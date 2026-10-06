@@ -71,7 +71,7 @@ interface Token {
   type: string
   value: unknown
   modes: Record<Mode, unknown> | undefined
-  media: [condition: string, value: unknown][]
+  media: Map<string, unknown>
 }
 
 const SOURCE_NOTE = 'tokens/*.tokens.json'
@@ -124,7 +124,7 @@ function collect(
       }
       modes = { light: declared.light, dark: declared.dark }
     }
-    const media = isRecord(forma.media) ? Object.entries(forma.media) : []
+    const media = new Map(isRecord(forma.media) ? Object.entries(forma.media) : [])
     out.push({
       file,
       path: dotted,
@@ -152,6 +152,11 @@ function parse(files: SourceFile[]): Map<string, Token> {
     byCssName.set(token.cssName, token)
   }
   return byPath
+}
+
+// The media conditions that some token overrides, in source order.
+function mediaConditions(tokens: Map<string, Token>): string[] {
+  return [...new Set([...tokens.values()].flatMap((token) => [...token.media.keys()]))]
 }
 
 // A whole-value alias such as `{color.blue-ink}` gives the path it points to.
@@ -237,15 +242,11 @@ function buildCss(tokens: Map<string, Token>): string {
   const modal = all.filter((t) => t.modes)
   const dark = (indent: string) => declarations(modal, (t) => cssIn(tokens, t, 'dark'), indent)
 
-  const conditions = [...new Set(all.flatMap((t) => t.media.map(([condition]) => condition)))]
-  const overrides = conditions.map((condition) => {
-    const members = all.filter((t) => t.media.some(([c]) => c === condition))
+  const overrides = mediaConditions(tokens).map((condition) => {
+    const members = all.filter((t) => t.media.has(condition))
     const body = declarations(
       members,
-      (t) => {
-        const [, raw] = t.media.find(([c]) => c === condition) as [string, unknown]
-        return cssValue(tokens, t, { raw, where: `$extensions.forma.media["${condition}"]` })
-      },
+      (t) => cssValue(tokens, t, { raw: t.media.get(condition), where: `$extensions.forma.media["${condition}"]` }),
       '    ',
     )
     return `@media ${condition} {\n  :root {\n${body}\n  }\n}\n`
@@ -283,16 +284,17 @@ function buildCss(tokens: Map<string, Token>): string {
 function underMedia(tokens: Map<string, Token>, condition: string): Map<string, Token> {
   return new Map(
     [...tokens].map(([path, token]) => {
-      const override = token.media.find(([c]) => c === condition)
-      return [path, override ? { ...token, value: override[1], modes: undefined } : token]
+      return [
+        path,
+        token.media.has(condition) ? { ...token, value: token.media.get(condition), modes: undefined } : token,
+      ]
     }),
   )
 }
 
 // An alias cycle can exist only under a media condition, in one mode, where the CSS would turn both variables invalid.
 function checkMediaCycles(tokens: Map<string, Token>): void {
-  const conditions = new Set([...tokens.values()].flatMap((token) => token.media.map(([condition]) => condition)))
-  for (const condition of conditions) {
+  for (const condition of mediaConditions(tokens)) {
     const view = underMedia(tokens, condition)
     for (const mode of MODES) {
       for (const token of view.values()) {
@@ -339,46 +341,50 @@ function figmaNumber(token: Token, resolved: string): number {
   return Number(match[1])
 }
 
+const figmaName = (token: Token) => token.path.replaceAll('.', '/')
+
+// A typography token becomes a Figma text style; every field is resolved, aliases included.
+function figmaTextStyle(tokens: Map<string, Token>, token: Token) {
+  const value = token.value as Record<string, unknown>
+  const field = (key: string) => resolveIn(tokens, token, 'light', [], { raw: value[key], where: `$value.${key}` })
+  return {
+    name: figmaName(token),
+    cssName: token.cssName,
+    fontFamily: field('fontFamily'),
+    fontWeight: figmaNumber(token, field('fontWeight')),
+    fontSize: figmaNumber(token, field('fontSize')),
+    lineHeight: figmaNumber(token, field('lineHeight')),
+  }
+}
+
+// Any other token with a Figma type becomes a variable with one resolved value per mode, and its alias when it has one.
+function figmaVariable(tokens: Map<string, Token>, token: Token, type: 'COLOR' | 'FLOAT' | 'STRING') {
+  const values = Object.fromEntries(
+    MODES.map((mode) => {
+      const resolved = resolveIn(tokens, token, mode, [])
+      const alias = aliasOf(valueIn(token, mode).raw)
+      const value = type === 'FLOAT' ? figmaNumber(token, resolved) : resolved
+      return [mode, alias === undefined ? { value } : { value, alias: alias.replaceAll('.', '/') }]
+    }),
+  )
+  return {
+    name: figmaName(token),
+    cssName: token.cssName,
+    type,
+    codeSyntax: { WEB: `var(${token.cssName})` },
+    values,
+  }
+}
+
 function buildFigma(tokens: Map<string, Token>): string {
   const variables: unknown[] = []
   const textStyles: unknown[] = []
   const skipped: unknown[] = []
   for (const token of tokens.values()) {
-    const name = token.path.replaceAll('.', '/')
-    if (token.type === 'typography') {
-      const value = token.value as Record<string, unknown>
-      const field = (key: string) => resolveIn(tokens, token, 'light', [], { raw: value[key], where: `$value.${key}` })
-      textStyles.push({
-        name,
-        cssName: token.cssName,
-        fontFamily: field('fontFamily'),
-        fontWeight: figmaNumber(token, field('fontWeight')),
-        fontSize: figmaNumber(token, field('fontSize')),
-        lineHeight: figmaNumber(token, field('lineHeight')),
-      })
-      continue
-    }
-    const figmaType = FIGMA_TYPES[token.type]
-    if (!figmaType) {
-      skipped.push({ name, reason: `no Figma variable type for ${token.type}` })
-      continue
-    }
-    const values = Object.fromEntries(
-      MODES.map((mode) => {
-        const { raw } = valueIn(token, mode)
-        const resolved = resolveIn(tokens, token, mode, [])
-        const alias = aliasOf(raw)
-        const value = figmaType === 'FLOAT' ? figmaNumber(token, resolved) : resolved
-        return [mode, alias === undefined ? { value } : { value, alias: alias.replaceAll('.', '/') }]
-      }),
-    )
-    variables.push({
-      name,
-      cssName: token.cssName,
-      type: figmaType,
-      codeSyntax: { WEB: `var(${token.cssName})` },
-      values,
-    })
+    const type = FIGMA_TYPES[token.type]
+    if (token.type === 'typography') textStyles.push(figmaTextStyle(tokens, token))
+    else if (type) variables.push(figmaVariable(tokens, token, type))
+    else skipped.push({ name: figmaName(token), reason: `no Figma variable type for ${token.type}` })
   }
   const figma = {
     source: `${SOURCE_NOTE}, generated by scripts/build-tokens.ts`,
