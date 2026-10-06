@@ -464,8 +464,11 @@ test('only icon components get an SVG: not component sets, variants or screens',
   const library = file.page.children.find((c) => c.type === 'COMPONENT' && c.name.includes('icon'));
   const plain = { ...library, id: 'N:plain', name: 'Forma / Button helper' };
   const fromLibrary = { ...library, id: 'N:lib', name: 'Forma / Icon / home' };
-  file.page.children.push(plain, fromLibrary);
+  // A component set with an icon-like name and a variant: neither may produce an SVG.
+  const arrowSet = { ...file.set, id: 'N:arrow', name: 'Forma / Icon / Arrow' };
+  file.page.children.push(plain, fromLibrary, arrowSet);
   const { emitted } = await runOn(file);
+  assert.ok(emitted.some((e) => e.path.endsWith('/forma-icon-arrow.json')));
   assert.deepEqual(
     emitted
       .filter((e) => e.path.startsWith('svg/'))
