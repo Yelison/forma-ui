@@ -3,12 +3,13 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { page, userEvent } from 'vitest/browser'
 import { expectNoAxeViolations } from '../axe'
 import { Input } from '../../src/components/Input/Input'
-import { emulateMedia, loadTokens, mount, pressTab } from './support'
+import { emulateMedia, loadStyles, loadTokens, mount, pressTab } from './support'
 
 const root = document.documentElement
 
 beforeEach(() => {
   loadTokens()
+  loadStyles()
   // A consuming app paints the page; without it the dark theme's light text would sit on the default white.
   document.body.style.background = 'var(--color-bg)'
 })
@@ -25,7 +26,8 @@ const states: Record<string, ReactNode> = {
   'read-only': <Input label="Email" hint="Managed by your admin" defaultValue="ada@example.com" readOnly />,
 }
 
-// The tokens are the generated ones, so colors, the focus ring and the control height are the shipped ones.
+// The page gets the generated tokens and the built styles.css, so colors, the focus ring and the control height are
+// the shipped ones.
 describe('Input accessibility', () => {
   describe.each(['light', 'dark'] as const)('in the %s theme', (theme) => {
     beforeEach(async () => {

@@ -45,9 +45,9 @@ Helpers, all in `test/browser/support.tsx`:
 - `mount(ui)` renders a React tree synchronously; `reset()` unmounts it.
 - `pressTab()`, `pressShiftTab()`, `pressEscape()`; for anything else use `userEvent` from `vitest/browser`.
 - `emulateMedia({ colorScheme, reducedMotion })`.
-- `loadTokens()` adds the generated `dist/tokens.css` to the page and `loadStyles()` adds the built `dist/styles.css`.
-  `readBuilt(name)` reads a built file. `reset()` removes what they added. A missing file fails with the command that
-  writes it.
+- `loadTokens()` adds the generated `dist/tokens.css` to the page; `loadStyles()` adds the built `dist/styles.css` and
+  switches off the CSS Modules the runner injected, so the spec sees the CSS a consumer receives. `readBuilt(name)`
+  reads a built file. `reset()` removes what they added. A missing file fails with the command that writes it.
 
 `dialog.test.tsx` is the pattern for a component on a native dialog: open it with a real click, assert that the focus
 enters and never reaches the page behind, that `Escape` fires `cancel`, and that the focus returns to the trigger.
