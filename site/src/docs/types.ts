@@ -29,6 +29,16 @@ export interface ComponentApi {
   changed: Readonly<Record<string, PropDoc>>
   /** What happens to every other native attribute of the element, said once for all of them. */
   others: MessageId
+  /**
+   * Other components that the page documents because the component is made of them or is used with them (Field, for
+   * Input): the props of each, all of them its own.
+   */
+  related?: readonly {
+    component: string
+    /** The heading of the group, when «Props of» the component does not say it, as for a type that is not a component. */
+    title?: MessageId
+    own: Readonly<Record<string, PropDoc>>
+  }[]
 }
 
 /** The label under an example: a state in words, or the prop and the value that produce it in code. */

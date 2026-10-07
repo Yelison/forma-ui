@@ -1,14 +1,12 @@
 import { IconButton, Tooltip, type IconName } from '@yelison/forma-ui'
 import type { IntlShape } from 'react-intl'
 import type { MessageId } from '../../i18n'
+import { attribute, selfClosingTag } from '../jsx'
 import type { Example, ExampleGroup } from '../types'
 
 /** An icon, or the icons that make one glyph, as JSX prints them: `'plus'` and `{['arrow', 'arrow']}`. */
 const iconCode = (icon: IconName | readonly IconName[]) =>
   typeof icon === 'string' ? `icon="${icon}"` : `icon={[${icon.map((name) => `'${name}'`).join(', ')}]}`
-
-/** The longest tag that stays on one line, as in `formatJsx`; past it every attribute gets a line of its own. */
-const inlineTagLength = 60
 
 interface IconButtonExampleProps {
   icon: IconName | readonly IconName[]
@@ -19,14 +17,14 @@ interface IconButtonExampleProps {
 
 /** The button and its JSX, made from the same props so that the code never says something else than the preview. */
 function iconButtonExample({ icon, label, flip, disabled }: IconButtonExampleProps): Pick<Example, 'element' | 'code'> {
-  const attributes = [iconCode(icon), flip && 'flip', disabled && 'disabled', `label="${label}"`].filter(Boolean)
-  const oneLine = `<IconButton ${attributes.join(' ')} />`
   return {
     element: <IconButton icon={icon} flip={flip} disabled={disabled} label={label} />,
-    code:
-      oneLine.length <= inlineTagLength
-        ? oneLine
-        : `<IconButton\n${attributes.map((attribute) => `  ${attribute}`).join('\n')}\n/>`,
+    code: selfClosingTag('IconButton', [
+      iconCode(icon),
+      attribute('flip', flip),
+      attribute('disabled', disabled),
+      attribute('label', label),
+    ]),
   }
 }
 
@@ -91,8 +89,8 @@ export function iconButtonExamples(intl: IntlShape): { usage: Example; groups: r
               </Tooltip>
             ),
             code: [
-              `<Tooltip content="${add}" describe={false}>`,
-              `  {(trigger) => <IconButton icon="plus" label="${add}" {...trigger} />}`,
+              `<Tooltip ${attribute('content', add)} describe={false}>`,
+              `  {(trigger) => <IconButton icon="plus" ${attribute('label', add)} {...trigger} />}`,
               `</Tooltip>`,
             ].join('\n'),
           },

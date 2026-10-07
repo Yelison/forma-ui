@@ -1,10 +1,11 @@
 // Type tests: nothing here runs. `npm run typecheck` compiles this file, and it fails to compile when the reference
 // of a component stops documenting the props that the library has.
-import type { BadgeProps, ButtonProps, IconButtonProps } from '@yelison/forma-ui'
+import type { BadgeProps, ButtonProps, FieldProps, IconButtonProps, InputProps } from '@yelison/forma-ui'
 import { expectTypeOf } from 'vitest'
 import { badgeApi } from './badge/api'
 import { buttonApi } from './button/api'
 import { iconButtonApi } from './icon-button/api'
+import { inputApi } from './input/api'
 import type { OwnProps } from './types'
 
 // The own props of Button are the props that its reference documents: no more and no fewer.
@@ -20,3 +21,8 @@ expectTypeOf<keyof typeof iconButtonApi.changed>().toExtend<keyof IconButtonProp
 // Badge: the same two rules, against a `<span>`.
 expectTypeOf<keyof typeof badgeApi.own>().toEqualTypeOf<OwnProps<BadgeProps, 'span'>>()
 expectTypeOf<keyof typeof badgeApi.changed>().toExtend<keyof BadgeProps>()
+
+// Input, against an `<input>`, and Field, which wraps no element: every prop of it is its own.
+expectTypeOf<keyof typeof inputApi.own>().toEqualTypeOf<OwnProps<InputProps, 'input'>>()
+expectTypeOf<keyof typeof inputApi.changed>().toExtend<keyof InputProps>()
+expectTypeOf<keyof (typeof inputApi.related)[0]['own']>().toEqualTypeOf<keyof FieldProps>()

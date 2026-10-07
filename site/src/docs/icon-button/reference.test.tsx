@@ -1,5 +1,6 @@
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import { messages } from '../../i18n'
 import { codeOf, renderReference, sectionsOfPage, textOutsideMessages } from '../referenceTestUtils'
 
 describe('the reference of IconButton', () => {
@@ -53,6 +54,14 @@ describe('the reference of IconButton', () => {
     expect(await screen.findByRole('tooltip')).toHaveTextContent('Add')
     expect(button).not.toHaveAttribute('aria-describedby')
     expect(codeOf('With a Tooltip')).toContain('describe={false}')
+  })
+
+  it('writes a text with a double quote into the JSX as an expression, so that the code still compiles', () => {
+    renderReference('IconButton', 'en', { ...messages.en, 'docs.iconButton.sample.add': 'Say "add"' })
+
+    const code = codeOf('With a Tooltip')
+    expect(code).toContain('<Tooltip content={"Say \\"add\\""} describe={false}>')
+    expect(code).toContain('label={"Say \\"add\\""}')
   })
 
   it('documents the three props of the library and the native attributes that IconButton changes', () => {
