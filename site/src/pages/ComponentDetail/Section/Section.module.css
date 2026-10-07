@@ -16,3 +16,8 @@
   margin: 0;
   color: var(--color-muted);
 }
+
+/* A name in the code, such as `useFormaStrings()`, is one word with no spaces: it breaks anywhere rather than push the page wide. */
+.section :is(p, li) code {
+  overflow-wrap: anywhere;
+}

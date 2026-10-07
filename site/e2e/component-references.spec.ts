@@ -35,6 +35,14 @@ const references: Reference[] = [
     },
   },
   {
+    slug: 'dialog',
+    name: 'Dialog',
+    open: async (page) => {
+      await page.getByRole('region', { name: 'States' }).getByRole('button', { name: 'Confirm changes' }).click()
+      await settled(page.getByRole('dialog', { name: 'Confirm changes' }))
+    },
+  },
+  {
     slug: 'input',
     name: 'Input',
     open: async (page) => {
@@ -56,6 +64,12 @@ async function violations(page: Page) {
   const builder = new AxeBuilder({ page })
   const { violations } = await (tooltipOpen ? builder.disableRules('region') : builder).analyze()
   return violations.map(({ id, nodes }) => ({ id, targets: nodes.map((node) => node.target) }))
+}
+
+/** Waits for the dialog to be visible and for its entrance to end: axe and a measure read it half way through. */
+async function settled(dialog: Locator) {
+  await expect(dialog).toBeVisible()
+  await dialog.evaluate((node) => Promise.all(node.getAnimations().map((animation) => animation.finished)))
 }
 
 async function openReference(page: Page, { slug, name }: Reference, prefix = '.') {
@@ -87,6 +101,82 @@ for (const reference of references) {
           // The library's own controls are 42 px high from 768 px, which is theirs to decide.
           if (width < 768) expect(await smallTargets(page.getByRole('main')), `${width} px`).toEqual([])
         }
+      })
+    }
+
+    if (reference.name === 'Dialog') {
+      test('keeps the focus inside while it is open and gives it back to its button on Escape', async ({ page }) => {
+        await openReference(page, reference)
+        const opener = page.getByRole('region', { name: 'States' }).getByRole('button', { name: 'Confirm changes' })
+        await opener.click()
+        const dialog = page.getByRole('dialog', { name: 'Confirm changes' })
+        await settled(dialog)
+        await expect(dialog.getByRole('button', { name: 'Cancel' })).toBeFocused()
+
+        // More presses than the dialog has controls: the focus goes round inside it and never reaches the page behind. The
+        // browser takes it out of the page for one press, to its own controls, where it is on `body`: that stop is not the
+        // page's, and the next press has to bring it back in.
+        let onBodyBefore = false
+        for (let press = 0; press < 5; press++) {
+          await page.keyboard.press('Tab')
+          const where = await dialog.evaluate((node) =>
+            node.contains(document.activeElement)
+              ? 'dialog'
+              : document.activeElement === document.body
+                ? 'body'
+                : 'page',
+          )
+          expect(where, `press ${press + 1}`).not.toBe('page')
+          if (where === 'body') expect(onBodyBefore, `press ${press + 1} after a stop on body`).toBe(false)
+          onBodyBefore = where === 'body'
+        }
+        await page.keyboard.press('Escape')
+
+        await expect(dialog).toBeHidden()
+        await expect(opener).toBeFocused()
+      })
+
+      for (const width of [320, 1440]) {
+        test(`opens the wide dialog within the window and wider than the default one at ${width} px`, async ({
+          page,
+        }) => {
+          await page.setViewportSize({ width, height: 800 })
+          await openReference(page, reference)
+          const sizes = page.getByRole('region', { name: 'Sizes' })
+          const widthOfDialogOpenedBy = async (index: number) => {
+            await sizes.getByRole('button').nth(index).click()
+            const dialog = page.getByRole('dialog')
+            await settled(dialog)
+            const box = await dialog.boundingBox()
+            expect(await overflow(page), `${width} px`).toEqual({ scroll: 0, outside: [], clipped: [] })
+            await page.keyboard.press('Escape')
+            await expect(dialog).toBeHidden()
+            return box!.width
+          }
+
+          const regular = await widthOfDialogOpenedBy(0)
+          const wide = await widthOfDialogOpenedBy(1)
+
+          expect(regular).toBeLessThanOrEqual(width)
+          expect(wide).toBeLessThanOrEqual(width)
+          if (width === 1440) expect([regular, wide]).toEqual([440, 640])
+          // On a phone both are as wide as the window leaves room for: the margin is a gutter on each side.
+          else expect(wide).toBe(regular)
+        })
+      }
+    }
+
+    if (reference.name === 'Dialog') {
+      test('fits in the pseudo-locale with the wide dialog open at 320 px', async ({ page }) => {
+        await page.setViewportSize({ width: 320, height: 800 })
+        await openReference(page, reference, './__pseudo__')
+        // The section is found by its id, which is English in every language: its name is not, in the pseudo-locale.
+        await page.locator('#sizes').getByRole('button').nth(1).click()
+        const dialog = page.getByRole('dialog')
+        await settled(dialog)
+
+        expect(await overflow(page)).toEqual({ scroll: 0, outside: [], clipped: [] })
+        expect(await smallTargets(dialog)).toEqual([])
       })
     }
 
