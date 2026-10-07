@@ -37,8 +37,13 @@ case $cmd in
       # The conversation quotes the spinner's phrase; the real bar has no spinner line.
       quoted) printf '● the spinner says thinking with high effort\n  printf "✻ thinking with high effort"\n\n  %s  ⎇ feat/x  │ usage —\n' "$shown" ;;
       quoted-capital) printf '✻ Thinking with high effort\n\n  %s  ⎇ feat/x\n' "$shown" ;;
-      # The pane still holds the header of the session before a restart, far above the new bar.
-      stale) echo "$shown with low effort"; seq 1 20 | sed 's/^/● line /'; printf '  %s  ⎇ feat/x\n' "$shown" ;;
+      # The pane still holds the header of the session before a restart (set-effort.sh), above a spinner at the new level.
+      stale) echo "▝▜██████▀  $shown with low effort · Claude Team"; seq 1 20 | sed 's/^/● line /'
+        printf '· Sock-hopping… (5s · ↓ 381 tokens · thinking with %s effort)\n  %s  ⎇ feat/x\n' "$lvl" "$shown" ;;
+      # Lines copied from a real session. A new one has the header far above the last twelve lines and no spinner.
+      real-new) echo "▝▜██████▀  $shown with $lvl effort · Claude Team"; seq 1 20 | sed 's/^/● line /'
+        printf '  %s  ⎇ feat/x  │ ctx 58k  │ usage 17%% · ↻ 2h51m | 88%% · ↻ 2d10h\n' "$shown" ;;
+      real-working) printf '✶ Crystallizing… (25s · ↓ 496 tokens · still thinking with %s effort)\n  %s  ⎇ feat/x  │ ctx 58k\n' "$lvl" "$shown" ;;
     esac ;;
   "agent prompt") name=$1; printf '%s\t%s\n' "$name" "$2" >>"$S/prompts.log"; [ "$2" = "/exit" ] && { rm -f "$S/agents/$name"; echo "exit $name" >>"$S/events.log"; }; echo '{}' ;;
   "agent wait") exit 0 ;;
