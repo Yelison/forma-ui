@@ -158,7 +158,7 @@ _before_ it exits the agent; `new-review.sh --round` only checks it when it has 
    ```
 
    It verifies that the pane exists, that no agent runs there and that the name is free, runs
-   `herdr agent start <name> --kind claude --pane <pane>`, reads the model and effort from the session header and
+   `herdr agent start <name> --kind claude --pane <pane>`, reads the model and effort from the session and
    records them in `task.json`. On a checkout Claude Code has never opened, the first thing it shows is the
    **folder-trust dialog**: Herdr reports the agent as `blocked`, the script prints the screen and stops without sending
    the brief. Answer it yourself (`herdr agent send-keys <name> enter`) and send the prompt by hand. Never pass a
@@ -200,8 +200,14 @@ restarts and lets an agent be adjusted later.
 
 **Verification.** `start-agent.sh` reads the session header (`Sonnet 5.5 with medium effort`) and records it under
 `effort.verified`; `status.sh` shows `level/max` and a ✓ once verified. It does the same with the model: if the header names a model other
-than the task's `model`, it warns and does not record `model_verified`. If the header disagrees, the file is not being
-read: do not hand over the task until it does. Do not trust what an agent says about its own effort.
+than the task's `model`, it warns and does not record `model_verified`. A session resumed with `--continue` draws no
+header, so the model is then read from the status bar (`Sonnet 5.5  ⎇ branch`) and the level from the
+spinner's `thinking with <level> effort` when the session shows one; when neither appears the warning stays. Only the
+last twelve non-blank lines of the screen count and each pattern must fill its own line, so the conversation quoting
+those phrases, or the header of a session before a restart, is not taken for the session. The status bar read is the
+user's own `statusLine` (`Name N.N  ⎇ branch`, set up in `~/.claude`), not something Claude Code draws: with another format
+the verification falls back to the warning. If what the
+session shows disagrees, the file is not being read: do not hand over the task until it does. Do not trust what an agent says about its own effort.
 
 | Level              | Typical task                                                                               |
 | ------------------ | ------------------------------------------------------------------------------------------ |
@@ -218,7 +224,7 @@ scripts/herdr/set-effort.sh --id <id> --level high --reason "flaky race test wit
 ```
 
 It refuses while the agent is `working` or `blocked`, rewrites the file, appends to `effort.history`, exits the agent,
-resumes the same conversation with `claude --continue` and verifies the header again.
+resumes the same conversation with `claude --continue` and verifies the session again.
 
 ## Independent review
 
@@ -361,8 +367,11 @@ scripts/herdr/tests/run.sh [task|brief|review|ship|remove|load …]
 Runs the scenarios in disposable environments: a temporary git repository with a local bare remote, a
 `HERDR_TASKS_ROOT` of its own, and **fake** `herdr`, `gh`, `docker` and `npm` first in `PATH` (`tests/bin/`), so it
 never reaches GitHub, a real Herdr, a Docker daemon or a real tasks root. `lib.sh` refuses to run if a tool is not the
-fake or the tasks root is outside the temporary directory, ignores any `HERDR_*` setting of your shell, and picks slots
-whose configured ports are free on the machine (a few tests start one real listener on a free port and kill it by PID).
+fake or the tasks root is outside the temporary directory and ignores any `HERDR_*` setting of your shell. `mk_env` gives
+every scenario `HERDR_PORTS` in a private random range (20000–29919, bases in `B_DEV`, `B_PW` and `B_SB`), so agents
+that hold the default ports (5280, 4280, 6080) cannot make a scenario fail; slots are still picked among those whose
+ports are free (a few tests start one real listener on a free port and kill it by PID). The fake `herdr` draws the
+screen named by `FAKE_AGENT_SCREEN` (`header`, `statusbar`, `thinking`, `none`, `quoted`, `quoted-capital` or `stale`) to test the session verification.
 It needs `jq`, `git`, `ss` and `python3`, runs one copy at a time, exits non-zero on any failure and prints
 `ALL TESTS PASSED` otherwise. It takes a few minutes. `HERDR_TEST_KEEP=1` keeps the temporary directory;
 `HERDR_SCRIPTS_SRC=<dir>` runs the tests against a modified copy of `scripts/herdr`, to check that a scenario fails

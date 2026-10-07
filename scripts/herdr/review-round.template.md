@@ -28,7 +28,7 @@ Commands to run in your worktree:
 
 The machine is shared by several agents; without limits the load climbs far above its cores:
 
-- Run Vitest with `npm test -- --maxWorkers=3` and Playwright always with `--workers=3`.
+- Run Vitest with 2 workers (the package sets them in its configuration; add `--maxWorkers=2` where a script does not) and Playwright always with `--workers=2`.
 - Do not run the whole Playwright suite on the base commit (it is slow and the base is not what you review); run the specs of the feature while
   you iterate and the whole suite once, at the reviewed commit, only if the change reaches shared UI.
 - If a test times out or fails only under load, rerun it alone before drawing conclusions, and say so in the report.
