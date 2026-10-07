@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { liveRegionOf } from './support/switcher'
 
 const trigger = (page: Page) => page.getByRole('button', { name: /^(Language|Idioma): / })
 // A closed popover is out of the accessibility tree, so these are only found while the list is open.
@@ -41,12 +42,12 @@ test.describe('the language switcher in the top bar', () => {
   })
 
   test('says the change in a live region, in the new language', async ({ page }) => {
-    await expect(page.getByRole('status')).toBeEmpty()
+    await expect(liveRegionOf(trigger(page))).toBeEmpty()
 
     await trigger(page).click()
     await spanish(page).click()
 
-    await expect(page.getByRole('status')).toHaveText('Idioma cambiado a español')
+    await expect(liveRegionOf(trigger(page))).toHaveText('Idioma cambiado a español')
   })
 
   test('remembers the choice: a reload opens in the language chosen, whatever the browser says', async ({ page }) => {
@@ -176,7 +177,7 @@ test.describe('the language switcher in the drawer', () => {
 
     await expect(page.getByRole('dialog', { name: 'Menú' })).toBeVisible()
     await expect(page.locator('html')).toHaveAttribute('lang', 'es')
-    await expect(page.getByRole('dialog').getByRole('status')).toHaveText('Idioma cambiado a español')
+    await expect(liveRegionOf(trigger(page))).toHaveText('Idioma cambiado a español')
     await expect(trigger(page)).toBeFocused()
   })
 

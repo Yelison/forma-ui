@@ -46,6 +46,12 @@ describe('Drawer', () => {
     expect(within(drawer()).getByRole('button', { name: 'Language: English' })).toBeInTheDocument()
   })
 
+  it('holds the theme switcher too, for the same reason', () => {
+    renderInSite(<Harness />)
+
+    expect(within(drawer()).getByRole('button', { name: 'Theme: system' })).toBeInTheDocument()
+  })
+
   it('lists the pages of the documentation as links, and marks the page that is open', () => {
     renderInSite(<Harness />, { path: '/docs/foundations/' })
 

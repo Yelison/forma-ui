@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import { overflow, smallTargets } from './support/layout'
 
 // The pseudo-locale build (npm run build:pseudo) has every message in accented, longer text, so a layout that only
@@ -7,8 +7,9 @@ import { overflow, smallTargets } from './support/layout'
 const locales = ['en', 'es'] as const
 // 767 is the widest drawer, 768 the narrowest top bar with its links, and 320 the narrowest window.
 const widths = [320, 767, 768]
-// Its name is a pseudo-localized message, so it is found by what it does: it opens the list of languages.
-const trigger = (page: Page) => page.locator('button[popovertarget][aria-expanded]:visible')
+// Their names are pseudo-localized messages, so they are found by what they do: each opens a list, of themes and of
+// languages, in the order of the bar.
+const triggers = (page: Page) => page.locator('button[popovertarget][aria-expanded]:visible')
 
 async function openPseudoSite(page: Page, locale: (typeof locales)[number], width: number) {
   await page.setViewportSize({ width, height: 800 })
@@ -20,6 +21,20 @@ async function openPseudoSite(page: Page, locale: (typeof locales)[number], widt
 async function expectToFit(page: Page, scope = page.locator('body')) {
   expect(await overflow(page)).toEqual({ scroll: 0, outside: [], clipped: [] })
   expect(await smallTargets(scope)).toEqual([])
+}
+
+// The bar and the drawer each hold the two switchers: every list is opened on its own and has to fit, with targets of
+// 44 px, as the whole page does with it open.
+async function expectEachListToFit(page: Page, scope?: Locator) {
+  const buttons = triggers(page)
+  await expect(buttons).toHaveCount(2)
+  for (const index of [0, 1]) {
+    await buttons.nth(index).click()
+    await expect(page.getByRole('list', { name: /^\[/ })).toBeVisible()
+    await expectToFit(page, scope)
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('list', { name: /^\[/ })).toBeHidden()
+  }
 }
 
 for (const locale of locales) {
@@ -40,22 +55,17 @@ for (const locale of locales) {
       })
 
       if (width < 768) {
-        test('has a drawer that fits, with targets of 44 px, and its language list open', async ({ page }) => {
+        test('has a drawer that fits, with targets of 44 px, and each of its lists open', async ({ page }) => {
           await page.getByRole('button', { name: /^\[/ }).first().click()
           const drawer = page.getByRole('dialog')
           await expect(drawer).toBeVisible()
           await expectToFit(page, drawer)
 
-          await trigger(page).click()
-          await expect(page.getByRole('list', { name: /^\[/ })).toBeVisible()
-          await expectToFit(page, drawer)
+          await expectEachListToFit(page, drawer)
         })
       } else {
-        test('has the language list open in the top bar, and it fits', async ({ page }) => {
-          await trigger(page).click()
-          await expect(page.getByRole('list', { name: /^\[/ })).toBeVisible()
-
-          await expectToFit(page)
+        test('has each list open in the top bar, and it fits', async ({ page }) => {
+          await expectEachListToFit(page)
         })
       }
     })

@@ -19,6 +19,12 @@ describe('TopNav', () => {
     expect(screen.getByRole('button', { name: 'Idioma: español' })).toBeInTheDocument()
   })
 
+  it('has the theme switcher, named in the language of the page', () => {
+    renderInSite(<TopNav />, { locale: 'es' })
+
+    expect(screen.getByRole('button', { name: 'Tema: sistema' })).toBeInTheDocument()
+  })
+
   it('sends Documentation to the first page of the index', () => {
     renderInSite(<TopNav />)
 

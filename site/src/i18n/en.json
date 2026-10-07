@@ -43,5 +43,11 @@
   "route.notFound.title": "Page not found · Forma UI",
   "route.theming.description": "Light, dark and system themes: provider, persistence and first paint.",
   "route.theming.heading": "Theming",
-  "route.theming.title": "Theming · Forma UI"
+  "route.theming.title": "Theming · Forma UI",
+  "theme.changed": "Theme changed to {theme, select, light {light} dark {dark} other {system}}",
+  "theme.label": "Theme",
+  "theme.option.dark": "Dark",
+  "theme.option.light": "Light",
+  "theme.option.system": "System",
+  "theme.trigger": "Theme: {theme, select, light {light} dark {dark} other {system}}"
 }

@@ -4,6 +4,7 @@ import { NavLink } from 'react-router'
 import { documentationLinks } from '../navigation'
 import { GitHubLink } from '../GitHubLink'
 import { LanguageSwitcher } from '../LanguageSwitcher'
+import { ThemeSwitcher } from '../ThemeSwitcher'
 import styles from './Drawer.module.css'
 
 // From this width the top bar shows its own links and there is no menu button: an open drawer would have no way back.
@@ -95,6 +96,7 @@ export function Drawer({ open, onClose }: DrawerProps) {
           </ul>
         </nav>
         <GitHubLink className={styles.link} />
+        <ThemeSwitcher />
         <LanguageSwitcher />
       </div>
     </dialog>

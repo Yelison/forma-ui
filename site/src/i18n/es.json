@@ -43,5 +43,11 @@
   "route.notFound.title": "Página no encontrada · Forma UI",
   "route.theming.description": "Temas claro, oscuro y del sistema: proveedor, persistencia y primer pintado.",
   "route.theming.heading": "Temas",
-  "route.theming.title": "Temas · Forma UI"
+  "route.theming.title": "Temas · Forma UI",
+  "theme.changed": "Tema cambiado a {theme, select, light {claro} dark {oscuro} other {sistema}}",
+  "theme.label": "Tema",
+  "theme.option.dark": "Oscuro",
+  "theme.option.light": "Claro",
+  "theme.option.system": "Sistema",
+  "theme.trigger": "Tema: {theme, select, light {claro} dark {oscuro} other {sistema}}"
 }

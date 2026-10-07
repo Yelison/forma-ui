@@ -35,10 +35,10 @@
   font: var(--font-strong);
 }
 
-/* Below 768 px the links and the language are in the drawer. */
+/* Below 768 px the links, the theme and the language are in the drawer. */
 .links,
 .github,
-.language {
+.switcher {
   display: none;
 }
 
@@ -58,11 +58,15 @@
 }
 
 .github {
-  margin-inline-start: auto;
   font: var(--font-caption);
 }
 
-.language {
+/* The end of the bar starts at the theme, as in page 07, which sets it to the left of «GitHub ↗». */
+.end {
+  margin-inline-start: auto;
+}
+
+.switcher {
   /* Page 07 sets the text controls of this part of the bar, like «GitHub ↗», in the caption type. */
   --switcher-font: var(--font-caption);
 }
@@ -115,7 +119,7 @@
     display: inline-flex;
   }
 
-  .language {
+  .switcher {
     display: flex;
   }
 
