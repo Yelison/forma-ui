@@ -1,0 +1,57 @@
+.panel {
+  /* A height that does not depend on what is found, within what a short window leaves. */
+  block-size: min(26rem, 60dvh);
+  padding-inline: var(--space-4);
+  overflow-y: auto;
+  /* What the arrows bring into view must not end up under the field. */
+  scroll-padding-block-start: calc(var(--space-4) + var(--control-height) + var(--space-12));
+}
+
+/* The room around the field is for its focus ring, which the scrolling panel would otherwise cut off. */
+.field {
+  position: sticky;
+  inset-block-start: 0;
+  padding: var(--space-4) var(--space-4) var(--space-12);
+  background: var(--color-surface);
+}
+
+.group {
+  padding: var(--space-8) var(--space-12) var(--space-4);
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: var(--touch-target);
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+
+/* The focus never leaves the input, so the option the arrows reached is marked here: a filled row, and an outline
+   that does not rest on the color. */
+.option[aria-selected='true'] {
+  background: var(--color-blue-bg);
+  outline: 2px solid var(--color-brand);
+  outline-offset: -2px;
+}
+
+.title {
+  font: var(--font-label);
+}
+
+.description {
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+.empty {
+  margin: 0;
+  padding: var(--space-16) var(--space-12);
+  color: var(--color-muted);
+  font: var(--font-body);
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,40 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  min-height: var(--touch-target);
+  padding-inline: var(--space-12);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-muted);
+  font: var(--font-caption);
+  cursor: pointer;
+}
+
+.trigger:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-ink);
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.shortcut {
+  font: inherit;
+  white-space: nowrap;
+}
+
+@media (max-width: 1023.98px) {
+  .collapsible {
+    justify-content: center;
+    min-width: var(--touch-target);
+    padding-inline: 0;
+  }
+
+  .collapsible .label,
+  .collapsible .shortcut {
+    display: none;
+  }
+}

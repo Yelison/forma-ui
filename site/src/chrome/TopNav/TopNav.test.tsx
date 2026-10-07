@@ -1,6 +1,6 @@
-import { act, screen } from '@testing-library/react'
+import { act, fireEvent, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { renderInSite } from '../../../test/render'
 import { TopNav } from './TopNav'
 
@@ -107,6 +107,95 @@ describe('TopNav', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Close menu' }))
 
       expect(screen.getByRole('link', { name: 'Forma UI, home' })).not.toHaveFocus()
+    })
+  })
+
+  describe('the search', () => {
+    // jsdom has no layout, so it does not implement scrolling an element into view.
+    beforeAll(() => {
+      Element.prototype.scrollIntoView = vi.fn()
+    })
+
+    const searchButton = () => screen.getByRole('button', { name: 'Search…' })
+    const searchDialog = () => screen.getByRole('dialog', { name: 'Search the documentation' })
+    const pressEscape = () => fireEvent(searchDialog(), new Event('cancel', { cancelable: true }))
+
+    it('opens from its button in the bar', async () => {
+      renderInSite(<TopNav />)
+
+      await userEvent.click(searchButton())
+
+      expect(searchDialog()).toBeInTheDocument()
+    })
+
+    it('opens from Ctrl+K, in the language of the page', async () => {
+      renderInSite(<TopNav />, { locale: 'es' })
+
+      await userEvent.keyboard('{Control>}k{/Control}')
+
+      expect(screen.getByRole('dialog', { name: 'Buscar en la documentación' })).toBeInTheDocument()
+    })
+
+    it('gives focus back to its button when it closes', async () => {
+      renderInSite(<TopNav />)
+      await userEvent.click(searchButton())
+
+      pressEscape()
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      expect(searchButton()).toHaveFocus()
+    })
+
+    it('puts focus on the search button when it closes after the shortcut was pressed with nothing focused', async () => {
+      renderInSite(<TopNav />)
+      await userEvent.keyboard('{Control>}k{/Control}')
+      expect(document.body).toHaveFocus()
+
+      pressEscape()
+
+      expect(searchButton()).toHaveFocus()
+    })
+
+    it('puts focus on the menu button instead when the search button is not on screen', async () => {
+      renderInSite(<TopNav />)
+      await userEvent.keyboard('{Control>}k{/Control}')
+      searchButton().style.display = 'none'
+
+      pressEscape()
+
+      expect(screen.getByRole('button', { name: 'Open menu' })).toHaveFocus()
+    })
+
+    it('opens from the menu, which closes first so the search is not stacked over it', async () => {
+      renderInSite(<TopNav />)
+      await userEvent.click(screen.getByRole('button', { name: 'Open menu' }))
+
+      await userEvent.click(
+        within(screen.getByRole('dialog', { name: 'Menu' })).getByRole('button', { name: 'Search…' }),
+      )
+
+      expect(screen.queryByRole('dialog', { name: 'Menu' })).not.toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute('aria-expanded', 'false')
+      expect(searchDialog()).toBeInTheDocument()
+    })
+
+    it('closes the menu when the shortcut opens the search over it', async () => {
+      renderInSite(<TopNav />)
+      await userEvent.click(screen.getByRole('button', { name: 'Open menu' }))
+
+      await userEvent.keyboard('{Control>}k{/Control}')
+
+      expect(screen.queryByRole('dialog', { name: 'Menu' })).not.toBeInTheDocument()
+      expect(searchDialog()).toBeInTheDocument()
+    })
+
+    it('closes when a result is chosen', async () => {
+      renderInSite(<TopNav />)
+      await userEvent.click(searchButton())
+
+      await userEvent.type(screen.getByRole('combobox'), 'foundations{Enter}')
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     })
   })
 })

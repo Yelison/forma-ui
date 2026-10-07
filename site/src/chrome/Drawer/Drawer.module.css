@@ -88,3 +88,9 @@
   background: var(--color-blue-bg);
   color: var(--color-blue-ink);
 }
+
+/* Like a link of the menu: the button takes the whole width and the type of its neighbours. */
+.search {
+  width: 100%;
+  font: var(--font-label);
+}

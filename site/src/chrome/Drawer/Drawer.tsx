@@ -3,6 +3,7 @@ import { useIntl } from 'react-intl'
 import { NavLink } from 'react-router'
 import { documentationLinks } from '../navigation'
 import { GitHubLink } from '../GitHubLink'
+import { SearchTrigger } from '../../search/SearchTrigger'
 import { LanguageSwitcher } from '../LanguageSwitcher'
 import { ThemeSwitcher } from '../ThemeSwitcher'
 import styles from './Drawer.module.css'
@@ -18,6 +19,11 @@ export interface DrawerProps {
    * window growing to desktop width. Set `open` to false in response.
    */
   onClose: () => void
+  /**
+   * Called when the search button of the menu is used. The parent closes the menu and opens the search: the search is
+   * the parent's, so it is not stacked on top of the menu.
+   */
+  onSearch: () => void
 }
 
 /**
@@ -25,7 +31,7 @@ export interface DrawerProps {
  * Escape and gives focus back to the button that opened it. It closes itself whenever the user acts on it; `open` only
  * has to follow the `onClose` it receives.
  */
-export function Drawer({ open, onClose }: DrawerProps) {
+export function Drawer({ open, onClose, onSearch }: DrawerProps) {
   const intl = useIntl()
   const titleId = useId()
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -84,6 +90,8 @@ export function Drawer({ open, onClose }: DrawerProps) {
             <span aria-hidden="true">✕</span>
           </button>
         </div>
+        {/* A touch screen has no keyboard to press the shortcut on, so it is not printed here. */}
+        <SearchTrigger className={styles.search} showShortcut={false} onClick={onSearch} />
         <nav aria-label={intl.formatMessage({ id: 'nav.docs' })}>
           <ul className={styles.list}>
             {documentationLinks.map(({ path, labelId }) => (

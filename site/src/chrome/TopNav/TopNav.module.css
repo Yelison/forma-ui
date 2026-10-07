@@ -6,7 +6,8 @@
   --column-width: var(--site-nav-content-width);
   display: flex;
   align-items: center;
-  gap: var(--space-24);
+  /* Narrow, so the wordmark, the search and the menu fit side by side at 320 px; the links need more air from 768 px. */
+  gap: var(--space-8);
   min-height: var(--site-nav-height);
 }
 
@@ -35,7 +36,7 @@
   font: var(--font-strong);
 }
 
-/* Below 768 px the links, the theme and the language are in the drawer. */
+/* Below 768 px the links, the theme and the language are in the drawer; the search stays in the bar, as an icon. */
 .links,
 .github,
 .switcher {
@@ -61,8 +62,9 @@
   font: var(--font-caption);
 }
 
-/* The end of the bar starts at the theme, as in page 07, which sets it to the left of «GitHub ↗». */
-.end {
+/* The end of the bar starts at the search, as in page 07, which sets it to the left of the theme and, on a narrow
+   screen, to the left of the menu. */
+.search {
   margin-inline-start: auto;
 }
 
@@ -96,7 +98,6 @@
   justify-content: center;
   min-width: var(--touch-target);
   min-height: var(--touch-target);
-  margin-inline-start: auto;
   padding: 0;
   border: 0;
   border-radius: var(--radius-control);
@@ -111,6 +112,10 @@
 }
 
 @media (min-width: 768px) {
+  .inner {
+    gap: var(--space-24);
+  }
+
   .links {
     display: flex;
   }
