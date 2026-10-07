@@ -70,6 +70,35 @@ test.describe('with the keyboard alone', () => {
     await expect(page.getByRole('button', { name: 'Reset' })).toBeFocused()
   })
 
+  test('every control of Input works, and the error is announced as an alert', async ({ page }) => {
+    await openHome(page)
+    await page.getByRole('radio', { name: 'Button' }).focus()
+    await page.keyboard.press('ArrowDown')
+    await expect(page.getByRole('radio', { name: 'Input' })).toBeChecked()
+
+    // After the selector come the specimen, which is a field, and then the State control: the code does not scroll here.
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('textbox', { name: 'Email' })).toBeFocused()
+    await page.keyboard.press('Tab')
+    await expect(control(page, 'State')).toBeFocused()
+
+    await page.keyboard.press('ArrowDown')
+    await expect(control(page, 'State')).toHaveValue('error')
+    await expect(code(page)).toContainText('error="Enter a valid email address"')
+    await expect(page.getByRole('alert')).toHaveText('Enter a valid email address')
+
+    await page.keyboard.press('ArrowDown')
+    await expect(control(page, 'State')).toHaveValue('disabled')
+    await expect(code(page)).toContainText('disabled')
+    await expect(page.getByRole('textbox', { name: 'Email' })).toBeDisabled()
+
+    await page.keyboard.press('ArrowDown')
+    await expect(control(page, 'State')).toHaveValue('readOnly')
+    await expect(code(page)).toContainText('defaultValue="ana@example.com"')
+    await expect(page.getByRole('textbox', { name: 'Email' })).toHaveValue('ana@example.com')
+    await expect(page.getByRole('textbox', { name: 'Email' })).toHaveAttribute('readonly', '')
+  })
+
   test('the selector moves between components with the arrow keys, and Space on Reset works too', async ({ page }) => {
     await openHome(page)
     await page.getByRole('radio', { name: 'Button' }).focus()
