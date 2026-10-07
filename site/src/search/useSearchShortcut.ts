@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { isApplePlatform } from './shortcut'
 
-// A text area or an editable region has shortcuts of its own, and Ctrl+K belongs to the editor there: the search must
-// not take it away. A plain text field has none, so the shortcut works from the filter of the catalog.
+// The shortcut is the platform's own: ⌘K on Apple devices, Ctrl+K elsewhere. A text area or an editable region has
+// shortcuts of its own, and the editor keeps the key there: the search must not take it away. A plain text field has
+// none, so the shortcut works from the filter of the catalog.
 const editor = 'textarea, [contenteditable]:not([contenteditable="false"])'
 
 /**
