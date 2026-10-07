@@ -4,7 +4,8 @@
 //
 // `npm pack` writes the tarball, and every step looks at that tarball, never at the sources or at `dist/`:
 //   1. its files: only `dist/**` and the files npm always adds, with everything `package.json` points at in it;
-//   2. its types and exports, with publint and Are The Types Wrong?, and a `bundler` compile of the consumer.
+//   2. its types and exports, with publint and Are The Types Wrong?, and a `bundler` compile of the consumer;
+//   3. a single copy of React in the production bundle of the consumer.
 // scripts/check-consumer.ts, which also installs the tarball, covers the CSS and the components. The scripts stick to
 // erasable TypeScript so that Node's type stripping can run them.
 import { existsSync, mkdtempSync, rmSync } from 'node:fs'
@@ -12,9 +13,10 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createConsumer, fail, installTarball, packageRoot, packTarball, runCheck } from './check-support.ts'
 import { checkDeclarations } from './pack-check/declarations.ts'
+import { checkSingleReact } from './pack-check/single-react.ts'
 import { checkTarballContents } from './pack-check/tarball-contents.ts'
 
-const steps = [checkTarballContents, checkDeclarations]
+const steps = [checkTarballContents, checkDeclarations, checkSingleReact]
 
 runCheck('Pack check', async () => {
   if (!existsSync(join(packageRoot, 'dist', 'index.js'))) fail('dist/ is missing: run `npm run build` first')
