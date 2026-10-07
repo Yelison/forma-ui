@@ -177,6 +177,12 @@ const builtManifest = {
     css: ['assets/CatalogPage-page.css'],
     imports: ['_shared.js', 'index.html'],
   },
+  'src/pages/ComponentDetail/index.ts': {
+    file: 'assets/ComponentDetail-page.js',
+    isDynamicEntry: true,
+    css: ['assets/ComponentDetail-page.css'],
+    imports: ['_shared.js', 'index.html'],
+  },
   '_shared.js': { file: 'assets/shared-chunk.js', css: ['assets/shared-chunk.css'] },
 }
 
@@ -236,6 +242,17 @@ describe('emitRouteHtml', () => {
     expect(html).toContain('<link rel="modulepreload" crossorigin href="/forma-ui/assets/CatalogPage-page.js" />')
     expect(html).toContain('<link rel="stylesheet" crossorigin href="/forma-ui/assets/CatalogPage-page.css" />')
     expect(html).not.toContain('Foundations-page')
+  })
+
+  it('preloads the chunk of the references on the page of each component', () => {
+    emitRouteHtml(build())
+
+    for (const file of ['button', 'icon-button', 'dialog']) {
+      expect(read(`docs/components/${file}/index.html`)).toContain(
+        '<link rel="modulepreload" crossorigin href="/forma-ui/assets/ComponentDetail-page.js" />',
+      )
+    }
+    expect(read('docs/components/index.html')).not.toContain('ComponentDetail-page')
   })
 
   it('leaves the other routes without preloads', () => {

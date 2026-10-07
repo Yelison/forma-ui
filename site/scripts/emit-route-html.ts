@@ -59,6 +59,8 @@ export type Manifest = Readonly<Record<string, ManifestEntry>>
 export const lazyPageModules: Readonly<Partial<Record<RouteKey, string>>> = {
   foundations: 'src/pages/Foundations/index.ts',
   components: 'src/pages/CatalogPage/index.ts',
+  // The six reference pages share one route key, and so one chunk.
+  component: 'src/pages/ComponentDetail/index.ts',
 }
 
 const pagesDirectory = 'src/pages/'
