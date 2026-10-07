@@ -2,7 +2,7 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { renderInSite } from '../../../test/render'
-import { routes, type SiteRoute } from '../../routes'
+import { routes } from '../../routes'
 import { ComponentDetail } from './ComponentDetail'
 
 const routeOf = (name: string) => {
@@ -122,11 +122,12 @@ describe('ComponentDetail', () => {
     expect(screen.getByRole('button', { name: 'Guardando…' })).toBeInTheDocument()
   })
 
-  it('shows only the placeholder of a component whose reference is not written yet', () => {
-    const route: SiteRoute = routeOf('IconButton')
-    renderInSite(<ComponentDetail route={route as Extract<SiteRoute, { key: 'component' }>} />, { path: route.path })
+  it('shows only the placeholder of a component whose reference is not written', () => {
+    // Every component of the library has its reference now, so the page of one that has not is made up.
+    const route = { key: 'component', path: '/docs/components/unwritten/', componentName: 'Unwritten' } as const
+    renderInSite(<ComponentDetail route={route} />, { path: route.path })
 
-    expect(screen.getByRole('heading', { level: 1, name: 'IconButton' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Unwritten' })).toBeInTheDocument()
     expect(screen.queryByRole('region')).not.toBeInTheDocument()
   })
 })
