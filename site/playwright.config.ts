@@ -20,13 +20,14 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    // Builds the library and then the site before serving them, so a spec never runs against a stale build.
-    command: `npm --prefix .. run build && npm run preview -- --port ${PORT} --strictPort`,
+    // Builds the library and then the site before serving them, so a spec never runs against a stale build. The
+    // pseudo-locale build goes into a directory of dist/, which the first build empties: it comes after it.
+    command: `npm --prefix .. run build && npm run build:pseudo && npm run preview -- --port ${PORT} --strictPort`,
     url: BASE_URL,
     // The build runs here, and tsc reports its errors on stdout: pipe it so a failed build shows why.
     stdout: 'pipe',
     // Never test a server this run did not start: if something already listens on the port, the run fails.
     reuseExistingServer: false,
-    timeout: 120_000,
+    timeout: 180_000,
   },
 })

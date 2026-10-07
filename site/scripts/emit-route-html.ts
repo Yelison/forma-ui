@@ -3,7 +3,9 @@
 // script) with the English <title>, meta description and canonical link of its route: only the English head is in the
 // static HTML, and the app updates it for the language of the visitor once it runs (see src/head).
 //
-//   node --experimental-strip-types scripts/emit-route-html.ts
+//   node --experimental-strip-types scripts/emit-route-html.ts [distDirectory]
+//
+// The directory defaults to dist/ of the site; the pseudo-locale build (npm run build:pseudo) passes its own.
 //
 // The script sticks to erasable TypeScript and relative `.ts` imports so that type stripping can run it.
 import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs'
@@ -95,6 +97,6 @@ function isMainModule(): boolean {
 }
 
 if (isMainModule()) {
-  const written = emitRouteHtml(resolve(import.meta.dirname, '../dist'))
+  const written = emitRouteHtml(resolve(process.argv[2] ?? resolve(import.meta.dirname, '../dist')))
   console.log(`emit-route-html: wrote ${written.length} files (${written.join(', ')}).`)
 }
