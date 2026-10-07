@@ -8,8 +8,8 @@ out=$("$HERDR/fill-brief.sh" demo-one C "$T/staged.md" 2>&1); rc=$?
 B=$T/root/tasks/demo-one/brief.md
 check "fill-brief: rc 0" test $rc -eq 0
 check "fill-brief: slot ports come from the configuration" grep -q "VITE=$(port_of "$SA" DEV_SERVER_PORT) PW=$(port_of "$SA" PLAYWRIGHT_PORT) SB=$(port_of "$SA" STORYBOOK_PORT)" "$B"
-check "fill-brief: the ports are the configured bases plus the slot" grep -q "VITE=$((5280 + SA)) PW=$((4280 + SA)) SB=$((6080 + SA))" "$B"
-check "fill-brief: the footer states the task's ports" grep -qF "Playwright \`$((4280 + SA))\`, Storybook \`$((6080 + SA))\`" "$B"
+check "fill-brief: the ports are the configured bases plus the slot" grep -q "VITE=$((B_DEV + SA)) PW=$((B_PW + SA)) SB=$((B_SB + SA))" "$B"
+check "fill-brief: the footer states the task's ports" grep -qF "Playwright \`$((B_PW + SA))\`, Storybook \`$((B_SB + SA))\`" "$B"
 check "fill-brief: footer present" grep -q 'Sin push ni PR' "$B"
 check "fill-brief: delivery path" grep -q "→ $T/root/tasks/demo-one/delivery.md" "$B"
 check "fill-brief: footer matches the repo copy" grep -qF 'ENTREGA C: LISTA' "$B"
