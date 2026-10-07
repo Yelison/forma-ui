@@ -27,12 +27,33 @@ for (const theme of themes) {
       })
     }
 
+    test('the open language list has no axe violations', async ({ page }) => {
+      await useTheme(page, theme)
+      await page.goto('./docs/components/')
+      await page.getByRole('button', { name: 'Language: English' }).click()
+      // Make sure the list is the thing under test: a closed popover is not in the page for axe.
+      await expect(page.getByRole('button', { name: 'Español', exact: true })).toBeVisible()
+
+      expect(await violations(page)).toEqual([])
+    })
+
     test('the open drawer has no axe violations', async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 800 })
       await useTheme(page, theme)
       await page.goto('./docs/components/')
       await page.getByRole('button', { name: 'Open menu' }).click()
       await expect(page.getByRole('dialog', { name: 'Menu' })).toBeVisible()
+
+      expect(await violations(page)).toEqual([])
+    })
+
+    test('the open drawer with the language list open has no axe violations', async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 800 })
+      await useTheme(page, theme)
+      await page.goto('./docs/components/')
+      await page.getByRole('button', { name: 'Open menu' }).click()
+      await page.getByRole('button', { name: 'Language: English' }).click()
+      await expect(page.getByRole('button', { name: 'Español', exact: true })).toBeVisible()
 
       expect(await violations(page)).toEqual([])
     })

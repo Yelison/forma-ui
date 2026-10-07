@@ -1,13 +1,13 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { markedMessages, renderInSite } from '../test/render'
-import { messages } from './i18n'
+import { localeNames, messages } from './i18n'
 import { untranslatedText } from '../test/untranslated'
 import { App } from './App'
 import { componentPages, routes } from './routes'
 
 // The words that are the same in every language (src/i18n/glossary.md).
-const fixedTerms = ['Forma UI', 'GitHub', ...componentPages.map(({ name }) => name)]
+const fixedTerms = ['Forma UI', 'GitHub', ...Object.values(localeNames), ...componentPages.map(({ name }) => name)]
 
 describe('App', () => {
   it.each(routes.map((route) => [route.path, route] as const))(

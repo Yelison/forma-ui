@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react'
+import { act, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { Route, Routes } from 'react-router'
@@ -40,6 +40,12 @@ function Harness({ initiallyOpen = true, onClose = () => {} }) {
 const drawer = () => screen.getByRole('dialog', { hidden: true })
 
 describe('Drawer', () => {
+  it('holds the language switcher, so the language can be changed where the top bar has none', () => {
+    renderInSite(<Harness />)
+
+    expect(within(drawer()).getByRole('button', { name: 'Language: English' })).toBeInTheDocument()
+  })
+
   it('lists the pages of the documentation as links, and marks the page that is open', () => {
     renderInSite(<Harness />, { path: '/docs/foundations/' })
 

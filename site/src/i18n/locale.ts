@@ -2,6 +2,12 @@
 export const locales = ['en', 'es'] as const
 export type Locale = (typeof locales)[number]
 
+/**
+ * What each language calls itself. A language is always named in itself, whatever language the page is in, so a
+ * visitor who landed on a page they cannot read can still find theirs: these are fixed terms, not messages.
+ */
+export const localeNames: Record<Locale, string> = { en: 'English', es: 'Español' }
+
 /** The language of a visitor whose browser speaks none of the others. */
 export const defaultLocale: Locale = 'en'
 
@@ -43,5 +49,14 @@ export function readStoredLocale(): string | null {
     return localStorage.getItem(localeStorageKey)
   } catch {
     return null
+  }
+}
+
+/** Remembers the visitor's choice for the next visit. When storage cannot be written the choice lasts for this page. */
+export function storeLocale(locale: Locale): void {
+  try {
+    localStorage.setItem(localeStorageKey, locale)
+  } catch {
+    // Private mode or blocked storage: the language still changes, it is just not remembered.
   }
 }

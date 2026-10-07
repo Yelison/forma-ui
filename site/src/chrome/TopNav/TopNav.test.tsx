@@ -13,6 +13,12 @@ describe('TopNav', () => {
     expect(screen.getByRole('link', { name: 'Forma UI, home' })).toHaveAttribute('href', '/')
   })
 
+  it('has the language switcher, named in the language of the page', () => {
+    renderInSite(<TopNav />, { locale: 'es' })
+
+    expect(screen.getByRole('button', { name: 'Idioma: español' })).toBeInTheDocument()
+  })
+
   it('sends Documentation to the first page of the index', () => {
     renderInSite(<TopNav />)
 

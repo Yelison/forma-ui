@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { FormattedMessage } from 'react-intl'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { IntlRoot } from './IntlRoot'
+import { useLocale } from './LocaleContext'
 import { localeStorageKey } from './locale'
 
 afterEach(() => {
@@ -44,5 +45,12 @@ describe('IntlRoot', () => {
 
     expect(screen.getByText('Documentation')).toBeInTheDocument()
     expect(document.documentElement).toHaveAttribute('lang', 'en')
+  })
+
+  it('is what a component needs to change the language: without it there is no language to change', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    const Probe = () => useLocale().locale
+
+    expect(() => render(<Probe />)).toThrow('useLocale needs an IntlRoot above it')
   })
 })
