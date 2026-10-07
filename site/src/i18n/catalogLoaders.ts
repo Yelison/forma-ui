@@ -26,6 +26,10 @@ export const catalogLoaders = {
     es: () => import('./catalogs/gettingStarted.es.json'),
   },
   theming: { en: () => import('./catalogs/theming.en.json'), es: () => import('./catalogs/theming.es.json') },
+  accessibility: {
+    en: () => import('./catalogs/accessibility.en.json'),
+    es: () => import('./catalogs/accessibility.es.json'),
+  },
   specimens: { en: () => import('./catalogs/specimens.en.json'), es: () => import('./catalogs/specimens.es.json') },
   detail: { en: () => import('./catalogs/detail.en.json'), es: () => import('./catalogs/detail.es.json') },
   'docs.badge': {

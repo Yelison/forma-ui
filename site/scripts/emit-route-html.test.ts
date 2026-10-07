@@ -197,6 +197,12 @@ const builtManifest = {
     css: ['assets/Theming-page.css'],
     imports: ['_shared.js', 'index.html'],
   },
+  'src/pages/Accessibility/index.ts': {
+    file: 'assets/Accessibility-page.js',
+    isDynamicEntry: true,
+    css: ['assets/Accessibility-page.css'],
+    imports: ['_shared.js', 'index.html'],
+  },
   'src/pages/CatalogPage/index.ts': {
     file: 'assets/CatalogPage-page.js',
     isDynamicEntry: true,
@@ -323,6 +329,14 @@ describe('emitRouteHtml', () => {
     expect(html).not.toContain('GettingStarted-page')
   })
 
+  it('preloads the chunk of the accessibility guide on its own route, and not the one of the theming guide', () => {
+    emitRouteHtml(build())
+
+    const html = read('docs/guides/accessibility/index.html')
+    expect(html).toContain('<link rel="modulepreload" crossorigin href="/forma-ui/assets/Accessibility-page.js" />')
+    expect(html).not.toContain('Theming-page')
+  })
+
   it('preloads the chunk of the references on the page of each component', () => {
     emitRouteHtml(build())
 
@@ -350,6 +364,7 @@ describe('emitRouteHtml', () => {
       ['index.html', ['common', 'home']],
       ['docs/getting-started/index.html', ['common', 'guides', 'gettingStarted']],
       ['docs/guides/theming/index.html', ['common', 'guides', 'theming']],
+      ['docs/guides/accessibility/index.html', ['common', 'guides', 'accessibility']],
       ['docs/foundations/index.html', ['common', 'foundations']],
       ['docs/components/index.html', ['common', 'catalog', 'specimens']],
       ['docs/components/tooltip/index.html', ['common', 'detail', 'specimens', 'docs.tooltip']],

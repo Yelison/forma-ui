@@ -1,0 +1,14 @@
+.references {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-16);
+}
+
+/* A target of the size of a finger where the page is read on one. */
+.reference {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--touch-target);
+  min-inline-size: var(--touch-target);
+}
