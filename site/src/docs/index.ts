@@ -1,6 +1,7 @@
 import type { componentPages } from '../routes'
 import { badgeDoc } from './badge'
 import { buttonDoc } from './button'
+import { dialogDoc } from './dialog'
 import { iconButtonDoc } from './icon-button'
 import { inputDoc } from './input'
 import { tooltipDoc } from './tooltip'
@@ -16,6 +17,7 @@ export const componentDocs: Partial<Record<(typeof componentPages)[number]['slug
   badge: badgeDoc,
   input: inputDoc,
   tooltip: tooltipDoc,
+  dialog: dialogDoc,
 }
 
 export type { ComponentDoc } from './types'

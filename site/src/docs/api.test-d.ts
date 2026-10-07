@@ -3,15 +3,18 @@
 import type {
   BadgeProps,
   ButtonProps,
+  DialogProps,
   FieldProps,
   IconButtonProps,
   InputProps,
+  ModalProps,
   TooltipProps,
   TooltipTriggerProps,
 } from '@yelison/forma-ui'
 import { expectTypeOf } from 'vitest'
 import { badgeApi } from './badge/api'
 import { buttonApi } from './button/api'
+import { dialogApi } from './dialog/api'
 import { iconButtonApi } from './icon-button/api'
 import { inputApi } from './input/api'
 import { tooltipApi } from './tooltip/api'
@@ -39,3 +42,7 @@ expectTypeOf<keyof (typeof inputApi.related)[0]['own']>().toEqualTypeOf<keyof Fi
 // Tooltip wraps no element, so every prop of it is its own, and so is every prop that it hands to its trigger.
 expectTypeOf<keyof typeof tooltipApi.own>().toEqualTypeOf<keyof TooltipProps>()
 expectTypeOf<keyof (typeof tooltipApi.related)[0]['own']>().toEqualTypeOf<keyof TooltipTriggerProps>()
+
+// Dialog, and Modal with it: the same props, and none of them native, so every one of them is its own.
+expectTypeOf<keyof typeof dialogApi.own>().toEqualTypeOf<keyof DialogProps>()
+expectTypeOf<DialogProps>().toEqualTypeOf<ModalProps>()
