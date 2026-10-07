@@ -46,6 +46,10 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ Tooltip: expect.any(Function) })
   })
 
+  it('exports the hook that locks the page scroll', () => {
+    expect(entry).toMatchObject({ useScrollLock: expect.any(Function) })
+  })
+
   // An export added by accident becomes API that the next release has to keep.
   it('keeps the internal helpers out of the public API', () => {
     for (const internal of [

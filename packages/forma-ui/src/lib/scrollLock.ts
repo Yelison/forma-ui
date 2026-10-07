@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 let locks = 0
 
 /**
@@ -23,4 +25,18 @@ export function lockScroll(): () => void {
       root.style.removeProperty('padding-right')
     }
   }
+}
+
+/**
+ * Locks the document scroll while `active` is `true`, for an overlay of your own such as a drawer.
+ *
+ * Every overlay of the library shares one counter, so two overlays open at once keep the page locked until the last of
+ * them closes. The lock is the `forma-scroll-locked` class on `<html>`, which `@yelison/forma-ui/base.css` defines:
+ * without that stylesheet the hook still counts, but the page keeps scrolling.
+ */
+export function useScrollLock(active: boolean) {
+  useEffect(() => {
+    if (!active) return
+    return lockScroll()
+  }, [active])
 }
