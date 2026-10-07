@@ -24,14 +24,11 @@ describe('routeCatalogs', () => {
     ['/docs/getting-started/', ['common', 'guides', 'gettingStarted']],
     ['/docs/guides/theming/', ['common', 'guides', 'theming']],
     ['/docs/guides/accessibility/', ['common', 'guides', 'accessibility']],
+    ['/changelog/', ['common', 'guides', 'changelog']],
     ['/docs/foundations/', ['common', 'foundations']],
     ['/docs/components/', ['common', 'catalog', 'specimens']],
   ])('gives %s the catalogues of its page: %j', (path, names) => {
     expect(routeCatalogs(route(path))).toEqual(names)
-  })
-
-  it.each(['/changelog/'])('gives %s only the chrome catalogue, which already holds its title', (path) => {
-    expect(routeCatalogs(route(path))).toEqual(['common'])
   })
 
   it('gives the not-found page, which answers any path, only the chrome catalogue', () => {

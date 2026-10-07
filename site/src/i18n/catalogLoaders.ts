@@ -30,6 +30,7 @@ export const catalogLoaders = {
     en: () => import('./catalogs/accessibility.en.json'),
     es: () => import('./catalogs/accessibility.es.json'),
   },
+  changelog: { en: () => import('./catalogs/changelog.en.json'), es: () => import('./catalogs/changelog.es.json') },
   specimens: { en: () => import('./catalogs/specimens.en.json'), es: () => import('./catalogs/specimens.es.json') },
   detail: { en: () => import('./catalogs/detail.en.json'), es: () => import('./catalogs/detail.es.json') },
   'docs.badge': {

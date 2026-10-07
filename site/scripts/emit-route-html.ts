@@ -63,6 +63,7 @@ export const lazyPageModules: Readonly<Partial<Record<RouteKey, string>>> = {
   gettingStarted: 'src/pages/GettingStarted/index.ts',
   theming: 'src/pages/Theming/index.ts',
   accessibility: 'src/pages/Accessibility/index.ts',
+  changelog: 'src/pages/Changelog/index.ts',
   foundations: 'src/pages/Foundations/index.ts',
   components: 'src/pages/CatalogPage/index.ts',
   // The six reference pages share one route key, and so one chunk.

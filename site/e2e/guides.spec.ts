@@ -10,7 +10,7 @@ import { overflow } from './support/layout'
 interface GuidePage {
   path: string
   /** The words of each language: the heading, the table of contents, and the section the anchor `target` leads to. */
-  words: Record<'en' | 'es', { heading: string; section: string; copied: string; copy: string }>
+  words: Record<'en' | 'es', { heading: string; section: string; copied: string; copy: string; link?: string }>
   /** The id of the section that a link of the table of contents leads to. */
   target: string
   /** What the first block of code holds, as it is on the clipboard once copied; `null` for a page with no code. */
@@ -50,6 +50,27 @@ const guides: GuidePage[] = [
     target: 'dialog',
     firstBlock: null,
   },
+  {
+    path: './changelog/',
+    words: {
+      en: {
+        heading: 'Changelog',
+        section: 'Contrast adjustments in Resolve',
+        copy: 'Copy',
+        copied: 'Code copied',
+        link: 'Design 0.1',
+      },
+      es: {
+        heading: 'Cambios',
+        section: 'Ajustes de contraste en Resolve',
+        copy: 'Copiar',
+        copied: 'Código copiado',
+        link: 'Diseño 0.1',
+      },
+    },
+    target: 'design-0-1',
+    firstBlock: null,
+  },
 ]
 
 const locales = ['en', 'es'] as const
@@ -72,13 +93,16 @@ for (const guide of guides) {
         const section = page.getByRole('heading', { level: 2, name: words.section })
         await expect(section).not.toBeInViewport()
 
-        await page.getByRole('navigation').getByRole('link', { name: words.section }).click()
+        await page
+          .getByRole('navigation')
+          .getByRole('link', { name: words.link ?? words.section })
+          .click()
 
         await expect(page).toHaveURL(new RegExp(`#${guide.target}$`))
         await expect(section).toBeInViewport()
         // The focus goes to the section, never to the page: the heading of the page takes it only after a change of page.
         await expect(page.getByRole('heading', { level: 1 })).not.toBeFocused()
-        await expect(page.getByRole('region', { name: words.section })).toBeFocused()
+        await expect(page.locator(`#${guide.target}`)).toBeFocused()
       })
 
       test('goes back and forward between anchors, keeping the section in view and the focus off the heading', async ({
@@ -87,7 +111,10 @@ for (const guide of guides) {
         await page.setViewportSize({ width: 1024, height: 700 })
         await open(page, guide.path, locale)
         const section = page.getByRole('heading', { level: 2, name: words.section })
-        await page.getByRole('navigation').getByRole('link', { name: words.section }).click()
+        await page
+          .getByRole('navigation')
+          .getByRole('link', { name: words.link ?? words.section })
+          .click()
         await expect(section).toBeInViewport()
 
         await page.goBack()

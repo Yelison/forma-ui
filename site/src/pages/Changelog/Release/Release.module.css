@@ -1,0 +1,92 @@
+.release {
+  padding-block: var(--space-24);
+  border-block-end: 1px solid var(--color-line);
+  /* A link to the version leaves its heading in view and not under the edge of the window. */
+  scroll-margin-block-start: var(--space-16);
+}
+
+.release:focus {
+  outline: none;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-12);
+  margin: 0;
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+.version {
+  color: var(--color-link);
+  font: var(--font-label);
+}
+
+/* The label of the stage: gray, and always a word. */
+.stage,
+.current {
+  padding: var(--space-2) var(--space-8);
+  border-radius: var(--radius-small);
+  font: var(--font-caption);
+}
+
+.stage {
+  background: var(--color-surface-hover);
+  color: var(--color-muted);
+}
+
+.current {
+  background: var(--color-blue-bg);
+  color: var(--color-blue-ink);
+}
+
+.title {
+  margin: var(--space-8) 0 var(--space-12);
+  color: var(--color-ink);
+  font: var(--font-section);
+  overflow-wrap: anywhere;
+}
+
+/* The type of a change is its word in color: the color reinforces it, and each pair passes AA on the page. */
+.added,
+.updated,
+.fixed {
+  flex: none;
+  font: var(--font-label);
+}
+
+.added,
+.updated {
+  color: var(--color-link);
+}
+
+.fixed {
+  color: var(--color-amber-ink);
+}
+
+.changes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.change {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-8) var(--space-12);
+}
+
+.summary {
+  flex: 1 1 var(--space-64);
+  min-inline-size: 0;
+  max-inline-size: 70ch;
+  color: var(--color-muted);
+  font: var(--font-body);
+  overflow-wrap: anywhere;
+}

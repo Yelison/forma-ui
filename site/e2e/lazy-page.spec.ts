@@ -14,6 +14,7 @@ const lazyPages = [
   // The guide has no stylesheet of its own: its parts come from the kit, which the shared chunk carries.
   { chunk: 'Theming', path: './docs/guides/theming/', heading: 'Theming', link: 'Theming', stylesheet: false },
   { chunk: 'Accessibility', path: './docs/guides/accessibility/', heading: 'Accessibility', link: 'Accessibility' },
+  { chunk: 'Changelog', path: './changelog/', heading: 'Changelog', link: 'Changelog' },
   { chunk: 'Foundations', path: './docs/foundations/', heading: 'Foundations', link: 'Foundations' },
   { chunk: 'CatalogPage', path: './docs/components/', heading: 'Components', link: 'Components' },
   // The drawer has no link to a reference: its client-side navigation starts at the catalog (see the end of the file).
