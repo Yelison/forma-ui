@@ -1,36 +1,144 @@
 # @yelison/forma-ui
 
-Accessible React components and design tokens, extracted from [Resolve](https://github.com/Yelison/resolve). Nothing is
-published to npm yet, so there is no install command to give.
+Accessible React components and semantic design tokens, extracted from [Resolve](https://github.com/Yelison/resolve).
+Light, dark and system themes, English text by default that you can replace, and native HTML semantics first.
 
-## Importing the CSS
+## Install
 
-The package ships its CSS as three files. Import them once, in the entry point of your application, in this order:
-
-```ts
-import '@yelison/forma-ui/tokens.css' // the design tokens, as CSS custom properties; light, dark and system themes
-import '@yelison/forma-ui/styles.css' // the rules of every component
-import '@yelison/forma-ui/base.css' // the utility classes that some components apply
-// then your own CSS
+```sh
+npm install @yelison/forma-ui react react-dom
 ```
+
+React and React DOM are peer dependencies (`^19.2`): the package never bundles its own copy.
+
+## Quick start
+
+Import the three stylesheets once, in the entry point of your application, then use the components:
+
+```tsx
+import '@yelison/forma-ui/tokens.css'
+import '@yelison/forma-ui/styles.css'
+import '@yelison/forma-ui/base.css'
+// then your own CSS
+
+import { Button, FormaProvider } from '@yelison/forma-ui'
+
+export function App() {
+  return (
+    <FormaProvider>
+      <Button variant="primary">Save</Button>
+    </FormaProvider>
+  )
+}
+```
+
+## The CSS you import
+
+The package ships its CSS as three files, in this order:
+
+| Import                         | What it holds                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------- |
+| `@yelison/forma-ui/tokens.css` | The design tokens as CSS custom properties, for the light, dark and system themes.          |
+| `@yelison/forma-ui/styles.css` | The rules of every component, in one file.                                                  |
+| `@yelison/forma-ui/base.css`   | Two utility classes, `.forma-visually-hidden` and `.forma-scroll-locked`, and nothing else. |
 
 - The package's files go before your own CSS. A `className` you pass to a component has the same specificity as the
   component's own rule (for example `.forma-badge__blue`), so the later stylesheet wins: yours has to come after
   `styles.css`.
 - `tokens.css` is the foundation: the component rules read its custom properties, and without it they render unstyled.
-  The custom properties resolve whatever the order of the sheets, so it comes first by convention.
-- `styles.css` is one file for all the components, whether you use them all or not. Importing `@yelison/forma-ui` pulls
-  in no CSS and has no side effects: the components are tree-shakeable, the stylesheet is yours to place.
-- `base.css` holds two utility classes, `.forma-visually-hidden` and `.forma-scroll-locked`, and nothing that could
-  match your own markup. Components that need them apply them by name: the scroll lock of a modal dialog is
-  `.forma-scroll-locked`. Import it unless you use no such component.
+- Importing `@yelison/forma-ui` pulls in no CSS and has no side effects: the components are tree-shakeable, and the
+  stylesheet is yours to place. `styles.css` is one file for all the components, whether you use them all or not.
+- `base.css` holds only plain `.forma-*` class selectors, so nothing in it can match your own markup. A modal dialog
+  applies `.forma-scroll-locked` to `<html>` while it is open: import `base.css` unless you use no such component.
 - A consumer without React, such as an identity provider's login theme, imports `tokens.css` alone.
+- `tokens.json` (`@yelison/forma-ui/tokens.json`) holds the resolved token values, and `tokenNames` lists the custom
+  properties.
 
-The component classes are named `forma-<module>__<class>` (for example `forma-badge__blue`), or `forma-<module>` for
-the class that repeats the module's name (`forma-badge`). They are readable in DevTools but are not a styling API:
-restyle through the tokens, and pass your own `className` to a component.
+The component classes are named `forma-<module>__<class>` and are not a styling API: restyle through the tokens, and
+pass your own `className` to a component.
 
-## How the build is checked
+## `FormaProvider` and the library's text
+
+The few strings the components show on their own have English defaults. A `FormaProvider` replaces them for the part of
+the application it wraps; entries you leave out keep the value of the closest provider above, or the default.
+
+| Key             | Default    | Where it appears                                                                  |
+| --------------- | ---------- | --------------------------------------------------------------------------------- |
+| `buttonLoading` | `Loading…` | The accessible name of a `Button` while it is `loading`.                          |
+| `dialogClose`   | `Close`    | Returned by `useFormaStrings()`, for a close button you put in a `Dialog` footer. |
+
+```tsx
+<FormaProvider strings={{ buttonLoading: 'Enviando…', dialogClose: 'Cerrar' }}>
+  <App />
+</FormaProvider>
+```
+
+A prop on a component wins over the provider (`<Button loading loadingLabel="Saving…">`), and the provider wins over the
+default. The provider is optional for an application in English. Read the current strings in your own components with
+`useFormaStrings()`.
+
+## Theme
+
+`tokens.css` paints the light theme, follows `prefers-color-scheme` until a theme is chosen, and switches by the
+`data-theme` attribute on `<html>`: `light` or `dark` set it, and `system` removes it. The package gives you the pieces
+to own that choice:
+
+- `createThemeStore({ storageKey })` creates the store of one application: the preference (`light`, `dark` or
+  `system`), kept in `localStorage` under your key and in memory when storage is unavailable. Creating it does not touch
+  the page.
+- `useTheme(store)` reads it in a component and returns `preference`, `resolved`, `setPreference` and `toggle`.
+- `themeScript({ storageKey })` returns a string for an inline `<script>` in `<head>`, so that a reload does not flash
+  the theme the operating system prefers before React renders. It must use the same key as the store, and it must be in
+  the HTML that is served: a script that React renders does not run.
+
+```tsx
+import { createThemeStore, themeScript, useTheme } from '@yelison/forma-ui'
+
+const themeStore = createThemeStore({ storageKey: 'my-app-theme' })
+
+// In the HTML your server or build sends, in <head>:
+const firstPaint = `<script>${themeScript({ storageKey: 'my-app-theme' })}</script>`
+
+function ThemeToggle() {
+  const { resolved, toggle } = useTheme(themeStore)
+  return <button onClick={toggle}>{resolved === 'dark' ? 'Light theme' : 'Dark theme'}</button>
+}
+```
+
+## Components
+
+`Badge`, `Button`, `IconButton`, `Icon` and `Input` forward the attributes of their native element. `Field`, `Tooltip` and `Dialog` take only the props they document.
+
+| Component               | Use it for                                              | Accessibility                                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Button`                | An action; `primary`, `secondary`, `ghost` or `danger`. | A native `button` whose `type` is `button` unless set. While `loading` it stays focusable with `aria-busy` and `aria-disabled`; `disabled` is for an unavailable action. |
+| `IconButton`            | An action with an icon and no visible text.             | `label` is required and becomes `aria-label`; show it in a `Tooltip` too.                                                                                                |
+| `Badge`                 | A short status or category tag, in five tones.          | The tone only colors it: the text has to say the same thing.                                                                                                             |
+| `Field`                 | A label, hint and error around a control you provide.   | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`.                                                            |
+| `Input`                 | A native text input with its `Field`.                   | Same linking as `Field`; `disabled` and `readOnly` stay different states.                                                                                                |
+| `Icon`                  | One of the library's icons, as inline SVG.              | Decorative and hidden from screen readers unless you give it a `label`.                                                                                                  |
+| `Tooltip`               | A short description for a control.                      | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.            |
+| `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                       | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.               |
+
+Also exported: `buttonClassName` (the classes of a button, for a link that must look like one), `useScrollLock` (the
+scroll lock of the dialog, for an overlay of your own), `useFormaStrings` and `defaultStrings` (the text the components show
+on their own), `contrastRatio` and `relativeLuminance` (WCAG contrast, over `#rgb` and `#rrggbb` colors) and every props
+type next to its component.
+
+## Compatibility
+
+- **React:** 19.2 or a later 19.x release (`^19.2`), with `react-dom`.
+- **Module format:** ES modules only. `import` it; `require()` of the entry point works too, on the Node versions the
+  package supports (22.12 or later), which load an ES module from CommonJS.
+- **TypeScript:** declarations are included. Use `moduleResolution` `bundler`, `node16` or `nodenext`. `node10`
+  resolves the entry point and its types through `main` and `types`, but it ignores `exports`, so it cannot resolve the
+  CSS and JSON subpaths: import those through your bundler.
+- **Node:** 22.12 or later (`engines`), for server rendering and tooling: it is what the package is tested on.
+- **Browsers:** `Dialog` uses the native `<dialog>` element and `showModal()`.
+
+## How the package is verified
+
+The repository's CI checks the packed tarball, as a consumer receives it, not the sources.
 
 `npm run check:consumer` packs the package, installs it into a throwaway project, compiles that project with
 `moduleResolution: nodenext` and runs it. It fails if a CSS export does not resolve, if `index.js` imports CSS, if a
@@ -38,8 +146,7 @@ class in `styles.css` lacks the `forma-` prefix, if a rendered component carries
 module has no class rendered at all. The build lists the classes of every module in `dist/css-modules.json`, which is
 not packed. A component that ships CSS is added to `scripts/consumer/main.tsx`.
 
-`npm run pack:check` looks at the tarball that `npm pack` writes, and fails with a message that names the file or the
-rule:
+`npm run pack:check` fails with a message that names the file or the rule:
 
 - **Contents:** only `dist/**` (without `dist/css-modules.json`), `package.json`, `README.md`, `LICENSE` and, once it
   exists, `CHANGELOG.md`; everything `main`, `types` and `exports` point at is in it; `react` and `react-dom` are peer
@@ -47,8 +154,7 @@ rule:
 - **Types and exports:** [publint](https://publint.dev) in strict mode and
   [Are The Types Wrong?](https://arethetypeswrong.github.io) read the packed `package.json` and resolve the typed
   entry point in `node10`, `node16` (CommonJS and ESM) and `bundler`; the consumer is compiled under `bundler`; and
-  `require()` of the entry point must load on Node 22.12+. The CSS and JSON subpaths have no declarations to check,
-  and `node10` cannot resolve them because it ignores `exports`.
+  `require()` of the entry point must load on Node 22.12+.
 - **One copy of React:** the packed `dist/index.js` imports only `react` and `react-dom` and holds no React code, and
   the production bundle of a Vite consumer (`scripts/consumer/client.tsx`) resolves `react`, `react-dom` and
   `scheduler` to one folder each. React inlined into the library cannot be seen from the module graph alone, so the
@@ -57,3 +163,7 @@ rule:
   out: every export (`dist/index.js`), `import { Button }` alone, which is what proves the tree-shaking, and
   `dist/styles.css`. Each budget is the size measured plus about 20% and lives in
   `scripts/pack-check/size-budget.ts`; the message names the budget, the size and the excess.
+
+## License
+
+[MIT](https://github.com/Yelison/forma-ui/blob/main/LICENSE)
