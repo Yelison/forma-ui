@@ -216,11 +216,19 @@ for (const reference of references) {
             .getByRole('region', { name: 'Tones' })
             .getByRole('list')
             .getByText('Draft', { exact: true })
-          const background = (locator: Locator) => locator.evaluate((node) => getComputedStyle(node).backgroundColor)
           const card = badge.locator('..')
-          const panel = card.locator('xpath=ancestor::ul[1]')
+          const ownBackground = (locator: Locator) => locator.evaluate((node) => getComputedStyle(node).backgroundColor)
+          // What shows behind an element is the background of the nearest ancestor that paints one.
+          const backgroundBehind = (locator: Locator) =>
+            locator.evaluate((node) => {
+              for (let behind: Element | null = node; behind !== null; behind = behind.parentElement) {
+                const { backgroundColor } = getComputedStyle(behind)
+                if (backgroundColor !== 'rgba(0, 0, 0, 0)') return backgroundColor
+              }
+              return ''
+            })
 
-          expect(await background(card)).not.toBe(await background(panel))
+          expect(await ownBackground(badge)).not.toBe(await backgroundBehind(card))
         })
       }
     }
