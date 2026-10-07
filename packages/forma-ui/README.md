@@ -164,15 +164,33 @@ not packed. A component that ships CSS is added to `scripts/consumer/main.tsx`.
   `dist/styles.css`. Each budget is the size measured plus about 20% and lives in
   `scripts/pack-check/size-budget.ts`; the message names the budget, the size and the excess.
 
-## Versions
+## Versions and publishing
 
 The package follows [Semantic Versioning](https://semver.org), from `0.1.0`. While the version is below 1.0, a minor
 release may include breaking changes, and each one is marked **Breaking** in the
 [changelog](https://github.com/Yelison/forma-ui/blob/main/packages/forma-ui/CHANGELOG.md): pin an exact version, and
-read the changelog before you update. Every release is published from GitHub Actions with
-[provenance](https://docs.npmjs.com/generating-provenance-statements), which links the package on npm to the workflow
-run that built it. How a change gets its changeset and how a release is made is in
-[CONTRIBUTING.md](https://github.com/Yelison/forma-ui/blob/main/CONTRIBUTING.md).
+read the changelog before you update.
+
+How a release is made, in short; [CONTRIBUTING.md](https://github.com/Yelison/forma-ui/blob/main/CONTRIBUTING.md) has
+the steps, the recovery and the first publication:
+
+- **Versioning:** each pull request that changes what the package ships adds a [Changesets](https://github.com/changesets/changesets)
+  file, and the `Changeset` job of CI fails one that does not. A regular pull request runs `npm run version-packages`,
+  which bumps the version, writes the changelog and consumes the changesets.
+- **Who publishes:** only the `Release` workflow, when that pull request is merged into `main` and npm does not have
+  the version yet. It authenticates with npm trusted publishing (OIDC) and no token is stored. Nobody publishes from a
+  workstation, and `publishConfig.provenance` makes `npm publish` fail anywhere else.
+- **Provenance:** every release is published with [provenance](https://docs.npmjs.com/generating-provenance-statements),
+  a signed statement that the tarball was built from this repository by that workflow run. The package page on npm shows
+  it, with a link to the run.
+- **Verify it:** in a project that installs the package, `npm audit signatures` checks the registry signature and the
+  provenance attestation of every installed package that has one.
+- **Rebuild it:** `npm run pack:reproducible` builds a commit twice from clean checkouts and fails unless both tarballs
+  have the same sha256. To compare a release with its source, check out the tag `@yelison/forma-ui@<version>`, use the
+  Node version in `.nvmrc` (other npm versions may pack the same files into different bytes), run `npm ci`,
+  `npm run build -w @yelison/forma-ui` and `npm pack -w @yelison/forma-ui`, and compare the tarball's SHA-512
+  (`openssl dgst -sha512 -binary <file>.tgz | base64`) with `npm view @yelison/forma-ui@<version> dist.integrity`, which
+  holds it after `sha512-`.
 
 ## License
 
