@@ -6,12 +6,13 @@ import { sectionPaths } from '../../routes'
 import { Drawer } from '../Drawer'
 import { GitHubLink } from '../GitHubLink'
 import { LanguageSwitcher } from '../LanguageSwitcher'
+import { ThemeSwitcher } from '../ThemeSwitcher'
 import { documentationCurrent, documentationEntryPath } from '../navigation'
 import styles from './TopNav.module.css'
 
 /**
- * The top bar: the wordmark, Documentation (highlighted across its whole section), GitHub, the language and, on narrow
- * screens, the menu, which holds the links and the language.
+ * The top bar: the wordmark, Documentation (highlighted across its whole section), the theme, GitHub, the language and,
+ * on narrow screens, the menu, which holds the links and both choices.
  */
 export function TopNav() {
   const intl = useIntl()
@@ -48,8 +49,9 @@ export function TopNav() {
             {intl.formatMessage({ id: 'nav.docs' })}
           </Link>
         </nav>
+        <ThemeSwitcher className={`${styles.switcher} ${styles.end}`} />
         <GitHubLink className={styles.github} />
-        <LanguageSwitcher className={styles.language} />
+        <LanguageSwitcher className={styles.switcher} />
         <button
           ref={menuButtonRef}
           type="button"
