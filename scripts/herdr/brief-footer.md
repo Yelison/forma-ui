@@ -55,6 +55,7 @@ Los revisores encuentran casi siempre estos defectos (`AGENTS.md`, «Self-check 
 - **Una mutación por test nuevo**, anotada en la entrega.
 - **Idioma:** las reglas de la sección anterior, con el pseudo-idioma pasado.
 - **Commits:** cada uno pasa por sí solo, y si un cambio rompe un test, el test cambia en el mismo commit.
+- **Changeset:** todo cambio visible para quien usa el paquete lleva su changeset (`npm run changeset`; ver `CONTRIBUTING.md`).
 
 ## Entrega
 

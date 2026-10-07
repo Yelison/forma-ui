@@ -164,6 +164,16 @@ not packed. A component that ships CSS is added to `scripts/consumer/main.tsx`.
   `dist/styles.css`. Each budget is the size measured plus about 20% and lives in
   `scripts/pack-check/size-budget.ts`; the message names the budget, the size and the excess.
 
+## Versions
+
+The package follows [Semantic Versioning](https://semver.org), from `0.1.0`. While the version is below 1.0, a minor
+release may include breaking changes, and each one is marked **Breaking** in the
+[changelog](https://github.com/Yelison/forma-ui/blob/main/packages/forma-ui/CHANGELOG.md): pin an exact version, and
+read the changelog before you update. Every release is published from GitHub Actions with
+[provenance](https://docs.npmjs.com/generating-provenance-statements), which links the package on npm to the workflow
+run that built it. How a change gets its changeset and how a release is made is in
+[CONTRIBUTING.md](https://github.com/Yelison/forma-ui/blob/main/CONTRIBUTING.md).
+
 ## License
 
 [MIT](https://github.com/Yelison/forma-ui/blob/main/LICENSE)
