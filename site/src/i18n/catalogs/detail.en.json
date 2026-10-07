@@ -1,0 +1,23 @@
+{
+  "detail.api.changed": "Native attributes that {component} changes",
+  "detail.api.default": "Default",
+  "detail.api.own": "Props of {component}",
+  "detail.api.type": "Type",
+  "detail.breadcrumb.label": "Breadcrumb",
+  "detail.code.copied": "Code copied",
+  "detail.code.copy": "Copy",
+  "detail.code.copyFailed": "The code could not be copied",
+  "detail.code.jsx": "JSX · {component}",
+  "detail.examples.code": "JSX · {title}",
+  "detail.playground.label": "Views of the example",
+  "detail.section.accessibility": "Accessibility",
+  "detail.section.api": "API",
+  "detail.section.limitations": "Limitations",
+  "detail.section.sizes": "Sizes",
+  "detail.section.states": "States",
+  "detail.section.usage": "Usage",
+  "detail.section.variants": "Variants",
+  "detail.tab.code": "Code",
+  "detail.tab.preview": "Preview",
+  "detail.toc.label": "On this page"
+}

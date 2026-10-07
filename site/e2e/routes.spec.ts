@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { canonicalUrl, routes } from '../src/routes'
-import en from '../src/i18n/en.json' with { type: 'json' }
+import en from '../src/i18n/catalogs/common.en.json' with { type: 'json' }
 
 // `request` reads the HTML the server sends, before any script runs: this is what GitHub Pages serves to a deep link
 // and to a crawler, and it must already be the page of the route, not the shell of the home page.

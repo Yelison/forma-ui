@@ -1,0 +1,21 @@
+{
+  "catalog.category.actions": "Actions",
+  "catalog.category.all": "All",
+  "catalog.category.display": "Display",
+  "catalog.category.feedback": "Feedback",
+  "catalog.category.forms": "Forms",
+  "catalog.count": "{count, plural, one {Showing # component} other {Showing # components}}",
+  "catalog.empty": "No component matches these filters.",
+  "catalog.empty.clear": "Clear filters",
+  "catalog.family.badge.description": "A short label that tags an item with a status or category.",
+  "catalog.family.button.description": "Primary, secondary and destructive actions, with an icon-only button.",
+  "catalog.family.dialog.description": "A modal that confirms a decision before it is made.",
+  "catalog.family.icon.description": "The icons of the library, drawn in the color of the text.",
+  "catalog.family.input.description": "A text field with its label, hint and error.",
+  "catalog.family.reference": "View the {component} reference",
+  "catalog.family.referencePending": "Reference page coming soon",
+  "catalog.family.tooltip.description": "Short context for a control, on hover and on keyboard focus.",
+  "catalog.filter.category": "Category",
+  "catalog.filter.name": "Filter by name",
+  "catalog.lead": "Compare the variants. Explore each component in detail."
+}

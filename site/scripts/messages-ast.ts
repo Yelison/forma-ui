@@ -6,7 +6,7 @@ import type { Plugin } from 'vite'
 import { compileMessages } from './formatjs.ts'
 
 export interface CatalogueOptions {
-  /** The directory with the catalogues (`en.json`, `es.json`): the JSON files directly inside it are compiled. */
+  /** The directory with the catalogues (`common.en.json`, `common.es.json`…): the JSON files directly inside it are compiled. */
   directory: string
   /** A pseudo-locale for the CLI, such as `en-XA`. Omit it for the real messages. */
   pseudoLocale?: string
