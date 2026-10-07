@@ -1,0 +1,200 @@
+# Publishes @yelison/forma-ui to npm when the version on `main` is not on npm yet.
+#
+# How a release happens:
+#   1. A change that is visible to the package's users adds a changeset (`npm run changeset`) in its own PR.
+#   2. When changesets are pending, a normal PR runs `npm run version-packages`: it bumps the version, writes
+#      packages/forma-ui/CHANGELOG.md and deletes the changesets. It goes through the same checks as any other PR.
+#   3. Merging that PR puts a version on `main` that npm does not have, so this workflow verifies, builds and publishes it.
+#
+# Why the version is bumped in a normal PR and there is no bot-opened «Version packages» PR (option b of the brief):
+#   - A PR opened with GITHUB_TOKEN does not start the `pull_request` checks on its own. GitHub starts them in an
+#     «approval-required» state: someone with write access has to click «Approve workflows to run» after every update of
+#     the PR (docs: «Triggering a workflow», «Triggering a workflow from a workflow»).
+#   - Option a (the bot starts ci.yml with `workflow_dispatch` on the PR's branch) does not work: «Troubleshooting required
+#     status checks» says that checks from a run started by `workflow_dispatch` do not appear in the PR's checks and do
+#     not satisfy a required status check, even if they pass for the head commit. Only runs of `push`, `pull_request`,
+#     `pull_request_review`, `pull_request_target`, `deployment` and `deployment_status` count. The bot's PR could not
+#     be merged by the protection of `main` without a manual approval each time.
+#   - Option c needs a GitHub App or a personal access token that can write to the repository: a long-lived secret.
+#   - A normal PR gets Library, Site and Site e2e from its own `pull_request` run, needs no secret and no third-party
+#     action with write access, and publishes only what a reviewer has merged.
+#
+# Publishing has no token: npm trusted publishing (OIDC) authorizes this workflow file in this repository, and the
+# provenance attestation links the package on npm to the run. No step sets NODE_AUTH_TOKEN or reads an npm secret: the
+# `.npmrc` that `setup-node` writes for `registry-url` has no token to use, and npm authenticates with OIDC.
+# The trusted publisher on npmjs.com must name the repository `Yelison/forma-ui`, the workflow `release.yml` and,
+# if set, the environment `npm` (see CONTRIBUTING.md).
+#
+# Job permissions, from least to most:
+#   - plan, verify, build: contents read.
+#   - publish: contents read and `id-token: write`, which is what npm needs to exchange for a short-lived publish
+#     credential. It runs no code from the repository or from the project's dependencies: it publishes the tarball that
+#     the build job packed. Without `id-token: write` npm gets no OIDC token and cannot authenticate (ENEEDAUTH).
+#   - tag: contents write, to push the release tag. It has no `id-token`.
+
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+# A publication that has started is never cancelled: the next push waits for it. GitHub keeps one waiting run per group,
+# so when several pushes pile up behind it the intermediate ones are cancelled and only the newest starts. `plan` must
+# therefore not assume that the run of the version commit ever starts (see the check on pending changesets).
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      publish: ${{ steps.plan.outputs.publish }}
+      version: ${{ steps.plan.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: plan
+        run: |
+          name=$(node -p "require('./packages/forma-ui/package.json').name")
+          version=$(node -p "require('./packages/forma-ui/package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+          # Changesets that name the package: the ones `npm run version-packages` consumes. A changeset that names only
+          # the (ignored, private) site is never consumed and does not count.
+          pending=0
+          for file in .changeset/*.md; do
+            [ -f "$file" ] || continue
+            [ "$(basename "$file")" = README.md ] && continue
+            # The names are in the front matter, between the first two `---` lines.
+            if awk '/^---$/ { fence++; next } fence == 1' "$file" | grep -Eq "^['\"]?${name}['\"]?:"; then
+              pending=$((pending + 1))
+            fi
+          done
+
+          if [ "$version" = "0.0.0" ]; then
+            echo "$name is at 0.0.0, the version of the repository before its first release: nothing to publish."
+            state=initial
+          elif published=$(npm view "$name@$version" version 2>npm-view.err); then
+            # An unknown version of a known package answers with an empty result, depending on the npm version.
+            [ "$published" = "$version" ] && state=published || state=missing
+          elif grep -q 'E404' npm-view.err; then
+            # E404: npm has no such package (before the first release) or no such version.
+            state=missing
+          else
+            # Any other failure (network, registry outage) must not read as «not published»: a retry is safer.
+            cat npm-view.err
+            exit 1
+          fi
+
+          # The commit that versions the package has no pending changeset: `changeset version` consumed them. A commit
+          # that has one and whose version npm does not have is a later commit, and publishing it would put its tree
+          # under a version whose changelog does not describe it. The run of the version commit has to be repeated.
+          if [ "$state" = missing ] && [ "$pending" -gt 0 ]; then
+            echo "::error title=Not the version commit::$name@$version is not on npm, but $pending changeset(s) of the package are pending. Publishing nothing. Either this commit came after the one that bumped the version to $version: open the Release run of that commit and use «Re-run all jobs». Or a changeset of the package landed after npm run version-packages and the version commit carries it: version again on the current main. See CONTRIBUTING.md, «Releasing»."
+            exit 1
+          fi
+
+          [ "$state" = missing ] && publish=true || publish=false
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
+          if [ "$publish" = false ] && [ "$pending" -gt 0 ]; then
+            echo "$pending changeset(s) pending: open a PR that runs \`npm run version-packages\` to release them." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  # The same three checks as a pull request (Library, Site and Site e2e), on the commit that will be published.
+  verify:
+    name: Verify
+    needs: plan
+    if: needs.plan.outputs.publish == 'true'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+
+  # Builds and packs the tarball in a job that cannot publish: the project's tooling and dependencies run here, without
+  # an OIDC token in reach.
+  build:
+    name: Build tarball
+    needs: [plan, verify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # No dependency cache: what this job packs is what gets published.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: npm run build -w @yelison/forma-ui
+      # Contents, types, exports, one copy of React and the size budget, on a tarball that `pack:check` packs from this same
+      # dist/. `npm pack` is reproducible byte for byte, so the tarball packed below is the one that was checked.
+      - run: npm run pack:check -w @yelison/forma-ui
+      - run: npm pack -w @yelison/forma-ui --pack-destination "$RUNNER_TEMP/tarball"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tarball
+          path: ${{ runner.temp }}/tarball/*.tgz
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish
+    needs: [plan, build]
+    if: needs.plan.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # An environment lets the owner add a required reviewer before anything is published. It is optional on npm's side.
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write # npm exchanges the OIDC token for a short-lived publish credential and signs the provenance
+    steps:
+      # Trusted publishing needs npm 11.5.1 or later and Node 22.14 or later (docs.npmjs.com/trusted-publishers). The
+      # npm that ships with Node 24 satisfies both, so there is nothing to install over it; the check keeps that true.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Require the npm version that trusted publishing needs
+        run: |
+          echo "node $(node --version), npm $(npm --version)"
+          printf '%s\n' 11.5.1 "$(npm --version)" | sort -V -C
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: tarball
+          path: ${{ runner.temp }}/tarball
+      - name: Publish the tarball with provenance
+        env:
+          TARBALL_DIR: ${{ runner.temp }}/tarball
+          VERSION: ${{ needs.plan.outputs.version }}
+        run: |
+          tarball="$TARBALL_DIR/yelison-forma-ui-$VERSION.tgz"
+          ls -l "$TARBALL_DIR"
+          npm publish "$tarball" --provenance --access public
+
+  tag:
+    name: Tag
+    needs: [plan, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # pushes the release tag
+    steps:
+      # Through the API, so that no checkout leaves the token in a git config.
+      - name: Tag the published commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.plan.outputs.version }}
+        run: gh api "repos/$GITHUB_REPOSITORY/git/refs" -f ref="refs/tags/@yelison/forma-ui@$VERSION" -f sha="$GITHUB_SHA"
