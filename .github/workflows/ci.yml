@@ -92,7 +92,8 @@ jobs:
       # The site resolves @yelison/forma-ui through its exports map, which points at dist/: build the library first.
       - run: npm run build -w @yelison/forma-ui
       - run: npm run typecheck -w forma-ui-site
-      # es.json must have the keys, the ICU syntax and the arguments of en.json.
+      # Each catalogue's Spanish file (catalogs/*.es.json) must have the keys, the ICU syntax and the arguments of its
+      # English file (*.en.json).
       - run: npm run check:messages -w forma-ui-site
       - run: npm test -w forma-ui-site
       - run: npm run build -w forma-ui-site
