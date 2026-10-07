@@ -174,11 +174,18 @@ s_rewritten() { mk; touch "$T/state/gh/rewrite"
 s_noname() { mk; jq 'del(.name)' "$T/state/agents/rev-impl-a" >"$T/x" && mv "$T/x" "$T/state/agents/rev-impl-a"
   out=$(ship); check "nameless agent: stops" test $? -ne 0
   check "nameless agent: the retry command deletes the branch too" says x 'remove-task.sh --id review-impl-a --volumes --delete-branch'; }
+# pick_slot must look at the ports the scenario uses (private_ports), not at the defaults.
+s_slots() { mk_env; private_ports; local first second port; first=$(pick_slot) || exit 2; port=$(port_of "$first" DEV_SERVER_PORT)
+  check "slots: the ports checked are the private ones" test "$port" -ge 20000; mkdir -p "$T/srv"
+  (cd "$T/srv" && exec python3 -m http.server "$port" --bind 127.0.0.1 >/dev/null 2>&1) & local pid=$!
+  for _ in $(seq 1 25); do ss -ltnH | grep -q ":$port " && break; sleep 0.2; done
+  second=$(pick_slot); kill "$pid"; wait "$pid" 2>/dev/null
+  check "slots: a listener on a private port makes pick_slot skip that slot" test -n "$second" -a "$second" != "$first"; }
 # A reviewer that is still working is not sent /exit.
 s_working() { mk; jq '.agent_status="working"' "$T/state/agents/rev-impl-a" >"$T/x" && mv "$T/x" "$T/state/agents/rev-impl-a"
   out=$(ship); check "working agent: stops" test $? -ne 0; check "working agent: says so" says x 'is working, so it was not sent /exit'; check "working agent: no /exit sent" bash -c "! grep -q '/exit' '$T/state/prompts.log' 2>/dev/null"
   check "working agent: the merge is reported" says x "merged "; check "working agent: reviewer still live" test -e "$T/state/agents/rev-impl-a"; }
 
-scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname)
+scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname slots)
 for s in "${scen[@]}"; do echo "== $s"; "s_$s"; done
 finish
