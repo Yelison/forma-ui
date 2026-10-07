@@ -1,8 +1,10 @@
 /// <reference types="vitest/config" />
+import { resolve } from 'node:path'
 import react from '@vitejs/plugin-react'
 import { themeScript } from '@yelison/forma-ui'
 import { defineConfig } from 'vite'
 import { firstPaintScripts } from './scripts/first-paint.ts'
+import { messagesAst } from './scripts/messages-ast.ts'
 import { defaultLocale, localeStorageKey, locales } from './src/i18n/locale.ts'
 import { localeScript } from './src/i18n/localeScript.ts'
 import { siteBasePath } from './src/routes.ts'
@@ -17,8 +19,22 @@ const previewPort = Number(process.env.PLAYWRIGHT_PORT || 4280)
 
 // The site imports @yelison/forma-ui the way a consumer does: through the workspace link and the package's exports
 // map, which point at the built dist/. There is deliberately no alias to the library's sources.
-export default defineConfig(({ isPreview }) => ({
+export default defineConfig(({ command, isPreview }) => ({
   base: siteBasePath,
+  resolve: {
+    // The production build ships the messages as syntax trees (scripts/messages-ast.ts), so react-intl never parses an
+    // ICU message and the parser is left out of the bundle: this entry has `parse` throw instead. Tests and the dev
+    // server pass plain strings, which need the real parser.
+    alias:
+      command === 'build'
+        ? [
+            {
+              find: /^@formatjs\/icu-messageformat-parser$/,
+              replacement: '@formatjs/icu-messageformat-parser/no-parser.js',
+            },
+          ]
+        : [],
+  },
   // The preview stands in for GitHub Pages: a path is answered by its own HTML file (scripts/emit-route-html.ts) or by
   // 404, never by the app shell. The dev server has no such files, so it keeps the single-page fallback.
   appType: isPreview ? 'mpa' : 'spa',
@@ -30,6 +46,7 @@ export default defineConfig(({ isPreview }) => ({
       themeScript({ storageKey: themeStorageKey }),
       localeScript({ storageKey: localeStorageKey, locales, fallback: defaultLocale }),
     ]),
+    messagesAst({ directory: resolve(import.meta.dirname, 'src/i18n') }),
   ],
   server: {
     port: devServerPort,

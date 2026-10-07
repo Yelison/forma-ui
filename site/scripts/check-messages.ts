@@ -6,31 +6,16 @@
 // ICU is validated, and the arguments are read, by the FormatJS CLI that the site already depends on: it parses every
 // message and writes the syntax tree of the ones that are valid. The script sticks to erasable TypeScript so that type
 // stripping can run it, like the package's token generator.
-import { execFileSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
-import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-
-const formatjs = createRequire(import.meta.url).resolve('@formatjs/cli/bin/formatjs')
+import { compileMessages, type MessageNode } from './formatjs.ts'
 
 export interface Catalogue {
   /** The file name, for the messages of the report. */
   readonly file: string
   /** The messages by id, as read from the file: a value that is not a string is reported, not trusted. */
   readonly messages: Readonly<Record<string, unknown>>
-}
-
-/** A node of the syntax tree that the CLI writes. Only the parts the check reads are typed. */
-interface MessageNode {
-  /** 0 literal, 1 argument, 2 number, 3 date, 4 time, 5 select, 6 plural, 7 `#`, 8 tag. */
-  type: number
-  /** The name of the argument or tag. */
-  value?: string
-  /** The nodes between the two ends of a tag. */
-  children?: MessageNode[]
-  /** The branches of a select or a plural. */
-  options?: Record<string, { value: MessageNode[] }>
 }
 
 // The node types that name an argument the caller has to provide: 1 to 6, and 8 for a rich-text tag.
@@ -51,15 +36,9 @@ function compile(messages: Record<string, string>): Record<string, readonly Mess
   const directory = mkdtempSync(join(tmpdir(), 'check-messages-'))
   try {
     const input = join(directory, 'messages.json')
-    const output = join(directory, 'compiled.json')
     writeFileSync(input, JSON.stringify(messages))
-    // --skip-errors keeps going past an invalid message instead of failing the whole file, which says which ones.
-    execFileSync(
-      process.execPath,
-      [formatjs, 'compile', input, '--format', 'simple', '--ast', '--skip-errors', '--out-file', output],
-      { stdio: 'ignore' },
-    )
-    return existsSync(output) ? JSON.parse(readFileSync(output, 'utf8')) : {}
+    // skipErrors keeps going past an invalid message instead of failing the whole file, which says which ones.
+    return compileMessages(input, { skipErrors: true })
   } finally {
     rmSync(directory, { recursive: true, force: true })
   }
