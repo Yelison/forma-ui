@@ -7,7 +7,8 @@ import { mount, pressEscape, pressShiftTab, pressTab } from './support'
 // because jsdom cannot show what these assert: the modal state (:modal, the top layer), where the focus goes and the
 // `cancel` event of the Escape key.
 //
-// There is no real component yet, so the test component writes the contract by hand:
+// The Dialog component has its own spec, dialogComponent.test.tsx. This one writes the contract of the native element
+// by hand, with a test component:
 // - an "Actions" button opens a menu, and the menu item opens the dialog and unmounts itself, as menu items do;
 // - when the dialog closes, the focus goes back to the trigger through a `useRef`. The browser cannot do it: it
 //   restores the focus to the element that had it when `showModal()` ran, and that element is gone.
