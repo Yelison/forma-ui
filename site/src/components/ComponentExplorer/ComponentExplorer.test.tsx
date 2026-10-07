@@ -102,6 +102,16 @@ describe('ComponentExplorer', () => {
     expect(codeOf('Input')).not.toHaveTextContent('readOnly')
   })
 
+  it('shows the value its code gives the field, not what the visitor typed in the specimen before', async () => {
+    renderInSite(<ComponentExplorer />)
+    await userEvent.click(screen.getByRole('radio', { name: 'Input' }))
+    await userEvent.type(screen.getByRole('textbox', { name: 'Email' }), 'typed')
+
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'State' }), 'Read-only')
+
+    expect(screen.getByRole('textbox', { name: 'Email' })).toHaveValue('ana@example.com')
+  })
+
   it('restores the defaults, in the controls, in the specimen and in the code, and keeps the focus on Reset', async () => {
     renderInSite(<ComponentExplorer />)
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Variant' }), 'ghost')
