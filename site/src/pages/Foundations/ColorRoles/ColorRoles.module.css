@@ -1,0 +1,59 @@
+.group + .group {
+  margin-block-start: var(--space-32);
+}
+
+.groupTitle {
+  margin: 0;
+  color: var(--color-ink);
+  font: var(--font-strong);
+}
+
+.groupDescription {
+  margin: var(--space-4) 0 var(--space-16);
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+.list {
+  display: grid;
+  /* A card is at least wide enough for a token name beside its value, and a column of it fills a phone. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: var(--space-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-inline-size: 0;
+  padding: var(--space-16);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+/* The border keeps a swatch that matches the card (the surfaces, the line) visible as a shape. */
+.swatch {
+  display: block;
+  block-size: var(--space-40);
+  margin-block-end: var(--space-8);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+}
+
+.label {
+  color: var(--color-ink);
+  font: var(--font-label);
+  overflow-wrap: anywhere;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-8);
+  color: var(--color-muted);
+  font: var(--font-caption);
+}

@@ -1,0 +1,43 @@
+.family {
+  margin: 0 0 var(--space-16);
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  min-inline-size: 0;
+  padding: var(--space-16);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-12);
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+.usage {
+  margin: var(--space-4) 0 var(--space-8);
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+/* The font comes from the token, set inline so that the sample is the style and nothing else. */
+.sample {
+  margin: 0;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}

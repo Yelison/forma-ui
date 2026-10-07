@@ -12,11 +12,12 @@ const fixedTerms = ['Forma UI', 'GitHub', ...Object.values(localeNames), ...comp
 describe('App', () => {
   it.each(routes.map((route) => [route.path, route] as const))(
     'renders the page of %s with its own heading',
-    (path, route) => {
+    async (path, route) => {
       renderInSite(<App />, { path })
 
+      // Awaited: the page of a route may load on demand.
       const heading = route.key === 'component' ? route.componentName : messages.en[`route.${route.key}.heading`]
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(heading)
+      expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(heading)
     },
   )
 

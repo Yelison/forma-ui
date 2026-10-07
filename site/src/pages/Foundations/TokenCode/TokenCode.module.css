@@ -1,0 +1,13 @@
+.name,
+.breakable {
+  font: var(--font-caption);
+  font-family: var(--site-font-mono);
+}
+
+.name {
+  white-space: nowrap;
+}
+
+.breakable {
+  overflow-wrap: anywhere;
+}
