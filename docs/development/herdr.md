@@ -104,7 +104,7 @@ listening, whoever owns them.
 obeys `OMP_NUM_THREADS`). The message says the load and the limit. A new session on a saturated machine only makes
 everybody's tests flaky: wait for the other runs to finish, or pass `--ignore-load` once you have decided that this
 one cannot wait. `HERDR_MAX_LOAD` must be a number (it can be fractional). `set-effort.sh --restart` checks the load
-_before_ it exits the agent; `new-review.sh --round` only checks it when it has to start a reviewer again.
+_before_ it exits the agent; `new-review.sh --round` only checks it when it has to start a reviewer again, or restart one to change its effort.
 
 ## Task cycle
 
