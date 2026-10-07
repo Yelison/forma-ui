@@ -26,3 +26,9 @@ export {
   type ButtonStyleOptions,
   type ButtonVariant,
 } from './components/Button/index.js'
+export {
+  Tooltip,
+  type TooltipPlacement,
+  type TooltipProps,
+  type TooltipTriggerProps,
+} from './components/Tooltip/index.js'

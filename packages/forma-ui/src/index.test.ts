@@ -42,9 +42,21 @@ describe('package entry point', () => {
     })
   })
 
+  it('exports Tooltip', () => {
+    expect(entry).toMatchObject({ Tooltip: expect.any(Function) })
+  })
+
   // An export added by accident becomes API that the next release has to keep.
   it('keeps the internal helpers out of the public API', () => {
-    for (const internal of ['cx', 'computePosition', 'lockScroll', 'useFloating', 'useModalDialog']) {
+    for (const internal of [
+      'cx',
+      'computePosition',
+      'lockScroll',
+      'useFloating',
+      'useModalDialog',
+      'claimActiveTooltip',
+      'releaseActiveTooltip',
+    ]) {
       expect(entry).not.toHaveProperty(internal)
     }
   })

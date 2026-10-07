@@ -45,7 +45,9 @@ export function useFloating<TAnchor extends HTMLElement, TFloating extends HTMLE
       : { position: 'fixed' as const, top: 0, left: 0, visibility: 'hidden' as const }
 
   // Inside a modal <dialog> only what hangs from the dialog itself is visible and interactive (top layer).
-  const portalContainer = anchor?.closest('dialog') ?? document.body
+  // Rendering on the server has no document, and nothing is open there to portal: `globalThis` keeps that render from
+  // throwing, and the container is only used once the floating element is open, in the browser.
+  const portalContainer = anchor?.closest('dialog') ?? globalThis.document?.body
 
   return { anchor, setAnchor, floating, setFloating, style, positioned: open && position !== null, portalContainer }
 }
