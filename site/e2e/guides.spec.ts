@@ -1,4 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
+import { examples as gettingStarted } from '../src/pages/GettingStarted/examples'
+import { examples as theming } from '../src/pages/Theming/examples'
 import { overflow } from './support/layout'
 
 // The guides share their parts (the table of contents, the copy button, the layout of a section), so the promises that
@@ -28,7 +30,16 @@ const guides: GuidePage[] = [
       },
     },
     target: 'theme',
-    firstBlock: 'npm install @yelison/forma-ui react react-dom',
+    firstBlock: gettingStarted.install.code,
+  },
+  {
+    path: './docs/guides/theming/',
+    words: {
+      en: { heading: 'Theming', section: 'First paint', copy: 'Copy', copied: 'Code copied' },
+      es: { heading: 'Temas', section: 'Primer pintado', copy: 'Copiar', copied: 'Código copiado' },
+    },
+    target: 'first-paint',
+    firstBlock: theming.attribute.code,
   },
 ]
 

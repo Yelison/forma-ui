@@ -191,6 +191,12 @@ const builtManifest = {
     css: ['assets/GettingStarted-page.css'],
     imports: ['_shared.js', 'index.html'],
   },
+  'src/pages/Theming/index.ts': {
+    file: 'assets/Theming-page.js',
+    isDynamicEntry: true,
+    css: ['assets/Theming-page.css'],
+    imports: ['_shared.js', 'index.html'],
+  },
   'src/pages/CatalogPage/index.ts': {
     file: 'assets/CatalogPage-page.js',
     isDynamicEntry: true,
@@ -309,6 +315,14 @@ describe('emitRouteHtml', () => {
     expect(html).not.toContain('Foundations-page')
   })
 
+  it('preloads the chunk of the theming guide on its own route, and not the one of the getting started guide', () => {
+    emitRouteHtml(build())
+
+    const html = read('docs/guides/theming/index.html')
+    expect(html).toContain('<link rel="modulepreload" crossorigin href="/forma-ui/assets/Theming-page.js" />')
+    expect(html).not.toContain('GettingStarted-page')
+  })
+
   it('preloads the chunk of the references on the page of each component', () => {
     emitRouteHtml(build())
 
@@ -335,6 +349,7 @@ describe('emitRouteHtml', () => {
     it.each([
       ['index.html', ['common', 'home']],
       ['docs/getting-started/index.html', ['common', 'guides', 'gettingStarted']],
+      ['docs/guides/theming/index.html', ['common', 'guides', 'theming']],
       ['docs/foundations/index.html', ['common', 'foundations']],
       ['docs/components/index.html', ['common', 'catalog', 'specimens']],
       ['docs/components/tooltip/index.html', ['common', 'detail', 'specimens', 'docs.tooltip']],

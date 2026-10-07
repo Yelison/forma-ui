@@ -20,6 +20,7 @@ const referenceCatalogs: Record<(typeof componentPages)[number]['name'], Catalog
 const pageCatalogsByKey: Partial<Record<SiteRoute['key'], readonly CatalogName[]>> = {
   home: ['home'],
   gettingStarted: ['guides', 'gettingStarted'],
+  theming: ['guides', 'theming'],
   foundations: ['foundations'],
   components: ['catalog', 'specimens'],
 }
