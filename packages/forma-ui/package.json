@@ -65,7 +65,8 @@
     "node": ">=22.12"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",
