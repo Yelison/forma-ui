@@ -23,11 +23,12 @@ check() { local name=$1; shift; if "$@"; then ok "$name"; else bad "$name"; fi; 
 says() { grep -Fq -- "$2" <<<"$out"; }
 finish() { printf 'passed=%s failed=%s\n' "$PASS" "$FAILED"; [ "$FAILED" -eq 0 ]; }
 
-# The slots and the ports come from the project settings of the scripts under test, like the scripts read them.
-slot_range() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; seq "$SLOT_MIN" "$SLOT_MAX" ); }
-slot_port_numbers() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | cut -d= -f2 ); }
+# The slots and the ports come from the project settings of the scripts under test, like the scripts read them: mk_env
+# has cleared the shell's own settings, so what is exported now (private_ports) is what the scripts will use too.
+slot_range() { ( . "$SCRIPTS_SRC/common.sh"; seq "$SLOT_MIN" "$SLOT_MAX" ); }
+slot_port_numbers() { ( . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | cut -d= -f2 ); }
 # port_of SLOT NAME: the port the configuration gives NAME in SLOT.
-port_of() { ( unset_config; . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | sed -n "s/^$2=//p" ); }
+port_of() { ( . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | sed -n "s/^$2=//p" ); }
 # The configuration variables of project.env: a test that wants one sets it after mk_env, never inherits it.
 unset_config() { unset HERDR_PROJECT_ID HERDR_SLOT_MIN HERDR_SLOT_MAX HERDR_PORTS HERDR_REQUIRED_CHECKS HERDR_PR_ASSIGNEE \
   HERDR_INSTALL_DIR HERDR_INSTALL_CMD HERDR_COMPOSE HERDR_COMPOSE_FILE HERDR_REVIEW_MODEL HERDR_PROJECT_ENV HERDR_TASKS_ROOT; }
