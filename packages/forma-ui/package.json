@@ -31,7 +31,8 @@
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "!dist/css-modules.json"
+    "!dist/css-modules.json",
+    "CHANGELOG.md"
   ],
   "exports": {
     ".": {
