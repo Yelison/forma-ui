@@ -37,7 +37,14 @@ export interface DialogProps {
  *
  * A click on the backdrop closes the dialog only if the pointer was pressed and released on the backdrop, so a drag
  * that ends there, such as the end of a text selection, does not. If the element that had the focus is no longer in the
- * document when the dialog closes, nothing takes the focus back and it falls to the page.
+ * document when the dialog closes, such as the item of a menu that unmounted, nothing takes the focus back and it
+ * falls to the page. Place it from an effect of the parent that runs when `open` becomes false: it runs after the
+ * dialog has closed, when the page is no longer inert. Do it in `onClose` and the page is still inert.
+ *
+ * The entrance moves the dialog for 200 ms, and a floating element is placed against where its anchor is when it opens.
+ * A `Tooltip` on the control that takes the initial focus opens in that time and ends a few pixels off its trigger:
+ * put another control first, or give the dialog `animation: none` through `className`. With `prefers-reduced-motion`
+ * the dialog does not move.
  *
  * The dialog is always in the document and its content only while `open`, so a closed dialog renders no children and
  * a form inside starts empty each time.
