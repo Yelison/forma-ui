@@ -210,6 +210,7 @@ test.describe('a direct link in Spanish, with its JS and its messages held back'
     ['./', 'Diseña con intención. Construye con confianza.', null],
     ['./docs/getting-started/', 'Primeros pasos', 'GettingStarted'],
     ['./docs/guides/theming/', 'Temas', 'Theming'],
+    ['./docs/guides/accessibility/', 'Accesibilidad', 'Accessibility'],
     ['./docs/foundations/', 'Fundamentos', 'Foundations'],
     ['./docs/components/', 'Componentes', 'CatalogPage'],
     ['./docs/components/button/', 'Button', 'ComponentDetail'],

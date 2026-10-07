@@ -13,8 +13,8 @@ interface GuidePage {
   words: Record<'en' | 'es', { heading: string; section: string; copied: string; copy: string }>
   /** The id of the section that a link of the table of contents leads to. */
   target: string
-  /** What the first block of code holds, as it is on the clipboard once copied. */
-  firstBlock: string
+  /** What the first block of code holds, as it is on the clipboard once copied; `null` for a page with no code. */
+  firstBlock: string | null
 }
 
 const guides: GuidePage[] = [
@@ -40,6 +40,15 @@ const guides: GuidePage[] = [
     },
     target: 'first-paint',
     firstBlock: theming.attribute.code,
+  },
+  {
+    path: './docs/guides/accessibility/',
+    words: {
+      en: { heading: 'Accessibility', section: 'Dialogs', copy: 'Copy', copied: 'Code copied' },
+      es: { heading: 'Accesibilidad', section: 'Diálogos', copy: 'Copiar', copied: 'Código copiado' },
+    },
+    target: 'dialog',
+    firstBlock: null,
   },
 ]
 
@@ -101,19 +110,21 @@ for (const guide of guides) {
         await expect(page.getByRole('heading', { level: 2, name: words.section })).toBeInViewport()
       })
 
-      test.describe('copying the code', () => {
-        test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
+      if (guide.firstBlock !== null) {
+        test.describe('copying the code', () => {
+          test.use({ permissions: ['clipboard-read', 'clipboard-write'] })
 
-        test('puts the code of its block on the clipboard and announces it in a live region', async ({ page }) => {
-          await open(page, guide.path, locale)
-          const block = page.getByRole('figure').first()
-          await block.getByRole('button', { name: words.copy }).focus()
-          await page.keyboard.press('Enter')
+          test('puts the code of its block on the clipboard and announces it in a live region', async ({ page }) => {
+            await open(page, guide.path, locale)
+            const block = page.getByRole('figure').first()
+            await block.getByRole('button', { name: words.copy }).focus()
+            await page.keyboard.press('Enter')
 
-          await expect(block.getByRole('status')).toHaveText(words.copied)
-          expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(guide.firstBlock)
+            await expect(block.getByRole('status')).toHaveText(words.copied)
+            expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(guide.firstBlock)
+          })
         })
-      })
+      }
 
       for (const width of [320, 767, 768]) {
         test(`fits the pseudo-locale at ${width} px`, async ({ page }) => {

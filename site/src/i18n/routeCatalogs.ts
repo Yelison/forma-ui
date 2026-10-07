@@ -21,6 +21,7 @@ const pageCatalogsByKey: Partial<Record<SiteRoute['key'], readonly CatalogName[]
   home: ['home'],
   gettingStarted: ['guides', 'gettingStarted'],
   theming: ['guides', 'theming'],
+  accessibility: ['guides', 'accessibility'],
   foundations: ['foundations'],
   components: ['catalog', 'specimens'],
 }
