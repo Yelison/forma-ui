@@ -40,6 +40,9 @@ a term marked «kept» is written the same way in both languages, in prose as we
 ## Writing rules
 
 - Messages are ICU. Variables go in as arguments (`{component}`), never by joining strings; counts use `plural`.
-- Both files hold exactly the same keys and the same arguments. `npm run check:messages -w forma-ui-site` fails if they
-  do not, or if a message is not valid ICU.
+- The messages live in `catalogs/<name>.<language>.json`, one pair of files for the chrome and the routes (`common`),
+  one for each page and one for each component reference (`catalogNames.ts` lists them). Put a message in the catalogue
+  of the pages that show it: a page loads only its own, so a message in the wrong one is printed as its id.
+- The two files of a pair hold exactly the same keys and the same arguments, and no id is in two catalogues.
+  `npm run check:messages -w forma-ui-site` fails if they do not, or if a message is not valid ICU.
 - Spanish is written for the Spanish-speaking reader in general: no regional vocabulary, and «tú» for instructions.

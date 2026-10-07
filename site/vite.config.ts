@@ -56,7 +56,7 @@ export default defineConfig(({ command, mode, isPreview }) => ({
       localeScript({ storageKey: localeStorageKey, locales, fallback: defaultLocale }),
     ]),
     messagesAst({
-      directory: resolve(import.meta.dirname, 'src/i18n'),
+      directory: resolve(import.meta.dirname, 'src/i18n/catalogs'),
       // `npm run build:pseudo` builds the site with accented, longer text in place of the messages, to check that no
       // layout depends on the length of English. It is never what is deployed.
       pseudoLocale: mode === 'pseudo' ? 'en-XA' : undefined,

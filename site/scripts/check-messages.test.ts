@@ -1,7 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import en from '../src/i18n/en.json'
-import es from '../src/i18n/es.json'
-import { checkMessages } from './check-messages'
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join, resolve } from 'node:path'
+import { afterAll, describe, expect, it } from 'vitest'
+import { checkCatalogues, checkMessages } from './check-messages'
 
 const check = (source: Record<string, unknown>, translation: Record<string, unknown>) =>
   checkMessages({ file: 'en.json', messages: source }, { file: 'es.json', messages: translation })
@@ -53,8 +54,76 @@ describe('checkMessages', { timeout: 30_000 }, () => {
   })
 })
 
+const directory = mkdtempSync(join(tmpdir(), 'check-catalogues-'))
+afterAll(() => rmSync(directory, { recursive: true, force: true }))
+
+/** A directory of catalogues with the files given (`{ 'page.en.json': { a: 'Hello' } }`), which each test gets anew. */
+let made = 0
+function catalogues(files: Record<string, Record<string, string>>): string {
+  const target = join(directory, `case-${made++}`)
+  mkdirSync(target)
+  for (const [file, messages] of Object.entries(files)) writeFileSync(join(target, file), JSON.stringify(messages))
+  return target
+}
+
+const pair = { 'common.en.json': { a: 'Hello' }, 'common.es.json': { a: 'Hola' } }
+const names = ['common', 'page']
+
+describe('checkCatalogues', { timeout: 30_000 }, () => {
+  it('has nothing to say about pairs that agree', () => {
+    const target = catalogues({
+      ...pair,
+      'page.en.json': { b: 'Close {name}' },
+      'page.es.json': { b: 'Cerrar {name}' },
+    })
+
+    expect(checkCatalogues(target, names)).toEqual([])
+  })
+
+  it('reports the key that the Spanish catalogue of a page is missing, naming the file', () => {
+    const target = catalogues({
+      ...pair,
+      'page.en.json': { b: 'Close', c: 'Open' },
+      'page.es.json': { b: 'Cerrar' },
+    })
+
+    expect(checkCatalogues(target, names)).toEqual(['page.es.json: missing "c"'])
+  })
+
+  it('reports a page whose translation lost an argument', () => {
+    const target = catalogues({ ...pair, 'page.en.json': { b: 'Close {name}' }, 'page.es.json': { b: 'Cerrar' } })
+
+    expect(checkCatalogues(target, names)).toEqual(['page.es.json: "b" uses none, but page.en.json uses name'])
+  })
+
+  it('reports a catalogue that has no file in one language', () => {
+    const target = catalogues({ ...pair, 'page.en.json': { b: 'Close' } })
+
+    expect(checkCatalogues(target, names)).toEqual(['page.es.json is missing'])
+  })
+
+  it('reports a file that is not part of any pair, since nothing would load it', () => {
+    const target = catalogues({
+      ...pair,
+      'page.en.json': { b: 'Close' },
+      'page.es.json': { b: 'Cerrar' },
+      'old.en.json': {},
+    })
+
+    expect(checkCatalogues(target, names)).toEqual(['old.en.json is not a catalogue of any name: nothing loads it'])
+  })
+
+  it('reports an id that two catalogues both define, which the page that loads both could not tell apart', () => {
+    const target = catalogues({ ...pair, 'page.en.json': { a: 'Hi' }, 'page.es.json': { a: 'Hola' } })
+
+    expect(checkCatalogues(target, names)).toEqual([
+      'page.en.json: "a" is also in common.en.json, and a page that loads both would show one of them',
+    ])
+  })
+})
+
 describe('the catalogues of the site', { timeout: 30_000 }, () => {
-  it('agree: es.json has the keys, the ICU syntax and the arguments of en.json', () => {
-    expect(check(en, es)).toEqual([])
+  it('agree: every Spanish catalogue has the keys, the ICU syntax and the arguments of its English one', () => {
+    expect(checkCatalogues(resolve(import.meta.dirname, '../src/i18n/catalogs'))).toEqual([])
   })
 })

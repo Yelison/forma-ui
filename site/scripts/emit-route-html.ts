@@ -15,8 +15,8 @@
 import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { createIntl } from 'react-intl'
-import en from '../src/i18n/en.json' with { type: 'json' }
-import es from '../src/i18n/es.json' with { type: 'json' }
+import en from '../src/i18n/catalogs/common.en.json' with { type: 'json' }
+import es from '../src/i18n/catalogs/common.es.json' with { type: 'json' }
 import { defaultLocale } from '../src/i18n/locale.ts'
 import { headScript, type PageHead } from '../src/i18n/localeScript.ts'
 import { canonicalUrl, notFoundRoute, routes, type RouteKey, type SiteRoute } from '../src/routes.ts'

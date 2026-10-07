@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import en from '../src/i18n/en.json'
+import en from '../src/i18n/catalogs/common.en.json'
 import { notFoundRoute, routes } from '../src/routes'
 import { emitRouteHtml, outputPath, renderRouteHtml } from './emit-route-html'
 
