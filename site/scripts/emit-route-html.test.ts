@@ -171,6 +171,12 @@ const builtManifest = {
     css: ['assets/Foundations-page.css'],
     imports: ['_shared.js', 'index.html'],
   },
+  'src/pages/CatalogPage/index.ts': {
+    file: 'assets/CatalogPage-page.js',
+    isDynamicEntry: true,
+    css: ['assets/CatalogPage-page.css'],
+    imports: ['_shared.js', 'index.html'],
+  },
   '_shared.js': { file: 'assets/shared-chunk.js', css: ['assets/shared-chunk.css'] },
 }
 
@@ -221,6 +227,15 @@ describe('emitRouteHtml', () => {
     expect(html).toContain('<link rel="stylesheet" crossorigin href="/forma-ui/assets/shared-chunk.css" />')
     // The app is already loading: it is not preloaded again.
     expect(html.match(/index-app\.js/g)).toHaveLength(1)
+  })
+
+  it('preloads the chunk of the catalog on its own route, and not the one of Foundations', () => {
+    emitRouteHtml(build())
+
+    const html = read('docs/components/index.html')
+    expect(html).toContain('<link rel="modulepreload" crossorigin href="/forma-ui/assets/CatalogPage-page.js" />')
+    expect(html).toContain('<link rel="stylesheet" crossorigin href="/forma-ui/assets/CatalogPage-page.css" />')
+    expect(html).not.toContain('Foundations-page')
   })
 
   it('leaves the other routes without preloads', () => {

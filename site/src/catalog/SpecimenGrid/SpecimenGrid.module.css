@@ -1,0 +1,49 @@
+.grid {
+  --specimen-width: 12rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--specimen-width)), 1fr));
+  gap: var(--space-16);
+  margin: 0;
+  padding: var(--space-16);
+  border-radius: var(--radius-panel);
+  background: var(--color-bg);
+  list-style: none;
+}
+
+.narrow {
+  --specimen-width: 5rem;
+}
+
+.wide {
+  --specimen-width: 16rem;
+}
+
+/* A grid item does not shrink below its content unless it is told to: without it a long label pushes the page wide. */
+.specimen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+/* The component stretches over its cell, as in page 07. */
+.stage {
+  display: grid;
+  min-width: 0;
+}
+
+.surface {
+  padding: var(--space-8);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+}
+
+.label {
+  color: var(--color-muted);
+  font: var(--font-caption);
+  overflow-wrap: anywhere;
+}
+
+.label code {
+  font-size: inherit;
+}
