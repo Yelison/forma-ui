@@ -11,7 +11,10 @@ export function useModalDialog(open: boolean, onClose: () => void) {
   const onCloseRef = useRef(onClose)
   /** Close started by the hook itself when `open` becomes false: it must not notify the parent again. */
   const closingRef = useRef(false)
-  /** Only a click on the backdrop if the pointer was also pressed on the backdrop (not at the end of a selection). */
+  /**
+   * Only a click on the backdrop if the pointer was pressed on it and not released anywhere else: a selection that
+   * ends on the backdrop, or a press on the backdrop released inside, is a drag, not a click.
+   */
   const pressedOnBackdropRef = useRef(false)
 
   useEffect(() => {
@@ -52,6 +55,11 @@ export function useModalDialog(open: boolean, onClose: () => void) {
     },
     onPointerDown(event: PointerEvent<HTMLDialogElement>) {
       pressedOnBackdropRef.current = event.target === event.currentTarget
+    },
+    onPointerUp(event: PointerEvent<HTMLDialogElement>) {
+      // The browser sends the click of a press and a release on different elements to their closest common ancestor,
+      // which is the dialog itself: without this, a press on the backdrop released inside would close it.
+      if (event.target !== event.currentTarget) pressedOnBackdropRef.current = false
     },
     onClick(event: MouseEvent<HTMLDialogElement>) {
       const pressedOnBackdrop = pressedOnBackdropRef.current

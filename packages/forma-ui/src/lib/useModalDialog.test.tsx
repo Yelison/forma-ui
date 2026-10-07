@@ -92,6 +92,7 @@ describe('useModalDialog', () => {
     render(<Modal open onClose={onClose} />)
 
     fireEvent.pointerDown(dialog())
+    fireEvent.pointerUp(dialog())
     fireEvent.click(dialog())
 
     expect(onClose).toHaveBeenCalledOnce()
@@ -102,6 +103,18 @@ describe('useModalDialog', () => {
     render(<Modal open onClose={onClose} />)
 
     fireEvent.pointerDown(screen.getByRole('button', { name: 'Inside' }))
+    fireEvent.pointerUp(dialog())
+    fireEvent.click(dialog())
+
+    expect(onClose).not.toHaveBeenCalled()
+  })
+
+  it('does not close when a press on the backdrop is released inside the dialog', () => {
+    const onClose = vi.fn()
+    render(<Modal open onClose={onClose} />)
+
+    fireEvent.pointerDown(dialog())
+    fireEvent.pointerUp(screen.getByRole('button', { name: 'Inside' }))
     fireEvent.click(dialog())
 
     expect(onClose).not.toHaveBeenCalled()
@@ -121,6 +134,7 @@ describe('useModalDialog', () => {
     render(<Modal open onClose={onClose} />)
 
     fireEvent.pointerDown(dialog())
+    fireEvent.pointerUp(dialog())
     fireEvent.click(dialog())
     fireEvent.click(dialog())
 
