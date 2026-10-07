@@ -26,6 +26,11 @@ export interface PopoverSwitcherProps<Value extends string> {
   onChange: (value: Value) => void
   /** What the live region says after a change made here, written for the option in use. */
   announcement: string
+  /**
+   * What the live region says instead while there is something to tell that is not a change: a choice that could not
+   * be applied. Leave it out, or empty, for the region to say only the announcement.
+   */
+  notice?: string
 }
 
 /**
@@ -43,6 +48,7 @@ export function PopoverSwitcher<Value extends string>({
   value,
   onChange,
   announcement,
+  notice,
 }: PopoverSwitcherProps<Value>) {
   const listId = useId()
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -143,7 +149,7 @@ export function PopoverSwitcher<Value extends string>({
         ))}
       </ul>
       <span role="status" className="forma-visually-hidden">
-        {announced === value ? announcement : ''}
+        {notice || (announced === value ? announcement : '')}
       </span>
     </div>
   )

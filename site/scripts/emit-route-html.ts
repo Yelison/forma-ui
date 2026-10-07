@@ -8,8 +8,9 @@
 // The directory defaults to dist/ of the site; the pseudo-locale build (npm run build:pseudo) passes its own.
 //
 // A route whose page loads on demand also gets <link rel="modulepreload"> for its chunk (and its stylesheet), so the
-// browser fetches it beside the app instead of after it. The chunk names come from Vite's manifest, which this script
-// deletes once it has read it: it is not part of the site that is published.
+// browser fetches it beside the app instead of after it. So does every route for its message catalogues, but only in the
+// language the visitor reads, which a script of the head chooses (see `catalogPreloadScript`). The chunk names come from
+// Vite's manifest, which this script deletes once it has read it: it is not part of the site that is published.
 //
 // The script sticks to erasable TypeScript and relative `.ts` imports so that type stripping can run it.
 import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
@@ -17,8 +18,10 @@ import { dirname, join, resolve } from 'node:path'
 import { createIntl } from 'react-intl'
 import en from '../src/i18n/catalogs/common.en.json' with { type: 'json' }
 import es from '../src/i18n/catalogs/common.es.json' with { type: 'json' }
-import { defaultLocale } from '../src/i18n/locale.ts'
-import { headScript, type PageHead } from '../src/i18n/localeScript.ts'
+import { catalogNames } from '../src/i18n/catalogNames.ts'
+import { defaultLocale, locales } from '../src/i18n/locale.ts'
+import { catalogPreloadScript, headScript, type PageHead } from '../src/i18n/localeScript.ts'
+import { routeCatalogs } from '../src/i18n/routeCatalogs.ts'
 import { canonicalUrl, notFoundRoute, routes, type RouteKey, type SiteRoute } from '../src/routes.ts'
 
 const escapeHtml = (text: string) =>
@@ -65,13 +68,19 @@ export const lazyPageModules: Readonly<Partial<Record<RouteKey, string>>> = {
 
 const pagesDirectory = 'src/pages/'
 
+/** What the manifest says about a module of the build, which has to be in it. */
+function entryOf(manifest: Manifest, module: string): ManifestEntry {
+  const entry = manifest[module]
+  if (entry === undefined) throw new Error(`The manifest has no module ${module}`)
+  return entry
+}
+
 /** The tags that fetch the chunk of a lazy page, the chunks it shares and its stylesheets, ahead of the app. */
 function preloadTags(manifest: Manifest, key: string, base: string): string {
   const chunks = new Set<string>()
   const stylesheets = new Set<string>()
   const visit = (name: string) => {
-    const entry = manifest[name]
-    if (entry === undefined) throw new Error(`The manifest has no module ${name}`)
+    const entry = entryOf(manifest, name)
     // The entry chunk is the app, which the page is already loading.
     if (entry.isEntry || chunks.has(entry.file)) return
     chunks.add(entry.file)
@@ -100,6 +109,31 @@ function assertLazyPagesAreListed(manifest: Manifest) {
   }
 }
 
+/** The module of a catalogue in the manifest: the source file that `import()` names. */
+const catalogModule = (name: string, locale: string) => `src/i18n/catalogs/${name}.${locale}.json`
+
+/** Checks that the build kept every catalogue as a chunk of its own, which is what a route preloads and the app loads. */
+function assertCatalogsAreChunks(manifest: Manifest) {
+  for (const name of catalogNames) {
+    for (const locale of locales) {
+      const module = catalogModule(name, locale)
+      if (manifest[module]?.isDynamicEntry !== true) {
+        throw new Error(`${module} is a catalogue, but the build has no lazy chunk for it`)
+      }
+    }
+  }
+}
+
+/** The URLs of the catalogues a route needs, by language: what the script of its head preloads for the language in use. */
+function catalogPreloadsOf(route: SiteRoute, manifest: Manifest, base: string): Record<string, string[]> {
+  return Object.fromEntries(
+    locales.map((locale) => [
+      locale,
+      routeCatalogs(route).map((name) => `${base}${entryOf(manifest, catalogModule(name, locale)).file}`),
+    ]),
+  )
+}
+
 /** The URL prefix the build was made for (`/forma-ui/`, or the pseudo-locale's own), read from the app's script tag. */
 function baseOf(template: string, manifest: Manifest): string {
   const entry = Object.values(manifest).find(({ isEntry }) => isEntry)
@@ -123,18 +157,27 @@ function pageHead(route: SiteRoute, locale: string, messages: Record<string, str
   }
 }
 
+export interface RenderOptions {
+  /** The messages of the head by language. */
+  catalogues?: Catalogues
+  /** The tags of the chunk that the route loads on demand, which go at the end of the head. */
+  preloads?: string
+  /** The URLs of the catalogues the route needs, by language: the visitor's language decides which ones are fetched. */
+  catalogPreloads?: Readonly<Record<string, readonly string[]>>
+}
+
 /**
  * The built index.html with the head of a route: in the default language, English, as the elements themselves, which
  * is what a crawler that does not run scripts reads. The other languages come as a script right after the meta
  * description (see `headScript`), which a visitor in one of them runs before the JS of the app has even arrived, so the
- * tab already has the title in their language. `preloads` are the tags of the chunk that the route loads on demand,
- * which go at the end of the head.
+ * tab already has the title in their language. After it goes the script that preloads the catalogues of the route in the
+ * language of the visitor (see `catalogPreloadScript`). `preloads` are the tags of the chunk that the route loads on
+ * demand, which go at the end of the head.
  */
 export function renderRouteHtml(
   template: string,
   route: SiteRoute,
-  catalogues: Catalogues = { en, es },
-  preloads = '',
+  { catalogues = { en, es }, preloads = '', catalogPreloads }: RenderOptions = {},
 ): string {
   const source = catalogues[defaultLocale]
   if (source === undefined) throw new Error(`Expected the catalogue of ${defaultLocale}, the language of the HTML`)
@@ -144,12 +187,13 @@ export function renderRouteHtml(
     others.length === 0
       ? ''
       : `<script>${headScript(Object.fromEntries(others.map(([locale, messages]) => [locale, pageHead(route, locale, messages)])))}</script>`
+  const catalogScript = catalogPreloads === undefined ? '' : `<script>${catalogPreloadScript(catalogPreloads)}</script>`
 
   let html = replaceOnce(template, /<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`, '<title>')
   html = replaceOnce(
     html,
     /<meta\s+name="description"[^>]*>/,
-    `<meta name="description" content="${escapeHtml(description)}" />${translatedHead}`,
+    `<meta name="description" content="${escapeHtml(description)}" />${translatedHead}${catalogScript}`,
     'meta description',
   )
   // The not-found page answers many paths, so it has no canonical address and is not for search engines.
@@ -176,6 +220,7 @@ export function emitRouteHtml(distDirectory: string): string[] {
   const template = readFileSync(join(distDirectory, 'index.html'), 'utf8')
   const manifest = readManifest(distDirectory)
   assertLazyPagesAreListed(manifest)
+  assertCatalogsAreChunks(manifest)
   const base = baseOf(template, manifest)
   const written: string[] = []
   for (const route of [...routes, notFoundRoute]) {
@@ -184,7 +229,10 @@ export function emitRouteHtml(distDirectory: string): string[] {
     mkdirSync(dirname(file), { recursive: true })
     writeFileSync(
       file,
-      renderRouteHtml(template, route, { en, es }, module === undefined ? '' : preloadTags(manifest, module, base)),
+      renderRouteHtml(template, route, {
+        preloads: module === undefined ? '' : preloadTags(manifest, module, base),
+        catalogPreloads: catalogPreloadsOf(route, manifest, base),
+      }),
     )
     written.push(outputPath(route))
   }

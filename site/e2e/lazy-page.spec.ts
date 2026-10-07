@@ -77,10 +77,11 @@ test.describe('a direct link to a page that loads on demand', () => {
     }
   }
 
-  test('does not preload anything on a page that does not load on demand', async ({ request }) => {
+  test('does not preload a chunk on a page that does not load on demand', async ({ request }) => {
     const html = await (await request.get('./docs/getting-started/')).text()
 
-    expect(html).not.toContain('modulepreload')
+    // Its messages are preloaded by a script of the head, which writes the tags in the language of the visitor.
+    expect(html).not.toContain('<link rel="modulepreload"')
   })
 })
 
@@ -148,34 +149,47 @@ test.describe('the build output', () => {
   }
 })
 
-// A page that loads on demand has to be preloaded by the HTML of its route. Whatever chunk a page asks for once it has
-// loaded, its own HTML already names: this holds for every route, so a page that is lazy in App.tsx and missing from the
-// list in scripts/emit-route-html.ts (or the other way round) fails here, not only in a slow network.
+// A page that loads on demand has to be preloaded by the HTML of its route, and so do its messages, in the language the
+// visitor reads. Whatever chunk a page asks for once it has loaded, its own HTML already names: this holds for every
+// route, so a page that is lazy in App.tsx and missing from the list in scripts/emit-route-html.ts (or the other way
+// round), or a page that needs a catalogue its route does not list, fails here, not only in a slow network.
 test.describe('every route', () => {
   const bases = ['./', './__pseudo__/']
 
-  for (const base of bases) {
-    for (const route of routes) {
-      test(`under ${base} asks for no script or stylesheet that its HTML did not name: ${route.path}`, async ({
-        page,
-        request,
-      }) => {
-        const url = `${base}${route.path.slice(1)}`
-        const html = await (await request.get(url)).text()
-        const named = new Set([...html.matchAll(/(?:href|src)="([^"]*\/assets\/[^"]+)"/g)].map((match) => match[1]))
+  for (const locale of ['en-US', 'es-ES']) {
+    for (const base of bases) {
+      for (const route of routes) {
+        test.describe(`in ${locale}`, () => {
+          test.use({ locale })
 
-        const asked = new Set<string>()
-        page.on('request', (made) => {
-          const { pathname } = new URL(made.url())
-          if (/\/assets\/.+\.(js|css)$/.test(pathname)) asked.add(pathname)
+          test(`under ${base} asks for no script or stylesheet that its HTML did not name: ${route.path}`, async ({
+            page,
+            request,
+          }) => {
+            const url = `${base}${route.path.slice(1)}`
+            const html = await (await request.get(url)).text()
+            const language = locale.slice(0, 2)
+            // The tags of the page, and the list of the script of the head for the language of the visitor.
+            const tagged = [...html.matchAll(/(?:href|src)="([^"]*\/assets\/[^"]+)"/g)].map((match) => match[1])
+            const listed = [
+              ...(new RegExp(`"${language}":\\[([^\\]]*)\\]`).exec(html)?.[1] ?? '').matchAll(/"([^"]+)"/g),
+            ]
+            const named = new Set([...tagged, ...listed.map((match) => match[1])])
+
+            const asked = new Set<string>()
+            page.on('request', (made) => {
+              const { pathname } = new URL(made.url())
+              if (/\/assets\/.+\.(js|css)$/.test(pathname)) asked.add(pathname)
+            })
+            await page.goto(url)
+            await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+            await page.waitForLoadState('networkidle')
+
+            expect([...asked].filter((pathname) => !named.has(pathname))).toEqual([])
+            expect(asked.size).toBeGreaterThan(0)
+          })
         })
-        await page.goto(url)
-        await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-        await page.waitForLoadState('networkidle')
-
-        expect([...asked].filter((pathname) => !named.has(pathname))).toEqual([])
-        expect(asked.size).toBeGreaterThan(0)
-      })
+      }
     }
   }
 })

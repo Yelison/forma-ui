@@ -2,7 +2,9 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
+import { catalogNames } from '../src/i18n/catalogNames'
 import en from '../src/i18n/catalogs/common.en.json'
+import { locales } from '../src/i18n/locale'
 import { notFoundRoute, routes } from '../src/routes'
 import { emitRouteHtml, outputPath, renderRouteHtml } from './emit-route-html'
 
@@ -11,6 +13,25 @@ const route = (path: string) => {
   const found = routes.find((candidate) => candidate.path === path)
   if (!found) throw new Error(`no route ${path}`)
   return found
+}
+
+const parse = (html: string) => new DOMParser().parseFromString(html, 'text/html')
+
+// Runs the scripts of the HTML on the page the HTML describes, with the <html lang> the language script would set.
+const openIn = (html: string, lang: string) => {
+  const page = parse(html)
+  page.documentElement.lang = lang
+  for (const script of page.querySelectorAll('head script')) new Function('document', script.textContent)(page)
+  return page
+}
+
+const preloads = (page: Document) =>
+  [...page.querySelectorAll('head link[rel="modulepreload"]')].map((link) => link.getAttribute('href'))
+
+/** The URLs that the scripts of the head asked the browser to preload, once the page is in `lang`: not the tags. */
+const preloadedIn = (html: string, lang: string) => {
+  const tags = preloads(parse(html))
+  return preloads(openIn(html, lang)).filter((href) => !tags.includes(href))
 }
 
 describe('outputPath', () => {
@@ -62,23 +83,14 @@ describe('renderRouteHtml', () => {
       'route.changelog.title': "A & B '<'i'>'",
       'route.changelog.description': 'Say "hi"',
     }
-    const html = renderRouteHtml(indexHtml, route('/changelog/'), { en: messages })
+    const html = renderRouteHtml(indexHtml, route('/changelog/'), { catalogues: { en: messages } })
 
     expect(html).toContain('<title>A &amp; B &lt;i&gt;</title>')
     expect(html).toContain('content="Say &quot;hi&quot;"')
   })
 
   describe('the head in the other languages', () => {
-    const parse = (html: string) => new DOMParser().parseFromString(html, 'text/html')
     const description = (page: Document) => page.querySelector('meta[name="description"]')?.getAttribute('content')
-
-    // Runs the script of the HTML on the page the HTML describes, with the <html lang> the language script would set.
-    const openIn = (html: string, lang: string) => {
-      const page = parse(html)
-      page.documentElement.lang = lang
-      for (const script of page.querySelectorAll('head script')) new Function('document', script.textContent)(page)
-      return page
-    }
 
     it('puts the title and the description in Spanish on the page of a Spanish visitor, before any JS runs', () => {
       const page = openIn(renderRouteHtml(indexHtml, route('/docs/foundations/')), 'es')
@@ -116,7 +128,9 @@ describe('renderRouteHtml', () => {
     })
 
     it('is not written when the site has no other language', () => {
-      expect(renderRouteHtml(indexHtml, route('/docs/foundations/'), { en })).not.toContain('document.title=')
+      expect(renderRouteHtml(indexHtml, route('/docs/foundations/'), { catalogues: { en } })).not.toContain(
+        'document.title=',
+      )
     })
 
     it('stays one script element whatever the translation holds', () => {
@@ -124,7 +138,7 @@ describe('renderRouteHtml', () => {
         'route.changelog.title': '</script><img src=x onerror=alert(1)>',
         'route.changelog.description': '<!-- <script>',
       }
-      const html = renderRouteHtml(indexHtml, route('/changelog/'), { en, es })
+      const html = renderRouteHtml(indexHtml, route('/changelog/'), { catalogues: { en, es } })
 
       expect(parse(html).querySelectorAll('head script')).toHaveLength(1)
       expect(parse(html).querySelector('img')).toBeNull()
@@ -184,16 +198,53 @@ const builtManifest = {
     imports: ['_shared.js', 'index.html'],
   },
   '_shared.js': { file: 'assets/shared-chunk.js', css: ['assets/shared-chunk.css'] },
+  ...Object.fromEntries(
+    catalogNames.flatMap((name) =>
+      locales.map((locale) => [
+        `src/i18n/catalogs/${name}.${locale}.json`,
+        { file: `assets/${name}.${locale}-hash.js`, isDynamicEntry: true },
+      ]),
+    ),
+  ),
 }
+
+describe('renderRouteHtml catalogue preloads', () => {
+  const catalogPreloads = { en: ['/forma-ui/en/common.js'], es: ['/forma-ui/es/common.js', '/forma-ui/es/page.js'] }
+  const html = renderRouteHtml(builtTemplate, route('/docs/foundations/'), { catalogPreloads })
+
+  it('preloads the catalogues of the language the page opens in, and not those of the other', () => {
+    expect(preloadedIn(html, 'es')).toEqual(['/forma-ui/es/common.js', '/forma-ui/es/page.js'])
+    expect(preloadedIn(html, 'en')).toEqual(['/forma-ui/en/common.js'])
+  })
+
+  it('preloads in the way the app imports them: with the anonymous CORS mode of a module', () => {
+    const link = openIn(html, 'en').querySelector('head link[rel="modulepreload"]')
+
+    expect(link?.getAttribute('crossorigin')).toBe('')
+  })
+
+  it('preloads nothing for a language the site does not have', () => {
+    expect(preloadedIn(html, 'fr')).toEqual([])
+  })
+
+  it('comes after the language script and the meta description, and before the app and the stylesheet', () => {
+    const script = html.indexOf('/forma-ui/en/common.js')
+
+    expect(script).toBeGreaterThan(html.indexOf('<meta name="description"'))
+    expect(script).toBeLessThan(html.indexOf(appScript))
+    expect(script).toBeLessThan(html.indexOf('</head>'))
+  })
+
+  it('is not written without catalogues to preload', () => {
+    expect(renderRouteHtml(builtTemplate, route('/docs/foundations/'))).not.toContain('modulepreload')
+  })
+})
 
 describe('renderRouteHtml preloads', () => {
   it('adds the tags it is given at the end of the head', () => {
-    const html = renderRouteHtml(
-      builtTemplate,
-      route('/docs/foundations/'),
-      undefined,
-      '<link rel="modulepreload" href="/x.js" />',
-    )
+    const html = renderRouteHtml(builtTemplate, route('/docs/foundations/'), {
+      preloads: '<link rel="modulepreload" href="/x.js" />',
+    })
 
     expect(html.indexOf('<link rel="modulepreload" href="/x.js" />')).toBeGreaterThan(html.indexOf(appScript))
     expect(html.indexOf('<link rel="modulepreload"')).toBeLessThan(html.indexOf('</head>'))
@@ -255,11 +306,31 @@ describe('emitRouteHtml', () => {
     expect(read('docs/components/index.html')).not.toContain('ComponentDetail-page')
   })
 
-  it('leaves the other routes without preloads', () => {
+  it('leaves the other routes without the preload of a page chunk', () => {
     emitRouteHtml(build())
 
-    expect(read('docs/getting-started/index.html')).not.toContain('modulepreload')
-    expect(read('404.html')).not.toContain('modulepreload')
+    expect(read('docs/getting-started/index.html')).not.toContain('<link rel="modulepreload"')
+    expect(read('404.html')).not.toContain('<link rel="modulepreload"')
+  })
+
+  describe('the catalogues of a route', () => {
+    const forms = (language: string) => (file: string) => preloadedIn(read(file), language)
+    const named = (language: string, ...names: string[]) =>
+      names.map((name) => `/forma-ui/assets/${name}.${language}-hash.js`)
+
+    it.each([
+      ['index.html', ['common', 'home']],
+      ['docs/getting-started/index.html', ['common']],
+      ['docs/foundations/index.html', ['common', 'foundations']],
+      ['docs/components/index.html', ['common', 'catalog', 'specimens']],
+      ['docs/components/tooltip/index.html', ['common', 'detail', 'specimens', 'docs.tooltip']],
+      ['404.html', ['common']],
+    ])('are preloaded by %s, in the language of the visitor: %j', (file, names) => {
+      emitRouteHtml(build())
+
+      expect(forms('es')(file)).toEqual(named('es', ...names))
+      expect(forms('en')(file)).toEqual(named('en', ...names))
+    })
   })
 
   it('deletes the manifest, which is not part of what is published', () => {
@@ -282,6 +353,14 @@ describe('emitRouteHtml', () => {
     }
 
     expect(() => emitRouteHtml(build(manifest))).toThrow('src/pages/Catalog/index.ts loads on demand')
+  })
+
+  it('fails when the build has not kept a catalogue as a chunk of its own, which no route could preload', () => {
+    const manifest = Object.fromEntries(
+      Object.entries(builtManifest).filter(([module]) => module !== 'src/i18n/catalogs/home.es.json'),
+    )
+
+    expect(() => emitRouteHtml(build(manifest))).toThrow('src/i18n/catalogs/home.es.json is a catalogue')
   })
 
   it('fails when a listed page has no lazy chunk in the build', () => {

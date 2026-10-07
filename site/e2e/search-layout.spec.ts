@@ -11,6 +11,8 @@ async function violations(page: Page) {
 
 // The dialog enters with a 200 ms movement and fade, and a contrast check made halfway through reads a mixed color.
 async function openSearch(page: Page) {
+  // The shortcut is the app's: it exists once the page has rendered, which waits for its messages.
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.keyboard.press('Control+K')
   await expect(page.getByRole('dialog')).toBeVisible()
