@@ -2,6 +2,7 @@ import type { componentPages } from '../routes'
 import { badgeDoc } from './badge'
 import { buttonDoc } from './button'
 import { iconButtonDoc } from './icon-button'
+import { inputDoc } from './input'
 import type { ComponentDoc } from './types'
 
 /**
@@ -12,6 +13,7 @@ export const componentDocs: Partial<Record<(typeof componentPages)[number]['slug
   button: buttonDoc,
   'icon-button': iconButtonDoc,
   badge: badgeDoc,
+  input: inputDoc,
 }
 
 export type { ComponentDoc } from './types'

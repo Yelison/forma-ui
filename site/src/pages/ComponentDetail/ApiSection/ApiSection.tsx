@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { useIntl } from 'react-intl'
 import { richText } from '../../../docs/richText'
 import type { ComponentApi, PropDoc } from '../../../docs/types'
@@ -48,6 +49,14 @@ export function ApiSection({ component, api }: ApiSectionProps) {
       <h3 className={styles.group}>{intl.formatMessage({ id: 'detail.api.changed' }, { component })}</h3>
       <PropList props={api.changed} />
       <p>{intl.formatMessage({ id: api.others }, richText)}</p>
+      {api.related?.map(({ component: related, title, own }) => (
+        <Fragment key={related}>
+          <h3 className={styles.group}>
+            {intl.formatMessage({ id: title ?? 'detail.api.own' }, { ...richText, component: related })}
+          </h3>
+          <PropList props={own} />
+        </Fragment>
+      ))}
     </Section>
   )
 }

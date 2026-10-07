@@ -26,6 +26,15 @@ const references: Reference[] = [
     },
   },
   { slug: 'badge', name: 'Badge' },
+  {
+    slug: 'input',
+    name: 'Input',
+    open: async (page) => {
+      const input = page.getByRole('region', { name: 'States' }).getByRole('textbox', { name: 'Full name' }).first()
+      await input.focus()
+      await expect(input).toBeFocused()
+    },
+  },
 ]
 
 /**
