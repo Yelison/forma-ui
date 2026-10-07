@@ -29,6 +29,13 @@ a term marked «kept» is written the same way in both languages, in prose as we
 | Reset                 | Reset                                             | Restablecer            | Puts the controls of the explorer back at their defaults.                                                                                                                                                                                                                                                        |
 | Code examples         | —                                                 | —                      | Never translated: code, import paths and CSS stay in English; only the prose around them is translated.                                                                                                                                                                                                          |
 
+## Catalog and search
+
+| Term               | English                           | Spanish                              | Rule                                                                                                                                                                                              |
+| ------------------ | --------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Search             | Search                            | Buscar                               | The button and the overlay: «Search…» / «Buscar…», and the title «Search the documentation» / «Buscar en la documentación». The shortcut is printed as `⌘ K` or `Ctrl K` and is never translated. |
+| Catalog categories | Actions, Forms, Display, Feedback | Acciones, Formularios, Visualización | «Feedback» is kept in both languages: the design uses it. The categories are the real families of the library; «Navigation» comes back when NavItem and Tabs are in it.                           |
+
 ## Writing rules
 
 - Messages are ICU. Variables go in as arguments (`{component}`), never by joining strings; counts use `plural`.

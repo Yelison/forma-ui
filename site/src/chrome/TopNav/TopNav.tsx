@@ -1,8 +1,11 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Link, useLocation } from 'react-router'
 import { productName } from '../../brand'
 import { sectionPaths } from '../../routes'
+import { SearchDialog } from '../../search/SearchDialog'
+import { SearchTrigger } from '../../search/SearchTrigger'
+import { useSearchShortcut } from '../../search/useSearchShortcut'
 import { Drawer } from '../Drawer'
 import { GitHubLink } from '../GitHubLink'
 import { LanguageSwitcher } from '../LanguageSwitcher'
@@ -11,15 +14,45 @@ import { documentationCurrent, documentationEntryPath } from '../navigation'
 import styles from './TopNav.module.css'
 
 /**
- * The top bar: the wordmark, Documentation (highlighted across its whole section), the theme, GitHub, the language and,
- * on narrow screens, the menu, which holds the links and both choices.
+ * The top bar: the wordmark, Documentation (highlighted across its whole section), the search, the theme, GitHub, the
+ * language and, on narrow screens, the menu, which holds the links and both choices, and the search again. It also owns
+ * the search, which opens from either button and from Ctrl+K or ⌘+K.
  */
 export function TopNav() {
   const intl = useIntl()
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const wordmarkRef = useRef<HTMLAnchorElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const searchButtonRef = useRef<HTMLButtonElement>(null)
+  const searchClosedByUser = useRef(false)
+
+  // The menu closes first, so that the search is not stacked on top of it and a page that is chosen is not left behind it.
+  function openSearch() {
+    setMenuOpen(false)
+    setSearchOpen(true)
+  }
+  useSearchShortcut(openSearch)
+
+  function handleSearchClose() {
+    searchClosedByUser.current = true
+    setSearchOpen(false)
+  }
+
+  // The search gives focus back to what had it when it opened. When that was the page itself (the shortcut pressed with
+  // nothing focused) or a control that is gone, such as the one of the menu, focus would fall to the body: the nearest
+  // control of the bar that is on screen takes it instead. It runs here, after the dialog has closed and the page is no
+  // longer inert, and not in the handler, where it would not.
+  useEffect(() => {
+    if (searchOpen || !searchClosedByUser.current) return
+    searchClosedByUser.current = false
+    if (document.activeElement !== document.body) return
+    const onScreen = [searchButtonRef.current, menuButtonRef.current, wordmarkRef.current].find(
+      (control) => control !== null && getComputedStyle(control).display !== 'none',
+    )
+    onScreen?.focus()
+  }, [searchOpen])
 
   function handleDrawerClose() {
     setMenuOpen(false)
@@ -49,7 +82,8 @@ export function TopNav() {
             {intl.formatMessage({ id: 'nav.docs' })}
           </Link>
         </nav>
-        <ThemeSwitcher className={`${styles.switcher} ${styles.end}`} />
+        <SearchTrigger ref={searchButtonRef} className={styles.search} collapsible onClick={openSearch} />
+        <ThemeSwitcher className={styles.switcher} />
         <GitHubLink className={styles.github} />
         <LanguageSwitcher className={styles.switcher} />
         <button
@@ -63,7 +97,8 @@ export function TopNav() {
         >
           <span aria-hidden="true">☰</span>
         </button>
-        <Drawer open={menuOpen} onClose={handleDrawerClose} />
+        <Drawer open={menuOpen} onClose={handleDrawerClose} onSearch={openSearch} />
+        <SearchDialog open={searchOpen} onClose={handleSearchClose} />
       </div>
     </header>
   )

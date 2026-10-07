@@ -12,7 +12,7 @@ afterEach(() => {
 })
 
 // A parent that does what the top bar does: it keeps `open` in step with what the drawer reports.
-function Harness({ initiallyOpen = true, onClose = () => {} }) {
+function Harness({ initiallyOpen = true, onClose = () => {}, onSearch = () => {} }) {
   const [open, setOpen] = useState(initiallyOpen)
   return (
     <>
@@ -27,6 +27,10 @@ function Harness({ initiallyOpen = true, onClose = () => {} }) {
         onClose={() => {
           setOpen(false)
           onClose()
+        }}
+        onSearch={() => {
+          setOpen(false)
+          onSearch()
         }}
       />
       <Routes>
@@ -50,6 +54,22 @@ describe('Drawer', () => {
     renderInSite(<Harness />)
 
     expect(within(drawer()).getByRole('button', { name: 'Theme: system' })).toBeInTheDocument()
+  })
+
+  it('has a search button, which asks the parent to open the search and closes the menu', async () => {
+    const onSearch = vi.fn()
+    renderInSite(<Harness onSearch={onSearch} />)
+
+    await userEvent.click(within(drawer()).getByRole('button', { name: 'Search…' }))
+
+    expect(onSearch).toHaveBeenCalledOnce()
+    expect(drawer()).not.toHaveAttribute('open')
+  })
+
+  it('does not print a keyboard shortcut on its search button, which a touch screen cannot press', () => {
+    renderInSite(<Harness />)
+
+    expect(drawer().querySelector('kbd')).toBeNull()
   })
 
   it('lists the pages of the documentation as links, and marks the page that is open', () => {

@@ -56,7 +56,9 @@ for (const locale of locales) {
 
       if (width < 768) {
         test('has a drawer that fits, with targets of 44 px, and each of its lists open', async ({ page }) => {
-          await page.getByRole('button', { name: /^\[/ }).first().click()
+          // Below 768 px the bar has two buttons, the search and the menu, and both have pseudo-localized names. Only the
+          // menu reports whether it is expanded.
+          await page.getByRole('button', { expanded: false }).click()
           const drawer = page.getByRole('dialog')
           await expect(drawer).toBeVisible()
           await expectToFit(page, drawer)
