@@ -190,11 +190,20 @@ test.describe('the HTML of a page', () => {
       expect(html.indexOf('<meta charset')).toBeLessThan(1024)
       const stylesheet = html.indexOf('<link rel="stylesheet"')
       expect(stylesheet).toBeGreaterThan(0)
-      for (const script of ['getItem("forma-ui-theme")', 'getItem("forma-ui-locale")', 'document.title=']) {
+      for (const script of [
+        'getItem("forma-ui-theme")',
+        'getItem("forma-ui-locale")',
+        'document.title=',
+        'rel="modulepreload";link.setAttribute',
+      ]) {
         const position = html.indexOf(script)
         expect(position, script).toBeGreaterThan(0)
         expect(position, script).toBeLessThan(stylesheet)
       }
+      // The script that preloads the messages reads the language: the one that sets it has to have run before.
+      expect(html.indexOf('rel="modulepreload";link.setAttribute')).toBeGreaterThan(
+        html.indexOf('getItem("forma-ui-locale")'),
+      )
     })
   }
 })
