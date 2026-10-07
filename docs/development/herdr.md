@@ -200,13 +200,16 @@ restarts and lets an agent be adjusted later.
 
 **Verification.** `start-agent.sh` reads the session header (`Sonnet 5.5 with medium effort`) and records it under
 `effort.verified`; `status.sh` shows `level/max` and a ✓ once verified. It does the same with the model: if the header names a model other
-than the task's `model`, it warns and does not record `model_verified`. A session resumed with `--continue` draws no
-header, so the model is then read from the status bar (`Sonnet 5.5  ⎇ branch`) and the level from the
-spinner's `thinking with <level> effort` when the session shows one; when neither appears the warning stays. Only the
-last twelve non-blank lines of the screen count and each pattern must fill its own line, so the conversation quoting
-those phrases, or the header of a session before a restart, is not taken for the session. The status bar read is the
+than the task's `model`, it warns and does not record `model_verified`. A new session draws its header at the top, with the logo before it and the
+plan after it (`▝▜██████▀  Sonnet 5.5 with medium effort · Claude Team`); it is searched on the whole screen read, the last match
+counts, and between the glyphs and `with` there is only `<Model> <version>`, so conversation text quoting the phrase is not taken
+for it. The level the session is at now is the spinner's `thinking with <level> effort` (also `still thinking with ...`) in the
+last twelve non-blank lines, and it wins over the header, so the header left in the pane before a `set-effort.sh` restart does
+not verify an old level. A session resumed with `--continue` draws no header: the model is then read from the status bar
+(`Sonnet 5.5  ⎇ branch`) and, when no spinner shows, the warning stays. The status bar read is the
 user's own `statusLine` (`Name N.N  ⎇ branch`, set up in `~/.claude`), not something Claude Code draws: with another format
-the verification falls back to the warning. If what the
+the verification falls back to the warning. A header-like line quoted in the conversation behind a glyph (`● Sonnet 5.5 with high effort`)
+would still be taken for the header; the spinner covers it while the session works. If what the
 session shows disagrees, the file is not being read: do not hand over the task until it does. Do not trust what an agent says about its own effort.
 
 | Level              | Typical task                                                                               |
@@ -371,7 +374,7 @@ fake or the tasks root is outside the temporary directory and ignores any `HERDR
 every scenario `HERDR_PORTS` in a private random range (20000–29919, bases in `B_DEV`, `B_PW` and `B_SB`), so agents
 that hold the default ports (5280, 4280, 6080) cannot make a scenario fail; slots are still picked among those whose
 ports are free (a few tests start one real listener on a free port and kill it by PID). The fake `herdr` draws the
-screen named by `FAKE_AGENT_SCREEN` (`header`, `statusbar`, `thinking`, `none`, `quoted`, `quoted-capital` or `stale`) to test the session verification.
+screen named by `FAKE_AGENT_SCREEN` (`header`, `statusbar`, `thinking`, `none`, `quoted`, `quoted-capital`, `stale`, `real-new` or `real-working`) to test the session verification.
 It needs `jq`, `git`, `ss` and `python3`, runs one copy at a time, exits non-zero on any failure and prints
 `ALL TESTS PASSED` otherwise. It takes a few minutes. `HERDR_TEST_KEEP=1` keeps the temporary directory;
 `HERDR_SCRIPTS_SRC=<dir>` runs the tests against a modified copy of `scripts/herdr`, to check that a scenario fails

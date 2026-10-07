@@ -242,27 +242,32 @@ model_display() {
 }
 
 # session_fields: reads a screen on stdin and prints "MODEL|LEVEL" (either may be empty). A fresh session draws a header
-# ("Sonnet 5.5 with medium effort"); a resumed one (`--continue`) draws none, so the model comes from the status bar
-# at the bottom ("Sonnet 5.5  ⎇ branch") and the level from the spinner's "thinking with high effort", when there is one.
-# Only the last SESSION_TAIL_LINES lines count and every pattern is anchored to its own line: a resumed session redraws
-# the conversation, which may quote these very phrases, and the pane may still hold the header of the session before a
-# restart (set-effort.sh).
+# at the top ("▝▜██████▀  Sonnet 5.5 with medium effort · Claude Team": the logo before it, the plan after it); a resumed
+# one (`--continue`) draws none, so the model then comes from the status bar at the bottom ("Sonnet 5.5  ⎇ branch").
+# The level the session is at now is the spinner's "thinking with high effort" (or "still thinking with ..."), read only
+# in the last SESSION_TAIL_LINES lines where Claude Code draws it, and it wins over the header: the pane may still hold
+# the header of the session before a restart (set-effort.sh). Without a spinner the level is the header's. The header is
+# searched on the whole screen (a new session pushes it far above the last lines) and must fill its own line, between
+# non-alphanumeric glyphs and an optional " · plan": what comes before "with" is only "<Model> <version>", so the
+# conversation quoting these phrases is not taken for the session.
 SESSION_TAIL_LINES=12
+SESSION_HEADER='^[[:space:]]*([^[:alnum:][:space:]]+[[:space:]]+)?([A-Z][A-Za-z]* [0-9]+(\.[0-9]+)?) with ([a-z]+) effort( · .*)?[[:space:]│╮╯]*$'
 session_fields() {
-  local screen model level
-  screen=$(grep -v '^[[:space:]]*$' | tail -n "$SESSION_TAIL_LINES")
-  model=$(grep -E '^[[:space:]│╭╰]*[A-Z][A-Za-z]* [0-9]+(\.[0-9]+)? with [a-z]+ effort[[:space:]│╮╯]*$' <<<"$screen" | tail -n 1 || true)
-  if [ -n "$model" ]; then
-    level=$(sed -E 's/.* with ([a-z]+) effort[[:space:]│╮╯]*$/\1/' <<<"$model")
-    model=$(sed -E 's/^[[:space:]│╭╰]*//; s/ with [a-z]+ effort[[:space:]│╮╯]*$//' <<<"$model")
-  else
-    model=$(grep '⎇' <<<"$screen" | sed -E 's/[[:space:]]*⎇.*//; s/^[[:space:]]+//' \
+  local screen footer header model level spinner
+  screen=$(grep -v '^[[:space:]]*$' || true)
+  footer=$(tail -n "$SESSION_TAIL_LINES" <<<"$screen")
+  header=$(sed -nE "s#$SESSION_HEADER#\\2|\\4#p" <<<"$screen" | tail -n 1)
+  model=${header%%|*}
+  level=${header#*|}
+  [ -n "$header" ] || level=
+  if [ -z "$model" ]; then
+    model=$(grep '⎇' <<<"$footer" | sed -E 's/[[:space:]]*⎇.*//; s/^[[:space:]]+//' \
       | grep -E '^[A-Z][A-Za-z]* [0-9]+(\.[0-9]+)?$' | tail -n 1 || true)
-    # The spinner: a glyph that opens the line, or the "· " inside its parentheses. Lowercase, like Claude Code draws it.
-    level=$(grep -E '(^[[:space:]]*[^[:alnum:][:space:]]+|·) thinking with [a-z]+ effort' <<<"$screen" \
-      | sed -E 's/.*thinking with ([a-z]+) effort.*/\1/' | tail -n 1 || true)
   fi
-  printf '%s|%s\n' "$model" "$level"
+  # The spinner: a glyph that opens the line, or the "· " inside its parentheses. Lowercase, like Claude Code draws it.
+  spinner=$(grep -E '(^[[:space:]]*[^[:alnum:][:space:]]+|·) (still )?thinking with [a-z]+ effort' <<<"$footer" \
+    | sed -E 's/.*thinking with ([a-z]+) effort.*/\1/' | tail -n 1 || true)
+  printf '%s|%s\n' "$model" "${spinner:-$level}"
 }
 
 # agent_session WANT: "MODEL|LEVEL" of the agent's session, polled for a few seconds because nothing is drawn right after

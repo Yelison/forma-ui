@@ -117,7 +117,7 @@ check "thinking line: no warning" bash -c "! grep -q warning <<<\"\$1\"" _ "$out
 out=$(FAKE_AGENT_SCREEN=none "$HERDR/start-agent.sh" --id scr-none --name sn --continue 2>&1)
 check "nothing drawn: both warnings stay" test "$(grep -c 'was not verified\|expected .* effort' <<<"$out")" -eq 2
 check "nothing drawn: nothing is recorded" test -z "$(tj none '.model_verified // .effort.verified // empty')"
-for mode in quoted quoted-capital stale; do
+for mode in quoted quoted-capital; do
   "$HERDR/new-task.sh" --id "scr-$mode" --branch "feat/scr-$mode" --slot "$(pick_slot "$SA" "$SB" "$SC" "$SD" $USED)" --model claude-sonnet-5-5 --effort high --effort-reason r >/dev/null 2>&1
   USED="$USED $(jq -r .slot "$T/root/tasks/scr-$mode/task.json")"
   out=$(FAKE_AGENT_SCREEN=$mode "$HERDR/start-agent.sh" --id "scr-$mode" --name "s-$mode" --continue 2>&1)
@@ -125,6 +125,25 @@ for mode in quoted quoted-capital stale; do
   check "$mode: the effort is not verified" test -z "$(tj "$mode" '.effort.verified // empty')"
   check "$mode: the effort warning stays" says x "session says 'nothing'"
 done
+for mode in real-new real-working stale; do
+  "$HERDR/new-task.sh" --id "scr-$mode" --branch "feat/scr-$mode" --slot "$(pick_slot "$SA" "$SB" "$SC" "$SD" $USED)" --model claude-sonnet-5-5 --effort high --effort-reason r >/dev/null 2>&1
+  USED="$USED $(jq -r .slot "$T/root/tasks/scr-$mode/task.json")"
+  out=$(FAKE_AGENT_SCREEN=$mode "$HERDR/start-agent.sh" --id "scr-$mode" --name "s-$mode" 2>&1)
+  check "$mode: the model is verified" test "$(tj "$mode" '.model_verified.header')" = "Sonnet 5.5"
+  check "$mode: the effort is verified" test "$(tj "$mode" '.effort.verified.header')" = "Sonnet 5.5 with high effort"
+  check "$mode: no effort warning" bash -c "! grep -q 'expected .* effort' <<<\"\$1\"" _ "$out"
+done
+sf() { printf '%s\n' "$1" | { . "$HERDR/common.sh"; session_fields; }; }
+check "real header: Sonnet line with the logo and the plan" test "$(sf '▝▜██████▀  Sonnet 5.5 with medium effort · Claude Team')" = "Sonnet 5.5|medium"
+check "real header: Opus line with the logo and the plan" test "$(sf '▝▜██████▀  Opus 5.5 with medium effort · Claude Team')" = "Opus 5.5|medium"
+check "real spinner: thinking" test "$(sf '· Sock-hopping… (5s · ↓ 381 tokens · thinking with medium effort)')" = "|medium"
+check "real spinner: still thinking" test "$(sf '✶ Crystallizing… (25s · ↓ 496 tokens · still thinking with high effort)')" = "|high"
+check "real status bar: the model without a header" test "$(sf '  Opus 5.5  ⎇ review/t42-language-fd5c866  │ ctx 183k → /clear  │ usage 9% · ↻ 3h54m | 86% · ↻ 2d11h')" = "Opus 5.5|"
+check "header and spinner: the spinner level wins" test "$(sf '▝▜██████▀  Sonnet 5.5 with low effort · Claude Team
+✶ Crystallizing… (25s · ↓ 496 tokens · still thinking with high effort)')" = "Sonnet 5.5|high"
+check "the last header on the screen wins" test "$(sf '▝▜██████▀  Sonnet 5.5 with low effort · Claude Team
+▝▜██████▀  Opus 5.5 with medium effort · Claude Team')" = "Opus 5.5|medium"
+check "conversation text before 'with' is not a header" test "$(sf '● the header says Sonnet 5.5 with high effort')" = "|"
 check "thinking line alone is not taken for a header" test "$(printf '✻ thinking with high effort\n' | { . "$HERDR/common.sh"; session_fields; })" = "|high"
 
 echo "== install step: HERDR_INSTALL_CMD in HERDR_INSTALL_DIR, skipped without a package.json"
