@@ -1,0 +1,12 @@
+.lead {
+  max-inline-size: 70ch;
+  margin: var(--space-16) 0 0;
+  color: var(--color-muted);
+  font: var(--font-section);
+}
+
+.theme {
+  margin: var(--space-8) 0 0;
+  color: var(--color-muted);
+  font: var(--font-caption);
+}

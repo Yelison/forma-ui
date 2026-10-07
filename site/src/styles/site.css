@@ -6,6 +6,7 @@
 :root {
   --site-font-display: 700 52px/60px var(--font-family);
   --site-font-editorial-heading: 700 36px/44px var(--font-family);
+  --site-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --site-gutter: var(--space-20);
   --site-nav-height: 72px;
   --site-content-width: 1080px;
