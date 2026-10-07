@@ -14,6 +14,8 @@ export default defineConfig({
   // spec that loads that file with loadStyles() (test/browser/support.tsx) finds the classes it styles.
   css: { modules: { generateScopedName: scopedClassName } },
   test: {
+    // Two workers on a shared machine, three in CI (see vitest.config.ts).
+    maxWorkers: process.env.CI ? 3 : 2,
     api: devServerPort ? { port: Number(devServerPort), strictPort: true } : undefined,
     include: ['test/browser/**/*.test.{ts,tsx}'],
     setupFiles: ['./test/browser/setup.ts'],
