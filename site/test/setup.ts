@@ -14,6 +14,12 @@ if (!HTMLDialogElement.prototype.showModal) {
   }
 }
 
+// jsdom does not implement popovers either: a popover stays closed there, whatever calls open or close it.
+if (!HTMLElement.prototype.hidePopover) {
+  HTMLElement.prototype.showPopover = () => {}
+  HTMLElement.prototype.hidePopover = () => {}
+}
+
 // jsdom does not implement matchMedia: no media query matches by default.
 if (!window.matchMedia) {
   window.matchMedia = (query: string) =>

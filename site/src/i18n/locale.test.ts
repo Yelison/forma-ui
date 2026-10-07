@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { localeStorageKey, readStoredLocale, resolveLocale } from './locale'
+import { localeNames, localeStorageKey, readStoredLocale, resolveLocale, storeLocale } from './locale'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -51,5 +51,26 @@ describe('readStoredLocale', () => {
       throw new Error('blocked')
     })
     expect(readStoredLocale()).toBeNull()
+  })
+})
+
+describe('storeLocale', () => {
+  it('stores the choice where readStoredLocale finds it', () => {
+    storeLocale('es')
+    expect(localStorage.getItem(localeStorageKey)).toBe('es')
+    expect(readStoredLocale()).toBe('es')
+  })
+
+  it('does not throw when storage cannot be written', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('blocked')
+    })
+    expect(() => storeLocale('es')).not.toThrow()
+  })
+})
+
+describe('localeNames', () => {
+  it('names each language in itself, which is not a message and does not change with the language of the page', () => {
+    expect(localeNames).toEqual({ en: 'English', es: 'Español' })
   })
 })

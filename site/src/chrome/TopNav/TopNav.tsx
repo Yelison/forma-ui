@@ -5,10 +5,14 @@ import { productName } from '../../brand'
 import { sectionPaths } from '../../routes'
 import { Drawer } from '../Drawer'
 import { GitHubLink } from '../GitHubLink'
+import { LanguageSwitcher } from '../LanguageSwitcher'
 import { documentationCurrent, documentationEntryPath } from '../navigation'
 import styles from './TopNav.module.css'
 
-/** The top bar: the wordmark, Documentation (highlighted across its whole section), GitHub and, on narrow screens, the menu. */
+/**
+ * The top bar: the wordmark, Documentation (highlighted across its whole section), GitHub, the language and, on narrow
+ * screens, the menu, which holds the links and the language.
+ */
 export function TopNav() {
   const intl = useIntl()
   const { pathname } = useLocation()
@@ -45,6 +49,7 @@ export function TopNav() {
           </Link>
         </nav>
         <GitHubLink className={styles.github} />
+        <LanguageSwitcher className={styles.language} />
         <button
           ref={menuButtonRef}
           type="button"
