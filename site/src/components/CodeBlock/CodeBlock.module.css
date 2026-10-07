@@ -29,3 +29,45 @@
   outline: var(--focus-ring);
   outline-offset: var(--space-4);
 }
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8) var(--space-16);
+}
+
+.copy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin-inline-start: auto;
+}
+
+.copyStatus {
+  color: var(--color-nav-text);
+  font: var(--font-caption);
+}
+
+/* The button of the panel: the colors of the panel, with the target of the library's buttons on a touch screen. */
+.copyButton {
+  box-sizing: border-box;
+  min-height: var(--touch-target);
+  padding: 0 var(--space-16);
+  border: 1px solid var(--color-nav-text);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--color-nav-ink);
+  font: var(--font-label);
+  cursor: pointer;
+}
+
+.copyButton:hover {
+  background: var(--color-nav-active);
+}
+
+.copyButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}

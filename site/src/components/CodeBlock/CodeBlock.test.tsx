@@ -1,6 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CodeBlock } from './CodeBlock'
 
 const code = '<Button variant="primary">\n  Save\n</Button>'
@@ -11,8 +11,32 @@ function laidOutAs(scrollWidth: number, clientWidth: number) {
   vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(clientWidth)
 }
 
+/** The callbacks of the observers that are watching a block, which the test calls when the block changes size. */
+const observers = new Set<() => void>()
+const resizeBlock = () => act(() => observers.forEach((callback) => callback()))
+
+beforeEach(() => {
+  observers.clear()
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      callback: () => void
+      constructor(callback: () => void) {
+        this.callback = callback
+      }
+      observe() {
+        observers.add(this.callback)
+      }
+      disconnect() {
+        observers.delete(this.callback)
+      }
+    },
+  )
+})
+
 afterEach(() => {
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
 describe('CodeBlock', () => {
@@ -53,13 +77,13 @@ describe('CodeBlock', () => {
     expect(screen.getByRole('region', { name: 'JSX · Button' })).toHaveFocus()
   })
 
-  it('measures again when the window changes size', () => {
+  it('measures again when the block changes size, as when its tab is shown', () => {
     laidOutAs(200, 200)
     render(<CodeBlock code={code} label="JSX · Button" />)
     expect(screen.queryByRole('region')).not.toBeInTheDocument()
 
     laidOutAs(400, 200)
-    fireEvent(window, new Event('resize'))
+    resizeBlock()
 
     expect(screen.getByRole('region', { name: 'JSX · Button' })).toBeInTheDocument()
   })
@@ -76,7 +100,7 @@ describe('CodeBlock', () => {
     expect(screen.getByRole('region', { name: 'JSX · Button' })).toHaveFocus()
 
     laidOutAs(200, 200)
-    fireEvent(window, new Event('resize'))
+    resizeBlock()
     expect(screen.getByRole('region', { name: 'JSX · Button' })).toHaveFocus()
 
     await userEvent.tab()
@@ -101,5 +125,79 @@ describe('CodeBlock', () => {
       'style',
       expect.stringContaining('min-height: 7lh'),
     )
+  })
+
+  describe('copy', () => {
+    const copy = { action: 'Copy', success: 'Code copied', failure: 'Could not copy' }
+
+    it('offers no button unless it is asked to', () => {
+      render(<CodeBlock code={code} label="JSX · Button" />)
+
+      expect(screen.queryByRole('button')).not.toBeInTheDocument()
+    })
+
+    it('puts the code on the clipboard and announces it', async () => {
+      const user = userEvent.setup()
+      render(<CodeBlock code={code} label="JSX · Button" copy={copy} />)
+      expect(screen.getByRole('status')).toBeEmptyDOMElement()
+
+      await user.click(screen.getByRole('button', { name: 'Copy' }))
+
+      expect(await navigator.clipboard.readText()).toBe(code)
+      expect(screen.getByRole('status')).toHaveTextContent('Code copied')
+    })
+
+    it('works from the keyboard', async () => {
+      const user = userEvent.setup()
+      render(<CodeBlock code={code} label="JSX · Button" copy={copy} />)
+
+      await user.tab()
+      expect(screen.getByRole('button', { name: 'Copy' })).toHaveFocus()
+      await user.keyboard('{Enter}')
+
+      expect(screen.getByRole('status')).toHaveTextContent('Code copied')
+    })
+
+    it('announces the failure when the browser refuses the copy', async () => {
+      const user = userEvent.setup()
+      vi.spyOn(navigator.clipboard, 'writeText').mockRejectedValue(new DOMException('', 'NotAllowedError'))
+      render(<CodeBlock code={code} label="JSX · Button" copy={copy} />)
+
+      await user.click(screen.getByRole('button', { name: 'Copy' }))
+
+      expect(screen.getByRole('status')).toHaveTextContent('Could not copy')
+    })
+
+    it('announces the failure when the page has no clipboard', async () => {
+      const user = userEvent.setup()
+      render(<CodeBlock code={code} label="JSX · Button" copy={copy} />)
+      vi.spyOn(navigator, 'clipboard', 'get').mockReturnValue(undefined as unknown as Clipboard)
+
+      await user.click(screen.getByRole('button', { name: 'Copy' }))
+
+      expect(screen.getByRole('status')).toHaveTextContent('Could not copy')
+    })
+
+    it('announces again when the same code is copied twice', async () => {
+      const user = userEvent.setup()
+      render(<CodeBlock code={code} label="JSX · Button" copy={copy} />)
+
+      await user.click(screen.getByRole('button', { name: 'Copy' }))
+      const first = screen.getByText('Code copied')
+      await user.click(screen.getByRole('button', { name: 'Copy' }))
+
+      // A live region reads what is added to it: the same node, untouched, would stay silent.
+      expect(screen.getByText('Code copied')).not.toBe(first)
+    })
+
+    it('forgets the message when the code changes', async () => {
+      const user = userEvent.setup()
+      const { rerender } = render(<CodeBlock code={code} label="JSX · Button" copy={copy} />)
+      await user.click(screen.getByRole('button', { name: 'Copy' }))
+
+      rerender(<CodeBlock code="<Button />" label="JSX · Button" copy={copy} />)
+
+      expect(screen.getByRole('status')).toBeEmptyDOMElement()
+    })
   })
 })

@@ -35,6 +35,15 @@ if (!window.matchMedia) {
     }) as MediaQueryList
 }
 
+// jsdom does not implement ResizeObserver, and there is no layout for it to report: it never calls back.
+if (!window.ResizeObserver) {
+  window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+}
+
 afterEach(() => {
   cleanup()
   localStorage.clear()
