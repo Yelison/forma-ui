@@ -1,5 +1,6 @@
 import type { componentPages } from '../routes'
 import { buttonDoc } from './button'
+import { iconButtonDoc } from './icon-button'
 import type { ComponentDoc } from './types'
 
 /**
@@ -8,6 +9,7 @@ import type { ComponentDoc } from './types'
  */
 export const componentDocs: Partial<Record<(typeof componentPages)[number]['slug'], ComponentDoc>> = {
   button: buttonDoc,
+  'icon-button': iconButtonDoc,
 }
 
 export type { ComponentDoc } from './types'
