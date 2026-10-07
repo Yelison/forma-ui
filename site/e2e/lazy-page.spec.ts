@@ -1,15 +1,24 @@
 import { expect, test, type Page } from '@playwright/test'
 import { routes } from '../src/routes'
 
-// Foundations loads on demand. These specs hold the two promises that make that safe: a direct link fetches the page
-// beside the app, and neither a direct link nor a client-side navigation moves the layout while the page is on its way.
+// Foundations and the catalog load on demand. These specs hold the two promises that make that safe: a direct link
+// fetches the page beside the app, and neither a direct link nor a client-side navigation moves the layout while the
+// page is on its way.
 const widths = [390, 1440]
 
+// The pages that load on demand: the name of their chunk, their path, their heading, and where to start a navigation to
+// them from (a page that is not itself lazy, so the navigation is the one that waits for the chunk).
+const lazyPages = [
+  { chunk: 'Foundations', path: './docs/foundations/', heading: 'Foundations', link: 'Foundations' },
+  { chunk: 'CatalogPage', path: './docs/components/', heading: 'Components', link: 'Components' },
+] as const
+type LazyPage = (typeof lazyPages)[number]
+
 /** Holds the chunk of the page back until `release` is called: a slow network, without a timer to wait out. */
-async function holdChunk(page: Page) {
+async function holdChunk(page: Page, { chunk }: LazyPage) {
   let release = () => {}
   const gate = new Promise<void>((resolve) => (release = resolve))
-  await page.route('**/assets/Foundations-*.js', async (route) => {
+  await page.route(`**/assets/${chunk}-*.js`, async (route) => {
     await gate
     await route.continue()
   })
@@ -35,62 +44,71 @@ const totalShift = (page: Page) =>
   })
 
 test.describe('a direct link to a page that loads on demand', () => {
-  test('is answered with HTML that preloads the page chunk and its stylesheet', async ({ request }) => {
-    const html = await (await request.get('./docs/foundations/')).text()
+  for (const lazy of lazyPages) {
+    test(`is answered with HTML that preloads the chunk and the stylesheet of ${lazy.chunk}`, async ({ request }) => {
+      const html = await (await request.get(lazy.path)).text()
 
-    expect(html).toMatch(/<link rel="modulepreload" crossorigin href="\/forma-ui\/assets\/Foundations-[\w-]+\.js"/)
-    expect(html).toMatch(/<link rel="stylesheet" crossorigin href="\/forma-ui\/assets\/Foundations-[\w-]+\.css"/)
-  })
+      expect(html).toMatch(
+        new RegExp(`<link rel="modulepreload" crossorigin href="/forma-ui/assets/${lazy.chunk}-[\\w-]+\\.js"`),
+      )
+      expect(html).toMatch(
+        new RegExp(`<link rel="stylesheet" crossorigin href="/forma-ui/assets/${lazy.chunk}-[\\w-]+\\.css"`),
+      )
+    })
+
+    for (const width of widths) {
+      test(`does not move the layout while ${lazy.chunk} arrives, at ${width} px`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 800 })
+        await recordShifts(page)
+        const release = await holdChunk(page, lazy)
+        await page.goto(lazy.path, { waitUntil: 'commit' })
+
+        // While the chunk is held the content area is already as tall as a screen, so the footer is out of sight.
+        await expect
+          .poll(() => page.locator('main').evaluate((main) => main.getBoundingClientRect().height))
+          .toBeGreaterThanOrEqual(800)
+        release()
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+
+        expect(await totalShift(page)).toBe(0)
+      })
+    }
+  }
 
   test('does not preload anything on a page that does not load on demand', async ({ request }) => {
     const html = await (await request.get('./docs/getting-started/')).text()
 
     expect(html).not.toContain('modulepreload')
   })
-
-  for (const width of widths) {
-    test(`does not move the layout while the page arrives, at ${width} px`, async ({ page }) => {
-      await page.setViewportSize({ width, height: 800 })
-      await recordShifts(page)
-      const release = await holdChunk(page)
-      await page.goto('./docs/foundations/', { waitUntil: 'commit' })
-
-      // While the chunk is held the content area is already as tall as a screen, so the footer is out of sight.
-      await expect
-        .poll(() => page.locator('main').evaluate((main) => main.getBoundingClientRect().height))
-        .toBeGreaterThanOrEqual(800)
-      release()
-      await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-
-      expect(await totalShift(page)).toBe(0)
-    })
-  }
 })
 
 test.describe('a client-side navigation to a page that loads on demand', () => {
   test.use({ viewport: { width: 390, height: 800 } })
 
-  test('keeps the page as tall as a screen and focus on the menu button until the page arrives, then focuses its heading', async ({
-    page,
-  }) => {
-    await recordShifts(page)
-    await page.goto('./docs/components/')
-    const release = await holdChunk(page)
+  for (const lazy of lazyPages) {
+    test(`keeps the page as tall as a screen and focus on the menu button until ${lazy.chunk} arrives, then focuses its heading`, async ({
+      page,
+    }) => {
+      await recordShifts(page)
+      // The start is a page that is not lazy, and is not the destination.
+      await page.goto('./docs/getting-started/')
+      const release = await holdChunk(page, lazy)
 
-    await page.getByRole('button', { name: 'Open menu' }).click()
-    await page.getByRole('dialog', { name: 'Menu' }).getByRole('link', { name: 'Foundations' }).click()
+      await page.getByRole('button', { name: 'Open menu' }).click()
+      await page.getByRole('dialog', { name: 'Menu' }).getByRole('link', { name: lazy.link }).click()
 
-    await expect(page).toHaveURL(/\/docs\/foundations\/$/)
-    await expect
-      .poll(() => page.locator('main').evaluate((main) => main.getBoundingClientRect().height))
-      .toBeGreaterThanOrEqual(800)
-    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(0)
-    await expect(page.getByRole('button', { name: 'Open menu' })).toBeFocused()
+      await expect(page).toHaveURL(new RegExp(`${lazy.path.slice(1)}$`))
+      await expect
+        .poll(() => page.locator('main').evaluate((main) => main.getBoundingClientRect().height))
+        .toBeGreaterThanOrEqual(800)
+      await expect(page.getByRole('heading', { level: 1 })).toHaveCount(0)
+      await expect(page.getByRole('button', { name: 'Open menu' })).toBeFocused()
 
-    release()
-    await expect(page.getByRole('heading', { level: 1, name: 'Foundations' })).toBeFocused()
-    expect(await totalShift(page)).toBe(0)
-  })
+      release()
+      await expect(page.getByRole('heading', { level: 1, name: lazy.heading })).toBeFocused()
+      expect(await totalShift(page)).toBe(0)
+    })
+  }
 })
 
 test.describe('the build output', () => {

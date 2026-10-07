@@ -1,0 +1,18 @@
+import type { ComponentType } from 'react'
+import type { FamilyId } from '../families'
+import { BadgeSpecimens } from './BadgeSpecimens'
+import { ButtonSpecimens } from './ButtonSpecimens'
+import { DialogSpecimens } from './DialogSpecimens'
+import { IconSpecimens } from './IconSpecimens'
+import { InputSpecimens } from './InputSpecimens'
+import { TooltipSpecimens } from './TooltipSpecimens'
+
+/** The live specimens of each family: a new family without them is a type error. */
+export const familySpecimens: Record<FamilyId, ComponentType> = {
+  button: ButtonSpecimens,
+  input: InputSpecimens,
+  badge: BadgeSpecimens,
+  icon: IconSpecimens,
+  tooltip: TooltipSpecimens,
+  dialog: DialogSpecimens,
+}
