@@ -23,6 +23,38 @@ touches it has no changeset: Changesets rejects one that names the site alongsid
 the site is never consumed by `npm run version-packages` and stays in `.changeset/`. Delete it if it shows up. The
 release workflow does not count it.
 
+### The changeset check
+
+The `Changeset` job of CI runs `npm run check:changeset -w @yelison/forma-ui` on every pull request and fails when the
+pull request changes what the package ships and adds no changeset. It looks at these files:
+
+- `packages/forma-ui/src/**`, except `*.test.ts` and `*.test.tsx`;
+- `packages/forma-ui/tokens/**`, the token source;
+- what decides the bytes of `dist/`: in `packages/forma-ui/`, `vite.config.ts`, `tsconfig.json`, `tsconfig.build.json`
+  and `scripts/build-tokens.ts`, `build-icons.ts`, `scoped-name.ts` and `script-utils.ts`; and the repository's
+  `tsconfig.base.json`, which the package's configuration extends and which also configures the site;
+- `packages/forma-ui/package.json`, apart from `version`, `scripts` and `devDependencies`: `exports`, `files`, the peer
+  dependencies and `engines` are the package's contract. The versioning pull request changes only the version, and it
+  deletes changesets instead of adding one, so it passes.
+
+Tests, documentation (including the package's README, which npm shows with the next release anyway), the site, the
+workflows and the rest of the tooling are exempt, and so is `package-lock.json`: a dependency update can change
+`dist/`, but Dependabot cannot add a changeset, and the build and the checks of its pull request are what catch a
+regression. The added changeset has to name `@yelison/forma-ui`, or be empty. When
+a pull request touches one of those files but changes nothing for the people who install the package (a refactor that
+keeps the output, a test-only change to `vite.config.ts`, a change to `tsconfig.base.json` meant only for the site),
+declare it:
+
+```sh
+npx changeset --empty
+```
+
+It writes a changeset with no packages, which the check accepts and which adds nothing to the changelog. Commit it with
+the change, and say in the pull request why nothing changes for consumers.
+
+`Changeset` is not one of the required checks (`Library`, `Site` and `Site e2e`): making it one is the owner's decision,
+in the branch protection rules.
+
 ### How to add one
 
 ```sh

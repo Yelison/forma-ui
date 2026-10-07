@@ -7,6 +7,8 @@
   "include": [
     "src",
     "test",
+    "scripts/check-changeset.ts",
+    "scripts/changeset-check",
     "scripts/check-consumer.ts",
     "scripts/pack-check.ts",
     "scripts/pack-check",
