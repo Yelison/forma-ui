@@ -11,7 +11,8 @@
 //    CSS, every class of styles.css must start with `forma-`, and every class a rendered component carries must have
 //    a rule there.
 // 5. The build lists the classes of each CSS module in dist/css-modules.json (it is not packed). A module none of
-//    whose classes is rendered fails the check: the component is missing from scripts/consumer/main.tsx.
+//    whose classes is rendered fails the check: the component is missing from scripts/consumer/main.tsx. The few
+//    modules that a server render cannot paint are listed below, and the browser specs check them instead.
 //
 // This is the seed of the pack-check of the plan (Task 5.1), which grows it: the same tarball and project, plus the
 // list of packed files, the declarations of every export, the absence of `react` in `dependencies` and a bundler
@@ -27,6 +28,14 @@ const repositoryModules = resolve(packageRoot, '../../node_modules')
 const packageName = '@yelison/forma-ui'
 // What the consumer imports besides the entry point: the CSS the README tells it to import.
 const consumedFiles = ['tokens.css', 'styles.css', 'base.css']
+// CSS modules whose markup this check cannot see, each with the reason. The consumer renders to a string on the server,
+// and these components paint nothing there. Their rules are checked against the real markup in test/browser/, where
+// `loadStyles()` loads the built styles.css. Keep the list short: a module that can be rendered here belongs in
+// scripts/consumer/main.tsx, and the check fails when a module listed here is rendered or no longer exists.
+const renderedInTheBrowser: Record<string, string> = {
+  'components/Tooltip/Tooltip.module.css':
+    'it is painted in a portal, which the server renderer rejects, and only after an event',
+}
 
 function fail(message: string): never {
   console.error(`Consumer check failed: ${message}`)
@@ -101,12 +110,24 @@ if (unstyled.length > 0) fail(`rendered classes with no rule in styles.css: ${un
 const manifestPath = join(packageRoot, 'dist', 'css-modules.json')
 if (!existsSync(manifestPath)) fail('dist/css-modules.json is missing: run `npm run build` first')
 const modules = Object.entries(JSON.parse(readFileSync(manifestPath, 'utf8')) as Record<string, string[]>)
-const unrendered = modules.filter(([, names]) => !names.some((name) => rendered.has(name))).map(([path]) => path)
+const moduleNames = new Set(modules.map(([path]) => path))
+const unknown = Object.keys(renderedInTheBrowser).filter((path) => !moduleNames.has(path))
+if (unknown.length > 0)
+  fail(`renderedInTheBrowser lists CSS modules that the build does not have: ${unknown.join(', ')}. Remove them`)
+const renderedAnyway = modules
+  .filter(([path, names]) => path in renderedInTheBrowser && names.some((name) => rendered.has(name)))
+  .map(([path]) => path)
+if (renderedAnyway.length > 0)
+  fail(`these CSS modules are rendered here, so they leave renderedInTheBrowser: ${renderedAnyway.join(', ')}`)
+const unrendered = modules
+  .filter(([path, names]) => !(path in renderedInTheBrowser) && !names.some((name) => rendered.has(name)))
+  .map(([path]) => path)
 if (unrendered.length > 0)
   fail(
     `no class of these CSS modules is rendered: ${unrendered.join(', ')}. Add the component to scripts/consumer/main.tsx`,
   )
 
+const inTheServer = modules.length - Object.keys(renderedInTheBrowser).length
 console.log(
-  `Consumer check passed: nodenext compile, ${consumedFiles.length} CSS exports, ${rendered.size} rendered classes with rules in styles.css, one or more for each of the ${modules.length} CSS modules (${new Set(selectors).size} unique classes shipped).`,
+  `Consumer check passed: nodenext compile, ${consumedFiles.length} CSS exports, ${rendered.size} rendered classes with rules in styles.css, one or more for each of the ${inTheServer} CSS modules rendered here; ${Object.keys(renderedInTheBrowser).length} more covered in the browser specs, not here (${new Set(selectors).size} unique classes shipped).`,
 )

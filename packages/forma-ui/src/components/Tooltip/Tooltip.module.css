@@ -1,0 +1,10 @@
+.tooltip {
+  box-sizing: border-box;
+  z-index: var(--z-tooltip);
+  max-width: var(--tooltip-max-width);
+  padding: var(--space-8);
+  border-radius: var(--radius-control);
+  background: var(--color-nav);
+  color: var(--color-nav-ink);
+  font: var(--font-caption);
+}
