@@ -5,10 +5,10 @@ Los de la ficha, en inglés, Conventional Commits; cada uno pasa por sí solo la
 
 ## Uso de la máquina (varios agentes en paralelo)
 
-- **Tus puertos** (slot `__SL__`): sitio y Vite `__VITE__`, Playwright `__PW__`, Storybook `__SB__`. No uses otros ni toques procesos que no arrancaste. Están también en `.env.herdr`, pero puede que el modo automático no te deje leerlo: pásalos en línea (`PLAYWRIGHT_PORT=__PW__ npx playwright test --workers=3`).
+- **Tus puertos** (slot `__SL__`): sitio y Vite `__VITE__`, Playwright `__PW__`, Storybook `__SB__`. No uses otros ni toques procesos que no arrancaste. Están también en `.env.herdr`, pero puede que el modo automático no te deje leerlo: pásalos en línea (`PLAYWRIGHT_PORT=__PW__ npx playwright test --workers=2`).
 - **No ejecutes la batería completa de Playwright sobre la base**: es lenta y la base no es lo que se revisa. Para confirmar la base basta Vitest.
 - Mientras iteras, ejecuta solo las specs de tu cambio; la batería e2e completa, **una vez**, antes de entregar.
-- Vitest con `--maxWorkers=3` y Playwright siempre con `--workers=3`: la máquina la comparten varios agentes y sin límite la carga se dispara. Si un test falla solo bajo carga, repítelo aislado antes de tocar código y anótalo en la entrega.
+- Vitest con 2 workers (el paquete ya los fija en su configuración; donde un script no lo haga, `--maxWorkers=2`) y Playwright siempre con `--workers=2`: la máquina la comparten varios agentes y sin límite la carga se dispara. Si un test falla solo bajo carga, repítelo aislado antes de tocar código y anótalo en la entrega.
 
 ## Mutaciones y órdenes peligrosas
 

@@ -35,7 +35,7 @@ An idle agent is not acceptance evidence. Check files, tests and completion crit
 - **Formatting:** format only the files you changed, never a whole source directory.
 - **Mutations to prove a test:** commit first, or back up the file, and restore from that. Never `git checkout -- <file>` over uncommitted work.
 - **Shell safety:** `rm` only with literal paths or guarded variables (`"${DIR:?}"/x`). Never `pkill -f` or `pgrep -f`; stop your own processes by PID. Use only your task's ports, and free them when you finish.
-- **Shared machines:** cap test workers (for example Vitest `--maxWorkers=3`, Playwright `--workers=3`). Run the full end-to-end suite once before delivering. If a test fails only under load, rerun it alone before changing code and say so.
+- **Shared machines:** cap test workers at 2 locally: the package's Vitest configs set `maxWorkers` (2, or 3 when `CI` is defined), and Playwright always takes `--workers=2`. Run the full end-to-end suite once before delivering. If a test fails only under load, rerun it alone before changing code and say so.
 - **History rewrites** (rebase, `--fixup` autosquash) only on your own unpublished branch, and as a command of their own.
 - **Self-check before delivering:**
   - every new test fails without its change (note the mutation);
