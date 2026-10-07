@@ -46,9 +46,13 @@ export function ApiSection({ component, api }: ApiSectionProps) {
     <Section id="api" title="detail.section.api">
       <h3 className={styles.group}>{intl.formatMessage({ id: 'detail.api.own' }, { component })}</h3>
       <PropList props={api.own} />
-      <h3 className={styles.group}>{intl.formatMessage({ id: 'detail.api.changed' }, { component })}</h3>
-      <PropList props={api.changed} />
-      <p>{intl.formatMessage({ id: api.others }, richText)}</p>
+      {api.changed && (
+        <>
+          <h3 className={styles.group}>{intl.formatMessage({ id: 'detail.api.changed' }, { component })}</h3>
+          <PropList props={api.changed} />
+        </>
+      )}
+      {api.others && <p>{intl.formatMessage({ id: api.others }, richText)}</p>}
       {api.related?.map(({ component: related, title, own }) => (
         <Fragment key={related}>
           <h3 className={styles.group}>
