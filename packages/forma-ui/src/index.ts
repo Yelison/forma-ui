@@ -32,3 +32,4 @@ export {
   type TooltipProps,
   type TooltipTriggerProps,
 } from './components/Tooltip/index.js'
+export { useScrollLock } from './lib/scrollLock.js'

@@ -1,5 +1,6 @@
+import { renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { lockScroll } from './scrollLock'
+import { lockScroll, useScrollLock } from './scrollLock'
 
 describe('lockScroll', () => {
   afterEach(() => {
@@ -45,5 +46,53 @@ describe('lockScroll', () => {
     const release = lockScroll()
     expect(document.documentElement.style.paddingRight).toBe('')
     release()
+  })
+})
+
+describe('useScrollLock', () => {
+  const html = document.documentElement
+  afterEach(() => {
+    html.className = ''
+  })
+
+  it('locks the page while it is active and releases it when it is not', () => {
+    const { rerender } = renderHook(({ active }) => useScrollLock(active), { initialProps: { active: false } })
+    expect(html).not.toHaveClass('forma-scroll-locked')
+
+    rerender({ active: true })
+    expect(html).toHaveClass('forma-scroll-locked')
+
+    rerender({ active: false })
+    expect(html).not.toHaveClass('forma-scroll-locked')
+  })
+
+  it('releases the lock when the component unmounts', () => {
+    const { unmount } = renderHook(() => useScrollLock(true))
+
+    unmount()
+
+    expect(html).not.toHaveClass('forma-scroll-locked')
+  })
+
+  it('keeps the page locked while another user still holds it, whichever closes first', () => {
+    const drawer = renderHook(() => useScrollLock(true))
+    const menu = renderHook(() => useScrollLock(true))
+
+    drawer.unmount()
+    expect(html).toHaveClass('forma-scroll-locked')
+
+    menu.unmount()
+    expect(html).not.toHaveClass('forma-scroll-locked')
+  })
+
+  it('shares the counter with lockScroll, which the modal dialog uses', () => {
+    const release = lockScroll()
+    const hook = renderHook(() => useScrollLock(true))
+
+    release()
+    expect(html).toHaveClass('forma-scroll-locked')
+
+    hook.unmount()
+    expect(html).not.toHaveClass('forma-scroll-locked')
   })
 })
