@@ -38,15 +38,9 @@ jobs:
       - run: npm run test:coverage -w @yelison/forma-ui
       # The full build comes before the browser specs, which load the built dist/tokens.css and dist/styles.css.
       - run: npm run build -w @yelison/forma-ui
-      # Every file that `exports` promises must be in dist/: a build step that stops emitting one still exits 0.
-      - run: |
-          node -e "
-          const targets = (value) => (typeof value === 'string' ? [value] : Object.values(value).flatMap(targets))
-          const missing = targets(require('./package.json').exports).filter((path) => !require('node:fs').existsSync(path))
-          if (missing.length) { console.error('Missing export targets: ' + missing.join(', ')); process.exit(1) }
-          console.log('Export targets present: ' + targets(require('./package.json').exports).length)
-          "
-        working-directory: packages/forma-ui
+      # The tarball that npm would publish: its files, its types and exports (publint, Are The Types Wrong?) and the
+      # bundle of a consumer. This also fails when a file that `exports` promises is missing from dist/.
+      - run: npm run pack:check -w @yelison/forma-ui
       # The built package as a consumer receives it: nodenext compile, CSS exports and the rules behind the classes.
       - run: npm run check:consumer -w @yelison/forma-ui
       - run: npx playwright install --with-deps chromium

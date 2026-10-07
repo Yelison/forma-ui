@@ -52,6 +52,7 @@
     "build": "npm run clean && npm run build:tokens && npm run build:icons && vite build && tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json",
     "check:consumer": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/check-consumer.ts",
+    "pack:check": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/pack-check.ts",
     "test": "vitest run --maxWorkers=3",
     "test:coverage": "vitest run --maxWorkers=3 --coverage",
     "test:browser": "vitest run --config vitest.browser.config.ts --maxWorkers=3"
@@ -67,6 +68,7 @@
     "access": "public"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",
@@ -79,6 +81,7 @@
     "axe-core": "~4.13.0",
     "jsdom": "^29.1.1",
     "playwright": "^1.63.0",
+    "publint": "^0.3.25",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "typescript": "~6.0.2",

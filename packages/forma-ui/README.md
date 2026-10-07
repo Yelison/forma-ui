@@ -38,5 +38,14 @@ class in `styles.css` lacks the `forma-` prefix, if a rendered component carries
 module has no class rendered at all. The build lists the classes of every module in `dist/css-modules.json`, which is
 not packed. A component that ships CSS is added to `scripts/consumer/main.tsx`.
 
-This script is the seed of the pack-check (plan, Task 5.1), which adds the packed file list, the declarations of every
-export and a bundler build of the consumer.
+`npm run pack:check` looks at the tarball that `npm pack` writes, and fails with a message that names the file or the
+rule:
+
+- **Contents:** only `dist/**` (without `dist/css-modules.json`), `package.json`, `README.md`, `LICENSE` and, once it
+  exists, `CHANGELOG.md`; everything `main`, `types` and `exports` point at is in it; `react` and `react-dom` are peer
+  dependencies, never dependencies; `LICENSE` is the repository's.
+- **Types and exports:** [publint](https://publint.dev) in strict mode and
+  [Are The Types Wrong?](https://arethetypeswrong.github.io) read the packed `package.json` and resolve the typed
+  entry point in `node10`, `node16` (CommonJS and ESM) and `bundler`; the consumer is compiled under `bundler`; and
+  `require()` of the entry point must load on Node 22.12+. The CSS and JSON subpaths have no declarations to check,
+  and `node10` cannot resolve them because it ignores `exports`.
