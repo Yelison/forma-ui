@@ -24,7 +24,12 @@ const pseudoDirectory = '__pseudo__'
 export default defineConfig(({ command, mode, isPreview }) => ({
   // The pseudo-locale build is served by the same preview as the real one, from a directory of its own inside dist/.
   base: mode === 'pseudo' ? `${siteBasePath}${pseudoDirectory}/` : siteBasePath,
-  build: { outDir: mode === 'pseudo' ? `dist/${pseudoDirectory}` : 'dist' },
+  build: {
+    outDir: mode === 'pseudo' ? `dist/${pseudoDirectory}` : 'dist',
+    // scripts/emit-route-html.ts reads the manifest to preload the chunk of each route that loads on demand, and then
+    // deletes it: the manifest is a build tool's file, and it is not published.
+    manifest: true,
+  },
   resolve: {
     // The production build ships the messages as syntax trees (scripts/messages-ast.ts), so react-intl never parses an
     // ICU message and the parser is left out of the bundle: this entry has `parse` throw instead. Tests and the dev
