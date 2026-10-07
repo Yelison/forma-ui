@@ -60,6 +60,7 @@ export type Manifest = Readonly<Record<string, ManifestEntry>>
  * list names one the build does not have, so the two cannot drift apart.
  */
 export const lazyPageModules: Readonly<Partial<Record<RouteKey, string>>> = {
+  gettingStarted: 'src/pages/GettingStarted/index.ts',
   foundations: 'src/pages/Foundations/index.ts',
   components: 'src/pages/CatalogPage/index.ts',
   // The six reference pages share one route key, and so one chunk.

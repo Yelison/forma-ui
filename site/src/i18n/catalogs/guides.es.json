@@ -1,0 +1,10 @@
+{
+  "guides.breadcrumb.label": "Ruta de navegación",
+  "guides.code.copied": "Código copiado",
+  "guides.code.copy": "Copiar",
+  "guides.code.copyFailed": "No se pudo copiar el código",
+  "guides.next.label": "Siguiente paso",
+  "guides.preview.label": "Resultado",
+  "guides.theme.control": "Preferencia de tema",
+  "guides.toc.label": "En esta página"
+}

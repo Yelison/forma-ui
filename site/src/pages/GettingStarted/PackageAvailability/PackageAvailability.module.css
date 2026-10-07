@@ -1,0 +1,25 @@
+.note {
+  padding: var(--space-16);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+/* The warning has its own color and a border, and the text says «pending»: the color is not the only signal. */
+.pending {
+  border-color: var(--color-amber-ink);
+  background: var(--color-amber-bg);
+}
+
+.title {
+  margin: 0 0 var(--space-4);
+  color: var(--color-ink);
+  font: var(--font-label);
+}
+
+.body {
+  margin: 0;
+  color: var(--color-ink);
+  font: var(--font-body);
+  overflow-wrap: anywhere;
+}

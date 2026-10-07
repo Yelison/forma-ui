@@ -1,0 +1,16 @@
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--touch-target);
+  min-block-size: var(--touch-target);
+}
