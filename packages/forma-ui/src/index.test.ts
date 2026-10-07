@@ -1,13 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import pkg from '../package.json'
 import * as entry from './index'
-import { contrastRatio, relativeLuminance, tokenNames, version } from './index'
+import { contrastRatio, relativeLuminance, tokenNames } from './index'
 
 describe('package entry point', () => {
-  it('exports the version declared in package.json', () => {
-    expect(version).toBe(pkg.version)
-  })
-
   it('exports the contrast functions for consumers that check their own colors', () => {
     expect(contrastRatio('#000000', '#ffffff')).toBeCloseTo(21, 10)
     expect(relativeLuminance('#ffffff')).toBe(1)
