@@ -9,14 +9,17 @@
   "scripts": {
     "build": "npm run build -w @yelison/forma-ui && npm run build -w forma-ui-site",
     "lint": "oxlint packages site",
-    "format:check": "prettier --check .github packages site package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
+    "format:check": "prettier --check .changeset .github packages site package.json tsconfig.base.json .oxlintrc.json .prettierrc.json",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm test --workspaces --if-present",
     "test:browser": "npm run test:browser -w @yelison/forma-ui",
     "e2e": "npm run e2e -w forma-ui-site",
-    "pack:check": "npm run pack:check -w @yelison/forma-ui"
+    "pack:check": "npm run pack:check -w @yelison/forma-ui",
+    "changeset": "changeset",
+    "version-packages": "changeset version && npm install --package-lock-only"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.3",
     "oxlint": "^1.81.0",
     "prettier": "^3.9.9"
   },
