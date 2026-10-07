@@ -1,7 +1,7 @@
 import { act, screen, waitForElementToBeRemoved, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
-import { messages } from '../../i18n'
+import { messages } from '../../../test/messages'
 import { codeOf, renderReference, sectionsOfPage, textOutsideMessages } from '../referenceTestUtils'
 
 const tip = 'Opens the full reference.'

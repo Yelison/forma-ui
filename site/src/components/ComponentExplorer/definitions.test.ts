@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { messages } from '../../i18n'
+import { messages } from '../../../test/messages'
 import { combinations } from './combinations'
 import { componentDefinitions, defaultValues, type Translate } from './definitions'
 import { formatJsx } from './formatJsx'

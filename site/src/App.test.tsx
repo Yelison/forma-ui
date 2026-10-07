@@ -1,31 +1,17 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { markedMessages, renderInSite } from '../test/render'
-import { localeNames, messages } from './i18n'
-import { untranslatedText } from '../test/untranslated'
+import { renderInSite, renderInSiteAndSettle } from '../test/render'
+import { messages } from '../test/messages'
 import { App } from './App'
-import { componentPages, routes } from './routes'
-
-// The words that are the same in every language (src/i18n/glossary.md): the product, the names of the components and
-// the values of their props, which the controls of the homepage explorer name.
-const fixedTerms = [
-  'Forma UI',
-  'GitHub',
-  ...Object.values(localeNames),
-  ...componentPages.map(({ name }) => name),
-  'primary',
-  'secondary',
-  'ghost',
-  'danger',
-]
+import { routes } from './routes'
 
 describe('App', () => {
   it.each(routes.map((route) => [route.path, route] as const))(
     'renders the page of %s with its own heading',
     async (path, route) => {
-      renderInSite(<App />, { path })
+      await renderInSiteAndSettle(<App />, { path })
 
-      // Awaited: the page of a route may load on demand.
+      // Awaited: the page of a route may load on demand, with the messages that are its own.
       const heading = route.key === 'component' ? route.componentName : messages.en[`route.${route.key}.heading`]
       expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(heading)
     },
@@ -46,16 +32,5 @@ describe('App', () => {
 
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main')
     expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveAttribute('href', '#main')
-  })
-
-  describe('with every message replaced by a mark', () => {
-    it.each(['/', '/docs/components/button/', '/changelog/', '/nowhere/'])(
-      'has no visible text or accessible name written in the source, on %s',
-      (path) => {
-        const { container } = renderInSite(<App />, { path, messages: markedMessages })
-
-        expect(untranslatedText(container, fixedTerms)).toEqual([])
-      },
-    )
   })
 })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { messages } from '../../i18n'
+import { messages } from '../../../test/messages'
 import { codeLines } from './codeLines'
 import { componentDefinitions } from './definitions'
 

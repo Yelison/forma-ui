@@ -53,7 +53,8 @@ test.describe('the language switcher in the top bar', () => {
   test('remembers the choice: a reload opens in the language chosen, whatever the browser says', async ({ page }) => {
     await trigger(page).click()
     await spanish(page).click()
-    expect(await page.evaluate(() => localStorage.getItem('forma-ui-locale'))).toBe('es')
+    // The choice is kept once the messages of the language have arrived and the page has changed.
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('forma-ui-locale'))).toBe('es')
 
     await page.reload()
 

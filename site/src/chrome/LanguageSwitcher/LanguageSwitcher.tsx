@@ -13,7 +13,7 @@ const options = locales.map((locale) => ({ value: locale, label: localeNames[loc
 /** The language of the site: a choice between the languages it has, each named in itself. */
 export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
   const intl = useIntl()
-  const { locale, setLocale } = useLocale()
+  const { locale, setLocale, failedChanges } = useLocale()
 
   return (
     <PopoverSwitcher
@@ -24,6 +24,7 @@ export function LanguageSwitcher({ className }: LanguageSwitcherProps) {
       value={locale}
       onChange={setLocale}
       announcement={intl.formatMessage({ id: 'language.changed' })}
+      notice={failedChanges > 0 ? intl.formatMessage({ id: 'language.changeFailed' }) : undefined}
     />
   )
 }

@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { renderInSite } from '../../../test/render'
+import { renderAndSettle, renderInSite } from '../../../test/render'
 import { IntlRoot } from '../../i18n'
 import { LanguageSwitcher } from '../LanguageSwitcher'
 import { themeStorageKey, themeStore } from '../../theme'
@@ -116,7 +116,7 @@ describe('ThemeSwitcher', () => {
 
     // The drawer holds both switchers and its regions are heard: the theme did not change when the language did.
     it('is emptied, not translated, when the language changes after it, and the language announces itself', async () => {
-      render(
+      await renderAndSettle(
         <IntlRoot>
           <ThemeSwitcher />
           <LanguageSwitcher />
@@ -128,7 +128,7 @@ describe('ThemeSwitcher', () => {
       expect(themeStatus).toHaveTextContent('Theme changed to dark')
       await userEvent.click(option('Español'))
 
-      expect(languageStatus).toHaveTextContent('Idioma cambiado a español')
+      await waitFor(() => expect(languageStatus).toHaveTextContent('Idioma cambiado a español'))
       expect(themeStatus).toBeEmptyDOMElement()
     })
 

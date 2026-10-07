@@ -63,3 +63,22 @@ export function headScript(heads: Readonly<Record<string, PageHead>>): string {
     `if(meta)meta.setAttribute("content",head.description)}}catch{}`
   )
 }
+
+/**
+ * The catalogue script: for an inline `<script>` after `headScript`. It adds a `<link rel="modulepreload">` to `<head>`
+ * for each URL that `hrefs` lists for the language the page opens in (the `<html lang>` that `localeScript` set before
+ * it), so the browser fetches the messages of the page beside the app instead of after it. The app asks for them with
+ * `import()`, which a preload of the same URL, in the same CORS mode (an empty `crossorigin`), answers.
+ *
+ * The language is only known to a script, not to the HTML, which is why the tags are not written into it: a link for
+ * each language would download the one the visitor does not read. A language with no list, such as one the site does
+ * not have, preloads nothing. Like the other first-paint scripts it leaves no global behind and never throws.
+ */
+export function catalogPreloadScript(hrefs: Readonly<Record<string, readonly string[]>>): string {
+  return (
+    // A language that is not a key (`fr`, `__proto__`) finds nothing a loop can run over: the `try` is what ends it.
+    `try{for(const href of ${literal(hrefs)}[document.documentElement.lang]??[]){` +
+    `const link=document.createElement("link");link.rel="modulepreload";link.setAttribute("crossorigin","");` +
+    `link.href=href;document.head.append(link)}}catch{}`
+  )
+}

@@ -1,6 +1,6 @@
 import { createIntl } from 'react-intl'
 import { describe, expect, it } from 'vitest'
-import { messages } from '../i18n'
+import { messages } from '../../test/messages'
 import { componentPages, routes } from '../routes'
 import { searchEntries } from './searchEntries'
 

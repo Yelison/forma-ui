@@ -1,6 +1,6 @@
 import { createContext, runInContext } from 'node:vm'
 import { describe, expect, it } from 'vitest'
-import { headScript, localeScript } from './localeScript'
+import { catalogPreloadScript, headScript, localeScript } from './localeScript'
 import { defaultLocale, localeStorageKey, locales, resolveLocale } from './locale'
 
 const options = { storageKey: localeStorageKey, locales, fallback: defaultLocale }
@@ -216,6 +216,89 @@ describe('headScript', () => {
 
     it.each(hostile)('still sets that exact text: %j', (hostileHeads) => {
       expect(openHead(headScript(hostileHeads), { lang: 'es' })).toMatchObject(hostileHeads.es)
+    })
+  })
+})
+
+interface PreloadedLink {
+  rel?: string
+  href?: string
+  attributes: Record<string, string>
+}
+
+/** Runs a catalogue script the way a page does, in the language `lang`: returns the links it put in <head>. */
+function openCatalogs(script: string, lang: string) {
+  const links: PreloadedLink[] = []
+  const document = {
+    documentElement: { lang },
+    createElement: (): PreloadedLink => {
+      const link: PreloadedLink & { setAttribute: (name: string, value: string) => void } = {
+        attributes: {},
+        setAttribute: (name, value) => (link.attributes[name] = value),
+      }
+      return link
+    },
+    head: { append: (link: PreloadedLink) => links.push(link) },
+  }
+  const context = createContext({ document })
+  runInContext(script, context)
+  return { links, context }
+}
+
+describe('catalogPreloadScript', () => {
+  const hrefs = { en: ['/assets/common.en.js'], es: ['/assets/common.es.js', '/assets/foundations.es.js'] }
+
+  it('preloads, as modules, the files of the language in use', () => {
+    const { links } = openCatalogs(catalogPreloadScript(hrefs), 'es')
+
+    expect(links.map(({ rel, href }) => ({ rel, href }))).toEqual([
+      { rel: 'modulepreload', href: '/assets/common.es.js' },
+      { rel: 'modulepreload', href: '/assets/foundations.es.js' },
+    ])
+  })
+
+  // `import()` fetches a module with CORS in the anonymous mode: a preload in another mode would not be reused.
+  it('asks for them in the anonymous CORS mode, which is the one the app imports them with', () => {
+    const { links } = openCatalogs(catalogPreloadScript(hrefs), 'en')
+
+    expect(links.map(({ attributes }) => attributes)).toEqual([{ crossorigin: '' }])
+  })
+
+  it.each(['fr', '__proto__', 'constructor', 'toString', ''])('preloads nothing for the language %j', (lang) => {
+    expect(openCatalogs(catalogPreloadScript(hrefs), lang).links).toEqual([])
+  })
+
+  it('does not throw when the page has no document to read', () => {
+    expect(() => runInContext(catalogPreloadScript(hrefs), createContext({}))).not.toThrow()
+  })
+
+  it('leaves nothing behind in the global scope, so it can run twice and clash with nothing', () => {
+    const script = catalogPreloadScript(hrefs)
+    const { context } = openCatalogs(script, 'es')
+
+    // The only thing in the context is the document it was given, after the script has run, and after it runs again.
+    expect(Object.keys(context)).toEqual(['document'])
+    expect(() => runInContext(script, context)).not.toThrow()
+    expect(Object.keys(context)).toEqual(['document'])
+  })
+
+  describe('with a hostile file name', () => {
+    const hostile = hostileKeys.map((text) => ({ es: [text] }))
+
+    it.each(hostile)('stays one script element, with nothing injected: %j', (hostileHrefs) => {
+      const page = new DOMParser().parseFromString(
+        `<!doctype html><head><script>${catalogPreloadScript(hostileHrefs)}</script></head>`,
+        'text/html',
+      )
+      expect(page.querySelectorAll('script')).toHaveLength(1)
+      expect(page.querySelector('img')).toBeNull()
+      expect(page.body.textContent).toBe('')
+    })
+
+    it.each(hostile)('still preloads that exact text: %j', (hostileHrefs) => {
+      expect(openCatalogs(catalogPreloadScript(hostileHrefs), 'es').links.map(({ href }) => href)).toEqual(
+        hostileHrefs.es,
+      )
     })
   })
 })

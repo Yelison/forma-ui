@@ -1,6 +1,6 @@
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { messages } from '../../i18n'
+import { messages } from '../../../test/messages'
 import { codeOf, renderReference, sectionsOfPage, textOutsideMessages } from '../referenceTestUtils'
 
 describe('the reference of IconButton', () => {

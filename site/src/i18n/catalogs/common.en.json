@@ -4,6 +4,7 @@
   "drawer.title": "Menu",
   "explorer.size.proposed": "{value} px · Proposed",
   "footer.tagline": "Forma UI · Built with care",
+  "language.changeFailed": "The language could not be loaded. The page stays in English.",
   "language.changed": "Language changed to English",
   "language.label": "Language",
   "language.trigger": "Language: English",

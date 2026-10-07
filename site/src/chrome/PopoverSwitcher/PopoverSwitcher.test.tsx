@@ -16,7 +16,7 @@ const options: SwitcherOption<Fruit>[] = [
 ]
 
 // Several switchers share one value, as the one of the top bar and the one of the drawer share the language.
-function Switchers({ count = 1 }: { count?: number }) {
+function Switchers({ count = 1, notice }: { count?: number; notice?: string }) {
   const [value, setValue] = useState<Fruit>('apple')
   return Array.from({ length: count }, (_, index) => (
     <div key={index} data-testid={`switcher-${index}`}>
@@ -27,6 +27,7 @@ function Switchers({ count = 1 }: { count?: number }) {
         value={value}
         onChange={setValue}
         announcement={`Fruit changed to ${value}`}
+        notice={notice}
       />
     </div>
   ))
@@ -210,6 +211,17 @@ describe('PopoverSwitcher', () => {
 
       await userEvent.click(option('Poire', 0))
       expect(status(0)).toHaveTextContent('Fruit changed to pear')
+    })
+
+    it('says the notice instead of the announcement while it has one, and gives the announcement back when it goes', async () => {
+      const { rerender } = render(<Switchers notice="Could not change" />)
+      expect(status()).toHaveTextContent('Could not change')
+
+      await userEvent.click(option('Poire'))
+      expect(status()).toHaveTextContent('Could not change')
+
+      rerender(<Switchers />)
+      expect(status()).toHaveTextContent('Fruit changed to pear')
     })
   })
 })
