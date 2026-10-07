@@ -12,8 +12,8 @@ export function untranslatedText(root: HTMLElement, fixedTerms: readonly string[
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT)
   for (let node = walker.nextNode(); node !== null; node = walker.nextNode()) {
     const text = node.textContent?.trim() ?? ''
-    // A decorative glyph (aria-hidden) says nothing in any language.
-    if (text !== '' && !isFixed(text) && !node.parentElement?.closest('[aria-hidden="true"]')) found.push(text)
+    // A decorative glyph (aria-hidden) says nothing in any language, and code is never translated (the glossary).
+    if (text !== '' && !isFixed(text) && !node.parentElement?.closest('[aria-hidden="true"], pre')) found.push(text)
   }
 
   for (const element of root.querySelectorAll('[aria-label], [title], [alt], [placeholder]')) {

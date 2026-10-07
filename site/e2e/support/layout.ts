@@ -24,13 +24,14 @@ export async function overflow(page: Page) {
 }
 
 /**
- * The controls under `scope` that are visible and smaller than `minimum` pixels in either direction, named by their
- * label and size. Empty when every target is big enough to hit with a thumb.
+ * The controls under `scope` (links and buttons, or the `controls` selector) that are visible and smaller than
+ * `minimum` pixels in either direction, named by their label and size. Empty when every target is big enough to hit
+ * with a thumb.
  */
-export async function smallTargets(scope: Locator, minimum = 44): Promise<string[]> {
-  return scope.locator('a, button').evaluateAll(
-    (controls, least) =>
-      controls.flatMap((control) => {
+export async function smallTargets(scope: Locator, minimum = 44, controls = 'a, button'): Promise<string[]> {
+  return scope.locator(controls).evaluateAll(
+    (found, least) =>
+      found.flatMap((control) => {
         const { width, height } = control.getBoundingClientRect()
         // A control that is not displayed (a closed list, the bar below 768 px) has no box.
         if (width === 0 || height === 0 || (width >= least && height >= least)) return []

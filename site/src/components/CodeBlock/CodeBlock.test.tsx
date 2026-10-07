@@ -25,6 +25,12 @@ describe('CodeBlock', () => {
     })
   })
 
+  it('names the figure by its caption, so that the code is found by what it is the code of', () => {
+    render(<CodeBlock code={code} label="JSX · Button" />)
+
+    expect(screen.getByRole('figure', { name: 'JSX · Button' })).toHaveTextContent('<Button variant="primary">')
+  })
+
   it('stays out of the tab order and the landmarks while the code fits', () => {
     laidOutAs(200, 200)
     render(<CodeBlock code={code} label="JSX · Button" />)

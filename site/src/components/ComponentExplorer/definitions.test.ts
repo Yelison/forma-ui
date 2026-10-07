@@ -26,11 +26,11 @@ describe('the explorer components', () => {
     const [button] = componentDefinitions
     const size = button?.controls.find(({ id }) => id === 'size')
 
-    expect(size?.options).toEqual([
-      { value: 'default' },
-      { value: '32', proposed: true },
-      { value: '40', proposed: true },
-      { value: '48', proposed: true },
+    expect(size?.options.map(({ value, proposed }) => [value, proposed])).toEqual([
+      ['default', undefined],
+      ['32', true],
+      ['40', true],
+      ['48', true],
     ])
   })
 

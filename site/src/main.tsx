@@ -1,5 +1,6 @@
 import '@yelison/forma-ui/tokens.css'
 import '@yelison/forma-ui/base.css'
+import '@yelison/forma-ui/styles.css'
 import './styles/site.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
