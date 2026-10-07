@@ -73,6 +73,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-12);
+  /* The height of the stage in the 390 px frame of page 07 (224 px). The tallest specimen, an input with its error, is
+     shorter, so no state makes the stage grow and move the controls under it; the e2e that cycles every option checks it. */
   min-height: 14rem;
   padding: var(--space-24);
   background: var(--color-bg);
@@ -145,6 +147,7 @@
     grid-template-columns: minmax(0, 1.27fr) minmax(0, 1fr);
   }
 
+  /* 280 px, the height of the stage in the 1024 and 1440 px frames. */
   .stage {
     min-height: 17.5rem;
   }
