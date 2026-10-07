@@ -241,24 +241,56 @@ model_display() {
   printf '%s%s\n' "$(tr '[:lower:]' '[:upper:]' <<<"${out:0:1}")" "${out:1}"
 }
 
-# Model the agent's session header reports (the part before " with … effort"), or nothing.
-agent_model() { agent_effort "$1" | sed -E 's/^ +//; s/ with [a-z]+ effort$//'; }
+# session_fields: reads a screen on stdin and prints "MODEL|LEVEL" (either may be empty). A fresh session draws a header
+# ("Sonnet 5.5 with medium effort"); a resumed one (`--continue`) draws none, so the model comes from the status bar
+# at the bottom ("Sonnet 5.5  ⎇ branch") and the level from the spinner's "thinking with high effort", when there is one.
+# Only the last SESSION_TAIL_LINES lines count and every pattern is anchored to its own line: a resumed session redraws
+# the conversation, which may quote these very phrases, and the pane may still hold the header of the session before a
+# restart (set-effort.sh).
+SESSION_TAIL_LINES=12
+session_fields() {
+  local screen model level
+  screen=$(grep -v '^[[:space:]]*$' | tail -n "$SESSION_TAIL_LINES")
+  model=$(grep -E '^[[:space:]│╭╰]*[A-Z][A-Za-z]* [0-9]+(\.[0-9]+)? with [a-z]+ effort[[:space:]│╮╯]*$' <<<"$screen" | tail -n 1 || true)
+  if [ -n "$model" ]; then
+    level=$(sed -E 's/.* with ([a-z]+) effort[[:space:]│╮╯]*$/\1/' <<<"$model")
+    model=$(sed -E 's/^[[:space:]│╭╰]*//; s/ with [a-z]+ effort[[:space:]│╮╯]*$//' <<<"$model")
+  else
+    model=$(grep '⎇' <<<"$screen" | sed -E 's/[[:space:]]*⎇.*//; s/^[[:space:]]+//' \
+      | grep -E '^[A-Z][A-Za-z]* [0-9]+(\.[0-9]+)?$' | tail -n 1 || true)
+    # The spinner: a glyph that opens the line, or the "· " inside its parentheses. Lowercase, like Claude Code draws it.
+    level=$(grep -E '(^[[:space:]]*[^[:alnum:][:space:]]+|·) thinking with [a-z]+ effort' <<<"$screen" \
+      | sed -E 's/.*thinking with ([a-z]+) effort.*/\1/' | tail -n 1 || true)
+  fi
+  printf '%s|%s\n' "$model" "$level"
+}
 
-# Effort level the agent's session header reports ("… with medium effort"), or nothing.
-# The header may not be drawn yet right after `herdr agent start`, so read it for a few seconds; never fail,
-# because callers run under `set -euo pipefail` and an empty grep must not end the script before the brief is sent.
-agent_effort() {
-  local line attempt
+# agent_session WANT: "MODEL|LEVEL" of the agent's session, polled for a few seconds because nothing is drawn right after
+# `herdr agent start`; it stops as soon as WANT (model or level) is known. Never fails: callers run under
+# `set -euo pipefail` and an empty read must not end the script before the brief is sent.
+agent_session() {
+  local fields attempt
   for attempt in $(seq 1 "${HERDR_HEADER_ATTEMPTS:-20}"); do
-    line=$(herdr agent read "$1" --source recent-unwrapped --lines 400 2>/dev/null \
-      | grep -oE '[A-Za-z0-9. ]+ with [a-z]+ effort' | tail -n 1 || true)
-    if [ -n "$line" ]; then
-      printf '%s\n' "$line"
-      return 0
-    fi
+    fields=$(herdr agent read "$1" --source recent-unwrapped --lines 400 2>/dev/null | session_fields || true)
+    case $2 in
+      model) [ "${fields%%|*}" != "" ] && break ;;
+      level) [ "${fields#*|}" != "" ] && break ;;
+    esac
     [ "$attempt" -lt "${HERDR_HEADER_ATTEMPTS:-20}" ] && sleep 0.5
   done
-  return 0
+  printf '%s\n' "${fields:-|}"
+}
+
+# Model the agent's session reports, or nothing.
+agent_model() { agent_session "$1" model | cut -d'|' -f1; }
+
+# "<model> with <level> effort" as the session reports it, or nothing when the level is unknown. A level seen without
+# a model is reported for "an unknown model".
+agent_effort() {
+  local fields model level
+  fields=$(agent_session "$1" level)
+  model=${fields%%|*}; level=${fields#*|}
+  [ -z "$level" ] || printf '%s with %s effort\n' "${model:-Unknown model}" "$level"
 }
 
 # render_template FILE OPEN CLOSE [KEY=VALUE...]: prints FILE with every OPEN KEY CLOSE replaced by its value

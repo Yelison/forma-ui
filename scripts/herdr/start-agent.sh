@@ -81,17 +81,17 @@ if [ -n "$expected_model" ]; then
     update_task "$ID" '.model_verified = { at: $at, header: $h }' --arg at "$(utc_now)" --arg h "$shown"
   else
     update_task "$ID" 'del(.model_verified)'
-    log "warning: the task asks for $expected_model, the session header says '${shown:-nothing}': the model was not verified."
+    log "warning: the task asks for $expected_model, the session says '${shown:-nothing}': the model was not verified."
   fi
 fi
 expected=$(jq -r '.effort.level // empty' "$(task_json "$ID")")
 header=$(agent_effort "$NAME")
 if [ -n "$expected" ]; then
   if [[ $header == *" with $expected effort" ]]; then
-    log "Effort verified from the session header: $header"
+    log "Effort verified from the session: $header"
     update_task "$ID" '.effort.verified = { at: $at, header: $h }' --arg at "$(utc_now)" --arg h "$header"
   else
-    log "warning: expected '$expected' effort, the session header says '${header:-nothing}'."
+    log "warning: expected '$expected' effort, the session says '${header:-nothing}'."
     log "Check with: herdr agent prompt $NAME '/effort status'   (never send '/effort <level>': it saves to the user's settings)"
   fi
 fi

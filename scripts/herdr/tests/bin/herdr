@@ -27,7 +27,19 @@ case $cmd in
     lvl=$(jq -r '.modelSettings["claude-sonnet-5-5"].effortLevel // "medium"' "$wt/.claude/settings.local.json" 2>/dev/null || echo medium)
     mdl=$(jq -r '.model // "claude-sonnet-5-5"' "$wt/.claude/settings.local.json" 2>/dev/null || echo claude-sonnet-5-5)
     name=$(sed -E 's/^claude-//; s/-([0-9]+)-([0-9]+)(-[0-9]+)?$/ \1.\2/' <<<"$mdl")
-    echo "${FAKE_AGENT_MODEL:-${name^}} with $lvl effort" ;;
+    shown=${FAKE_AGENT_MODEL:-${name^}}
+    # FAKE_AGENT_SCREEN: what the session draws. A fresh one has the header, a resumed one (--continue) has none.
+    case ${FAKE_AGENT_SCREEN:-header} in
+      header) echo "$shown with $lvl effort" ;;
+      statusbar) printf 'resumed conversation\n%s  ⎇ feat/x\n' "$shown" ;;
+      thinking) printf '✻ thinking with %s effort\n%s  ⎇ feat/x\n' "$lvl" "$shown" ;;
+      none) echo "resumed conversation" ;;
+      # The conversation quotes the spinner's phrase; the real bar has no spinner line.
+      quoted) printf '● the spinner says thinking with high effort\n  printf "✻ thinking with high effort"\n\n  %s  ⎇ feat/x  │ usage —\n' "$shown" ;;
+      quoted-capital) printf '✻ Thinking with high effort\n\n  %s  ⎇ feat/x\n' "$shown" ;;
+      # The pane still holds the header of the session before a restart, far above the new bar.
+      stale) echo "$shown with low effort"; seq 1 20 | sed 's/^/● line /'; printf '  %s  ⎇ feat/x\n' "$shown" ;;
+    esac ;;
   "agent prompt") name=$1; printf '%s\t%s\n' "$name" "$2" >>"$S/prompts.log"; [ "$2" = "/exit" ] && { rm -f "$S/agents/$name"; echo "exit $name" >>"$S/events.log"; }; echo '{}' ;;
   "agent wait") exit 0 ;;
   "agent send-keys") exit 0 ;;

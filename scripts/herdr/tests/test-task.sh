@@ -97,6 +97,36 @@ check "model mismatch: not recorded as verified" test -z "$(jq -r '.model_verifi
 check "model mismatch: the agent still started" test -e "$T/state/agents/mb"
 check "model_display: IDs map to header names" test "$(. "$HERDR/common.sh"; model_display claude-sonnet-5-5; model_display claude-haiku-4-5-20251001)" = "$(printf 'Sonnet 5.5\nHaiku 4.5')"
 
+echo "== start-agent --continue: a resumed session has no header, so the status bar and the thinking line are read"
+mk_env; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2; SC=$(pick_slot "$SA" "$SB") || exit 2; SD=$(pick_slot "$SA" "$SB" "$SC") || exit 2
+for s in "header $SA" "statusbar $SB" "thinking $SC" "none $SD"; do
+  set -- $s
+  "$HERDR/new-task.sh" --id "scr-$1" --branch "feat/scr-$1" --slot "$2" --model claude-sonnet-5-5 --effort high --effort-reason r >/dev/null 2>&1
+done
+USED=
+tj() { jq -r "$2" "$T/root/tasks/scr-$1/task.json"; }
+out=$(FAKE_AGENT_SCREEN=header "$HERDR/start-agent.sh" --id scr-header --name sh 2>&1)
+check "header: model and effort verified" test "$(tj header '.model_verified.header')|$(tj header '.effort.verified.header')" = "Sonnet 5.5|Sonnet 5.5 with high effort"
+out=$(FAKE_AGENT_SCREEN=statusbar "$HERDR/start-agent.sh" --id scr-statusbar --name sb --continue 2>&1)
+check "status bar: the model is verified without a header" test "$(tj statusbar '.model_verified.header')" = "Sonnet 5.5"
+check "status bar: no thinking line, so the effort warning stays" says x "session says 'nothing'"
+out=$(FAKE_AGENT_SCREEN=thinking "$HERDR/start-agent.sh" --id scr-thinking --name st --continue 2>&1)
+check "thinking line: the model is verified" test "$(tj thinking '.model_verified.header')" = "Sonnet 5.5"
+check "thinking line: the effort is verified" test "$(tj thinking '.effort.verified.header')" = "Sonnet 5.5 with high effort"
+check "thinking line: no warning" bash -c "! grep -q warning <<<\"\$1\"" _ "$out"
+out=$(FAKE_AGENT_SCREEN=none "$HERDR/start-agent.sh" --id scr-none --name sn --continue 2>&1)
+check "nothing drawn: both warnings stay" test "$(grep -c 'was not verified\|expected .* effort' <<<"$out")" -eq 2
+check "nothing drawn: nothing is recorded" test -z "$(tj none '.model_verified // .effort.verified // empty')"
+for mode in quoted quoted-capital stale; do
+  "$HERDR/new-task.sh" --id "scr-$mode" --branch "feat/scr-$mode" --slot "$(pick_slot "$SA" "$SB" "$SC" "$SD" $USED)" --model claude-sonnet-5-5 --effort high --effort-reason r >/dev/null 2>&1
+  USED="$USED $(jq -r .slot "$T/root/tasks/scr-$mode/task.json")"
+  out=$(FAKE_AGENT_SCREEN=$mode "$HERDR/start-agent.sh" --id "scr-$mode" --name "s-$mode" --continue 2>&1)
+  check "$mode: the model still comes from the bar" test "$(tj "$mode" '.model_verified.header')" = "Sonnet 5.5"
+  check "$mode: the effort is not verified" test -z "$(tj "$mode" '.effort.verified // empty')"
+  check "$mode: the effort warning stays" says x "session says 'nothing'"
+done
+check "thinking line alone is not taken for a header" test "$(printf '✻ thinking with high effort\n' | { . "$HERDR/common.sh"; session_fields; })" = "|high"
+
 echo "== install step: HERDR_INSTALL_CMD in HERDR_INSTALL_DIR, skipped without a package.json"
 mk_env; SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2; SC=$(pick_slot "$SA" "$SB") || exit 2
 out=$(new inst-a --install --slot "$SA"); rc=$?
