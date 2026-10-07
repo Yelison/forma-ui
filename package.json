@@ -14,7 +14,7 @@
     "test": "npm test --workspaces --if-present",
     "test:browser": "npm run test:browser -w @yelison/forma-ui",
     "e2e": "npm run e2e -w forma-ui-site",
-    "pack:check": "npm pack --dry-run -w @yelison/forma-ui"
+    "pack:check": "npm run pack:check -w @yelison/forma-ui"
   },
   "devDependencies": {
     "oxlint": "^1.81.0",

@@ -4,5 +4,13 @@
     "types": ["node"],
     "resolveJsonModule": true
   },
-  "include": ["src", "test", "scripts/check-consumer.ts", "vite.config.ts", "vitest.browser.config.ts"]
+  "include": [
+    "src",
+    "test",
+    "scripts/check-consumer.ts",
+    "scripts/pack-check.ts",
+    "scripts/pack-check",
+    "vite.config.ts",
+    "vitest.browser.config.ts"
+  ]
 }
