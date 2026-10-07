@@ -24,4 +24,4 @@ To change the snapshot, pin a new Resolve commit and replace the whole directory
 
 ## Consumers
 
-Read by plan tasks 1.1 (DTCG token source and CSS generator: `tokens.css` and `global.css`), 1.2 (contrast contract on the token source: `contrast-pairs.json`) and 2.2 (icon and icon generation: `icon-paths.ts`). Nothing else edits these files.
+Read by plan tasks 1.1 (DTCG token source and CSS generator: `tokens.css` and `global.css`), 1.2 (contrast contract on the token source: `contrast-pairs.json`), 2.2 (icon and icon generation: `icon-paths.ts`) and 4.5 (the Foundations page of the site, which imports `contrast-pairs.json` to list and measure the documented pairs; an interim use until the package publishes the contract itself). Nothing else edits these files.
