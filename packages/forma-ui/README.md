@@ -49,3 +49,7 @@ rule:
   entry point in `node10`, `node16` (CommonJS and ESM) and `bundler`; the consumer is compiled under `bundler`; and
   `require()` of the entry point must load on Node 22.12+. The CSS and JSON subpaths have no declarations to check,
   and `node10` cannot resolve them because it ignores `exports`.
+- **One copy of React:** the packed `dist/index.js` imports only `react` and `react-dom` and holds no React code, and
+  the production bundle of a Vite consumer (`scripts/consumer/client.tsx`) resolves `react`, `react-dom` and
+  `scheduler` to one folder each. React inlined into the library cannot be seen from the module graph alone, so the
+  first half reads the file.
