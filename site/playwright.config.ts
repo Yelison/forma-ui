@@ -11,6 +11,8 @@ const BASE_URL = `http://localhost:${PORT}/forma-ui/`
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
+  // Two workers on the shared development machine, three on CI, which has it to itself.
+  workers: process.env.CI ? 3 : 2,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? 'github' : 'list',

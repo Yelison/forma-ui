@@ -66,6 +66,8 @@ export default defineConfig(({ command, mode, isPreview }) => ({
     strictPort: true,
   },
   test: {
+    // The machine is shared in development (see docs/development/herdr.md), so two workers; CI has it to itself.
+    maxWorkers: process.env.CI ? 3 : 2,
     environment: 'jsdom',
     setupFiles: ['./test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts'],

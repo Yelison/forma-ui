@@ -11,8 +11,8 @@
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json",
     "check:messages": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/check-messages.ts",
-    "test": "vitest run --maxWorkers=3",
-    "e2e": "playwright test --workers=3"
+    "test": "vitest run",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@yelison/forma-ui": "*",
