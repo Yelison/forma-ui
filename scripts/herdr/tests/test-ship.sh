@@ -5,7 +5,7 @@
 # Slots are chosen again for every scenario: other agents on the machine start and stop servers meanwhile.
 # mk [CHECKS [COMPOSE]]: CHECKS is HERDR_REQUIRED_CHECKS (default: build; "" is none), COMPOSE is HERDR_COMPOSE (default 0).
 mk() {
-  mk_env; private_ports; export HERDR_REQUIRED_CHECKS=${1-build} HERDR_COMPOSE=${2-0}
+  mk_env; export HERDR_REQUIRED_CHECKS=${1-build} HERDR_COMPOSE=${2-0}
   SA=$(pick_slot) || exit 2; SB=$(pick_slot "$SA") || exit 2; mk_impl "$SA"
   "$HERDR/new-review.sh" --task impl-a --slot "$SB" >/dev/null 2>"$T/err" || { echo "mk: new-review.sh failed: $(cat "$T/err")" >&2; exit 2; }
   echo pass >"$T/state/gh/checks"
@@ -175,7 +175,7 @@ s_noname() { mk; jq 'del(.name)' "$T/state/agents/rev-impl-a" >"$T/x" && mv "$T/
   out=$(ship); check "nameless agent: stops" test $? -ne 0
   check "nameless agent: the retry command deletes the branch too" says x 'remove-task.sh --id review-impl-a --volumes --delete-branch'; }
 # pick_slot must look at the ports the scenario uses (private_ports), not at the defaults.
-s_slots() { mk_env; private_ports; local first second port; first=$(pick_slot) || exit 2; port=$(port_of "$first" DEV_SERVER_PORT)
+s_slots() { mk_env; local first second port; first=$(pick_slot) || exit 2; port=$(port_of "$first" DEV_SERVER_PORT)
   check "slots: the ports checked are the private ones" test "$port" -ge 20000; mkdir -p "$T/srv"
   (cd "$T/srv" && exec python3 -m http.server "$port" --bind 127.0.0.1 >/dev/null 2>&1) & local pid=$!
   for _ in $(seq 1 25); do ss -ltnH | grep -q ":$port " && break; sleep 0.2; done

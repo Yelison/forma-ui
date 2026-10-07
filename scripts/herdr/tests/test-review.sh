@@ -26,11 +26,11 @@ out=$("$HERDR/new-review.sh" --task impl-a --slot "$SB" --points "$T/points.md" 
 check "first: rc 0" test $rc -eq 0
 check "first: uses the requested slot" test "$(jq -r .slot "$RB/task.json")" = "$SB"
 cmds=$(awk '/^Commands to run/{f=1} f&&/^```sh/{b=1;next} b&&/^```/{exit} b{print}' "$RB/brief.md")
-check "A1: review ports in the commands" grep -q "PLAYWRIGHT_PORT=$((4280 + SB)) npx playwright test" <<<"$cmds"
-check "A1: dev server port, both occurrences" test "$(grep -o "localhost:$((5280 + SB))" <<<"$cmds" | wc -l)" -eq 2
-check "A1: storybook and vite ports" grep -q "STORYBOOK_PORT=$((6080 + SB)) npx storybook dev -p $((6080 + SB))" <<<"$cmds" && grep -q "vite --port $((5280 + SB))" <<<"$cmds"
-check "A1: the header names the review's slot and ports" grep -q "^# Your slot ($SB): DEV_SERVER_PORT=$((5280 + SB)) PLAYWRIGHT_PORT=$((4280 + SB)) STORYBOOK_PORT=$((6080 + SB))" <<<"$cmds"
-check "A1: none of the implementer's ports" bash -c "! grep -Eq '\\b($((4280 + SA))|$((5280 + SA))|$((6080 + SA)))\\b' <<<'$cmds'"
+check "A1: review ports in the commands" grep -q "PLAYWRIGHT_PORT=$((B_PW + SB)) npx playwright test" <<<"$cmds"
+check "A1: dev server port, both occurrences" test "$(grep -o "localhost:$((B_DEV + SB))" <<<"$cmds" | wc -l)" -eq 2
+check "A1: storybook and vite ports" grep -q "STORYBOOK_PORT=$((B_SB + SB)) npx storybook dev -p $((B_SB + SB))" <<<"$cmds" && grep -q "vite --port $((B_DEV + SB))" <<<"$cmds"
+check "A1: the header names the review's slot and ports" grep -q "^# Your slot ($SB): DEV_SERVER_PORT=$((B_DEV + SB)) PLAYWRIGHT_PORT=$((B_PW + SB)) STORYBOOK_PORT=$((B_SB + SB))" <<<"$cmds"
+check "A1: none of the implementer's ports" bash -c "! grep -Eq '\\b($((B_PW + SA))|$((B_DEV + SA))|$((B_SB + SA)))\\b' <<<'$cmds'"
 check "A1: no Compose line when Compose is off" bash -c "! grep -qi 'compose' <<<'$cmds'"
 check "A1: the brief has no unfilled marker" bash -c "! grep -q '{{' '$RB/brief.md'"
 check "first: extra points" grep -q 'handling in /a/b#c' "$RB/brief.md"
@@ -50,8 +50,8 @@ check "ff: review moved" test "$(git -C "$R" rev-parse HEAD)" = "$(git -C "$W" r
 check "ff: same branch" test "$(git -C "$R" branch --show-current)" = "review/impl-a-$(git -C "$W" rev-parse --short=7 HEAD~1)"
 check "ff: brief mentions the fixes file" grep -q 'fixes-1.md' "$RB/brief-ronda-2.md"
 check "ff: sent to the reviewer" grep -q 'brief-ronda-2.md' "$T/state/prompts.log"
-check "round 2 commands also use the review's slot" bash -c "! grep -q 'PLAYWRIGHT_PORT=$((4280 + SA))' '$RB/brief-ronda-2.md'"
-check "round 2: the review's own port is there" grep -q "PLAYWRIGHT_PORT=$((4280 + SB))" "$RB/brief-ronda-2.md"
+check "round 2 commands also use the review's slot" bash -c "! grep -q 'PLAYWRIGHT_PORT=$((B_PW + SA))' '$RB/brief-ronda-2.md'"
+check "round 2: the review's own port is there" grep -q "PLAYWRIGHT_PORT=$((B_PW + SB))" "$RB/brief-ronda-2.md"
 echo "== B1: the round must be greater than the current one"
 git -C "$W" commit -q --allow-empty -m "fix: three"
 out=$("$HERDR/new-review.sh" --task impl-a --round 2 2>&1); check "round 2 again: refused" test $? -ne 0

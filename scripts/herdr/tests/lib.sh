@@ -29,17 +29,18 @@ slot_range() { ( . "$SCRIPTS_SRC/common.sh"; seq "$SLOT_MIN" "$SLOT_MAX" ); }
 slot_port_numbers() { ( . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | cut -d= -f2 ); }
 # port_of SLOT NAME: the port the configuration gives NAME in SLOT.
 port_of() { ( . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | sed -n "s/^$2=//p" ); }
-# The configuration variables of project.env: a test that wants one sets it after mk_env, never inherits it.
+# The configuration variables of project.env: a test that wants one sets it after mk_env, never inherits it. (mk_env then
+# sets HERDR_PORTS itself, see private_ports.)
 unset_config() { unset HERDR_PROJECT_ID HERDR_SLOT_MIN HERDR_SLOT_MAX HERDR_PORTS HERDR_REQUIRED_CHECKS HERDR_PR_ASSIGNEE \
   HERDR_INSTALL_DIR HERDR_INSTALL_CMD HERDR_COMPOSE HERDR_COMPOSE_FILE HERDR_REVIEW_MODEL HERDR_PROJECT_ENV HERDR_TASKS_ROOT; }
 
-# private_ports: HERDR_PORTS in a range of its own (random per call, 20000-29900, below the ephemeral ports). Scenarios that
-# cleanly retire a task need it: remove-task.sh refuses while anything listens on the slot's ports, and the real
-# bases (5280, 4280, 6080) are where other agents run Vite, Playwright and Storybook, so a listener that appears
-# there after the slot was picked made the same scenario pass or fail with the machine's load.
+# private_ports: HERDR_PORTS in a range of its own (random per call, 20000-29919, below the ephemeral ports), with the
+# bases left in B_DEV, B_PW and B_SB for the scenarios that state a port. mk_env calls it, so every scenario has it: remove-task.sh
+# refuses while anything listens on the slot's ports, and the real bases (5280, 4280, 6080) are where other agents run
+# Vite, Playwright and Storybook, so a listener that appeared there made a scenario pass or fail with the machine's load.
 private_ports() {
-  local base=$((20000 + RANDOM % 990 * 10))
-  export HERDR_PORTS="DEV_SERVER_PORT:$base:VITE PLAYWRIGHT_PORT:$((base + 10)):PW STORYBOOK_PORT:$((base + 20)):SB"
+  B_DEV=$((20000 + RANDOM % 990 * 10)); B_PW=$((B_DEV + 10)); B_SB=$((B_DEV + 20))
+  export HERDR_PORTS="DEV_SERVER_PORT:$B_DEV:VITE PLAYWRIGHT_PORT:$B_PW:PW STORYBOOK_PORT:$B_SB:SB"
 }
 
 # Ports of a slot that something already listens on belong to other agents on this machine: pick slots that are free.
@@ -74,6 +75,7 @@ mk_env() {
   ) || return 1
   mkdir -p "$T/root" "$T/state"
   unset_config
+  private_ports
   export PATH="$TESTS_DIR/bin:$PATH"
   export HERDR_ENV=1 HERDR_TASKS_ROOT="$T/root" FAKE_STATE="$T/state" FAKE_REMOTE="$T/remote.git"
   export HERDR_HEADER_ATTEMPTS=1 HERDR_MAX_LOAD=1000 HERDR_POLL_SECONDS=0 HERDR_SHIP_TIMEOUT_SECONDS=5
