@@ -27,6 +27,14 @@ const references: Reference[] = [
   },
   { slug: 'badge', name: 'Badge' },
   {
+    slug: 'tooltip',
+    name: 'Tooltip',
+    open: async (page) => {
+      await page.getByRole('region', { name: 'States' }).getByRole('button', { name: 'More info' }).first().focus()
+      await expect(page.getByRole('tooltip')).toBeVisible()
+    },
+  },
+  {
     slug: 'input',
     name: 'Input',
     open: async (page) => {
@@ -79,6 +87,30 @@ for (const reference of references) {
           // The library's own controls are 42 px high from 768 px, which is theirs to decide.
           if (width < 768) expect(await smallTargets(page.getByRole('main')), `${width} px`).toEqual([])
         }
+      })
+    }
+
+    if (reference.name === 'Tooltip') {
+      test('closes the tooltip with the first Escape and the dialog with the second, and gives back the focus', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const opener = page.getByRole('button', { name: 'Open the dialog' })
+        await opener.click()
+        const dialog = page.getByRole('dialog', { name: 'Save the name' })
+        await expect(dialog.getByRole('textbox', { name: 'Full name' })).toBeFocused()
+
+        await page.keyboard.press('Tab') // Cancel
+        await page.keyboard.press('Tab') // Save: its tooltip opens with the focus
+        await expect(page.getByRole('tooltip')).toBeVisible()
+        await page.keyboard.press('Escape')
+        await expect(page.getByRole('tooltip')).toBeHidden()
+        await expect(dialog).toBeVisible()
+        await expect(dialog.getByRole('button', { name: 'Save' })).toBeFocused()
+
+        await page.keyboard.press('Escape')
+        await expect(dialog).toBeHidden()
+        await expect(opener).toBeFocused()
       })
     }
 

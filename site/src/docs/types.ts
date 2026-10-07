@@ -25,10 +25,13 @@ export type OwnProps<Props, Tag extends ElementType> = Exclude<keyof Props, keyo
 export interface ComponentApi {
   /** The props the library adds, one entry for each. */
   own: Readonly<Record<string, PropDoc>>
-  /** The native attributes whose behavior the component changes, which are worth a row of their own. */
-  changed: Readonly<Record<string, PropDoc>>
+  /**
+   * The native attributes whose behavior the component changes, which are worth a row of their own. A component that
+   * renders no element of its own (Tooltip, Dialog's props) has none, and the page shows no group for them.
+   */
+  changed?: Readonly<Record<string, PropDoc>>
   /** What happens to every other native attribute of the element, said once for all of them. */
-  others: MessageId
+  others?: MessageId
   /**
    * Other components that the page documents because the component is made of them or is used with them (Field, for
    * Input): the props of each, all of them its own.
