@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Route, Routes, useLocation } from 'react-router'
 import { Layout } from './chrome/Layout'
+import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
 import { PagePending } from './pages/PagePending'
 import { RoutePage } from './pages/RoutePage'
@@ -9,7 +10,7 @@ import { routes } from './routes'
 // The Foundations page carries the package's token file and the contrast contract, which no other page reads: it loads
 // when its route is visited, so the other pages do not pay for it. A direct link preloads its chunk from the route's
 // HTML (scripts/emit-route-html.ts, which lists the lazy pages); a client-side navigation shows the placeholder, which
-// holds the height of a screen, until it arrives.
+// holds the height of a screen, until it arrives. The homepage is not lazy: it is the first screen of most visits.
 const Foundations = lazy(() => import('./pages/Foundations').then(({ Foundations }) => ({ default: Foundations })))
 
 /** The site: one page for each route of the manifest, and the not-found page for any other path. */
@@ -27,7 +28,13 @@ export function App() {
             <Route
               key={route.path}
               path={route.path}
-              element={route.key === 'foundations' ? <Foundations route={route} /> : <RoutePage route={route} />}
+              element={
+                route.key === 'foundations' ? (
+                  <Foundations route={route} />
+                ) : (
+                  <RoutePage route={route}>{route.key === 'home' && <Home />}</RoutePage>
+                )
+              }
             />
           ))}
           <Route path="*" element={<NotFound />} />

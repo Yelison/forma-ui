@@ -6,8 +6,18 @@ import { untranslatedText } from '../test/untranslated'
 import { App } from './App'
 import { componentPages, routes } from './routes'
 
-// The words that are the same in every language (src/i18n/glossary.md).
-const fixedTerms = ['Forma UI', 'GitHub', ...Object.values(localeNames), ...componentPages.map(({ name }) => name)]
+// The words that are the same in every language (src/i18n/glossary.md): the product, the names of the components and
+// the values of their props, which the controls of the homepage explorer name.
+const fixedTerms = [
+  'Forma UI',
+  'GitHub',
+  ...Object.values(localeNames),
+  ...componentPages.map(({ name }) => name),
+  'primary',
+  'secondary',
+  'ghost',
+  'danger',
+]
 
 describe('App', () => {
   it.each(routes.map((route) => [route.path, route] as const))(

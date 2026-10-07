@@ -16,7 +16,8 @@ export interface CodeBlockProps {
  * highlighter that would color it costs far more than the rest of the block.
  *
  * A long line scrolls inside the block. Only then it becomes a focusable region, named by the caption, so that a
- * keyboard user can scroll it; a block that fits stays out of the tab order.
+ * keyboard user can scroll it; a block that fits stays out of the tab order. The figure takes the caption as its name
+ * as well, because not every screen reader names a figure by its `figcaption`.
  */
 export function CodeBlock({ code, label, minLines }: CodeBlockProps) {
   const captionId = useId()
@@ -24,7 +25,7 @@ export function CodeBlock({ code, label, minLines }: CodeBlockProps) {
   const scrolls = useScrollsHorizontally(codeRef, code)
 
   return (
-    <figure className={styles.block}>
+    <figure className={styles.block} aria-labelledby={captionId}>
       <figcaption id={captionId} className={styles.caption}>
         {label}
       </figcaption>

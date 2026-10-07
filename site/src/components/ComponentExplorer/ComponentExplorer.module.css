@@ -1,0 +1,166 @@
+/*
+ * The explorer card of page 07: the component selector, the specimen beside its code, and the controls. Below 768 px
+ * the stage and the code stack, as in the 390 px frame.
+ */
+.explorer {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+}
+
+.selector,
+.controls {
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-16);
+  border: 0;
+}
+
+.selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* The radio inside is out of sight but stays in the tab order; the label is what a pointer and the eye meet. */
+.choice {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.choiceName {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-height: var(--control-height);
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-control);
+  color: var(--color-muted);
+  font: var(--font-label);
+  overflow-wrap: anywhere;
+}
+
+.choice:hover .choiceName {
+  background: var(--color-surface-hover);
+}
+
+/* The selected one is told by its weight and its underline as well as by its color. */
+.choice:has(:checked) .choiceName {
+  background: var(--color-blue-bg);
+  box-shadow: inset 0 calc(-1 * var(--space-2)) 0 currentColor;
+  color: var(--color-blue-ink);
+  font: var(--font-strong);
+}
+
+.choice:has(:focus-visible) .choiceName {
+  outline: var(--focus-ring);
+  outline-offset: var(--space-2);
+}
+
+.workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12);
+  min-height: 14rem;
+  padding: var(--space-24);
+  background: var(--color-bg);
+}
+
+/* What the stage shows is centered in it, and never wider than the card. */
+.specimen {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+}
+
+/* A field is as wide as its input, up to a comfortable measure. */
+.fieldSpecimen {
+  width: min(100%, 20rem);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-12);
+}
+
+.control {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.controlLabel {
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+.select {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0 var(--space-12);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: var(--font-body);
+}
+
+.select:hover:not(:focus) {
+  background: var(--color-surface-hover);
+}
+
+.select:focus-visible {
+  border-color: var(--color-focus);
+  outline: var(--focus-ring);
+  outline-offset: 0;
+}
+
+.reset {
+  flex: 1 1 100%;
+}
+
+@media (min-width: 768px) {
+  .selector {
+    flex-direction: row;
+  }
+
+  .workbench {
+    grid-template-columns: minmax(0, 1.27fr) minmax(0, 1fr);
+  }
+
+  .stage {
+    min-height: 17.5rem;
+  }
+
+  .control {
+    flex: 1 1 12rem;
+    max-width: 22rem;
+  }
+
+  .reset {
+    flex: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .choiceName {
+    transition: background-color var(--duration-fast) ease;
+  }
+}

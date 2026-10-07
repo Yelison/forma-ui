@@ -11,12 +11,19 @@ export type ControlId = 'variant' | 'tone' | 'size' | 'state'
 
 export interface ControlOption {
   readonly value: string
+  /**
+   * The message that names the option, which receives the `value`. An option without one is named by its value: the
+   * value of a `variant` or a `tone` is code, which the glossary keeps in every language.
+   */
+  readonly label?: MessageId
   /** Not in the library yet (D15): the option is listed, disabled, and cannot be chosen. */
   readonly proposed?: true
 }
 
 export interface Control {
   readonly id: ControlId
+  /** The message that names the control. */
+  readonly label: MessageId
   /** The first option is the default and is never a proposed one. */
   readonly options: readonly ControlOption[]
 }
@@ -65,7 +72,12 @@ const inputStates = ['default', 'error', 'disabled', 'readOnly'] as const
 const badgeTones = ['neutral', 'blue', 'green', 'amber', 'red'] as const satisfies readonly BadgeTone[]
 
 const options = (values: readonly string[]): readonly ControlOption[] => values.map((value) => ({ value }))
-const proposed = (value: string): ControlOption => ({ value, proposed: true })
+const proposed = (value: string): ControlOption => ({ value, label: 'explorer.size.proposed', proposed: true })
+
+/** The states of a control are words, not code: each has a message. */
+const states = <State extends 'default' | 'disabled' | 'loading' | 'error' | 'readOnly'>(
+  values: readonly State[],
+): readonly ControlOption[] => values.map((value) => ({ value, label: `explorer.state.${value}` }))
 
 /** The value chosen for a control when it is one of the allowed ones, and the first of them otherwise. */
 function pick<T extends string>(allowed: readonly [T, ...T[]], value: string | undefined): T {
@@ -75,10 +87,14 @@ function pick<T extends string>(allowed: readonly [T, ...T[]], value: string | u
 const button: ComponentDefinition = {
   name: 'Button',
   controls: [
-    { id: 'variant', options: options(buttonVariants) },
+    { id: 'variant', label: 'explorer.control.variant', options: options(buttonVariants) },
     // Button has one height (`--button-height`). 32, 40 and 48 are a proposal that no consumer has adopted.
-    { id: 'size', options: [{ value: 'default' }, proposed('32'), proposed('40'), proposed('48')] },
-    { id: 'state', options: options(buttonStates) },
+    {
+      id: 'size',
+      label: 'explorer.control.size',
+      options: [{ value: 'default', label: 'explorer.size.default' }, proposed('32'), proposed('40'), proposed('48')],
+    },
+    { id: 'state', label: 'explorer.control.state', options: states(buttonStates) },
   ],
   specimen(values, translate) {
     const state = pick(buttonStates, values.state)
@@ -98,7 +114,7 @@ const button: ComponentDefinition = {
 
 const input: ComponentDefinition = {
   name: 'Input',
-  controls: [{ id: 'state', options: options(inputStates) }],
+  controls: [{ id: 'state', label: 'explorer.control.state', options: states(inputStates) }],
   specimen(values, translate) {
     const state = pick(inputStates, values.state)
     return {
@@ -117,7 +133,7 @@ const input: ComponentDefinition = {
 
 const badge: ComponentDefinition = {
   name: 'Badge',
-  controls: [{ id: 'tone', options: options(badgeTones) }],
+  controls: [{ id: 'tone', label: 'explorer.control.tone', options: options(badgeTones) }],
   specimen(values, translate) {
     const tone = pick(badgeTones, values.tone)
     // The label says what the tone means: color alone does not.
