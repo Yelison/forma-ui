@@ -227,7 +227,7 @@ describe('renderRouteHtml catalogue preloads', () => {
     expect(preloadedIn(html, 'fr')).toEqual([])
   })
 
-  it('comes after the language script and the meta description, and before the app and the stylesheet', () => {
+  it('comes after the meta description, and before the app and the end of the head', () => {
     const script = html.indexOf('/forma-ui/en/common.js')
 
     expect(script).toBeGreaterThan(html.indexOf('<meta name="description"'))

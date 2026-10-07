@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { routes } from '../src/routes'
+import { recordShifts, totalShift } from './support/shift'
 
 // Foundations and the catalog load on demand. These specs hold the two promises that make that safe: a direct link
 // fetches the page beside the app, and neither a direct link nor a client-side navigation moves the layout while the
@@ -26,24 +27,6 @@ async function holdChunk(page: Page, { chunk }: LazyPage) {
   })
   return release
 }
-
-/** Records every layout shift that no input caused, from the first paint on. */
-const recordShifts = (page: Page) =>
-  page.addInitScript(() => {
-    const shifts: number[] = []
-    Object.assign(window, { shifts })
-    new PerformanceObserver((list) => {
-      for (const entry of list.getEntries() as (PerformanceEntry & { value: number; hadRecentInput: boolean })[]) {
-        if (!entry.hadRecentInput) shifts.push(entry.value)
-      }
-    }).observe({ type: 'layout-shift', buffered: true })
-  })
-
-const totalShift = (page: Page) =>
-  page.evaluate(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 300))
-    return (window as unknown as { shifts: number[] }).shifts.reduce((sum, value) => sum + value, 0)
-  })
 
 test.describe('a direct link to a page that loads on demand', () => {
   for (const lazy of lazyPages) {
