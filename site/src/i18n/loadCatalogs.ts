@@ -8,12 +8,12 @@ import type { MessageId } from './messages'
  * production build swaps each catalogue for the ICU syntax trees compiled from it (scripts/messages-ast.ts), which
  * react-intl takes in the same place. Nothing in the app reads a message as text except through react-intl.
  */
-export type Messages = Record<MessageId, string>
+export type MessageMap = Record<MessageId, string>
 
 // What has been asked for, so that a catalogue is fetched once however many pages need it. The promises are kept, not
 // the messages: a page that renders while one is on its way suspends on the same promise as the first that asked.
 const catalogues = new Map<Locale, Map<CatalogName, Promise<Record<string, string>>>>()
-const bundles = new Map<string, Promise<Messages>>()
+const bundles = new Map<string, Promise<MessageMap>>()
 
 function loadCatalogue(locale: Locale, name: CatalogName): Promise<Record<string, string>> {
   const ofLocale = catalogues.get(locale) ?? new Map<CatalogName, Promise<Record<string, string>>>()
@@ -34,7 +34,7 @@ function loadCatalogue(locale: Locale, name: CatalogName): Promise<Record<string
  * The catalogues are fetched side by side. Names are in the order the catalogues merge in; ids are unique across them
  * (check-messages), so the order only decides which promise a failure comes from.
  */
-export function loadCatalogs(locale: Locale, names: readonly CatalogName[]): Promise<Messages> {
+export function loadCatalogs(locale: Locale, names: readonly CatalogName[]): Promise<MessageMap> {
   const key = `${locale}:${names.join(',')}`
   let bundle = bundles.get(key)
   if (bundle === undefined) {
