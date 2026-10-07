@@ -17,10 +17,14 @@ import { themeStorageKey } from './src/theme.ts'
 const devServerPort = Number(process.env.DEV_SERVER_PORT || 5280)
 const previewPort = Number(process.env.PLAYWRIGHT_PORT || 4280)
 
+const pseudoDirectory = '__pseudo__'
+
 // The site imports @yelison/forma-ui the way a consumer does: through the workspace link and the package's exports
 // map, which point at the built dist/. There is deliberately no alias to the library's sources.
-export default defineConfig(({ command, isPreview }) => ({
-  base: siteBasePath,
+export default defineConfig(({ command, mode, isPreview }) => ({
+  // The pseudo-locale build is served by the same preview as the real one, from a directory of its own inside dist/.
+  base: mode === 'pseudo' ? `${siteBasePath}${pseudoDirectory}/` : siteBasePath,
+  build: { outDir: mode === 'pseudo' ? `dist/${pseudoDirectory}` : 'dist' },
   resolve: {
     // The production build ships the messages as syntax trees (scripts/messages-ast.ts), so react-intl never parses an
     // ICU message and the parser is left out of the bundle: this entry has `parse` throw instead. Tests and the dev
@@ -46,7 +50,12 @@ export default defineConfig(({ command, isPreview }) => ({
       themeScript({ storageKey: themeStorageKey }),
       localeScript({ storageKey: localeStorageKey, locales, fallback: defaultLocale }),
     ]),
-    messagesAst({ directory: resolve(import.meta.dirname, 'src/i18n') }),
+    messagesAst({
+      directory: resolve(import.meta.dirname, 'src/i18n'),
+      // `npm run build:pseudo` builds the site with accented, longer text in place of the messages, to check that no
+      // layout depends on the length of English. It is never what is deployed.
+      pseudoLocale: mode === 'pseudo' ? 'en-XA' : undefined,
+    }),
   ],
   server: {
     port: devServerPort,
