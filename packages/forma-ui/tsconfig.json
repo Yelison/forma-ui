@@ -11,6 +11,7 @@
     "scripts/changeset-check",
     "scripts/check-consumer.ts",
     "scripts/pack-check.ts",
+    "scripts/pack-reproducible.ts",
     "scripts/pack-check",
     "vite.config.ts",
     "vitest.config.ts",

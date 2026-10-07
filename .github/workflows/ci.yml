@@ -47,6 +47,9 @@ jobs:
       # The tarball that npm would publish: its files, its types and exports (publint, Are The Types Wrong?) and the
       # bundle of a consumer. This also fails when a file that `exports` promises is missing from dist/.
       - run: npm run pack:check -w @yelison/forma-ui
+      # Two clean builds of this commit (git archive, npm ci, build, npm pack) give the same sha256: what the Release workflow
+      # packs is what can be rebuilt and compared later. About 20 s.
+      - run: npm run pack:reproducible -w @yelison/forma-ui
       # The built package as a consumer receives it: nodenext compile, CSS exports and the rules behind the classes.
       - run: npm run check:consumer -w @yelison/forma-ui
       - run: npx playwright install --with-deps chromium
