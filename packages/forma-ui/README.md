@@ -53,3 +53,7 @@ rule:
   the production bundle of a Vite consumer (`scripts/consumer/client.tsx`) resolves `react`, `react-dom` and
   `scheduler` to one folder each. React inlined into the library cannot be seen from the module graph alone, so the
   first half reads the file.
+- **Size budget:** what a Vite consumer's bundler makes of the tarball, minified and gzipped (level 9), with React left
+  out: every export (`dist/index.js`), `import { Button }` alone, which is what proves the tree-shaking, and
+  `dist/styles.css`. Each budget is the size measured plus about 20% and lives in
+  `scripts/pack-check/size-budget.ts`; the message names the budget, the size and the excess.
