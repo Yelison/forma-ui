@@ -1,0 +1,31 @@
+/* The dark panel of the design in both themes: the navigation's own colors, which stay dark when the theme is. */
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-24);
+  background: var(--color-nav);
+  color: var(--color-nav-ink);
+}
+
+.caption {
+  color: var(--color-nav-text);
+  font: var(--font-caption);
+}
+
+/* Monospace keeps the indentation of the code aligned, which the proportional body font of the design does not. */
+.code {
+  margin: 0;
+  overflow-x: auto;
+  font: var(--font-body);
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  white-space: pre;
+  tab-size: 2;
+}
+
+.code:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--space-4);
+}
