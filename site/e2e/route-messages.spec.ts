@@ -211,6 +211,7 @@ test.describe('a direct link in Spanish, with its JS and its messages held back'
     ['./docs/getting-started/', 'Primeros pasos', 'GettingStarted'],
     ['./docs/guides/theming/', 'Temas', 'Theming'],
     ['./docs/guides/accessibility/', 'Accesibilidad', 'Accessibility'],
+    ['./changelog/', 'Cambios', 'Changelog'],
     ['./docs/foundations/', 'Fundamentos', 'Foundations'],
     ['./docs/components/', 'Componentes', 'CatalogPage'],
     ['./docs/components/button/', 'Button', 'ComponentDetail'],

@@ -203,6 +203,12 @@ const builtManifest = {
     css: ['assets/Accessibility-page.css'],
     imports: ['_shared.js', 'index.html'],
   },
+  'src/pages/Changelog/index.ts': {
+    file: 'assets/Changelog-page.js',
+    isDynamicEntry: true,
+    css: ['assets/Changelog-page.css'],
+    imports: ['_shared.js', 'index.html'],
+  },
   'src/pages/CatalogPage/index.ts': {
     file: 'assets/CatalogPage-page.js',
     isDynamicEntry: true,
@@ -337,6 +343,14 @@ describe('emitRouteHtml', () => {
     expect(html).not.toContain('Theming-page')
   })
 
+  it('preloads the chunk of the changelog on its own route', () => {
+    emitRouteHtml(build())
+
+    const html = read('changelog/index.html')
+    expect(html).toContain('<link rel="modulepreload" crossorigin href="/forma-ui/assets/Changelog-page.js" />')
+    expect(html).not.toContain('Accessibility-page')
+  })
+
   it('preloads the chunk of the references on the page of each component', () => {
     emitRouteHtml(build())
 
@@ -365,6 +379,7 @@ describe('emitRouteHtml', () => {
       ['docs/getting-started/index.html', ['common', 'guides', 'gettingStarted']],
       ['docs/guides/theming/index.html', ['common', 'guides', 'theming']],
       ['docs/guides/accessibility/index.html', ['common', 'guides', 'accessibility']],
+      ['changelog/index.html', ['common', 'guides', 'changelog']],
       ['docs/foundations/index.html', ['common', 'foundations']],
       ['docs/components/index.html', ['common', 'catalog', 'specimens']],
       ['docs/components/tooltip/index.html', ['common', 'detail', 'specimens', 'docs.tooltip']],

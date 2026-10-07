@@ -26,10 +26,13 @@ const loadTheming = () => import('./pages/Theming').then(({ Theming }) => ({ def
 const loadAccessibility = () =>
   import('./pages/Accessibility').then(({ Accessibility }) => ({ default: Accessibility }))
 
+const loadChangelog = () => import('./pages/Changelog').then(({ Changelog }) => ({ default: Changelog }))
+
 const Foundations = lazy(loadFoundations)
 const GettingStarted = lazy(loadGettingStarted)
 const Theming = lazy(loadTheming)
 const Accessibility = lazy(loadAccessibility)
+const Changelog = lazy(loadChangelog)
 const CatalogPage = lazy(loadCatalogPage)
 const ComponentDetail = lazy(loadComponentDetail)
 
@@ -39,6 +42,7 @@ const preloadPage: Partial<Record<RouteKey, () => Promise<unknown>>> = {
   gettingStarted: loadGettingStarted,
   theming: loadTheming,
   accessibility: loadAccessibility,
+  changelog: loadChangelog,
   foundations: loadFoundations,
   components: loadCatalogPage,
   component: loadComponentDetail,
@@ -52,6 +56,8 @@ function PageOf({ route }: { route: SiteRoute }) {
       return <Theming route={route} />
     case 'accessibility':
       return <Accessibility route={route} />
+    case 'changelog':
+      return <Changelog route={route} />
     case 'foundations':
       return <Foundations route={route} />
     case 'components':

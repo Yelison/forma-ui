@@ -31,8 +31,9 @@ const fixedTerms = [
   'danger',
 ]
 
+// The changelog prints dates and version labels, which no message holds: its own test checks the rest.
 describe('App with every message replaced by a mark', () => {
-  it.each(['/', '/docs/components/button/', '/changelog/', '/nowhere/'])(
+  it.each(['/', '/docs/components/button/', '/docs/guides/accessibility/', '/nowhere/'])(
     'has no visible text or accessible name written in the source, on %s',
     async (path) => {
       const { container } = await renderInSiteAndSettle(<App />, { path, messages: markedMessages })

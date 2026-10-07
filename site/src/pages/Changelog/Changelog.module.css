@@ -1,0 +1,19 @@
+.note {
+  max-inline-size: 70ch;
+  margin-block-end: var(--space-16);
+  padding: var(--space-16);
+  border-radius: var(--radius-panel);
+  background: var(--color-blue-bg);
+  color: var(--color-blue-ink);
+  font: var(--font-body);
+}
+
+.note p {
+  margin: 0;
+}
+
+.releases {
+  margin: var(--space-24) 0 0;
+  padding: 0;
+  list-style: none;
+}
