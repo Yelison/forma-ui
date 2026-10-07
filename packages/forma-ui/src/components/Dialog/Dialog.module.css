@@ -1,0 +1,72 @@
+/*
+ * The animation is wrapped in `:where()`, which adds no specificity: a consumer's own class, such as `.sheet`, then
+ * wins over it as long as its stylesheet comes after the library's, as the README says. The widths are the
+ * `--dialog-width` and `--dialog-width-wide` tokens.
+ */
+.dialog {
+  /* The library ships no reset, so the box model is set here: the width is the painted width, border included. */
+  box-sizing: border-box;
+  width: min(var(--dialog-width), calc(100% - 2 * var(--space-16)));
+  max-width: none;
+  max-height: calc(100dvh - 2 * var(--space-16));
+  /* The padding is the content's: the dialog is all content, so a press anywhere else on it is on the backdrop. */
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-popover);
+}
+
+.dialog:where([open]) {
+  animation: enter var(--duration-base) ease-out;
+}
+
+.dialog::backdrop {
+  background: color-mix(in srgb, var(--color-overlay) calc(var(--overlay-opacity) * 100%), transparent);
+}
+
+.wide {
+  width: min(var(--dialog-width-wide), calc(100% - 2 * var(--space-16)));
+}
+
+.content {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding: var(--space-24);
+}
+
+/* The library ships no reset: the heading and the paragraph would bring the browser's margins into the flex gap. */
+.title {
+  margin: 0;
+  font: var(--font-section);
+}
+
+.description {
+  margin: 0;
+  font: var(--font-body);
+  color: var(--color-muted);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-12);
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+/* The entrance is decoration: the dialog appears without moving. */
+@media (prefers-reduced-motion: reduce) {
+  .dialog:where([open]) {
+    animation: none;
+  }
+}

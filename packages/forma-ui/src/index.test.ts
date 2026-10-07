@@ -46,6 +46,10 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ Tooltip: expect.any(Function) })
   })
 
+  it('exports Dialog and Modal, the same component', () => {
+    expect(entry).toMatchObject({ Dialog: expect.any(Function), Modal: entry.Dialog })
+  })
+
   it('exports the hook that locks the page scroll', () => {
     expect(entry).toMatchObject({ useScrollLock: expect.any(Function) })
   })

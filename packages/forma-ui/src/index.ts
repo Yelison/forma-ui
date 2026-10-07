@@ -32,4 +32,5 @@ export {
   type TooltipProps,
   type TooltipTriggerProps,
 } from './components/Tooltip/index.js'
+export { Dialog, Modal, type DialogProps, type ModalProps } from './components/Dialog/index.js'
 export { useScrollLock } from './lib/scrollLock.js'
