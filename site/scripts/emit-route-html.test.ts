@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -160,23 +160,101 @@ describe('renderRouteHtml', () => {
   })
 })
 
+// What `vite build` leaves in dist/ for the parts that matter here: the template with the app's script, and the manifest.
+const appScript = '<script type="module" crossorigin src="/forma-ui/assets/index-app.js"></script>'
+const builtTemplate = indexHtml.replace('</head>', `${appScript}</head>`)
+const builtManifest = {
+  'index.html': { file: 'assets/index-app.js', isEntry: true },
+  'src/pages/Foundations/index.ts': {
+    file: 'assets/Foundations-page.js',
+    isDynamicEntry: true,
+    css: ['assets/Foundations-page.css'],
+    imports: ['_shared.js', 'index.html'],
+  },
+  '_shared.js': { file: 'assets/shared-chunk.js', css: ['assets/shared-chunk.css'] },
+}
+
+describe('renderRouteHtml preloads', () => {
+  it('adds the tags it is given at the end of the head', () => {
+    const html = renderRouteHtml(
+      builtTemplate,
+      route('/docs/foundations/'),
+      undefined,
+      '<link rel="modulepreload" href="/x.js" />',
+    )
+
+    expect(html.indexOf('<link rel="modulepreload" href="/x.js" />')).toBeGreaterThan(html.indexOf(appScript))
+    expect(html.indexOf('<link rel="modulepreload"')).toBeLessThan(html.indexOf('</head>'))
+  })
+})
+
 describe('emitRouteHtml', () => {
   let directory = ''
   afterEach(() => {
     if (directory !== '') rmSync(directory, { recursive: true, force: true })
   })
 
-  it('writes a file for every route and the 404 page', () => {
+  function build(manifest: object = builtManifest) {
     directory = mkdtempSync(join(tmpdir(), 'forma-ui-emit-'))
-    mkdirSync(directory, { recursive: true })
-    writeFileSync(join(directory, 'index.html'), indexHtml)
+    writeFileSync(join(directory, 'index.html'), builtTemplate)
+    mkdirSync(join(directory, '.vite'))
+    writeFileSync(join(directory, '.vite/manifest.json'), JSON.stringify(manifest))
+    return directory
+  }
+  const read = (file: string) => readFileSync(join(directory, file), 'utf8')
 
-    const written = emitRouteHtml(directory)
+  it('writes a file for every route and the 404 page', () => {
+    const written = emitRouteHtml(build())
 
     expect(written).toHaveLength(routes.length + 1)
-    expect(readFileSync(join(directory, 'docs/components/dialog/index.html'), 'utf8')).toContain(
-      '<title>Dialog · Forma UI</title>',
-    )
-    expect(readFileSync(join(directory, '404.html'), 'utf8')).toContain('noindex')
+    expect(read('docs/components/dialog/index.html')).toContain('<title>Dialog · Forma UI</title>')
+    expect(read('404.html')).toContain('noindex')
+  })
+
+  it('preloads the chunk of a lazy page, what it imports and its stylesheets, with the base of the build', () => {
+    emitRouteHtml(build())
+
+    const html = read('docs/foundations/index.html')
+    expect(html).toContain('<link rel="modulepreload" crossorigin href="/forma-ui/assets/Foundations-page.js" />')
+    expect(html).toContain('<link rel="modulepreload" crossorigin href="/forma-ui/assets/shared-chunk.js" />')
+    expect(html).toContain('<link rel="stylesheet" crossorigin href="/forma-ui/assets/Foundations-page.css" />')
+    expect(html).toContain('<link rel="stylesheet" crossorigin href="/forma-ui/assets/shared-chunk.css" />')
+    // The app is already loading: it is not preloaded again.
+    expect(html.match(/index-app\.js/g)).toHaveLength(1)
+  })
+
+  it('leaves the other routes without preloads', () => {
+    emitRouteHtml(build())
+
+    expect(read('docs/getting-started/index.html')).not.toContain('modulepreload')
+    expect(read('404.html')).not.toContain('modulepreload')
+  })
+
+  it('deletes the manifest, which is not part of what is published', () => {
+    emitRouteHtml(build())
+
+    expect(existsSync(join(directory, '.vite'))).toBe(false)
+  })
+
+  it('fails when the build has no manifest', () => {
+    directory = mkdtempSync(join(tmpdir(), 'forma-ui-emit-'))
+    writeFileSync(join(directory, 'index.html'), builtTemplate)
+
+    expect(() => emitRouteHtml(directory)).toThrow('build.manifest')
+  })
+
+  it('fails when the build splits off a page that is not listed, so its route would not preload it', () => {
+    const manifest = {
+      ...builtManifest,
+      'src/pages/Catalog/index.ts': { file: 'assets/Catalog.js', isDynamicEntry: true },
+    }
+
+    expect(() => emitRouteHtml(build(manifest))).toThrow('src/pages/Catalog/index.ts loads on demand')
+  })
+
+  it('fails when a listed page has no lazy chunk in the build', () => {
+    const { 'src/pages/Foundations/index.ts': _removed, ...manifest } = builtManifest
+
+    expect(() => emitRouteHtml(build(manifest))).toThrow('no lazy chunk')
   })
 })
