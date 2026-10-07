@@ -1,0 +1,10 @@
+{
+  "guides.breadcrumb.label": "Breadcrumb",
+  "guides.code.copied": "Code copied",
+  "guides.code.copy": "Copy",
+  "guides.code.copyFailed": "The code could not be copied",
+  "guides.next.label": "Next step",
+  "guides.preview.label": "Result",
+  "guides.theme.control": "Theme preference",
+  "guides.toc.label": "On this page"
+}

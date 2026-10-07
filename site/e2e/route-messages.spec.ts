@@ -140,7 +140,8 @@ test.describe('the catalogues a page fetches', () => {
       await page.getByRole('button', { name: 'Español', exact: true }).click()
 
       await expect(page.getByRole('heading', { level: 1, name: 'Primeros pasos' })).toBeVisible()
-      expect(sorted(asked)).toEqual(['common.es'])
+      // Not `foundations.es`: that page was left.
+      expect(sorted(asked)).toEqual(['common.es', 'gettingStarted.es', 'guides.es'])
     })
 
     test('the change applies even if the messages of the page that was left cannot be fetched', async ({ page }) => {
@@ -207,6 +208,7 @@ test.describe('a direct link in Spanish, with its JS and its messages held back'
 
   for (const [path, heading, chunk] of [
     ['./', 'Diseña con intención. Construye con confianza.', null],
+    ['./docs/getting-started/', 'Primeros pasos', 'GettingStarted'],
     ['./docs/foundations/', 'Fundamentos', 'Foundations'],
     ['./docs/components/', 'Componentes', 'CatalogPage'],
     ['./docs/components/button/', 'Button', 'ComponentDetail'],

@@ -21,13 +21,14 @@ describe('routeCatalogs', () => {
 
   it.each([
     ['/', ['common', 'home']],
+    ['/docs/getting-started/', ['common', 'guides', 'gettingStarted']],
     ['/docs/foundations/', ['common', 'foundations']],
     ['/docs/components/', ['common', 'catalog', 'specimens']],
   ])('gives %s the catalogues of its page: %j', (path, names) => {
     expect(routeCatalogs(route(path))).toEqual(names)
   })
 
-  it.each(['/docs/getting-started/', '/docs/guides/theming/', '/docs/guides/accessibility/', '/changelog/'])(
+  it.each(['/docs/guides/theming/', '/docs/guides/accessibility/', '/changelog/'])(
     'gives %s only the chrome catalogue, which already holds its title',
     (path) => {
       expect(routeCatalogs(route(path))).toEqual(['common'])

@@ -18,13 +18,18 @@ const loadCatalogPage = () => import('./pages/CatalogPage').then(({ CatalogPage 
 const loadComponentDetail = () =>
   import('./pages/ComponentDetail').then(({ ComponentDetail }) => ({ default: ComponentDetail }))
 
+const loadGettingStarted = () =>
+  import('./pages/GettingStarted').then(({ GettingStarted }) => ({ default: GettingStarted }))
+
 const Foundations = lazy(loadFoundations)
+const GettingStarted = lazy(loadGettingStarted)
 const CatalogPage = lazy(loadCatalogPage)
 const ComponentDetail = lazy(loadComponentDetail)
 
 // Starts the fetch of the chunk of a page that loads on demand. Asking again is free: the module system answers with
 // the one request, and `lazy` finds it done.
 const preloadPage: Partial<Record<RouteKey, () => Promise<unknown>>> = {
+  gettingStarted: loadGettingStarted,
   foundations: loadFoundations,
   components: loadCatalogPage,
   component: loadComponentDetail,
@@ -32,6 +37,8 @@ const preloadPage: Partial<Record<RouteKey, () => Promise<unknown>>> = {
 
 function PageOf({ route }: { route: SiteRoute }) {
   switch (route.key) {
+    case 'gettingStarted':
+      return <GettingStarted route={route} />
     case 'foundations':
       return <Foundations route={route} />
     case 'components':

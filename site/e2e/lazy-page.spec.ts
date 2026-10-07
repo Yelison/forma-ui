@@ -10,6 +10,7 @@ const widths = [390, 1440]
 // The pages that load on demand: the name of their chunk, their path, their heading, and where to start a navigation to
 // them from (a page that is not itself lazy, so the navigation is the one that waits for the chunk).
 const lazyPages = [
+  { chunk: 'GettingStarted', path: './docs/getting-started/', heading: 'Getting started', link: 'Getting started' },
   { chunk: 'Foundations', path: './docs/foundations/', heading: 'Foundations', link: 'Foundations' },
   { chunk: 'CatalogPage', path: './docs/components/', heading: 'Components', link: 'Components' },
   // The drawer has no link to a reference: its client-side navigation starts at the catalog (see the end of the file).
@@ -61,7 +62,7 @@ test.describe('a direct link to a page that loads on demand', () => {
   }
 
   test('does not preload a chunk on a page that does not load on demand', async ({ request }) => {
-    const html = await (await request.get('./docs/getting-started/')).text()
+    const html = await (await request.get('./')).text()
 
     // Its messages are preloaded by a script of the head, which writes the tags in the language of the visitor.
     expect(html).not.toContain('<link rel="modulepreload"')
@@ -77,7 +78,7 @@ test.describe('a client-side navigation to a page that loads on demand', () => {
     }) => {
       await recordShifts(page)
       // The start is a page that is not lazy, and is not the destination.
-      await page.goto('./docs/getting-started/')
+      await page.goto('./')
       const release = await holdChunk(page, lazy)
 
       await page.getByRole('button', { name: 'Open menu' }).click()
@@ -103,7 +104,7 @@ test.describe('a client-side navigation from the catalog to a reference', () => 
   test('keeps the page as tall as a screen until the chunk of the reference arrives, then focuses its heading', async ({
     page,
   }) => {
-    const reference = lazyPages[2]
+    const reference = lazyPages.find(({ chunk }) => chunk === 'ComponentDetail')!
     await recordShifts(page)
     await page.goto('./docs/components/')
     await expect(page.getByRole('heading', { level: 1, name: 'Components' })).toBeVisible()

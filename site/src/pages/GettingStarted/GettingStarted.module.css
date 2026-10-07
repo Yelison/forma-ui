@@ -1,0 +1,10 @@
+/* The result of the code above it, on the surface the components are made for. */
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-32) var(--space-16);
+  border-radius: var(--radius-panel);
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+}

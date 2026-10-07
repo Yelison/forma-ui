@@ -20,6 +20,11 @@ export const catalogLoaders = {
     es: () => import('./catalogs/foundations.es.json'),
   },
   catalog: { en: () => import('./catalogs/catalog.en.json'), es: () => import('./catalogs/catalog.es.json') },
+  guides: { en: () => import('./catalogs/guides.en.json'), es: () => import('./catalogs/guides.es.json') },
+  gettingStarted: {
+    en: () => import('./catalogs/gettingStarted.en.json'),
+    es: () => import('./catalogs/gettingStarted.es.json'),
+  },
   specimens: { en: () => import('./catalogs/specimens.en.json'), es: () => import('./catalogs/specimens.es.json') },
   detail: { en: () => import('./catalogs/detail.en.json'), es: () => import('./catalogs/detail.es.json') },
   'docs.badge': {
