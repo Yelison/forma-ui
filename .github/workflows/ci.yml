@@ -52,6 +52,27 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
 
+  # Not a required check: whether to require it is the owner's decision. It needs no dependencies, only Node, and it runs
+  # on pull requests alone: a push to main, or the run that release.yml starts, has no base to compare with.
+  changeset:
+    name: Changeset
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # The checkout is the merge of the pull request into main: its first parent is main, which the check compares with.
+          fetch-depth: 2
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+      - run: npm run test:scripts -w @yelison/forma-ui
+      # A pull request that changes what the package ships adds a changeset; `npx changeset --empty` declares that it
+      # needs no release notes. The exemptions are in CONTRIBUTING.md.
+      - run: npm run check:changeset -w @yelison/forma-ui -- HEAD^1 HEAD
+
   site:
     name: Site
     runs-on: ubuntu-latest
