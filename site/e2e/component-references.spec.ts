@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright'
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import { overflow, smallTargets } from './support/layout'
 
 // The references of the components other than Button, which component-detail.spec.ts covers on its own: each one is
@@ -12,7 +12,7 @@ interface Reference {
   slug: string
   name: string
   /** Puts the page in the state that only use brings about, and waits for it: an open tooltip, an open dialog. */
-  open: (page: Page) => Promise<void>
+  open?: (page: Page) => Promise<void>
 }
 
 const references: Reference[] = [
@@ -25,6 +25,7 @@ const references: Reference[] = [
       await expect(page.getByRole('tooltip')).toBeVisible()
     },
   },
+  { slug: 'badge', name: 'Badge' },
 ]
 
 /**
@@ -54,6 +55,7 @@ for (const reference of references) {
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
         expect(await violations(page)).toEqual([])
 
+        if (reference.open === undefined) return
         await reference.open(page)
         expect(await violations(page)).toEqual([])
       })
@@ -69,6 +71,27 @@ for (const reference of references) {
           if (width < 768) expect(await smallTargets(page.getByRole('main')), `${width} px`).toEqual([])
         }
       })
+    }
+
+    if (reference.name === 'Badge') {
+      for (const theme of themes) {
+        test(`shows the neutral badge on a card that is not the color of its panel, in the ${theme} theme`, async ({
+          page,
+        }) => {
+          await page.addInitScript((value) => localStorage.setItem('forma-ui-theme', value), theme)
+          await openReference(page, reference)
+
+          const badge = page
+            .getByRole('region', { name: 'Tones' })
+            .getByRole('list')
+            .getByText('Draft', { exact: true })
+          const background = (locator: Locator) => locator.evaluate((node) => getComputedStyle(node).backgroundColor)
+          const card = badge.locator('..')
+          const panel = card.locator('xpath=ancestor::ul[1]')
+
+          expect(await background(card)).not.toBe(await background(panel))
+        })
+      }
     }
 
     for (const locale of ['en', 'es'] as const) {

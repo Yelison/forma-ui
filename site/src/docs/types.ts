@@ -40,6 +40,11 @@ export interface Example {
   /** A sentence under the label, for a state that the component only shows while it is used (hover, focus). */
   hint?: string
   element: ReactNode
+  /**
+   * Sets the example on a card of the page's own surface color instead of the panel, for a component whose background
+   * is the panel's, such as the neutral Badge, which is a bare word there. Defaults to `false`.
+   */
+  surface?: boolean
   /** The JSX of the example. An example whose JSX is that of another one, or that has none (a proposal), leaves it out. */
   code?: string
 }

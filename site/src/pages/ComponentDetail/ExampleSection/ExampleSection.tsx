@@ -35,7 +35,7 @@ export function ExampleSection({ group, copy }: ExampleSectionProps) {
       <p>{intl.formatMessage({ id: group.description }, richText)}</p>
       <SpecimenGrid>
         {group.examples.map((example, index) => (
-          <Specimen key={index} label={<Label label={example.label} hint={example.hint} />}>
+          <Specimen key={index} label={<Label label={example.label} hint={example.hint} />} surface={example.surface}>
             {example.element}
           </Specimen>
         ))}
