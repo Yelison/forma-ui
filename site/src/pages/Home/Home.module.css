@@ -1,0 +1,67 @@
+/* The Overview of page 07: a column of blocks 32 px apart, under the heading that RoutePage renders. */
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+  margin-block-start: var(--space-32);
+}
+
+.intro {
+  margin: 0;
+  color: var(--color-muted);
+  font: var(--font-section);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+}
+
+/* One under the other and as wide as the screen, as in the 390 px frame. */
+.action {
+  flex: 1 1 100%;
+}
+
+.principles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-24);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.principle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  padding-block-start: var(--space-16);
+  border-block-start: 1px solid var(--color-line);
+}
+
+.principleTitle,
+.principleBody {
+  margin: 0;
+}
+
+.principleTitle {
+  color: var(--color-ink);
+  font: var(--font-section);
+}
+
+.principleBody {
+  color: var(--color-muted);
+  font: var(--font-body);
+}
+
+@media (min-width: 768px) {
+  .action {
+    flex: none;
+    min-width: 13.75rem;
+  }
+
+  .principles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
