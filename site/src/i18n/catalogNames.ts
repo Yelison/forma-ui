@@ -6,7 +6,7 @@
  * Every catalogue. A message lives in the one that the pages which show it load, whatever the prefix of its id says:
  *
  * - `common`: the chrome (bar, drawer, footer), the messages of every route, the search and what several pages share.
- * - `home`, `foundations`, `catalog`, `detail`, `gettingStarted`: the page of that name.
+ * - `home`, `foundations`, `catalog`, `detail`, `gettingStarted`, `theming`: the page of that name.
  * - `guides`: what the guides share (the table of contents, the copy button, the next step).
  * - `specimens`: the sample words and states that the catalog and the references of the components all show.
  * - `docs.<component>`: the reference of one component.
@@ -18,6 +18,7 @@ export const catalogNames = [
   'catalog',
   'guides',
   'gettingStarted',
+  'theming',
   'specimens',
   'detail',
   'docs.badge',

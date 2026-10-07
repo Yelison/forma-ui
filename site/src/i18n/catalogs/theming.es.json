@@ -1,0 +1,21 @@
+{
+  "theming.firstPaint.body": "Sin ayuda, una recarga muestra el tema que prefiere el sistema operativo hasta que React renderiza. <code>themeScript</code> devuelve el texto de un script en línea que aplica el tema guardado antes del primer pintado. Esto es lo que devuelve con la clave del ejemplo:",
+  "theming.firstPaint.rules": "Tiene que usar la misma <code>storageKey</code> que el store y tiene que estar en el HTML que se sirve, dentro del head: un script que React renderiza no se ejecuta.",
+  "theming.firstPaint.title": "Primer pintado",
+  "theming.lead": "Claro, oscuro y sistema: cómo tu aplicación se queda con la decisión, desde el primer pintado hasta el proveedor.",
+  "theming.modes.body": "<code>tokens.css</code> pinta el tema claro y sigue <code>prefers-color-scheme</code> hasta que se elige un tema. El atributo <code>data-theme</code> del elemento <code>html</code> lo reemplaza: <code>light</code> y <code>dark</code> lo establecen, y <code>system</code> lo quita.",
+  "theming.modes.title": "Claro, oscuro y sistema",
+  "theming.modes.try": "Pruébalo. Los botones fijan la preferencia de este sitio, la misma que muestra el selector de tema de la barra superior.",
+  "theming.next.body": "El tema cambia los colores, no lo que cada componente te pide. Lee qué necesita cada uno en teclado, foco y etiquetas.",
+  "theming.next.link": "Lee la guía de accesibilidad",
+  "theming.next.title": "Revisa las obligaciones de accesibilidad",
+  "theming.persistence.memory": "Cuando el almacenamiento no está disponible (modo privado o bloqueado), la elección dura en memoria, solo para ese store.",
+  "theming.persistence.storage": "La elección se guarda en <code>localStorage</code> bajo la clave que pasas. Un valor guardado que no sea <code>light</code> ni <code>dark</code> cuenta como <code>system</code>.",
+  "theming.persistence.sync": "Mientras un componente lee el store, sigue a las demás pestañas y los cambios del sistema operativo entre claro y oscuro.",
+  "theming.persistence.title": "Persistencia",
+  "theming.provider.body": "<code>FormaProvider</code> trata del texto, no del tema: reemplaza las cadenas que los componentes muestran por sí solos. El tema funciona con o sin él, así que el interruptor puede ir en cualquier parte de tu aplicación.",
+  "theming.provider.title": "Con el proveedor",
+  "theming.store.body": "<code>createThemeStore</code> crea el store de una aplicación: guarda la preferencia bajo tu clave y crearlo no toca la página. <code>useTheme</code> lo lee en un componente y devuelve <code>preference</code>, <code>resolved</code>, <code>setPreference</code> y <code>toggle</code>.",
+  "theming.store.resolved": "<code>preference</code> es lo que eligió la persona y <code>resolved</code> es lo que se pinta: mientras la preferencia es <code>system</code>, sigue al sistema operativo.",
+  "theming.store.title": "El store de la preferencia"
+}

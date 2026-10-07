@@ -209,6 +209,7 @@ test.describe('a direct link in Spanish, with its JS and its messages held back'
   for (const [path, heading, chunk] of [
     ['./', 'Diseña con intención. Construye con confianza.', null],
     ['./docs/getting-started/', 'Primeros pasos', 'GettingStarted'],
+    ['./docs/guides/theming/', 'Temas', 'Theming'],
     ['./docs/foundations/', 'Fundamentos', 'Foundations'],
     ['./docs/components/', 'Componentes', 'CatalogPage'],
     ['./docs/components/button/', 'Button', 'ComponentDetail'],

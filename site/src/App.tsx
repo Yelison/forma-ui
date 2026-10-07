@@ -21,8 +21,11 @@ const loadComponentDetail = () =>
 const loadGettingStarted = () =>
   import('./pages/GettingStarted').then(({ GettingStarted }) => ({ default: GettingStarted }))
 
+const loadTheming = () => import('./pages/Theming').then(({ Theming }) => ({ default: Theming }))
+
 const Foundations = lazy(loadFoundations)
 const GettingStarted = lazy(loadGettingStarted)
+const Theming = lazy(loadTheming)
 const CatalogPage = lazy(loadCatalogPage)
 const ComponentDetail = lazy(loadComponentDetail)
 
@@ -30,6 +33,7 @@ const ComponentDetail = lazy(loadComponentDetail)
 // the one request, and `lazy` finds it done.
 const preloadPage: Partial<Record<RouteKey, () => Promise<unknown>>> = {
   gettingStarted: loadGettingStarted,
+  theming: loadTheming,
   foundations: loadFoundations,
   components: loadCatalogPage,
   component: loadComponentDetail,
@@ -39,6 +43,8 @@ function PageOf({ route }: { route: SiteRoute }) {
   switch (route.key) {
     case 'gettingStarted':
       return <GettingStarted route={route} />
+    case 'theming':
+      return <Theming route={route} />
     case 'foundations':
       return <Foundations route={route} />
     case 'components':

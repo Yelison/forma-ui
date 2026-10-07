@@ -1,0 +1,21 @@
+{
+  "theming.firstPaint.body": "Without help, a reload shows the theme that the operating system prefers until React renders. <code>themeScript</code> returns the text of an inline script that sets the stored theme before the first paint. This is what it returns for the key of the example:",
+  "theming.firstPaint.rules": "It has to use the same <code>storageKey</code> as the store, and it has to be in the HTML that is served, in the head: a script that React renders does not run.",
+  "theming.firstPaint.title": "First paint",
+  "theming.lead": "Light, dark and system: how your application owns the choice, from the first paint to the provider.",
+  "theming.modes.body": "<code>tokens.css</code> paints the light theme and follows <code>prefers-color-scheme</code> until a theme is chosen. The <code>data-theme</code> attribute on the <code>html</code> element overrides it: <code>light</code> and <code>dark</code> set it, and <code>system</code> removes it.",
+  "theming.modes.title": "Light, dark and system",
+  "theming.modes.try": "Try it. The buttons set the preference of this site, the one that the theme switcher of the top bar shows.",
+  "theming.next.body": "The theme changes the colors, not what a component asks of you. Read what each one needs for keyboard, focus and labels.",
+  "theming.next.link": "Read the accessibility guide",
+  "theming.next.title": "Check the accessibility obligations",
+  "theming.persistence.memory": "When storage is unavailable (private mode, or blocked), the choice lasts in memory, for that store only.",
+  "theming.persistence.storage": "The choice is kept in <code>localStorage</code> under the key you pass. A stored value that is not <code>light</code> or <code>dark</code> counts as <code>system</code>.",
+  "theming.persistence.sync": "While a component reads the store, it follows the other tabs and the operating system switching between light and dark.",
+  "theming.persistence.title": "Persistence",
+  "theming.provider.body": "<code>FormaProvider</code> is about text, not about theme: it replaces the strings that the components show on their own. The theme works with or without it, so the toggle can go anywhere in your application.",
+  "theming.provider.title": "With the provider",
+  "theming.store.body": "<code>createThemeStore</code> creates the store of one application: it keeps the preference under your key, and creating it does not touch the page. <code>useTheme</code> reads it in a component and returns <code>preference</code>, <code>resolved</code>, <code>setPreference</code> and <code>toggle</code>.",
+  "theming.store.resolved": "<code>preference</code> is what the person chose, and <code>resolved</code> is what is painted: while the preference is <code>system</code>, it follows the operating system.",
+  "theming.store.title": "The preference store"
+}

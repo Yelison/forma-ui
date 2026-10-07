@@ -11,6 +11,8 @@ const widths = [390, 1440]
 // them from (a page that is not itself lazy, so the navigation is the one that waits for the chunk).
 const lazyPages = [
   { chunk: 'GettingStarted', path: './docs/getting-started/', heading: 'Getting started', link: 'Getting started' },
+  // The guide has no stylesheet of its own: its parts come from the kit, which the shared chunk carries.
+  { chunk: 'Theming', path: './docs/guides/theming/', heading: 'Theming', link: 'Theming', stylesheet: false },
   { chunk: 'Foundations', path: './docs/foundations/', heading: 'Foundations', link: 'Foundations' },
   { chunk: 'CatalogPage', path: './docs/components/', heading: 'Components', link: 'Components' },
   // The drawer has no link to a reference: its client-side navigation starts at the catalog (see the end of the file).
@@ -37,9 +39,11 @@ test.describe('a direct link to a page that loads on demand', () => {
       expect(html).toMatch(
         new RegExp(`<link rel="modulepreload" crossorigin href="/forma-ui/assets/${lazy.chunk}-[\\w-]+\\.js"`),
       )
-      expect(html).toMatch(
-        new RegExp(`<link rel="stylesheet" crossorigin href="/forma-ui/assets/${lazy.chunk}-[\\w-]+\\.css"`),
-      )
+      if (!('stylesheet' in lazy)) {
+        expect(html).toMatch(
+          new RegExp(`<link rel="stylesheet" crossorigin href="/forma-ui/assets/${lazy.chunk}-[\\w-]+\\.css"`),
+        )
+      }
     })
 
     for (const width of widths) {
