@@ -2,6 +2,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
+import en from '../src/i18n/en.json'
 import { notFoundRoute, routes } from '../src/routes'
 import { emitRouteHtml, outputPath, renderRouteHtml } from './emit-route-html'
 
@@ -61,10 +62,74 @@ describe('renderRouteHtml', () => {
       'route.changelog.title': "A & B '<'i'>'",
       'route.changelog.description': 'Say "hi"',
     }
-    const html = renderRouteHtml(indexHtml, route('/changelog/'), messages)
+    const html = renderRouteHtml(indexHtml, route('/changelog/'), { en: messages })
 
     expect(html).toContain('<title>A &amp; B &lt;i&gt;</title>')
     expect(html).toContain('content="Say &quot;hi&quot;"')
+  })
+
+  describe('the head in the other languages', () => {
+    const parse = (html: string) => new DOMParser().parseFromString(html, 'text/html')
+    const description = (page: Document) => page.querySelector('meta[name="description"]')?.getAttribute('content')
+
+    // Runs the script of the HTML on the page the HTML describes, with the <html lang> the language script would set.
+    const openIn = (html: string, lang: string) => {
+      const page = parse(html)
+      page.documentElement.lang = lang
+      for (const script of page.querySelectorAll('head script')) new Function('document', script.textContent)(page)
+      return page
+    }
+
+    it('puts the title and the description in Spanish on the page of a Spanish visitor, before any JS runs', () => {
+      const page = openIn(renderRouteHtml(indexHtml, route('/docs/foundations/')), 'es')
+
+      expect(page.title).toBe('Fundamentos · Forma UI')
+      expect(description(page)).toMatch(/^Roles de color/)
+    })
+
+    it('leaves the English head for an English visitor, so a crawler that does not run scripts reads English', () => {
+      const html = renderRouteHtml(indexHtml, route('/docs/foundations/'))
+      const page = openIn(html, 'en')
+
+      expect(page.title).toBe('Foundations · Forma UI')
+      expect(description(page)).toMatch(/^Color roles/)
+      expect(description(parse(html))).toMatch(/^Color roles/)
+    })
+
+    it('names a component page after its component in Spanish too', () => {
+      const page = openIn(renderRouteHtml(indexHtml, route('/docs/components/icon-button/')), 'es')
+
+      expect(page.title).toBe('IconButton · Forma UI')
+      expect(description(page)).toBe('Referencia del componente IconButton: variantes, estados, API y accesibilidad.')
+    })
+
+    it('does the same for the not-found page', () => {
+      expect(openIn(renderRouteHtml(indexHtml, notFoundRoute), 'es').title).toBe('Página no encontrada · Forma UI')
+    })
+
+    // The script reads <title> and the meta description, so it has to come after them, and before the app.
+    it('comes after <title> and the meta description', () => {
+      const html = renderRouteHtml(indexHtml, route('/docs/foundations/'))
+
+      expect(html.indexOf('document.title=')).toBeGreaterThan(html.indexOf('<meta name="description"'))
+      expect(html.indexOf('document.title=')).toBeGreaterThan(html.indexOf('</title>'))
+    })
+
+    it('is not written when the site has no other language', () => {
+      expect(renderRouteHtml(indexHtml, route('/docs/foundations/'), { en })).not.toContain('document.title=')
+    })
+
+    it('stays one script element whatever the translation holds', () => {
+      const es = {
+        'route.changelog.title': '</script><img src=x onerror=alert(1)>',
+        'route.changelog.description': '<!-- <script>',
+      }
+      const html = renderRouteHtml(indexHtml, route('/changelog/'), { en, es })
+
+      expect(parse(html).querySelectorAll('head script')).toHaveLength(1)
+      expect(parse(html).querySelector('img')).toBeNull()
+      expect(openIn(html, 'es').title).toBe('</script><img src=x onerror=alert(1)>')
+    })
   })
 
   it('has no canonical address for the not-found page, and asks search engines to skip it', () => {

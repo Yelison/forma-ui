@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 
 export interface DocumentHeadProps {
   /** The text of `<title>`, already in the active language. */
@@ -14,9 +14,13 @@ export interface DocumentHeadProps {
  * title, description and canonical link (scripts/emit-route-html.ts); this updates them for the language of the
  * visitor and for client-side navigation. React 19 can render `<title>` itself, but it would add a second one next to
  * the one in the HTML, so the existing elements are updated instead.
+ *
+ * The update is a layout effect, not a passive one: it runs in the same commit that puts the page on screen, before the
+ * browser paints. A passive effect runs after the first paint, so a Spanish visitor would see an English tab title and
+ * description (and a crawler that runs scripts would read them) until it did.
  */
 export function DocumentHead({ title, description, canonicalUrl }: DocumentHeadProps) {
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.title = title
     document.head.querySelector('meta[name="description"]')?.setAttribute('content', description)
 

@@ -10,6 +10,9 @@ import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from
 import { dirname, join, resolve } from 'node:path'
 import { createIntl } from 'react-intl'
 import en from '../src/i18n/en.json' with { type: 'json' }
+import es from '../src/i18n/es.json' with { type: 'json' }
+import { defaultLocale } from '../src/i18n/locale.ts'
+import { headScript, type PageHead } from '../src/i18n/localeScript.ts'
 import { canonicalUrl, notFoundRoute, routes, type SiteRoute } from '../src/routes.ts'
 
 const escapeHtml = (text: string) =>
@@ -28,18 +31,40 @@ export function outputPath(route: SiteRoute): string {
   return route.path.endsWith('/') ? `${route.path.slice(1)}index.html` : route.path.slice(1)
 }
 
-/** The built index.html with the English head of a route. */
-export function renderRouteHtml(template: string, route: SiteRoute, messages: Record<string, string> = en): string {
-  const intl = createIntl({ locale: 'en', messages })
-  const values = route.key === 'component' ? { component: route.componentName } : undefined
-  const title = escapeHtml(intl.formatMessage({ id: `route.${route.key}.title` }, values))
-  const description = escapeHtml(intl.formatMessage({ id: `route.${route.key}.description` }, values))
+/** The messages of each language, by language. The one of the default language is the head of the HTML itself. */
+export type Catalogues = Readonly<Record<string, Record<string, string>>>
 
-  let html = replaceOnce(template, /<title>[^<]*<\/title>/, `<title>${title}</title>`, '<title>')
+/** The title and the description of a route in one language, from its catalogue. */
+function pageHead(route: SiteRoute, locale: string, messages: Record<string, string>): PageHead {
+  const intl = createIntl({ locale, messages })
+  const values = route.key === 'component' ? { component: route.componentName } : undefined
+  return {
+    title: intl.formatMessage({ id: `route.${route.key}.title` }, values),
+    description: intl.formatMessage({ id: `route.${route.key}.description` }, values),
+  }
+}
+
+/**
+ * The built index.html with the head of a route: in the default language, English, as the elements themselves, which
+ * is what a crawler that does not run scripts reads. The other languages come as a script right after the meta
+ * description (see `headScript`), which a visitor in one of them runs before the JS of the app has even arrived, so the
+ * tab already has the title in their language.
+ */
+export function renderRouteHtml(template: string, route: SiteRoute, catalogues: Catalogues = { en, es }): string {
+  const source = catalogues[defaultLocale]
+  if (source === undefined) throw new Error(`Expected the catalogue of ${defaultLocale}, the language of the HTML`)
+  const { title, description } = pageHead(route, defaultLocale, source)
+  const others = Object.entries(catalogues).filter(([locale]) => locale !== defaultLocale)
+  const translatedHead =
+    others.length === 0
+      ? ''
+      : `<script>${headScript(Object.fromEntries(others.map(([locale, messages]) => [locale, pageHead(route, locale, messages)])))}</script>`
+
+  let html = replaceOnce(template, /<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`, '<title>')
   html = replaceOnce(
     html,
     /<meta\s+name="description"[^>]*>/,
-    `<meta name="description" content="${description}" />`,
+    `<meta name="description" content="${escapeHtml(description)}" />${translatedHead}`,
     'meta description',
   )
   // The not-found page answers many paths, so it has no canonical address and is not for search engines.
