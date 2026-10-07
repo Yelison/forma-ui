@@ -1,0 +1,57 @@
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-8);
+  margin: 0;
+  padding: 0;
+  color: var(--color-muted);
+  font: var(--font-caption);
+  list-style: none;
+}
+
+/* A target of the size of a finger where the page is read on one. */
+.breadcrumb a {
+  display: inline-flex;
+  align-items: center;
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+}
+
+/* The separator is drawn, not written: a screen reader reads the list and not a row of slashes. */
+.breadcrumb li:not(:last-child)::after {
+  content: '/';
+  margin-inline-start: var(--space-8);
+}
+
+.summary {
+  margin: 0;
+  color: var(--color-muted);
+  font: var(--font-title);
+}
+
+.toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-16);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tocLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--touch-target);
+  min-height: var(--touch-target);
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin: 0;
+  padding-inline-start: var(--space-20);
+  color: var(--color-muted);
+}

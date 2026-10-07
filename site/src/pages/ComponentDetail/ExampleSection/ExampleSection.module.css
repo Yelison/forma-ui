@@ -1,0 +1,4 @@
+.hint {
+  display: block;
+  margin-block-start: var(--space-4);
+}

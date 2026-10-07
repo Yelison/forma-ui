@@ -7,13 +7,17 @@ import { PagePending } from './pages/PagePending'
 import { RoutePage } from './pages/RoutePage'
 import { routes } from './routes'
 
-// The Foundations page carries the package's token file and the contrast contract, which no other page reads, and the
-// catalog the specimens of every family: each loads when its route is visited, so the other pages do not pay for it. A
+// The Foundations page carries the package's token file and the contrast contract, which no other page reads, the
+// catalog the specimens of every family, and the reference of a component its examples and its API: each loads when its
+// route is visited, so the other pages do not pay for it. A
 // direct link preloads its chunk from the route's HTML (scripts/emit-route-html.ts, which lists the lazy pages); a
 // client-side navigation shows the placeholder, which holds the height of a screen, until it arrives. The homepage is
 // not lazy: it is the first screen of most visits.
 const Foundations = lazy(() => import('./pages/Foundations').then(({ Foundations }) => ({ default: Foundations })))
 const CatalogPage = lazy(() => import('./pages/CatalogPage').then(({ CatalogPage }) => ({ default: CatalogPage })))
+const ComponentDetail = lazy(() =>
+  import('./pages/ComponentDetail').then(({ ComponentDetail }) => ({ default: ComponentDetail })),
+)
 
 /** The site: one page for each route of the manifest, and the not-found page for any other path. */
 export function App() {
@@ -35,6 +39,8 @@ export function App() {
                   <Foundations route={route} />
                 ) : route.key === 'components' ? (
                   <CatalogPage route={route} />
+                ) : route.key === 'component' ? (
+                  <ComponentDetail route={route} />
                 ) : (
                   <RoutePage route={route}>{route.key === 'home' && <Home />}</RoutePage>
                 )

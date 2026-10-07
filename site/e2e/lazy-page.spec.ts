@@ -11,6 +11,8 @@ const widths = [390, 1440]
 const lazyPages = [
   { chunk: 'Foundations', path: './docs/foundations/', heading: 'Foundations', link: 'Foundations' },
   { chunk: 'CatalogPage', path: './docs/components/', heading: 'Components', link: 'Components' },
+  // The drawer has no link to a reference: its client-side navigation starts at the catalog (see the end of the file).
+  { chunk: 'ComponentDetail', path: './docs/components/button/', heading: 'Button', link: null },
 ] as const
 type LazyPage = (typeof lazyPages)[number]
 
@@ -85,7 +87,7 @@ test.describe('a direct link to a page that loads on demand', () => {
 test.describe('a client-side navigation to a page that loads on demand', () => {
   test.use({ viewport: { width: 390, height: 800 } })
 
-  for (const lazy of lazyPages) {
+  for (const lazy of lazyPages.filter((page) => page.link !== null)) {
     test(`keeps the page as tall as a screen and focus on the menu button until ${lazy.chunk} arrives, then focuses its heading`, async ({
       page,
     }) => {
@@ -95,7 +97,7 @@ test.describe('a client-side navigation to a page that loads on demand', () => {
       const release = await holdChunk(page, lazy)
 
       await page.getByRole('button', { name: 'Open menu' }).click()
-      await page.getByRole('dialog', { name: 'Menu' }).getByRole('link', { name: lazy.link }).click()
+      await page.getByRole('dialog', { name: 'Menu' }).getByRole('link', { name: lazy.link! }).click()
 
       await expect(page).toHaveURL(new RegExp(`${lazy.path.slice(1)}$`))
       await expect
@@ -109,6 +111,32 @@ test.describe('a client-side navigation to a page that loads on demand', () => {
       expect(await totalShift(page)).toBe(0)
     })
   }
+})
+
+test.describe('a client-side navigation from the catalog to a reference', () => {
+  test.use({ viewport: { width: 390, height: 800 } })
+
+  test('keeps the page as tall as a screen until the chunk of the reference arrives, then focuses its heading', async ({
+    page,
+  }) => {
+    const reference = lazyPages[2]
+    await recordShifts(page)
+    await page.goto('./docs/components/')
+    await expect(page.getByRole('heading', { level: 1, name: 'Components' })).toBeVisible()
+    const release = await holdChunk(page, reference)
+
+    await page.getByRole('link', { name: 'View the Button reference' }).click()
+
+    await expect(page).toHaveURL(/\/docs\/components\/button\/$/)
+    await expect
+      .poll(() => page.locator('main').evaluate((main) => main.getBoundingClientRect().height))
+      .toBeGreaterThanOrEqual(800)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(0)
+
+    release()
+    await expect(page.getByRole('heading', { level: 1, name: 'Button' })).toBeFocused()
+    expect(await totalShift(page)).toBe(0)
+  })
 })
 
 test.describe('the build output', () => {
