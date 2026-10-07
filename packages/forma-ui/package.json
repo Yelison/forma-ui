@@ -54,9 +54,9 @@
     "typecheck": "tsc -p tsconfig.json",
     "check:consumer": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/check-consumer.ts",
     "pack:check": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/pack-check.ts",
-    "test": "vitest run --maxWorkers=3",
-    "test:coverage": "vitest run --maxWorkers=3 --coverage",
-    "test:browser": "vitest run --config vitest.browser.config.ts --maxWorkers=3"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:browser": "vitest run --config vitest.browser.config.ts"
   },
   "peerDependencies": {
     "react": "^19.2",
