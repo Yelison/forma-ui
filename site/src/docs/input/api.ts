@@ -23,6 +23,7 @@ const field = {
   label: { type: 'ReactNode', description: 'docs.input.field.api.label' },
   hint: { type: 'ReactNode', description: 'docs.input.field.api.hint' },
   error: { type: 'ReactNode', description: 'docs.input.field.api.error' },
+  announce: { type: "'assertive' | 'off'", description: 'docs.input.field.api.announce' },
   id: { type: 'string', description: 'docs.input.field.api.id' },
   describedBy: { type: 'string', description: 'docs.input.field.api.describedBy' },
   className: { type: 'string', description: 'docs.input.field.api.className' },

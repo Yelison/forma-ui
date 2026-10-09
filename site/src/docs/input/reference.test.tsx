@@ -94,6 +94,7 @@ describe('the reference of Input', () => {
       'label',
       'hint',
       'error',
+      'announce',
       'id',
       'describedBy',
       'className',
