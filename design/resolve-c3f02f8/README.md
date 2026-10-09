@@ -24,4 +24,6 @@ To change the snapshot, pin a new Resolve commit and replace the whole directory
 
 ## Consumers
 
-Read by plan tasks 1.1 (DTCG token source and CSS generator: `tokens.css` and `global.css`), 1.2 (contrast contract on the token source: `contrast-pairs.json`), 2.2 (icon and icon generation: `icon-paths.ts`) and 4.5 (the Foundations page of the site, which imports `contrast-pairs.json` to list and measure the documented pairs; an interim use until the package publishes the contract itself). Nothing else edits these files.
+Read by plan tasks 1.1 (DTCG token source and CSS generator: `tokens.css` and `global.css`) and 2.2 (icon and icon generation: `icon-paths.ts`).
+
+`contrast-pairs.json` is evidence, not an input: the package keeps its own pairs in `packages/forma-ui/tokens/contrast-pairs.json` and publishes them as `@yelison/forma-ui/contrast-pairs.json`, which the package's contrast test reads through the generator (plan task 1.2) and the site's Foundations page imports (4.5). Only the parity test (`packages/forma-ui/src/tokens/parity.test.ts`) reads this file, to keep the package's pairs equal to Resolve's. Nothing else edits these files.
