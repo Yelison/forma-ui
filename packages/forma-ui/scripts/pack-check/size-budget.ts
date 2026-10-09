@@ -2,8 +2,9 @@
 // do and a figure that does not move with the compression level of whoever runs the check. What is measured is what a
 // consumer's bundler produces from the installed tarball, with React left out as it is in a real application:
 //   - `dist/index.js`: every export, as `export * from` keeps them all;
-//   - `import { Button }`: what one component costs, which is the tree-shaking proof, since a module with a side effect
-//     or an export that is not a named one pulls in everything;
+//   - `import { Button }` and `import { Badge }`: what one component costs, which is the tree-shaking proof, since a
+//     module with a side effect or an export that is not a named one pulls in everything. Badge is the smallest
+//     component and has no icon: its budget catches what Button's, which carries the whole icon table, would hide;
 //   - `dist/styles.css`: one file for every component, whether the consumer uses them all or not.
 //
 // Each budget is the size measured when it was set plus about 20%, rounded up to a hundred bytes: room for a component
@@ -11,9 +12,9 @@
 // request and with the reason in its description, so that growth is a decision somebody reviews.
 //
 // Measured on 2026-10-06, with the eight components of v0.1 (Button, IconButton, Badge, Field, Input, Icon, Tooltip,
-// Dialog): 7318 B for every export, 3073 B for Button alone and 1479 B for styles.css. Button alone is not small
-// because Icon looks its path up in one object that holds every icon, so the whole table travels with any component
-// that draws an icon.
+// Dialog): 7318 B for every export, 3073 B for Button alone, 1479 B for styles.css and, added on 2026-10-09, about
+// 360 B for Badge alone. Button alone is not small because Icon looks its path up in one object that holds every icon,
+// so the whole table travels with any component that draws an icon.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { gzipSync } from 'node:zlib'
@@ -44,6 +45,12 @@ const budgets: Budget[] = [
     entry: `export { Button } from '@yelison/forma-ui'`,
     extension: '.js',
     limit: 3700,
+  },
+  {
+    name: 'import { Badge } from the package',
+    entry: `export { Badge } from '@yelison/forma-ui'`,
+    extension: '.js',
+    limit: 500,
   },
   {
     name: 'dist/styles.css',

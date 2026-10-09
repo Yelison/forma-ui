@@ -7,8 +7,8 @@
 // 2. The tarball is unpacked into the node_modules of a throwaway project (scripts/consumer/) that resolves the
 //    package through its `exports`, with `moduleResolution: nodenext`.
 // 3. The project is compiled, so the declarations resolve, and then run: it renders the sample components.
-// 4. Every CSS file the README tells the consumer to import must resolve through `exports`, `index.js` must not import
-//    CSS, every class of styles.css must start with `forma-`, and every class a rendered component carries must have
+// 4. Every CSS file the README tells the consumer to import must resolve through `exports`, no module of `dist/` may
+//    import CSS, every class of styles.css must start with `forma-`, and every class a rendered component carries must have
 //    a rule there.
 // 5. The build lists the classes of each CSS module in dist/css-modules.json (it is not packed). A module none of
 //    whose classes is rendered fails the check: the component is missing from scripts/consumer/main.tsx. The few
@@ -31,6 +31,7 @@ import {
   run,
   runCheck,
 } from './check-support.ts'
+import { packedModules, staticSpecifiers } from './pack-check/modules.ts'
 
 // What the consumer imports besides the entry point: the CSS the README tells it to import.
 const consumedFiles = ['tokens.css', 'styles.css', 'base.css']
@@ -56,11 +57,14 @@ runCheck('Consumer check', () => {
 
   const consumer = mkdtempSync(join(tmpdir(), 'forma-consumer-'))
   createConsumer(consumer)
-  const unpacked = installTarball(consumer, packTarball(consumer).tarball)
+  const { tarball, files } = packTarball(consumer)
+  const unpacked = installTarball(consumer, tarball)
 
-  const entry = readFileSync(join(unpacked, 'dist', 'index.js'), 'utf8')
-  if (/(?:import|from)\s*['"][^'"]+\.css['"]/.test(entry))
-    fail('dist/index.js imports CSS: importing the package must not')
+  for (const path of packedModules(files)) {
+    const imports = staticSpecifiers(readFileSync(join(unpacked, path), 'utf8'))
+    if (imports.some((specifier) => specifier.endsWith('.css')))
+      fail(`${path} imports CSS: importing the package must not`)
+  }
 
   const resolved = Object.fromEntries(consumedFiles.map((file) => [file, resolveExport(consumer, file)]))
   const tsc = createRequire(import.meta.url).resolve('typescript/bin/tsc')
