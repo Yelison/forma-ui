@@ -1,10 +1,28 @@
 import { execFileSync } from 'node:child_process'
-import { copyFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync } from 'node:fs'
+import {
+  copyFileSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { declarationMap, findRule, parseCss } from '../../scripts/css-blocks.ts'
-import { type SourceFile, generate, loadSources, main } from '../../scripts/build-tokens.ts'
+import {
+  type SourceFile,
+  generate,
+  contrastContract,
+  generateContrastPairs,
+  loadContrastPairs,
+  loadSources,
+  main,
+} from '../../scripts/build-tokens.ts'
 import { type TokenName, tokenNames } from './tokens.ts'
 
 const packageRoot = resolve(import.meta.dirname, '../..')
@@ -71,7 +89,7 @@ describe('determinism', () => {
     const { root, outside, cleanup } = tempRepo()
     try {
       const written = () =>
-        ['dist/tokens.css', 'dist/tokens.json', 'src/tokens/tokens.ts']
+        ['dist/tokens.css', 'dist/tokens.json', 'dist/contrast-pairs.json', 'src/tokens/tokens.ts']
           .map((file) => readFileSync(join(root, file), 'utf8'))
           .concat(readFileSync(outside, 'utf8'))
       main(['--figma', outside], root)
@@ -244,6 +262,100 @@ describe('dist/tokens.json', () => {
   it('reports the desktop value of a token with a viewport override', () => {
     expect(json.light['--button-height']).toBe('42px')
     expect(json.dark['--control-height']).toBe('40px')
+  })
+})
+
+describe('dist/contrast-pairs.json', () => {
+  interface ContrastSource {
+    thresholds: Record<string, unknown>
+    pairs: Record<string, unknown>[]
+  }
+  const tokensDir = join(packageRoot, 'tokens')
+  const colors = generate(sources()).json
+  // The source as the package has it, edited by `edit`, through the generator.
+  const contrastPairs = (edit: (source: ContrastSource) => void = () => undefined) => {
+    const source = structuredClone(loadContrastPairs(tokensDir)) as ContrastSource
+    edit(source)
+    return generateContrastPairs(source, colors)
+  }
+  const shipped = contrastContract(tokensDir)
+
+  it('holds the thresholds and the pairs, each with its kind and themes', () => {
+    expect(shipped.thresholds).toEqual({ text: 4.5, nonText: 3 })
+    expect(shipped.pairs[0]).toEqual({ foreground: 'ink', background: 'bg', kind: 'text', themes: ['light', 'dark'] })
+  })
+
+  it('writes the keys in a fixed order and carries no note from the source', () => {
+    const text = contrastPairs((source) => {
+      Object.assign(source, { source: 'a note', excluded: [{ subject: 'a note' }] })
+      Object.assign(source.pairs[0] as object, { paintedAt: 'a note' })
+    })
+    expect(text).toBe(contrastPairs())
+    expect(text).not.toMatch(/note|paintedAt|excluded|source/)
+    expect(Object.keys(shipped)).toEqual(['thresholds', 'pairs'])
+    expect(Object.keys(shipped.pairs[0] as object)).toEqual(['foreground', 'background', 'kind', 'themes'])
+  })
+
+  it('writes nothing when the source of the pairs is invalid, not even the outputs that are fine', () => {
+    const { root, outside, cleanup } = tempRepo()
+    try {
+      const file = join(root, 'tokens', 'contrast-pairs.json')
+      const source = JSON.parse(readFileSync(file, 'utf8')) as ContrastSource
+      source.pairs.push({ foreground: 'ink', background: 'no-such-color', kind: 'text', themes: ['light'] })
+      writeFileSync(file, JSON.stringify(source))
+      expect(() => main(['--figma', outside], root)).toThrow(/"ink on no-such-color" names --color-no-such-color/)
+      // dist/ holds tokens.css, tokens.json and contrast-pairs.json; src/tokens/ holds tokens.ts.
+      expect([existsSync(join(root, 'dist')), existsSync(join(root, 'src')), existsSync(outside)]).toEqual([
+        false,
+        false,
+        false,
+      ])
+    } finally {
+      cleanup()
+    }
+  })
+
+  it('fails on a pair that names a token that is no color of a theme it is painted in, and names the pair', () => {
+    expect(() =>
+      contrastPairs((source) => {
+        source.pairs.push({ foreground: 'ink', background: 'no-such-color', kind: 'text', themes: ['light', 'dark'] })
+      }),
+    ).toThrow('"ink on no-such-color" names --color-no-such-color, which is no token in the light theme')
+  })
+
+  it.each([
+    ['a kind it does not know', { kind: 'largeText' }, /"ink on bg" needs a kind: text or nonText/],
+    ['no themes', { themes: [] }, /"ink on bg" needs a non-empty list of themes from light, dark/],
+    ['a theme it does not know', { themes: ['light', 'sepia'] }, /"ink on bg" needs a non-empty list of themes/],
+    ['a foreground that is no string', { foreground: 3 }, /pairs\[0\] needs a string foreground/],
+  ])('fails on a pair with %s', (_name, change, message) => {
+    expect(() => contrastPairs((source) => Object.assign(source.pairs[0] as object, change))).toThrow(message)
+  })
+
+  it('fails on a pair listed twice, even under another kind', () => {
+    expect(() =>
+      contrastPairs((source) => {
+        source.pairs.push({ ...source.pairs[0], kind: 'nonText' })
+      }),
+    ).toThrow('"ink on bg" is listed twice')
+  })
+
+  it.each([
+    ['a missing one', undefined],
+    ['one that is no number', '4.5'],
+    ['one at 1, which holds every pair', 1],
+    ['one above the 21:1 of black on white', 22],
+  ])('fails on %s threshold', (_name, ratio) => {
+    expect(() =>
+      contrastPairs((source) => {
+        source.thresholds.nonText = ratio
+      }),
+    ).toThrow(/the threshold of "nonText" must be a ratio above 1 up to 21/)
+  })
+
+  it('fails on a source without thresholds or pairs', () => {
+    expect(() => generateContrastPairs({ pairs: [] }, colors)).toThrow(/the root needs "thresholds" and "pairs"/)
+    expect(() => generateContrastPairs([], colors)).toThrow(/the root needs "thresholds" and "pairs"/)
   })
 })
 

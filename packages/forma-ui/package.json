@@ -41,6 +41,7 @@
       "default": "./dist/index.js"
     },
     "./base.css": "./dist/base.css",
+    "./contrast-pairs.json": "./dist/contrast-pairs.json",
     "./styles.css": "./dist/styles.css",
     "./tokens.css": "./dist/tokens.css",
     "./tokens.json": "./dist/tokens.json",

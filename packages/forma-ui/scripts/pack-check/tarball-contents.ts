@@ -4,9 +4,9 @@
 //
 // `dist/` holds one JavaScript module and one declaration file per source module, so its list is closed by a rule and
 // not by hand: a `.js` file is there because something imports it, starting from what `main` and `exports` point at;
-// a `.d.ts` because the declarations import it or because it describes a module that is there; the stylesheets and
-// `tokens.json` by name. Whatever else is in `dist/` (an orphan module, a test, a source map) fails, and so does an
-// import of a file the tarball lacks.
+// a `.d.ts` because the declarations import it or because it describes a module that is there; the stylesheets,
+// `tokens.json` and `contrast-pairs.json` by name. Whatever else is in `dist/` (an orphan module, a test, a source map)
+// fails, and so does an import of a file the tarball lacks.
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { fail, kilobytes, packageRoot } from '../check-support.ts'
@@ -17,9 +17,16 @@ import { followImports } from './modules.ts'
 const rootFiles = ['package.json', 'README.md', 'LICENSE']
 // Written once Changesets runs (plan, Task 5.1b); allowed, never required.
 const optionalFiles = ['CHANGELOG.md']
-// The files of dist/ that are not modules: the three stylesheets and the resolved tokens. The build also lists the classes
-// of each CSS module in dist/css-modules.json for scripts/check-consumer.ts: a build product, not a package file.
-const staticDistFiles = ['dist/tokens.css', 'dist/styles.css', 'dist/base.css', 'dist/tokens.json']
+// The files of dist/ that are not modules: the three stylesheets, the resolved tokens and the contrast pairs. The build
+// also lists the classes of each CSS module in dist/css-modules.json for scripts/check-consumer.ts: a build product,
+// not a package file.
+const staticDistFiles = [
+  'dist/tokens.css',
+  'dist/styles.css',
+  'dist/base.css',
+  'dist/tokens.json',
+  'dist/contrast-pairs.json',
+]
 const requiredInDist = ['dist/index.js', 'dist/index.d.ts', ...staticDistFiles]
 // React is the consumer's: the package asks for it as a peer, never installs a second copy.
 const peerPackages = ['react', 'react-dom']
@@ -68,8 +75,8 @@ export const checkTarballContents: PackCheckStep = ({ files, unpacked }) => {
   )
   if (stray.length > 0)
     fail(
-      `dist/ has files that nothing imports and that are not a stylesheet or tokens.json: ${stray.join(', ')}. ` +
-        'Fix the build output, or `files` in package.json',
+      'dist/ has files that nothing imports and that are not a stylesheet, tokens.json or contrast-pairs.json: ' +
+        `${stray.join(', ')}. Fix the build output, or \`files\` in package.json`,
     )
 
   // The copy of the license in this folder exists for npm only: it must not drift from the repository's.
