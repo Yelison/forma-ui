@@ -7,6 +7,7 @@ const own = {
   label: { type: 'ReactNode', description: 'docs.input.api.label' },
   hint: { type: 'ReactNode', description: 'docs.input.api.hint' },
   error: { type: 'ReactNode', description: 'docs.input.api.error' },
+  announce: { type: "'assertive' | 'off'", description: 'docs.input.api.announce' },
   fieldClassName: { type: 'string', description: 'docs.input.api.fieldClassName' },
 } satisfies Record<OwnProps<InputProps, 'input'>, PropDoc>
 

@@ -22,6 +22,9 @@ afterEach(() => {
 const states: Record<string, ReactNode> = {
   default: <Input label="Email" hint="We only use it to reply." defaultValue="ada@example.com" />,
   error: <Input label="Email" hint="Required" error="Enter a valid email" defaultValue="ada" />,
+  'error, not announced': (
+    <Input label="Email" hint="Required" error="Enter a valid email" announce="off" defaultValue="ada" />
+  ),
   disabled: <Input label="Email" hint="Locked by your admin" defaultValue="ada@example.com" disabled />,
   'read-only': <Input label="Email" hint="Managed by your admin" defaultValue="ada@example.com" readOnly />,
 }

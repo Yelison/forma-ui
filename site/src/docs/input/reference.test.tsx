@@ -86,6 +86,7 @@ describe('the reference of Input', () => {
       'label',
       'hint',
       'error',
+      'announce',
       'fieldClassName',
       'id',
       'aria-describedby',
