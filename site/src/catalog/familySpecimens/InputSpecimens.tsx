@@ -17,7 +17,8 @@ export function InputSpecimens() {
         <Input label={label} hint={intl.formatMessage({ id: 'catalog.sample.inputHint' })} />
       </Specimen>
       <Specimen label={intl.formatMessage({ id: 'catalog.state.error' })}>
-        <Input label={label} error={intl.formatMessage({ id: 'catalog.sample.inputError' })} />
+        {/* The catalog mounts the error when the page opens, and nobody caused it: it is shown, not announced. */}
+        <Input label={label} error={intl.formatMessage({ id: 'catalog.sample.inputError' })} announce="off" />
       </Specimen>
       <Specimen label={intl.formatMessage({ id: 'catalog.state.disabled' })}>
         <Input label={label} defaultValue={name} disabled />
