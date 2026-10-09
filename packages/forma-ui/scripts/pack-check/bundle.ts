@@ -1,4 +1,5 @@
 // A production build of what the consumer imports, with the Vite of the repository, entirely in memory.
+import { gzipSync } from 'node:zlib'
 import { build, type BuildOptions, type Rolldown } from 'vite'
 import { fail } from '../check-support.ts'
 
@@ -17,3 +18,6 @@ export async function bundle(consumer: string, options: BuildOptions): Promise<B
   )
   return (Array.isArray(result) ? result : [result]).flatMap((one) => ('output' in one ? one.output : []))
 }
+
+/** Bytes sent over the network: gzip at level 9, the best a server can do and a figure that does not move with the level of whoever runs the check. */
+export const gzipBytes = (content: string | Uint8Array): number => gzipSync(content, { level: 9 }).length
