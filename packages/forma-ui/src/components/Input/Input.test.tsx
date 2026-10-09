@@ -21,6 +21,22 @@ describe('Input', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Enter a valid email')
   })
 
+  it('shows the error without announcing it when announce is off, and still describes the input with it', () => {
+    render(<Input label="Email" hint="Required" error="Enter a valid email" announce="off" />)
+
+    const input = screen.getByRole('textbox', { name: 'Email' })
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.getByText('Enter a valid email')).toBeVisible()
+    expect(input).toHaveAttribute('aria-invalid', 'true')
+    expect(input).toHaveAccessibleDescription('Enter a valid email Required')
+  })
+
+  it('does not hand announce to the native input', () => {
+    render(<Input label="Email" error="Enter a valid email" announce="off" />)
+
+    expect(screen.getByRole('textbox', { name: 'Email' })).not.toHaveAttribute('announce')
+  })
+
   it('keeps the consumer aria-describedby next to the hint', () => {
     render(
       <>
