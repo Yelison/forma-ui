@@ -14,11 +14,15 @@ interface InputExampleProps {
   readOnly?: true
 }
 
-/** The input and its JSX, made from the same props so that the code never says something else than the preview. */
+/**
+ * The input and its JSX, made from the same props. The preview is silenced with `announce="off"` and the code is not:
+ * the page mounts its errors when it opens and nobody caused them, but the code is what a form copies, and a form
+ * must announce its errors.
+ */
 function inputExample(props: InputExampleProps): Pick<Example, 'element' | 'code'> {
   const { label, hint, error, defaultValue, disabled, readOnly } = props
   return {
-    element: <Input {...props} />,
+    element: <Input {...props} announce="off" />,
     code: selfClosingTag('Input', [
       attribute('label', label),
       attribute('hint', hint),

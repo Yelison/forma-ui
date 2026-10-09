@@ -24,6 +24,14 @@ describe('CatalogPage', () => {
     }
   })
 
+  it('shows the error of the Input specimen, linked to its input, without announcing it', () => {
+    renderCatalog()
+
+    const input = within(row('Input')).getByRole('textbox', { name: 'Full name', description: 'Enter your full name.' })
+    expect(input).toBeInvalid()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('links each row to the reference of its family, and says so when a family has none yet', () => {
     renderCatalog()
 

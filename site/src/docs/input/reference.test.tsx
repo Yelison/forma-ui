@@ -26,6 +26,15 @@ describe('the reference of Input', () => {
     expect(code).toContain('defaultValue="Ana Pérez"\n  readOnly\n/>')
   })
 
+  it('shows its errors without announcing them, so that opening the page is silent', () => {
+    renderReference('Input')
+
+    const states = within(screen.getByRole('region', { name: 'States' }))
+    const invalid = states.getAllByRole('textbox').filter((input) => input.getAttribute('aria-invalid') === 'true')
+    expect(invalid).toHaveLength(2)
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('tells disabled from read-only: one leaves the tab order, the other keeps the focus', () => {
     renderReference('Input')
 

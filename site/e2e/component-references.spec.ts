@@ -249,3 +249,14 @@ for (const reference of references) {
     }
   })
 }
+
+// The reference of Input shows an error specimen twice; opening the page must not announce either of them.
+for (const locale of ['en', 'es'] as const) {
+  test(`the reference of Input announces nothing on load, in ${locale}`, async ({ page }) => {
+    await page.addInitScript((value) => localStorage.setItem('forma-ui-locale', value), locale)
+    await openReference(page, { slug: 'input', name: 'Input' })
+
+    await expect(page.locator('input[aria-invalid="true"]')).toHaveCount(2)
+    await expect(page.getByRole('alert')).toHaveCount(0)
+  })
+}

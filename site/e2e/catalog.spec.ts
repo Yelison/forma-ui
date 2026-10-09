@@ -52,6 +52,11 @@ for (const locale of ['en', 'es'] as const) {
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
+    test('announces nothing on load: its specimens with an error are not alerts', async ({ page }) => {
+      await expect(page.getByRole('region', { name: 'Input' }).locator('[aria-invalid="true"]')).toHaveCount(1)
+      await expect(page.getByRole('alert')).toHaveCount(0)
+    })
+
     test('narrows the list with a category chosen by mouse, and announces the count', async ({ page }) => {
       await page.getByText(t.feedback, { exact: true }).click()
 
