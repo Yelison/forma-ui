@@ -5,6 +5,7 @@ import { join } from 'node:path'
 export interface PackedManifest {
   main?: string
   types?: string
+  sideEffects?: boolean | string[]
   exports: Record<string, string | Record<string, string>>
   dependencies?: Record<string, string>
   peerDependencies?: Record<string, string>

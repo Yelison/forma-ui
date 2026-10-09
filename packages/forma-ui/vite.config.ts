@@ -17,15 +17,24 @@ export default defineConfig({
     lib: {
       entry: 'src/index.ts',
       formats: ['es'],
-      fileName: 'index',
+      // The name of each entry chunk: with `preserveModules` below, every module is one, named after its source file.
+      fileName: (_format, name) => `${name}.js`,
       // One stylesheet for every component, exported as ./styles.css. Vite extracts it instead of importing it from
-      // index.js, so importing the package stays free of side effects and the consumer decides where the CSS goes.
+      // a module, so importing the package stays free of side effects and the consumer decides where the CSS goes.
       cssFileName: 'styles',
     },
+    // Stated although lib mode defaults to it: a stylesheet per module would put `import './x.css'` in the modules.
+    cssCodeSplit: false,
     rolldownOptions: {
       // The package declares react and react-dom as peer dependencies: it never bundles a second copy of them,
       // nor of the JSX runtime. The pattern covers subpaths such as react/jsx-runtime and react-dom/client.
       external: [/^react(-dom)?($|\/)/],
+      // One file per source module, in the folders of src/ (`dist/components/Badge/Badge.js`), and `index.js` as a
+      // barrel that re-exports them. A single bundled file is one module for the consumer's bundler, so a chunk that
+      // loads on demand and uses Dialog dragged everything the page used (Dialog, Tooltip, Field…) into the entry
+      // chunk. As separate modules, with `sideEffects` in package.json, only the modules in use travel. The layout of
+      // dist/ is not API: package.json `exports` is the only way in, and scripts/pack-check/ guards the result.
+      output: { preserveModules: true, preserveModulesRoot: 'src' },
       plugins: [
         {
           // The classes each CSS module generated, for scripts/check-consumer.ts. It is a build product, not a part
