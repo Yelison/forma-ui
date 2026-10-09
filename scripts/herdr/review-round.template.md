@@ -28,9 +28,11 @@ Commands to run in your worktree:
 
 The machine is shared by several agents; without limits the load climbs far above its cores:
 
-- Run Vitest with 2 workers (the package sets them in its configuration; add `--maxWorkers=2` where a script does not) and Playwright always with `--workers=2`.
-- Do not run the whole Playwright suite on the base commit (it is slow and the base is not what you review); run the specs of the feature while
-  you iterate and the whole suite once, at the reviewed commit, only if the change reaches shared UI.
+- Every heavy run (Playwright, Vitest in browser mode, axe, a build, `pack:check`, `pack:reproducible`, `check:consumer`, a per-commit `git archive`
+  check) waits on the machine-wide lock: `flock /tmp/herdr-heavy.lock nice -n 10 <command>`. Resolve shares the same lock file.
+- Run Playwright and Vitest in browser mode with one worker (`--workers=1` / `--maxWorkers=1`), Vitest in jsdom with `--maxWorkers=2`.
+- Never run the full end-to-end or browser suite locally: run the specs the change can affect and list them in the report; CI runs the full
+  suites on the pull request.
 - If a test times out or fails only under load, rerun it alone before drawing conclusions, and say so in the report.
 {{EXTRA_POINTS}}
 

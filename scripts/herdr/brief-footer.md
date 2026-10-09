@@ -7,8 +7,9 @@ Los de la ficha, en inglés, Conventional Commits; cada uno pasa por sí solo la
 
 - **Tus puertos** (slot `__SL__`): sitio y Vite `__VITE__`, Playwright `__PW__`, Storybook `__SB__`. No uses otros ni toques procesos que no arrancaste. Están también en `.env.herdr`, pero puede que el modo automático no te deje leerlo: pásalos en línea (`PLAYWRIGHT_PORT=__PW__ npx playwright test --workers=2`).
 - **No ejecutes la batería completa de Playwright sobre la base**: es lenta y la base no es lo que se revisa. Para confirmar la base basta Vitest.
-- Mientras iteras, ejecuta solo las specs de tu cambio; la batería e2e completa, **una vez**, antes de entregar.
-- Vitest con 2 workers (el paquete ya los fija en su configuración; donde un script no lo haga, `--maxWorkers=2`) y Playwright siempre con `--workers=2`: la máquina la comparten varios agentes y sin límite la carga se dispara. Si un test falla solo bajo carga, repítelo aislado antes de tocar código y anótalo en la entrega.
+- **Nunca la batería completa de e2e o de navegador en local:** ejecuta solo las specs que tu cambio puede afectar y lístalas en la entrega; la completa la ejecuta la CI en el PR.
+- **Candado común de la máquina:** toda ejecución pesada (Playwright, vitest en navegador, axe, `npm run build`, `pack:check`, `pack:reproducible`, `check:consumer` y cada comprobación por commit con `git archive` + `npm ci`) va detrás de `flock /tmp/herdr-heavy.lock nice -n 10 <orden>`. El candado lo comparten Resolve y Forma UI: si está tomado, espera.
+- Playwright y vitest en navegador con `--workers=1` / `--maxWorkers=1` por línea de órdenes; vitest jsdom con `--maxWorkers=2`: la máquina la comparten varios agentes y sin límite la carga se dispara. Si un test falla solo bajo carga, repítelo aislado antes de tocar código y anótalo en la entrega.
 
 ## Mutaciones y órdenes peligrosas
 
