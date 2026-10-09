@@ -2,7 +2,13 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { declarationMap, findRule, parseCss } from '../../scripts/css-blocks.ts'
-import { generate, loadSources } from '../../scripts/build-tokens.ts'
+import {
+  type ContrastContract,
+  type ContrastPair,
+  contrastContract,
+  generate,
+  loadSources,
+} from '../../scripts/build-tokens.ts'
 
 // Semantic parity with Resolve at c3f02f8 (design/resolve-c3f02f8): the same names, values or aliases, and blocks.
 const snapshot = (name: string) =>
@@ -97,5 +103,96 @@ describe('parity with Resolve c3f02f8', () => {
     const css = JSON.stringify(generated)
     for (const name of APP_LAYOUT) expect(css).not.toContain(name)
     expect(generated.rules.map((rule) => rule.prelude).filter((prelude) => prelude.includes('min-width'))).toEqual([])
+  })
+})
+
+// The contrast pairs are Resolve's (contrast-pairs.json in the snapshot, extracted from tokens.contrast.test.ts): the
+// package keeps its own copy in tokens/contrast-pairs.json, and the snapshot stays as the evidence. The equality is
+// strict except for the pairs in DIFFERENCES: a pair that differs from Resolve on purpose is listed there with its
+// reason, and the comparison leaves it out on both sides. Today the list is empty.
+interface Difference {
+  /** The pair, written as the generator names it in its errors: `foreground on background`. */
+  pair: string
+  reason: string
+}
+
+const DIFFERENCES: Difference[] = []
+
+const pairName = ({ foreground, background }: ContrastPair) => `${foreground} on ${background}`
+const withoutDeclared = (pairs: ContrastPair[], differences: Difference[]) =>
+  pairs.filter((pair) => !differences.some(({ pair: declared }) => declared === pairName(pair)))
+
+describe('contrast pairs and Resolve', () => {
+  // The snapshot's pairs carry a note of where each is painted, which the package leaves out; its exclusions are the
+  // tokens Resolve's test checks on no pair.
+  const resolveContract = JSON.parse(snapshot('contrast-pairs.json')) as ContrastContract & {
+    excluded: { subject: string }[]
+  }
+  const resolvePairs = resolveContract.pairs.map(({ foreground, background, kind, themes }) => ({
+    foreground,
+    background,
+    kind,
+    themes,
+  }))
+  const shipped = contrastContract(resolve(import.meta.dirname, '../../tokens'))
+
+  it('holds the same pairs as Resolve, in its order, with the same kind and themes', () => {
+    expect(resolvePairs).toHaveLength(40)
+    expect(withoutDeclared(shipped.pairs, DIFFERENCES)).toEqual(withoutDeclared(resolvePairs, DIFFERENCES))
+  })
+
+  it('holds the same thresholds as Resolve', () => {
+    expect(shipped.thresholds).toEqual(resolveContract.thresholds)
+  })
+
+  it('gives each difference it declares a reason, and declares no pair that Resolve and the package both lack', () => {
+    const known = new Set([...resolvePairs, ...shipped.pairs].map(pairName))
+    for (const { pair, reason } of DIFFERENCES) {
+      expect(reason.trim(), pair).not.toBe('')
+      expect(known.has(pair), pair).toBe(true)
+    }
+  })
+
+  describe('a declared difference', () => {
+    const declared: Difference[] = [{ pair: 'brand on bg', reason: 'a test double' }]
+    const edited = (name: string, change: Partial<ContrastPair> | undefined) =>
+      resolvePairs.flatMap((pair) => (pairName(pair) !== name ? [pair] : change ? [{ ...pair, ...change }] : []))
+
+    it('lets the package differ on that pair: another kind, other themes, or none at all', () => {
+      for (const change of [{ kind: 'text' as const }, { themes: ['light' as const] }, undefined]) {
+        expect(withoutDeclared(edited('brand on bg', change), declared)).toEqual(
+          withoutDeclared(resolvePairs, declared),
+        )
+      }
+    })
+
+    it('does not let it differ on any other pair', () => {
+      expect(withoutDeclared(edited('ink on bg', { kind: 'nonText' }), declared)).not.toEqual(
+        withoutDeclared(resolvePairs, declared),
+      )
+      expect(withoutDeclared(edited('ink on bg', undefined), declared)).not.toEqual(
+        withoutDeclared(resolvePairs, declared),
+      )
+      // Nor on a pair that shares its foreground or its background with the declared one.
+      expect(withoutDeclared(edited('brand on surface', { kind: 'text' }), declared)).not.toEqual(
+        withoutDeclared(resolvePairs, declared),
+      )
+      expect(withoutDeclared(edited('ink on bg', { themes: ['dark'] }), declared)).not.toEqual(
+        withoutDeclared(resolvePairs, declared),
+      )
+    })
+  })
+
+  // What Resolve leaves out of its contrast test on purpose stays out of the pairs.
+  it('checks none of the tokens Resolve leaves out, and brand only as a non-text color', () => {
+    const excludedTokens = resolveContract.excluded.flatMap(({ subject }) =>
+      [...subject.matchAll(/--color-([a-z-]+)/g)].map((match) => match[1]),
+    )
+    expect(excludedTokens.toSorted()).toEqual(['disabled', 'focus', 'line', 'overlay'])
+    const colorsInPairs = shipped.pairs.flatMap((pair) => [pair.foreground, pair.background])
+    expect(colorsInPairs.filter((name) => excludedTokens.includes(name))).toEqual([])
+    const brandPairs = shipped.pairs.filter((pair) => pair.foreground === 'brand')
+    expect(brandPairs.length).toBeGreaterThan(0)
+    expect(brandPairs.every((pair) => pair.kind === 'nonText')).toBe(true)
   })
 })

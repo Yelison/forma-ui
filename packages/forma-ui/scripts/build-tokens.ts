@@ -10,6 +10,12 @@
 //                            overrides, the two identical dark blocks, aliases as `var(--name)`.
 //   dist/tokens.json         `{ light, dark }`, each mapping a CSS custom property name to its resolved value (no
 //                            `var()`). A token with a viewport override reports its base (desktop) value.
+//   dist/contrast-pairs.json The color pairs the package promises to keep readable, from tokens/contrast-pairs.json,
+//                            with the thresholds: `{ thresholds: { text, nonText }, pairs: [{ foreground, background,
+//                            kind, themes }] }`. Token names omit `--color-`. Each pair is checked against the
+//                            resolved colors, so a name that is no color token stops the build. Read by the package's
+//                            contrast test and, through `@yelison/forma-ui/contrast-pairs.json`, by the site's
+//                            Foundations page and by any consumer that checks its own pairs.
 //   src/tokens/tokens.ts     `tokenNames` and `TokenName`. Committed; CI regenerates it and fails on any diff.
 //   <path> (--figma)         The input of the Figma variables import (plan task 1.4). Never committed and never
 //                            inside the repository: the Figma material lives outside it. Format:
@@ -58,6 +64,25 @@ export interface SourceFile {
   data: unknown
 }
 
+const CONTRAST_KINDS = ['text', 'nonText'] as const
+export type ContrastKind = (typeof CONTRAST_KINDS)[number]
+
+export interface ContrastPair {
+  foreground: string
+  background: string
+  kind: ContrastKind
+  themes: Mode[]
+}
+
+/** The shape of `dist/contrast-pairs.json`: the pairs, each with its kind and themes, and the threshold of each kind. */
+export interface ContrastContract {
+  thresholds: Record<ContrastKind, number>
+  pairs: ContrastPair[]
+}
+
+/** Every token of each theme, by CSS name: `dist/tokens.json` parsed. */
+type ThemeValues = Record<Mode, Record<string, string>>
+
 export interface Outputs {
   css: string
   ts: string
@@ -76,6 +101,7 @@ interface Token {
 }
 
 const SOURCE_NOTE = 'tokens/*.tokens.json'
+const CONTRAST_PAIRS_FILE = 'contrast-pairs.json'
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
@@ -397,6 +423,83 @@ function buildFigma(tokens: Map<string, Token>): string {
   return `${JSON.stringify(figma, null, 2)}\n`
 }
 
+export function loadContrastPairs(tokensDir: string): unknown {
+  return JSON.parse(readFileSync(join(tokensDir, CONTRAST_PAIRS_FILE), 'utf8')) as unknown
+}
+
+const isContrastKind = (value: unknown): value is ContrastKind => CONTRAST_KINDS.some((kind) => kind === value)
+const isMode = (value: unknown): value is Mode => MODES.some((mode) => mode === value)
+
+function parseThreshold(thresholds: Record<string, unknown>, kind: ContrastKind): number {
+  const ratio = thresholds[kind]
+  // A contrast ratio runs from 1 (the same color) to 21: a threshold of 1 or less would hold every pair.
+  if (typeof ratio !== 'number' || !(ratio > 1 && ratio <= 21)) {
+    throw new Error(`${CONTRAST_PAIRS_FILE}: the threshold of "${kind}" must be a ratio above 1 up to 21`)
+  }
+  return ratio
+}
+
+function parseContrastPair(raw: unknown, index: number): ContrastPair {
+  if (!isRecord(raw) || typeof raw.foreground !== 'string' || typeof raw.background !== 'string') {
+    throw new Error(`${CONTRAST_PAIRS_FILE}: pairs[${index}] needs a string foreground and a string background`)
+  }
+  const { foreground, background, kind, themes } = raw
+  const name = `${foreground} on ${background}`
+  if (!isContrastKind(kind)) {
+    throw new Error(`${CONTRAST_PAIRS_FILE}: "${name}" needs a kind: ${CONTRAST_KINDS.join(' or ')}`)
+  }
+  if (!Array.isArray(themes) || themes.length === 0 || !themes.every(isMode)) {
+    throw new Error(`${CONTRAST_PAIRS_FILE}: "${name}" needs a non-empty list of themes from ${MODES.join(', ')}`)
+  }
+  return { foreground, background, kind, themes }
+}
+
+// The pairs the package promises to keep readable, checked against the resolved colors of the themes each is painted
+// in. The keys are written one by one, so that their order is fixed and nothing the source may add (a note, a path)
+// reaches the package.
+function buildContrastPairs(source: unknown, values: ThemeValues): string {
+  if (!isRecord(source) || !isRecord(source.thresholds) || !Array.isArray(source.pairs)) {
+    throw new Error(`${CONTRAST_PAIRS_FILE}: the root needs "thresholds" and "pairs"`)
+  }
+  const thresholds = source.thresholds
+  const seen = new Set<string>()
+  const pairs = source.pairs.map((raw, index) => {
+    const pair = parseContrastPair(raw, index)
+    const name = `${pair.foreground} on ${pair.background}`
+    if (seen.has(name)) throw new Error(`${CONTRAST_PAIRS_FILE}: "${name}" is listed twice`)
+    seen.add(name)
+    for (const theme of pair.themes) {
+      for (const color of [pair.foreground, pair.background]) {
+        if (values[theme][`--color-${color}`] === undefined) {
+          throw new Error(
+            `${CONTRAST_PAIRS_FILE}: "${name}" names --color-${color}, which is no token in the ${theme} theme`,
+          )
+        }
+      }
+    }
+    return { foreground: pair.foreground, background: pair.background, kind: pair.kind, themes: pair.themes }
+  })
+  const contract = {
+    thresholds: { text: parseThreshold(thresholds, 'text'), nonText: parseThreshold(thresholds, 'nonText') },
+    pairs,
+  }
+  return `${JSON.stringify(contract, null, 2)}\n`
+}
+
+/**
+ * The text of `dist/contrast-pairs.json`. `source` is `tokens/contrast-pairs.json` parsed, and `tokensJson` the text
+ * of `dist/tokens.json`, which holds the colors that the pairs name.
+ */
+export function generateContrastPairs(source: unknown, tokensJson: string): string {
+  return buildContrastPairs(source, JSON.parse(tokensJson) as ThemeValues)
+}
+
+/** The contract `dist/contrast-pairs.json` holds, generated from the sources in `tokensDir` (the package's `tokens/`). */
+export function contrastContract(tokensDir: string): ContrastContract {
+  const { json } = generate(loadSources(tokensDir))
+  return JSON.parse(generateContrastPairs(loadContrastPairs(tokensDir), json)) as ContrastContract
+}
+
 export function generate(files: SourceFile[]): Outputs {
   const tokens = parse(files)
   // JSON first: resolving every token in both modes reports missing aliases and cycles in the base values.
@@ -421,9 +524,14 @@ export function main(args: string[], root: string, repoRoot = resolve(root, '..'
   if (figma !== undefined && isInside(repoRoot, figma)) {
     throw new Error('--figma must point outside the repository: the Figma material is kept outside it')
   }
-  const outputs = generate(loadSources(join(root, 'tokens')))
+  const tokensDir = join(root, 'tokens')
+  const outputs = generate(loadSources(tokensDir))
+  // Every output is generated, and so validated, before the first one is written: a source with an error leaves
+  // dist/ and src/ as they were, instead of half of them new.
+  const contrastPairs = generateContrastPairs(loadContrastPairs(tokensDir), outputs.json)
   write(join(root, 'dist', 'tokens.css'), outputs.css)
   write(join(root, 'dist', 'tokens.json'), outputs.json)
+  write(join(root, 'dist', 'contrast-pairs.json'), contrastPairs)
   write(join(root, 'src', 'tokens', 'tokens.ts'), outputs.ts)
   if (figma !== undefined) write(figma, outputs.figma)
 }

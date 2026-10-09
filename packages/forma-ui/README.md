@@ -53,6 +53,11 @@ The package ships its CSS as three files, in this order:
 - A consumer without React, such as an identity provider's login theme, imports `tokens.css` alone.
 - `tokens.json` (`@yelison/forma-ui/tokens.json`) holds the resolved token values, and `tokenNames` lists the custom
   properties.
+- `contrast-pairs.json` (`@yelison/forma-ui/contrast-pairs.json`) lists the color pairs the package keeps readable: for
+  each one, the foreground and background tokens (without the `--color-` prefix), the kind of use (`text`, held to 4.5:1,
+  or `nonText`, held to 3:1) and the themes it is painted in, with the two thresholds. To check your own theme
+  overrides, measure each pair with `contrastRatio` over your values, taking from `tokens.json` the tokens you do not
+  override.
 
 The component classes are named `forma-<module>__<class>` and are not a styling API: restyle through the tokens, and
 pass your own `className` to a component.
@@ -181,7 +186,8 @@ not packed. A component that ships CSS is added to `scripts/consumer/main.tsx`.
   exists, `CHANGELOG.md`; everything `main`, `types` and `exports` point at is in it; `react` and `react-dom` are peer
   dependencies, never dependencies; `LICENSE` is the repository's. The list of `dist/` is closed by a rule, not by
   hand: every module is imported from the entry point, every import resolves to a packed file, and the only other files
-  are the stylesheets and `tokens.json`. An orphan module, a test, a source map or a missing import fails.
+  are the stylesheets, `tokens.json` and `contrast-pairs.json`. An orphan module, a test, a source map or a missing
+  import fails.
 - **Types and exports:** [publint](https://publint.dev) in strict mode and
   [Are The Types Wrong?](https://arethetypeswrong.github.io) read the packed `package.json` and resolve the typed
   entry point in `node10`, `node16` (CommonJS and ESM) and `bundler`; the consumer is compiled under `bundler`; and

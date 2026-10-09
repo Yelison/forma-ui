@@ -1,7 +1,6 @@
-import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { generate, loadSources } from '../../scripts/build-tokens.ts'
+import { type ContrastPair, contrastContract, generate, loadSources } from '../../scripts/build-tokens.ts'
 import { contrastRatio, relativeLuminance } from './contrast.ts'
 
 describe('relativeLuminance', () => {
@@ -66,24 +65,15 @@ describe('contrastRatio', () => {
   })
 })
 
-// The contract: Resolve's contrast test (design/resolve-c3f02f8/contrast-pairs.json, 40 pairs per theme) run against
-// the colors the token source resolves to, so a token edit that breaks a pair fails here before it ships. The test only
-// reads: a failing pair is reported, never fixed, and the tokens are not touched.
-type Theme = 'light' | 'dark'
+// The contract: the pairs of tokens/contrast-pairs.json, as dist/contrast-pairs.json ships them, run against the
+// colors the token source resolves to, so a token edit that breaks a pair fails here before it ships. The test only
+// reads: a failing pair is reported, never fixed, and the tokens are not touched. That the pairs are Resolve's is
+// checked in parity.test.ts.
+type Theme = ContrastPair['themes'][number]
 
-interface ContrastContract {
-  thresholds: { text: number; nonText: number }
-  pairs: { foreground: string; background: string; kind: 'text' | 'nonText'; themes: Theme[] }[]
-  excluded: { subject: string; reason: string }[]
-}
-
-const contract = JSON.parse(
-  readFileSync(resolve(import.meta.dirname, '../../../../design/resolve-c3f02f8/contrast-pairs.json'), 'utf8'),
-) as ContrastContract
-const resolved = JSON.parse(generate(loadSources(resolve(import.meta.dirname, '../../tokens'))).json) as Record<
-  Theme,
-  Record<string, string>
->
+const tokensDirectory = resolve(import.meta.dirname, '../../tokens')
+const contract = contrastContract(tokensDirectory)
+const resolved = JSON.parse(generate(loadSources(tokensDirectory)).json) as Record<Theme, Record<string, string>>
 
 // The pairs name tokens without their `--color-` prefix.
 function colorOf(theme: Theme, name: string): string {
@@ -99,10 +89,9 @@ describe('contrast contract on the token source', () => {
     expect(contract.thresholds).toEqual({ text: 4.5, nonText: 3 })
   })
 
-  it('checks Resolve’s 40 pairs in both themes, 80 checks', () => {
-    expect(contract.pairs).toHaveLength(40)
-    expect(contract.pairs.every((pair) => pair.themes.join() === 'light,dark')).toBe(true)
-    expect(checks).toHaveLength(80)
+  it('has pairs to check, each in at least one theme', () => {
+    expect(contract.pairs.length).toBeGreaterThan(0)
+    expect(checks.length).toBeGreaterThanOrEqual(contract.pairs.length)
   })
 
   it.each(checks)('$theme: $foreground on $background ($kind)', ({ foreground, background, kind, theme }) => {
@@ -113,30 +102,5 @@ describe('contrast contract on the token source', () => {
       ratio,
       `${foreground} on ${background} (${theme}): ${ratio.toFixed(3)}:1, needs ${needed}:1 (${kind})`,
     ).toBeGreaterThanOrEqual(needed)
-  })
-})
-
-// What the contract leaves out on purpose, as Resolve does (`excluded` in contrast-pairs.json). Disabled text, at
-// opacity .45 over any pair, has no pair to check: it is recorded only in `excluded` today, and belongs in the
-// Foundations reference as a known limitation (plan task 4.5).
-describe('exclusions of the contrast contract', () => {
-  const excludedTokens = contract.excluded.flatMap(({ subject }) =>
-    [...subject.matchAll(/--color-([a-z-]+)/g)].map((match) => match[1]),
-  )
-  const colorsInPairs = contract.pairs.flatMap((pair) => [pair.foreground, pair.background])
-
-  it('names the tokens it leaves to non-text rules: line, disabled, focus and overlay', () => {
-    expect(excludedTokens.toSorted()).toEqual(['disabled', 'focus', 'line', 'overlay'])
-  })
-
-  it('never checks an excluded token, as foreground or background', () => {
-    expect(colorsInPairs.filter((name) => excludedTokens.includes(name))).toEqual([])
-  })
-
-  it('checks brand only as a non-text color, because links use the link token', () => {
-    const brandPairs = contract.pairs.filter((pair) => pair.foreground === 'brand')
-    expect(brandPairs.length).toBeGreaterThan(0)
-    expect(brandPairs.every((pair) => pair.kind === 'nonText')).toBe(true)
-    expect(contract.pairs.some((pair) => pair.kind === 'text' && pair.foreground === 'link')).toBe(true)
   })
 })
