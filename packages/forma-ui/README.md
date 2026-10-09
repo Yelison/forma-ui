@@ -46,8 +46,8 @@ The package ships its CSS as three files, in this order:
   component's own rule (for example `.forma-badge__blue`), so the later stylesheet wins: yours has to come after
   `styles.css`.
 - `tokens.css` is the foundation: the component rules read its custom properties, and without it they render unstyled.
-- Importing `@yelison/forma-ui` pulls in no CSS and has no side effects: the components are tree-shakeable, and the
-  stylesheet is yours to place. `styles.css` is one file for all the components, whether you use them all or not.
+- Importing `@yelison/forma-ui` pulls in no CSS and has no side effects: the components are tree-shakeable (see
+  [Bundle size](#bundle-size)), and the stylesheet is yours to place. `styles.css` is one file for all the components, whether you use them all or not.
 - `base.css` holds only plain `.forma-*` class selectors, so nothing in it can match your own markup. A modal dialog
   applies `.forma-scroll-locked` to `<html>` while it is open: import `base.css` unless you use no such component.
 - A consumer without React, such as an identity provider's login theme, imports `tokens.css` alone.
@@ -125,6 +125,35 @@ scroll lock of the dialog, for an overlay of your own), `useFormaStrings` and `d
 on their own), `contrastRatio` and `relativeLuminance` (WCAG contrast, over `#rgb` and `#rrggbb` colors) and every props
 type next to its component.
 
+## Bundle size
+
+The package is published as one ES module per source file (`dist/components/Badge/Badge.js`), and `dist/index.js` only
+re-exports them. Your bundler keeps what you import, chunk by chunk: a dialog that loads on demand brings its own code
+with it, and the entry chunk of your application does not carry the code of components it never shows on the first
+screen.
+
+- **`sideEffects`:** `package.json` declares `"sideEffects": ["*.css"]`. The JavaScript has no effect at import time, so
+  a bundler may drop any module you do not use; the three stylesheets are the only files it must keep, because importing
+  one is all they are for.
+- **Styles:** unchanged. Importing the package still pulls in no CSS: `styles.css` is built beside the modules as one
+  file for every component, and you import it yourself, once, as shown in [The CSS you import](#the-css-you-import).
+- **Imports:** from the package, `import { Dialog } from '@yelison/forma-ui'`. `exports` is the only way in, so the
+  layout of `dist/` can change without breaking you, and there are no per-component subpaths: a bundler that tree-shakes
+  already gets the same result from the package root, and each subpath would be a public name to keep.
+
+`npm run pack:check` prints the current sizes, minified and gzipped, and fails when one grows past its budget; its output
+is the source of truth. At the time of writing they are:
+
+| What you import | Size    |
+| --------------- | ------- |
+| Everything      | 6.76 kB |
+| `{ Button }`    | 2.91 kB |
+| `{ Badge }`     | 0.23 kB |
+| `styles.css`    | 1.47 kB |
+
+`Button` is not small because `Icon` looks its path up in one object that holds every icon, so the whole table travels
+with any component that draws an icon.
+
 ## Compatibility
 
 - **React:** 19.2 or a later 19.x release (`^19.2`), with `react-dom`.
@@ -141,7 +170,7 @@ type next to its component.
 The repository's CI checks the packed tarball, as a consumer receives it, not the sources.
 
 `npm run check:consumer` packs the package, installs it into a throwaway project, compiles that project with
-`moduleResolution: nodenext` and runs it. It fails if a CSS export does not resolve, if `index.js` imports CSS, if a
+`moduleResolution: nodenext` and runs it. It fails if a CSS export does not resolve, if a module of `dist/` imports CSS, if a
 class in `styles.css` lacks the `forma-` prefix, if a rendered component carries a class with no rule or if a CSS
 module has no class rendered at all. The build lists the classes of every module in `dist/css-modules.json`, which is
 not packed. A component that ships CSS is added to `scripts/consumer/main.tsx`.
@@ -150,17 +179,29 @@ not packed. A component that ships CSS is added to `scripts/consumer/main.tsx`.
 
 - **Contents:** only `dist/**` (without `dist/css-modules.json`), `package.json`, `README.md`, `LICENSE` and, once it
   exists, `CHANGELOG.md`; everything `main`, `types` and `exports` point at is in it; `react` and `react-dom` are peer
-  dependencies, never dependencies; `LICENSE` is the repository's.
+  dependencies, never dependencies; `LICENSE` is the repository's. The list of `dist/` is closed by a rule, not by
+  hand: every module is imported from the entry point, every import resolves to a packed file, and the only other files
+  are the stylesheets and `tokens.json`. An orphan module, a test, a source map or a missing import fails.
 - **Types and exports:** [publint](https://publint.dev) in strict mode and
   [Are The Types Wrong?](https://arethetypeswrong.github.io) read the packed `package.json` and resolve the typed
   entry point in `node10`, `node16` (CommonJS and ESM) and `bundler`; the consumer is compiled under `bundler`; and
   `require()` of the entry point must load on Node 22.12+.
-- **One copy of React:** the packed `dist/index.js` imports only `react` and `react-dom` and holds no React code, and
+- **One copy of React:** no packed module imports anything but `react`, `react-dom` and its own modules or holds React code, and
   the production bundle of a Vite consumer (`scripts/consumer/client.tsx`) resolves `react`, `react-dom` and
   `scheduler` to one folder each. React inlined into the library cannot be seen from the module graph alone, so the
-  first half reads the file.
-- **Size budget:** what a Vite consumer's bundler makes of the tarball, minified and gzipped (level 9), with React left
-  out: every export (`dist/index.js`), `import { Button }` alone, which is what proves the tree-shaking, and
+  first half reads every file.
+- **Side effects:** `sideEffects` is a list of patterns that covers every stylesheet in `exports` and no JavaScript.
+  The promise behind it is checked too: with the field taken out of a copy of the packed `package.json`, so that the
+  bundler has to read every module to know whether it does anything, a bare `import '@yelison/forma-ui'` in a Vite
+  consumer (React left external, as in an application) renders no code of the package. A module that sets an attribute
+  or a global when it is imported fails there, naming the file. The three stylesheets each emit their CSS when imported.
+- **Lazy chunks:** an application that uses `Button` and loads `Dialog` on demand has no `Dialog` code in its entry chunk,
+  and the chunk loaded on demand has it. A package that reached the bundler as one module fails this, because the entry
+  chunk would carry everything the other chunks use. The entry chunk has a weight budget too
+  (`scripts/pack-check/lazy-chunk.ts`).
+- **Size budget:** what a Vite consumer's bundler makes of the tarball, bundled as an application, minified and
+  gzipped (level 9), with React left out: every export, `import { Button }` alone, `import { Badge }` alone (the
+  smallest component, with no icon, so that what `Button` carries cannot hide a regression in it) and
   `dist/styles.css`. Each budget is the size measured plus about 20% and lives in
   `scripts/pack-check/size-budget.ts`; the message names the budget, the size and the excess.
 
