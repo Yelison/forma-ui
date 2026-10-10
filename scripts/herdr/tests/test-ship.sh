@@ -10,6 +10,17 @@ mk() {
   "$HERDR/new-review.sh" --task impl-a --slot "$SB" >/dev/null 2>"$T/err" || { echo "mk: new-review.sh failed: $(cat "$T/err")" >&2; exit 2; }
   echo pass >"$T/state/gh/checks"
 }
+# main_sha: where origin/main is now. A squash lands one new commit, so it is not the pushed head, but it has its tree.
+main_sha() { git --git-dir "$T/remote.git" rev-parse refs/heads/main; }
+has_branch() { git -C "$T/repo" rev-parse -q --verify "refs/heads/$1" >/dev/null; }
+# series: three commits (one empty from mk_impl, two with files) with co-authors, one of them twice: a series whose
+# squash is a patch of its own, which `git cherry` cannot match to any commit of it.
+series() {
+  echo a >"$W/a.txt"; git -C "$W" add a.txt
+  git -C "$W" commit -q -m "feat: add a" -m "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  echo b >"$W/b.txt"; git -C "$W" add b.txt
+  git -C "$W" commit -q -m "feat: add b" -m $'Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\nCo-Authored-By: Pair Person <pair@example.com>'
+}
 ship() { "$HERDR/ship.sh" --task impl-a --title "feat: demo" --body "$T/body.md" "$@" 2>&1; }
 gh_calls() { cat "$T/state/gh/calls.log" 2>/dev/null || true; }
 remote_has() { git --git-dir "$T/remote.git" rev-parse -q --verify "refs/heads/$1" >/dev/null; }
@@ -29,18 +40,67 @@ push_shim() { mkdir -p "$T/shim"; real=$(command -v git)
 s_dirty() { mk; touch "$W/x"; out=$(ship); check "dirty: refused" test $? -ne 0; check "dirty: message" says x 'uncommitted'; check "dirty: nothing pushed" bash -c "! git --git-dir '$T/remote.git' rev-parse -q --verify refs/heads/feat/impl-a"; }
 s_noorigin() { mk; git clone -q "$T/remote.git" "$T/other"; git -C "$T/other" -c user.name=o -c user.email=o@x commit -q --allow-empty -m "main moved"; git -C "$T/other" push -q origin main
   out=$(ship); check "stale base: refused" test $? -ne 0; check "stale base: says rebase" says x 'does not contain origin/main'; check "stale base: nothing pushed" bash -c "! git --git-dir '$T/remote.git' rev-parse -q --verify refs/heads/feat/impl-a"; check "stale base: no gh" test -z "$(gh_calls)"; }
+# The default is a squash: one commit on main titled "<title> (#PR)", whose body lists the series and its co-authors once each.
+s_squash() { mk; series; out=$(ship --no-cleanup); rc=$?
+  head=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
+  check "squash: rc 0" test $rc -eq 0
+  check "squash: the commit is titled with the PR number" test "$(cat "$T/state/gh/merge-subject")" = "feat: demo (#41)"
+  want=$(printf 'Squashed from:\n\n- feat: one\n- feat: add a\n- feat: add b\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\nCo-Authored-By: Pair Person <pair@example.com>')
+  check "squash: the body lists the series, oldest first, and each co-author once" test "$(cat "$T/state/gh/merge-body")" = "$want"
+  check "squash: pinned to the pushed head" grep -q -- "--match-head-commit $head\$" <<<"$(gh_calls)"
+  check "squash: never a rebase" bash -c "! grep -q -- '--rebase' '$T/state/gh/calls.log'"
+  check "squash: one commit on main for the whole series" test "$(git --git-dir "$T/remote.git" rev-list --count "$(git -C "$W" merge-base "$head" origin/main)..refs/heads/main")" -eq 1; }
+# --merge rebase keeps what ship.sh did before: every commit lands, no title or body of its own.
+s_rebase() { mk; out=$(ship --merge rebase); rc=$?
+  head=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
+  check "rebase: rc 0" test $rc -eq 0
+  check "rebase: merge scheduled with --auto --rebase and the pushed head" grep -q "pr merge 41 --auto --rebase --match-head-commit $head" <<<"$(gh_calls)"
+  check "rebase: no squash, no title" bash -c "! grep -q -e '--squash' -e '--subject' '$T/state/gh/calls.log'"
+  check "rebase: origin/main contains the pushed head" git --git-dir "$T/remote.git" merge-base --is-ancestor "$head" refs/heads/main
+  mk ""; out=$(ship --merge rebase --no-cleanup); check "rebase without checks: rc 0" test $? -eq 0
+  check "rebase without checks: merged at once with --rebase, never --auto" grep -qx "gh pr merge 41 --rebase --match-head-commit $(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)" <<<"$(gh_calls)"; }
+# A method GitHub would not understand is refused before gh is called, whether it comes from --merge or from the environment.
+s_badmethod() { mk; out=$(ship --merge merge); check "bad --merge: refused" test $? -ne 0; check "bad --merge: says why" says x "must be squash or rebase"; check "bad --merge: names the value" says x "not 'merge'"
+  check "bad --merge: gh is never called" test -z "$(gh_calls)"; check "bad --merge: nothing pushed" bash -c "! git --git-dir '$T/remote.git' rev-parse -q --verify refs/heads/feat/impl-a"
+  out=$(HERDR_MERGE_METHOD=ff ship); check "bad HERDR_MERGE_METHOD: refused" test $? -ne 0; check "bad HERDR_MERGE_METHOD: says why" says x "not 'ff'"
+  out=$(HERDR_MERGE_METHOD= ship); check "empty HERDR_MERGE_METHOD: refused" test $? -ne 0; check "bad methods: gh is still never called" test -z "$(gh_calls)"; }
+# HERDR_MERGE_METHOD sets the default of the project; --merge wins for one run.
+s_method() { mk; out=$(HERDR_MERGE_METHOD=rebase ship --no-cleanup); check "env rebase: rc 0" test $? -eq 0
+  check "env rebase: merged with --rebase" grep -q 'pr merge 41 --auto --rebase' <<<"$(gh_calls)"
+  mk; out=$(HERDR_MERGE_METHOD=rebase ship --merge squash --no-cleanup); check "--merge squash over the environment: rc 0" test $? -eq 0
+  check "--merge squash over the environment: squashed" grep -q 'pr merge 41 --auto --squash' <<<"$(gh_calls)"; }
+# After a squash GitHub merged exactly the pushed head, so the task's branch is deleted although `git cherry` does not
+# see a series that became one patch as merged. Without the squashed head the same branch would be kept.
+s_squashclean() { mk; series; head=$(git -C "$W" rev-parse HEAD); review_branch=$(jq -r .branch "$T/root/tasks/review-impl-a/task.json")
+  out=$(ship); rc=$?
+  check "squash cleanup: rc 0" test $rc -eq 0; check "squash cleanup: the branch was exactly the head that was merged" test "$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)" = "$head"
+  check "squash cleanup: the task's branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/feat/impl-a"
+  check "squash cleanup: says why" says x 'exactly the head GitHub squash-merged'
+  check "squash cleanup: the task is retired" retired impl-a
+  check "squash cleanup: the review's branch follows the rule that was already there (git cherry sees a series, so it is kept)" has_branch "$review_branch"
+  check "squash cleanup: the review's branch is kept with a note" says x "$review_branch kept"
+  check "squash cleanup: the review is retired all the same" retired review-impl-a; }
+# A commit made on the local branch after the push is not in the merged head: the branch is kept, whatever the squash says.
+s_squashkeep() { mk; series; echo "$W" >"$T/state/gh/late-commit"; out=$(ship); rc=$?
+  check "late commit: rc 0" test $rc -eq 0
+  check "late commit: the merged head is not the local tip, and the log says so" says x 'but feat/impl-a is at'
+  check "late commit: the task's branch is kept" has_branch feat/impl-a
+  check "late commit: the kept branch has the late commit" test "$(git -C "$T/repo" log -1 --format=%s feat/impl-a)" = "feat: late"
+  check "late commit: the task is retired all the same" retired impl-a
+  check "late commit: the retry hint is not offered a squashed head it never had" bash -c "! grep -q -- '--squashed-head' <<<'$out'"; }
 s_happy() { mk; echo pending:2 >"$T/state/gh/checks"
   out=$(ship); rc=$?
   check "happy: rc 0" test $rc -eq 0; check "happy: pushed" remote_has feat/impl-a
   check "happy: the default assignee comes from project.env, set after the PR exists" grep -q -- 'pr edit 41 --add-assignee Yelison' <<<"$(gh_calls)"
   check "happy: pr create carries no --assignee" bash -c "! grep -- 'pr create' '$T/state/gh/calls.log' | grep -q -- '--assignee'"
   head=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
-  check "happy: merge scheduled with --auto --rebase and the pushed head" grep -q "pr merge 41 --auto --rebase --match-head-commit $head" <<<"$(gh_calls)"
-  check "happy: origin/main contains the pushed head" git --git-dir "$T/remote.git" merge-base --is-ancestor "$head" refs/heads/main
+  check "happy: merge scheduled with --auto --squash and the pushed head" grep -q -- "--auto --squash --subject feat: demo (#41) --body" <<<"$(gh_calls)"
+  check "happy: the squash is pinned to the pushed head" grep -q -- "--match-head-commit $head\$" <<<"$(gh_calls)"
+  check "happy: origin/main has the content of the pushed head" test "$(git --git-dir "$T/remote.git" rev-parse 'refs/heads/main^{tree}')" = "$(git --git-dir "$T/remote.git" rev-parse "$head^{tree}")"
   check "happy: the state of the PR is read before the first /exit" test "$(grep -n 'pr view 41 --json state' "$T/state/events.log" | head -1 | cut -d: -f1)" -lt "$(grep -n '^exit ' "$T/state/events.log" | head -1 | cut -d: -f1)"
   check "happy: merge after the check polls" test "$(grep -n 'pr merge' "$T/state/gh/calls.log" | cut -d: -f1)" -gt "$(grep -n 'pr checks' "$T/state/gh/calls.log" | tail -1 | cut -d: -f1)"
-  want=$head
-  check "happy: prints the pushed commit as merged" grep -qx "merged $want" <<<"$out"
+  want=$(main_sha)
+  check "happy: prints the squash commit as merged" grep -qx "merged $want" <<<"$out"
   check "happy: main checkout fast-forwarded" test "$(git -C "$T/repo" rev-parse HEAD)" = "$want"
   check "happy: task retired" retired impl-a; check "happy: review retired" retired review-impl-a
   check "happy: worktrees gone" bash -c "! test -e '$W' && ! test -e '$T/root/worktrees/review-impl-a'"
@@ -57,17 +117,18 @@ s_assignee() { mk; out=$(HERDR_PR_ASSIGNEE= ship --no-cleanup); check "no assign
   # An assignee that cannot be set does not stop the merge: the PR exists.
   mk; touch "$T/state/gh/edit-fails"; out=$(ship --no-cleanup); check "assignee fails: rc 0" test $? -eq 0
   check "assignee fails: warns" says x 'could not assign #41 to Yelison'; check "assignee fails: still merged" grep -q 'pr merge 41' "$T/state/gh/calls.log"; }
-# No required checks (Forma UI has no CI yet): merge at once, rebase, pinned to the head, never --auto, no check polling.
+# No required checks: merge at once, squash, pinned to the head, never --auto, no check polling.
 s_nochecks() { mk ""; out=$(ship); rc=$?
   head=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
   check "no checks: rc 0" test $rc -eq 0
-  check "no checks: merged with --rebase --match-head-commit and the pushed head" grep -qx "gh pr merge 41 --rebase --match-head-commit $head" <<<"$(gh_calls)"
+  check "no checks: merged at once with --squash, pinned to the pushed head" grep -q -- "^gh pr merge 41 --squash --subject feat: demo (#41) --body" <<<"$(gh_calls)"
+  check "no checks: pinned to the pushed head" grep -q -- "--match-head-commit $head\$" <<<"$(gh_calls)"
   check "no checks: never --auto" bash -c "! grep -q -- '--auto' '$T/state/gh/calls.log'"
   check "no checks: checks are never polled (one read of their names for the warning)" test "$(grep -c 'pr checks' "$T/state/gh/calls.log")" -eq 1
   check "no checks: warns that the PR has checks, naming them" says x 'has checks (Other, build)'
-  check "no checks: the warning does not change the merge" grep -q 'pr merge 41 --rebase' "$T/state/gh/calls.log"
+  check "no checks: the warning does not change the merge" grep -q 'pr merge 41 --squash' "$T/state/gh/calls.log"
   check "no checks: the head is still awaited before merging" test "$(grep -n 'headRefOid' "$T/state/gh/calls.log" | head -1 | cut -d: -f1)" -lt "$(grep -n 'pr merge' "$T/state/gh/calls.log" | head -1 | cut -d: -f1)"
-  check "no checks: origin/main contains the pushed head" git --git-dir "$T/remote.git" merge-base --is-ancestor "$head" refs/heads/main
+  check "no checks: origin/main has the content of the pushed head" test "$(git --git-dir "$T/remote.git" rev-parse 'refs/heads/main^{tree}')" = "$(git --git-dir "$T/remote.git" rev-parse "$head^{tree}")"
   check "no checks: task and review retired" bash -c "[ \"\$(jq -r .removed_at '$T/root/tasks/impl-a/task.json')\" != null ] && [ \"\$(jq -r .removed_at '$T/root/tasks/review-impl-a/task.json')\" != null ]"
   check "no checks: says so" says x 'No required checks configured'
   # No checks at all: no warning.
@@ -80,7 +141,7 @@ s_nochecks() { mk ""; out=$(ship); rc=$?
 s_two() { mk "unit tests, e2e"; echo 'list:unit tests=pass,e2e=pending@4' >"$T/state/gh/checks"; rm -f "$T/state/gh/polls"; out=$(ship); rc=$?
   check "two checks: rc 0" test $rc -eq 0
   check "two checks: waited while the second was pending" says x 'Waiting for required checks: e2e (pending)'
-  check "two checks: merge scheduled with --auto" grep -q 'pr merge 41 --auto --rebase --match-head-commit' <<<"$(gh_calls)"
+  check "two checks: merge scheduled with --auto" grep -q 'pr merge 41 --auto --squash --subject' <<<"$(gh_calls)"
   check "two checks: the merge came after the last pending read" test "$(cat "$T/state/gh/merge-polls")" -ge 5
   check "two checks: both are named when they pass" says x 'Required checks passed: unit tests e2e'
   # A required check that never shows up is waited for until the timeout, with no merge.
@@ -132,7 +193,7 @@ s_dirtyreview() { mk; touch "$T/root/worktrees/review-impl-a/stray"; out=$(ship)
   check "dirty review: the task is not retired either" bash -c "[ \"\$(jq -r .removed_at '$T/root/tasks/impl-a/task.json')\" = null ]"; }
 s_stale() { mk; echo 2 >"$T/state/gh/stale"; out=$(ship --no-cleanup); rc=$?
   check "stale head: rc 0" test $rc -eq 0; check "stale head: waited" says x 'Waiting for #41 to show'
-  check "stale head: no checks read before the head matched" test "$(grep -n 'headRefOid' "$T/state/gh/calls.log" | tail -1 | cut -d: -f1)" -lt "$(grep -n 'pr checks' "$T/state/gh/calls.log" | head -1 | cut -d: -f1)"
+  check "stale head: no checks read before the head matched" test "$(grep -n 'json headRefOid' "$T/state/gh/calls.log" | tail -1 | cut -d: -f1)" -lt "$(grep -n 'pr checks' "$T/state/gh/calls.log" | head -1 | cut -d: -f1)"
   echo 100 >"$T/state/gh/stale"; out=$(HERDR_SHIP_TIMEOUT_SECONDS=1 ship --no-cleanup); check "head never shown: refused" test $? -ne 0; }
 s_lease() { mk; ship --no-cleanup >/dev/null; old=$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)
   advance_main; rebase_branch "feat: one rebased"
@@ -145,7 +206,8 @@ s_foreign() { mk; ship --no-cleanup >/dev/null
   git -C "$W" fetch -q origin feat/impl-a
   out=$(ship --no-cleanup); check "foreign tip after a fetch: still refused" test $? -ne 0; check "foreign tip: remote untouched" test "$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)" = "$other"
   check "foreign tip: the message does not offer a way to force" test -z "$(grep -i 'force' <<<"$out")"; }
-s_ahead() { mk; ship --no-cleanup >/dev/null
+# The first ship merges with rebase so that main contains the branch, as the scenario needs.
+s_ahead() { mk; ship --merge rebase --no-cleanup >/dev/null
   git -C "$W" commit -q --allow-empty -m "feat: two"; git -C "$W" push -q origin feat/impl-a; git -C "$W" reset -q --hard HEAD~1
   out=$(ship --no-cleanup); check "remote ahead: refused" test $? -ne 0; check "remote ahead: message" says x 'is ahead of the local branch'; }
 s_race() { mk; ship --no-cleanup >/dev/null; advance_main; rebase_branch "feat: rebased"
@@ -162,7 +224,7 @@ s_rewritten() { mk; touch "$T/state/gh/rewrite"
   git -C "$T/repo" worktree add -q "$T/own" review/impl-a-2222222; echo notes >"$T/own/only-here.txt"; git -C "$T/own" add only-here.txt; git -C "$T/own" commit -q -m "review: only here"
   git -C "$T/repo" worktree remove "$T/own"
   tip=$(git -C "$W" rev-parse HEAD); review_branch=$(jq -r .branch "$T/root/tasks/review-impl-a/task.json")
-  out=$(ship); rc=$?
+  out=$(ship --merge rebase); rc=$?
   check "rewritten: rc 0" test $rc -eq 0
   check "rewritten: main has other SHAs than the branch" test "$(git -C "$T/repo" rev-parse HEAD)" != "$tip"
   check "rewritten: the task's branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/feat/impl-a"
@@ -186,6 +248,6 @@ s_working() { mk; jq '.agent_status="working"' "$T/state/agents/rev-impl-a" >"$T
   out=$(ship); check "working agent: stops" test $? -ne 0; check "working agent: says so" says x 'is working, so it was not sent /exit'; check "working agent: no /exit sent" bash -c "! grep -q '/exit' '$T/state/prompts.log' 2>/dev/null"
   check "working agent: the merge is reported" says x "merged "; check "working agent: reviewer still live" test -e "$T/state/agents/rev-impl-a"; }
 
-scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname slots)
+scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin squash rebase badmethod method squashclean squashkeep happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname slots)
 for s in "${scen[@]}"; do echo "== $s"; "s_$s"; done
 finish

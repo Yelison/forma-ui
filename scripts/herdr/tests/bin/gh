@@ -6,7 +6,9 @@
 #            | requeue:N (N polls like queued, then pass)
 #   merge    (absent) | never (the PR stays OPEN after the auto-merge is scheduled) | closed (it ends CLOSED, unmerged)
 #   edit-fails  (present) `pr edit` fails like a GraphQL error
-#   rewrite  (present) the merge lands as new commits with the same patches, like GitHub's rebase merge (new SHAs)
+#   rewrite  (present) a rebase merge lands as new commits with the same patches (new SHAs), like GitHub's
+#   late-commit  (a worktree path) `pr merge` makes a commit in that worktree after the merge was requested, so the local
+#            branch is ahead of the head that was merged
 #   stale    N: `pr view --json headRefOid` shows an old head for the first N polls
 set -euo pipefail
 G=${FAKE_STATE:?}/gh; mkdir -p "$G"
@@ -55,13 +57,26 @@ case $cmd in
     exit "$rc" ;;
   # Scheduling the auto-merge is what merges (like GitHub, once the required checks pass); `pr view` only reports.
   "pr merge") : >"$G/auto"; cat "$G/polls" 2>/dev/null >"$G/merge-polls" || echo 0 >"$G/merge-polls"
+    method=ff subject= body=; while [ $# -gt 0 ]; do
+      case $1 in --squash) method=squash ;; --subject) subject=$2 ;; --body) body=$2 ;; esac; shift
+    done
+    printf '%s' "$subject" >"$G/merge-subject"; printf '%s' "$body" >"$G/merge-body"
     if [ "$(cat "$G/merge" 2>/dev/null || echo merged)" = merged ]; then
       tip=$(git --git-dir "${FAKE_REMOTE:?}" rev-parse "refs/heads/$(jq -r .head "$G/pr.json")")
-      if [ -f "$G/rewrite" ]; then # one commit on top of main with the branch's tree: the patch is the same, the SHA is not
+      # Like GitHub: a squash is one new commit on main with the branch's tree and the message the caller gave (the
+      # series becomes one patch); the rewrite knob makes a rebase merge land the tip as a new commit with its own message.
+      if [ "$method" = squash ]; then
+        tip=$(GIT_COMMITTER_NAME=GitHub GIT_COMMITTER_EMAIL=noreply@github.com git --git-dir "$FAKE_REMOTE" commit-tree \
+          -p refs/heads/main -m "$subject"$'\n\n'"$body" "$tip^{tree}")
+      elif [ -f "$G/rewrite" ]; then
         tip=$(GIT_COMMITTER_NAME=GitHub GIT_COMMITTER_EMAIL=noreply@github.com git --git-dir "$FAKE_REMOTE" commit-tree \
           -p refs/heads/main -m "$(git --git-dir "$FAKE_REMOTE" log -1 --format=%B "$tip")" "$tip^{tree}")
       fi
       git --git-dir "$FAKE_REMOTE" update-ref refs/heads/main "$tip"
+    fi
+    if [ -f "$G/late-commit" ]; then
+      echo late >"$(cat "$G/late-commit")/late.txt"; git -C "$(cat "$G/late-commit")" add late.txt
+      git -C "$(cat "$G/late-commit")" -c user.name=t -c user.email=t@x commit -q -m "feat: late"
     fi ;;
   "pr view")
     head=$(jq -r .head "$G/pr.json")
@@ -69,9 +84,12 @@ case $cmd in
       n=$(cat "$G/stale" 2>/dev/null || echo 0)
       if [ "$n" -gt 0 ]; then echo $((n - 1)) >"$G/stale"; echo 0000000000000000000000000000000000000000
       else git --git-dir "${FAKE_REMOTE:?}" rev-parse "refs/heads/$head"; fi
-    elif [ -f "$G/auto" ] && [ "$(cat "$G/merge" 2>/dev/null || echo merged)" = merged ]; then
-      jq -n --arg s "$(git --git-dir "${FAKE_REMOTE:?}" rev-parse refs/heads/main)" '{state:"MERGED",mergeCommit:{oid:$s}}' | emit "$@"
-    elif [ -f "$G/auto" ] && [ "$(cat "$G/merge")" = closed ]; then jq -n '{state:"CLOSED",mergeCommit:null}' | emit "$@"
-    else jq -n '{state:"OPEN",mergeCommit:null}' | emit "$@"; fi ;;
+    else
+      h=$(git --git-dir "${FAKE_REMOTE:?}" rev-parse "refs/heads/$head")
+      if [ -f "$G/auto" ] && [ "$(cat "$G/merge" 2>/dev/null || echo merged)" = merged ]; then
+        jq -n --arg s "$(git --git-dir "$FAKE_REMOTE" rev-parse refs/heads/main)" --arg h "$h" '{state:"MERGED",mergeCommit:{oid:$s},headRefOid:$h}' | emit "$@"
+      elif [ -f "$G/auto" ] && [ "$(cat "$G/merge")" = closed ]; then jq -n --arg h "$h" '{state:"CLOSED",mergeCommit:null,headRefOid:$h}' | emit "$@"
+      else jq -n --arg h "$h" '{state:"OPEN",mergeCommit:null,headRefOid:$h}' | emit "$@"; fi
+    fi ;;
   *) echo "fake gh: unsupported $cmd" >&2; exit 2 ;;
 esac

@@ -31,7 +31,7 @@ slot_port_numbers() { ( . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | cut -d= -f
 port_of() { ( . "$SCRIPTS_SRC/common.sh"; slot_ports "$1" | sed -n "s/^$2=//p" ); }
 # The configuration variables of project.env: a test that wants one sets it after mk_env, never inherits it. (mk_env then
 # sets HERDR_PORTS itself, see private_ports.)
-unset_config() { unset HERDR_PROJECT_ID HERDR_SLOT_MIN HERDR_SLOT_MAX HERDR_PORTS HERDR_REQUIRED_CHECKS HERDR_PR_ASSIGNEE \
+unset_config() { unset HERDR_PROJECT_ID HERDR_SLOT_MIN HERDR_SLOT_MAX HERDR_PORTS HERDR_REQUIRED_CHECKS HERDR_MERGE_METHOD HERDR_PR_ASSIGNEE \
   HERDR_INSTALL_DIR HERDR_INSTALL_CMD HERDR_COMPOSE HERDR_COMPOSE_FILE HERDR_REVIEW_MODEL HERDR_PROJECT_ENV HERDR_TASKS_ROOT; }
 
 # private_ports: HERDR_PORTS in a range of its own (random per call, 20000-29919, below the ephemeral ports), with the
