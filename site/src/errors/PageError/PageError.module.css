@@ -1,0 +1,16 @@
+/* The height of the page this takes the place of, so the footer neither jumps into view nor out of it. */
+.error {
+  composes: pending from '../../pages/PagePending/PagePending.module.css';
+}
+
+/* The look of the heading of every page, and its focus ring: the notice takes focus the way a page does. */
+.heading {
+  composes: heading from '../../pages/RoutePage/RoutePage.module.css';
+}
+
+.description {
+  max-inline-size: 40rem;
+  margin: var(--space-16) 0 var(--space-24);
+  color: var(--color-muted);
+  font: var(--font-body);
+}

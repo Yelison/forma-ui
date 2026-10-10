@@ -1,4 +1,5 @@
 {
+  "app.retry": "Reintentar",
   "app.skipToContent": "Saltar al contenido",
   "drawer.close": "Cerrar menú",
   "drawer.title": "Menú",
@@ -20,6 +21,9 @@
   "nav.primary": "Principal",
   "nav.theming": "Temas",
   "notFound.home": "Volver al inicio",
+  "pageError.description": "Comprueba tu conexión y vuelve a intentarlo. Al reintentar también llega la última versión si el sitio se actualizó mientras leías.",
+  "pageError.heading": "No se pudo cargar esta página",
+  "pageError.title": "No se pudo cargar esta página · Forma UI",
   "route.accessibility.description": "Obligaciones de teclado, foco, etiquetas y lector de pantalla de los componentes.",
   "route.accessibility.heading": "Accesibilidad",
   "route.accessibility.title": "Accesibilidad · Forma UI",

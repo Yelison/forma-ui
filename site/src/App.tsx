@@ -1,6 +1,9 @@
 import { lazy, Suspense } from 'react'
 import { Route, Routes, useLocation } from 'react-router'
 import { Layout } from './chrome/Layout'
+import { ErrorBoundary } from './errors/ErrorBoundary'
+import { PageError } from './errors/PageError'
+import { reloadPage } from './errors/reloadPage'
 import { Messages, pageCatalogs, routeCatalogs } from './i18n'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
@@ -76,7 +79,8 @@ function PageOf({ route }: { route: SiteRoute }) {
  * once they had arrived: it is asked for here, and the chunk and the messages travel together.
  */
 function RoutePageWithMessages({ route }: { route: SiteRoute }) {
-  // A chunk that fails to load is reported by `lazy`, when the page renders; this request has nobody to tell.
+  // A chunk that fails to load is reported by `lazy`, when the page renders, and the error boundary around the routes
+  // shows it; this request has nobody to tell.
   preloadPage[route.key]?.().catch(() => {})
   const catalogs = pageCatalogs(route)
   const page = <PageOf route={route} />
@@ -91,15 +95,18 @@ export function App() {
     <Layout>
       {/* Keyed by the path: the router navigates in a transition, which keeps the old page on screen while a lazy one
           loads. A new boundary shows its fallback at once, so the tall placeholder replaces the page within the click
-          instead of the footer jumping when the chunk arrives. */}
-      <Suspense key={pathname} fallback={<PagePending />}>
-        <Routes>
-          {routes.map((route) => (
-            <Route key={route.path} path={route.path} element={<RoutePageWithMessages route={route} />} />
-          ))}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Suspense>
+          instead of the footer jumping when the chunk arrives. The same key clears a failure when the visitor goes to
+          another page, and the failure of one page is shown inside the content, with the bar and the footer in place. */}
+      <ErrorBoundary key={pathname} fallback={<PageError onRetry={reloadPage} />}>
+        <Suspense fallback={<PagePending />}>
+          <Routes>
+            {routes.map((route) => (
+              <Route key={route.path} path={route.path} element={<RoutePageWithMessages route={route} />} />
+            ))}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </ErrorBoundary>
     </Layout>
   )
 }
