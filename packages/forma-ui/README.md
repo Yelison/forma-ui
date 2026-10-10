@@ -100,6 +100,10 @@ to own that choice:
 - `themeScript({ storageKey })` returns a string for an inline `<script>` in `<head>`, so that a reload does not flash
   the theme the operating system prefers before React renders. It must use the same key as the store, and it must be in
   the HTML that is served: a script that React renders does not run.
+- With a Content Security Policy, allow that inline script by hash or nonce. A hash is computed from the exact text of
+  the script, so compute it from `themeScript(...)` itself (at build or start-up) rather than pasting a fixed value. A
+  change to the text that `themeScript` returns ships as at least a minor version, never a patch, so an automatic patch
+  update cannot break a hashed policy.
 
 ```tsx
 import { createThemeStore, themeScript, useTheme } from '@yelison/forma-ui'
