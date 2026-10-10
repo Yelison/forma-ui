@@ -1,0 +1,82 @@
+/*
+ * The label, the box and the mark that the choice controls share. Radio is the first one; Checkbox and Switch will
+ * build on the same classes, so the rules that only a checkbox needs (`:indeterminate`) are not here: an unchecked
+ * radio matches `:indeterminate` while nothing in its group is checked.
+ *
+ * The checked and disabled states are wrapped in `:where()`, which adds no specificity: a consumer's own class wins over
+ * them as long as its stylesheet comes after the library's, as the README says. No token holds the 36px of the row or
+ * the opacity of a disabled choice, so they stay as Resolve had them.
+ */
+.choice {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-12);
+  min-height: 36px;
+  font: var(--font-body);
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.choice:where(:has(input:disabled)) {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* The control and its mark share one grid cell, so the mark is centered on the control without positioning. */
+.box {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.box > * {
+  grid-area: 1 / 1;
+}
+
+.input {
+  box-sizing: border-box;
+  appearance: none;
+  margin: 0;
+  width: var(--space-20);
+  height: var(--space-20);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  cursor: inherit;
+  transition:
+    background-color var(--duration-fast) ease,
+    border-color var(--duration-fast) ease;
+}
+
+.input:where(:checked) {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+}
+
+/* The brand color is also the focus color in the light theme, so the border alone would not show the focus of a checked control. */
+.input:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.mark {
+  color: var(--color-on-brand);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.input:where(:checked) + .mark {
+  opacity: 1;
+}
+
+@media (max-width: 767.98px) {
+  .choice {
+    min-height: var(--touch-target);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input {
+    transition: none;
+  }
+}
