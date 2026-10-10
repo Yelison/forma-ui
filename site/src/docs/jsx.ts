@@ -1,6 +1,9 @@
 /** The longest opening tag that stays on one line; past it every attribute gets a line of its own. */
 const inlineTagLength = 60
 
+/** A string as a JavaScript literal in single quotes, for the values of an object or an array in the code of an example. */
+export const quote = (text: string) => `'${text.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`
+
 /** An attribute as JSX writes it: a string in quotes, a `true` as the bare name, and nothing for `undefined`. */
 export function attribute(name: string, value: string | true | undefined): string | undefined {
   if (value === undefined) return undefined

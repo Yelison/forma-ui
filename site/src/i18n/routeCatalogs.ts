@@ -6,7 +6,7 @@ import type { CatalogName } from './catalogNames.ts'
 /** The catalogue that every page has: the chrome around it, and the title of every route. */
 export const commonCatalog = 'common' satisfies CatalogName
 
-// The reference of each component is one catalogue of its own: the six references share a chunk and a route key, so the
+// The reference of each component is one catalogue of its own: the references share a chunk and a route key, so the
 // catalogue follows the component, not the route. A new entry in `componentPages` fails the type check until it has one.
 const referenceCatalogs: Record<(typeof componentPages)[number]['name'], CatalogName> = {
   Button: 'docs.button',
@@ -15,6 +15,7 @@ const referenceCatalogs: Record<(typeof componentPages)[number]['name'], Catalog
   Input: 'docs.input',
   Tooltip: 'docs.tooltip',
   Dialog: 'docs.dialog',
+  Tabs: 'docs.tabs',
 }
 
 const pageCatalogsByKey: Partial<Record<SiteRoute['key'], readonly CatalogName[]>> = {
