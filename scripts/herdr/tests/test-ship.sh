@@ -17,7 +17,7 @@ has_branch() { git -C "$T/repo" rev-parse -q --verify "refs/heads/$1" >/dev/null
 # squash is a patch of its own, which `git cherry` cannot match to any commit of it.
 series() {
   echo a >"$W/a.txt"; git -C "$W" add a.txt
-  git -C "$W" commit -q -m "feat: add a" -m "Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>"
+  git -C "$W" commit -q -m "feat: add a" -m "Co-authored-by: Claude Sonnet 5.5 <noreply@anthropic.com>"
   echo b >"$W/b.txt"; git -C "$W" add b.txt
   git -C "$W" commit -q -m "feat: add b" -m $'Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\nCo-Authored-By: Pair Person <pair@example.com>'
 }
@@ -68,7 +68,11 @@ s_badmethod() { mk; out=$(ship --merge merge); check "bad --merge: refused" test
 s_method() { mk; out=$(HERDR_MERGE_METHOD=rebase ship --no-cleanup); check "env rebase: rc 0" test $? -eq 0
   check "env rebase: merged with --rebase" grep -q 'pr merge 41 --auto --rebase' <<<"$(gh_calls)"
   mk; out=$(HERDR_MERGE_METHOD=rebase ship --merge squash --no-cleanup); check "--merge squash over the environment: rc 0" test $? -eq 0
-  check "--merge squash over the environment: squashed" grep -q 'pr merge 41 --auto --squash' <<<"$(gh_calls)"; }
+  check "--merge squash over the environment: squashed" grep -q 'pr merge 41 --auto --squash' <<<"$(gh_calls)"
+  # A settings file without the variable (HERDR_PROJECT_ENV) still gives the default instead of an unbound variable.
+  mk; grep -v '^HERDR_MERGE_METHOD=' "$HERDR/project.env" >"$T/other.env"; ! grep -q HERDR_MERGE_METHOD "$T/other.env" || exit 2
+  out=$(HERDR_PROJECT_ENV="$T/other.env" ship --no-cleanup); check "settings file without the variable: rc 0" test $? -eq 0
+  check "settings file without the variable: squash by default" grep -q 'pr merge 41 --auto --squash' <<<"$(gh_calls)"; }
 # After a squash GitHub merged exactly the pushed head, so the task's branch is deleted although `git cherry` does not
 # see a series that became one patch as merged. Without the squashed head the same branch would be kept.
 s_squashclean() { mk; series; head=$(git -C "$W" rev-parse HEAD); review_branch=$(jq -r .branch "$T/root/tasks/review-impl-a/task.json")
@@ -206,6 +210,28 @@ s_foreign() { mk; ship --no-cleanup >/dev/null
   git -C "$W" fetch -q origin feat/impl-a
   out=$(ship --no-cleanup); check "foreign tip after a fetch: still refused" test $? -ne 0; check "foreign tip: remote untouched" test "$(git --git-dir "$T/remote.git" rev-parse refs/heads/feat/impl-a)" = "$other"
   check "foreign tip: the message does not offer a way to force" test -z "$(grep -i 'force' <<<"$out")"; }
+# A PR that was retargeted at another base is merged there, not into main: its branch is not deleted although the head matches.
+s_squashbase() { mk; series; echo release >"$T/state/gh/base"; out=$(ship); rc=$?
+  check "other base: rc 0" test $rc -eq 0; check "other base: says it was not merged into main" says x "merged into 'release', not main"
+  check "other base: the task's branch is kept" has_branch feat/impl-a; check "other base: the task is retired all the same" retired impl-a
+  # A merge commit that main does not have means the merge is not in main either.
+  mk; series; git -C "$W" rev-parse HEAD >"$T/state/gh/merge-commit"; out=$(ship); rc=$?
+  check "merge commit not in main: rc 0" test $rc -eq 0; check "merge commit not in main: says so" says x 'is not on origin/main'
+  check "merge commit not in main: the task's branch is kept" has_branch feat/impl-a; }
+# The review's branch goes the same way when the reviewer left it on the head that was merged; one with a commit of its
+# own is not that head and stays.
+s_squashreview() { mk; series; review_branch=$(jq -r .branch "$T/root/tasks/review-impl-a/task.json")
+  "$HERDR/new-review.sh" --task impl-a --round 2 >/dev/null 2>"$T/err" || { echo "round 2 failed: $(cat "$T/err")" >&2; exit 2; }
+  tip=$(git -C "$W" rev-parse HEAD); check "review on the head: the review branch is at the task's tip" test "$(git -C "$T/repo" rev-parse "refs/heads/$review_branch")" = "$tip"
+  out=$(ship); rc=$?
+  check "review on the head: rc 0" test $rc -eq 0; check "review on the head: the review's branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/$review_branch"
+  check "review on the head: the task's branch is deleted too" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/feat/impl-a"
+  mk; series; review_branch=$(jq -r .branch "$T/root/tasks/review-impl-a/task.json")
+  "$HERDR/new-review.sh" --task impl-a --round 2 >/dev/null 2>"$T/err" || { echo "round 2 failed: $(cat "$T/err")" >&2; exit 2; }
+  R=$T/root/worktrees/review-impl-a; echo notes >"$R/notes.txt"; git -C "$R" add notes.txt; git -C "$R" commit -q -m "review: notes"
+  out=$(ship); rc=$?
+  check "review with its own commit: rc 0" test $rc -eq 0; check "review with its own commit: the branch is kept" has_branch "$review_branch"
+  check "review with its own commit: the task's branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/feat/impl-a"; }
 # The first ship merges with rebase so that main contains the branch, as the scenario needs.
 s_ahead() { mk; ship --merge rebase --no-cleanup >/dev/null
   git -C "$W" commit -q --allow-empty -m "feat: two"; git -C "$W" push -q origin feat/impl-a; git -C "$W" reset -q --hard HEAD~1
@@ -248,6 +274,6 @@ s_working() { mk; jq '.agent_status="working"' "$T/state/agents/rev-impl-a" >"$T
   out=$(ship); check "working agent: stops" test $? -ne 0; check "working agent: says so" says x 'is working, so it was not sent /exit'; check "working agent: no /exit sent" bash -c "! grep -q '/exit' '$T/state/prompts.log' 2>/dev/null"
   check "working agent: the merge is reported" says x "merged "; check "working agent: reviewer still live" test -e "$T/state/agents/rev-impl-a"; }
 
-scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin squash rebase badmethod method squashclean squashkeep happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname slots)
+scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin squash rebase badmethod method squashclean squashkeep squashbase squashreview happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname slots)
 for s in "${scen[@]}"; do echo "== $s"; "s_$s"; done
 finish

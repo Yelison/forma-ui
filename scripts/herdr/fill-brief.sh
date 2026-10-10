@@ -40,7 +40,8 @@ SLOT=$TASK_SLOT
 # Temporary files live in the task's own directory, never in $TMPDIR.
 joined=$(mktemp "$(task_dir "$ID")/.brief-joined.XXXXXX") filled=$(mktemp "$(task_dir "$ID")/.brief-filled.XXXXXX")
 trap 'rm -f "${joined:?}" "${filled:?}"' EXIT
-cat "$SRC" "$SCRIPT_DIR/brief-footer.md" >"$joined"
+# The footer starts at its own line even when the staged brief has no final newline.
+{ cat "$SRC"; printf '\n'; cat "$SCRIPT_DIR/brief-footer.md"; } >"$joined"
 values=("WT=$TASK_WORKTREE" "BASEFULL=$TASK_BASE_SHA" "BASE=${TASK_BASE_SHA:0:7}" "SL=$SLOT"
   "LANE=$LANE" "LANE_NAME=$LANE" "DELIVERY=$(task_dir "$ID")/delivery.md")
 while read -r _ base marker; do values+=("$marker=$((base + SLOT))"); done < <(port_specs)

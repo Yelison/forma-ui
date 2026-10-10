@@ -25,7 +25,7 @@ Environment: HERDR_MERGE_METHOD (default for --merge, squash), HERDR_REQUIRED_CH
 USAGE
 }
 
-ID= TITLE= BODY= CLEANUP=1 METHOD=$HERDR_MERGE_METHOD
+ID= TITLE= BODY= CLEANUP=1 METHOD=${HERDR_MERGE_METHOD-squash}
 while [ $# -gt 0 ]; do
   case $1 in
     --task) need_arg "$1" $#; ID=${2:-}; shift 2 ;;
@@ -135,7 +135,7 @@ merge_pr() {
   if [ "$METHOD" = squash ]; then
     local series coauthors message
     series=$(git -C "$TASK_WORKTREE" log --reverse --format='- %s' "origin/main..$HEAD_SHA")
-    coauthors=$(git -C "$TASK_WORKTREE" log --format='%(trailers:key=Co-Authored-By,valueonly=false,unfold)' "origin/main..$HEAD_SHA" | grep -v '^$' | sort -u || true)
+    coauthors=$(git -C "$TASK_WORKTREE" log --format='%(trailers:key=Co-Authored-By,valueonly=false,unfold)' "origin/main..$HEAD_SHA" | grep -v '^$' | sed -E 's/^co-authored-by:/Co-Authored-By:/I' | sort -u || true)
     message=$(printf 'Squashed from:\n\n%s\n%s' "$series" "${coauthors:+$'\n'$coauthors}")
     gh pr merge "$PR" "${opts[@]}" --squash --subject "$TITLE (#$PR)" --body "$message" --match-head-commit "$HEAD_SHA" >/dev/null \
       || die "gh pr merge ${opts[*]} --squash failed for #$PR"
@@ -186,17 +186,17 @@ else
 fi
 if [ "${#CHECKS[@]}" -gt 0 ]; then MERGE_NOTE="the auto-merge stays scheduled"; else MERGE_NOTE="the merge was requested: read the pull request before rerunning"; fi
 SECONDS=0
-MERGED_SHA= MERGED_HEAD=
+MERGED_SHA= MERGED_HEAD= MERGED_BASE=
 while :; do
-  if ! view=$(gh pr view "$PR" --json state,mergeCommit,headRefOid --jq '[.state, (.headRefOid // "-"), (.mergeCommit.oid // "-")] | @tsv'); then
+  if ! view=$(gh pr view "$PR" --json state,mergeCommit,headRefOid,baseRefName --jq '[.state, (.headRefOid // "-"), (.baseRefName // "-"), (.mergeCommit.oid // "-")] | @tsv'); then
     [ "$SECONDS" -lt "$TIMEOUT" ] || die "gh could not read pull request #$PR in ${TIMEOUT}s; read its state before rerunning"
     log "gh could not read #$PR; retrying…"
     sleep "$POLL"
     continue
   fi
-  IFS=$'\t' read -r state merged_head merge_oid <<<"$view"
+  IFS=$'\t' read -r state merged_head merged_base merge_oid <<<"$view"
   case $state in
-    MERGED) MERGED_SHA=${merge_oid#-}; MERGED_HEAD=${merged_head#-}; break ;;
+    MERGED) MERGED_SHA=${merge_oid#-}; MERGED_HEAD=${merged_head#-}; MERGED_BASE=${merged_base#-}; break ;;
     CLOSED) die "pull request #$PR was closed without merging" ;;
   esac
   if [ "${#CHECKS[@]}" -gt 0 ] && gh pr checks "$PR" --json bucket 2>/dev/null | jq -e '[.[]? | select(.bucket == "fail")] | length > 0' >/dev/null 2>&1; then
@@ -208,20 +208,29 @@ while :; do
 done
 
 # A squash leaves one new patch on main, which `git cherry` cannot match to the series, so remove-task.sh would keep the
-# branch. It is deleted when GitHub merged exactly what the local branch holds: the merged PR's head is the local tip.
-# Anything else (a commit made after the push, a head that moved) goes through the usual rule, which keeps what it
-# cannot show to be in main.
+# branches. They are deleted when GitHub merged exactly what the local branch holds (the merged PR's head is the local
+# tip), into main (the PR's base is main and its merge commit is on origin/main). Anything else (a commit made after
+# the push, a head that moved, a PR retargeted at another base) goes through the usual rule, which keeps what it cannot
+# show to be in main.
 SQUASHED_HEAD=
 if [ "$METHOD" = squash ]; then
   local_tip=$(git -C "$TASK_REPO" rev-parse --verify --quiet "refs/heads/$BRANCH" || true)
-  if [ -n "$MERGED_HEAD" ] && [ "$MERGED_HEAD" = "$local_tip" ]; then
-    SQUASHED_HEAD=$MERGED_HEAD
+  squash_note=
+  if [ -z "$MERGED_HEAD" ] || [ "$MERGED_HEAD" != "$local_tip" ]; then
+    squash_note="GitHub squash-merged ${MERGED_HEAD:-an unknown head} but $BRANCH is at ${local_tip:-nowhere}"
+  elif [ "$MERGED_BASE" != main ]; then
+    squash_note="the pull request was merged into '${MERGED_BASE:-an unknown base}', not main"
   else
-    log "note: GitHub squash-merged ${MERGED_HEAD:-an unknown head} but $BRANCH is at ${local_tip:-nowhere}; the branch is kept"
+    SQUASHED_HEAD=$MERGED_HEAD
   fi
 fi
 
 git -C "$TASK_REPO" fetch -q origin main
+if [ -n "$SQUASHED_HEAD" ] && { [ -z "$MERGED_SHA" ] || ! git -C "$TASK_REPO" merge-base --is-ancestor "$MERGED_SHA" origin/main; }; then
+  SQUASHED_HEAD=
+  squash_note="the merge commit ${MERGED_SHA:-(unknown)} is not on origin/main"
+fi
+[ -z "${squash_note:-}" ] || log "note: $squash_note; the branch is kept"
 git -C "$TASK_REPO" merge -q --ff-only origin/main \
   || die "#$PR is merged but the main checkout could not be fast-forwarded; fix it by hand. The task was not retired"
 [ -n "$MERGED_SHA" ] || MERGED_SHA=$(git -C "$TASK_REPO" rev-parse origin/main)
@@ -234,8 +243,9 @@ if [ "$CLEANUP" = 0 ]; then
 fi
 retire() {
   local id=$1 occupant name flags="--volumes --delete-branch"
-  # Only the task's own branch is the squashed head; a review's branches follow the rule that was already there.
-  if [ "$id" = "$ID" ] && [ -n "$SQUASHED_HEAD" ]; then flags="$flags --squashed-head $SQUASHED_HEAD"; fi
+  # The review's branch is the squashed head too when the reviewer left it on the reviewed commit; remove-task.sh reads
+  # the tip again and keeps a branch with anything of its own.
+  if [ -n "$SQUASHED_HEAD" ]; then flags="$flags --squashed-head $SQUASHED_HEAD"; fi
   [ -f "$(task_json "$id")" ] || return 0
   load_task "$id"
   [ -z "$TASK_REMOVED_AT" ] || return 0

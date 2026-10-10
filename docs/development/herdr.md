@@ -332,13 +332,14 @@ In order, stopping at the first problem and saying what it did and did not do:
    `remove-task.sh --id <id> --volumes --delete-branch` for each, the review first. It never passes `--force-leftovers`.
    GitHub's rebase merge rewrites the SHAs, so `git branch -d` would call the branches unmerged: `--delete-branch` asks
    `git cherry main <branch>` instead. A squash turns the whole series into one new patch, which `git cherry` cannot
-   match to any of its commits, so the task's branch gets one more path: when the merged PR is `MERGED` and its
-   `headRefOid` is exactly the local tip of the branch, `ship.sh` passes `--squashed-head <that sha>` and
-   `remove-task.sh` deletes the branch if it still points at that commit (read again right before the deletion). A
-   branch with a commit made after the push, or a head that moved, never gets there: it follows the rule below, which
-   keeps what it cannot show to be in `main`. The review's branches (`review/<id>-<sha7>`) always follow the rule
-   below, never the squashed-head path: a review may hold commits of its own, so only `git cherry` and an unchanged
-   merge may delete them, and after a squash of several commits they are kept, with a note. A branch with no `+` commit (every patch is in `main`), no merge commits of its own and
+   match to any of its commits, so the branches get one more path: when the merged PR is `MERGED`, its `headRefOid` is
+   exactly the local tip of the task's branch, its base is `main` and its merge commit is on `origin/main` (checked
+   after the fetch), `ship.sh` passes `--squashed-head <that sha>` to the task **and to its review**, and
+   `remove-task.sh` deletes a branch that still points at that commit (read again right before the deletion, so a
+   branch with anything of its own, such as a reviewer's notes commit, is not that commit and stays). A commit made
+   after the push, a head that moved, a PR retargeted at another base or a merge commit that is not on `main` never get
+   there: the branch follows the rule below, which keeps what it cannot show to be in `main`. The older
+   `review/<id>-<sha7>` branches of a review always follow the rule below. A branch with no `+` commit (every patch is in `main`), no merge commits of its own and
    a merge into `main` that changes nothing is deleted, the task's branch and the older `review/<id>-<sha7>` branches of
    its review (exactly that shape: `review/<id>-x-<sha7>` belongs to the task `<id>-x`). A branch is kept, with a
    note, when it has a `+` commit or merge commits of its own, when `git cherry` fails, when merging it would change

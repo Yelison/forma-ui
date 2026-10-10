@@ -44,6 +44,9 @@ check "fill-brief: no temporary file left in the task directory" test -z "$(ls -
 printf 'a __X__ b __Y__\n' >"$T/t.md"
 rendered=$( . "$HERDR/common.sh"; render_template "$T/t.md" __ __ 'X=/a&b#c/&' 'Y=\1 & x' )
 check "render_template: & / # and backslash survive" test "$rendered" = 'a /a&b#c/& b \1 & x'
+# A staged brief without a final newline does not swallow the footer's first heading.
+printf '# x\nlast line' >"$T/nonl.md"; out=$("$HERDR/fill-brief.sh" demo-one C "$T/nonl.md" 2>&1); check "fill-brief: a brief without a final newline: rc 0" test $? -eq 0
+check "fill-brief: its last line stays a line of its own" grep -qx 'last line' "$B"; check "fill-brief: the footer's heading starts a line" grep -qx '## Commits' "$B"
 # delivery template: fixed sections, in order, and the closing line
 mapfile -t heads < <(grep '^## ' "$HERDR/delivery.template.md")
 want=('## Resumen' '## Commits' '## Pruebas con cifras base y final' '## Los tests nuevos fallan sin su cambio' '## Autocomprobación' '## Desviaciones y decisiones' '## Limitaciones' '## Esfuerzo usado' '## `git status --short`')
