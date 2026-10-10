@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { afterEach, beforeEach, describe, expect, it, onTestFinished } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 import { Tabs, type TabItem } from '../../src/components/Tabs'
 import { expectNoAxeViolations } from '../axe'
@@ -153,17 +153,6 @@ describe('Tabs appearance', () => {
     const { tab } = mountTabs(undefined, { '--button-height': height } as CSSProperties)
 
     expect(tab('Conversation').getBoundingClientRect().height).toBe(Number.parseFloat(height))
-  })
-
-  // The library ships no reset: with `content-box`, a border and a padding of the consumer's would add to the minimum.
-  it('stays --button-height tall when the consumer gives the tab a border and a vertical padding', () => {
-    const consumer = document.createElement('style')
-    consumer.textContent = '[role="tab"] { border: 4px solid; padding-block: 8px }'
-    document.head.append(consumer)
-    onTestFinished(() => consumer.remove())
-    const { tab } = mountTabs(undefined, { '--button-height': '52px' } as CSSProperties)
-
-    expect(tab('Conversation').getBoundingClientRect().height).toBe(52)
   })
 
   it('wraps its tabs onto another line instead of overflowing a narrow container', () => {
