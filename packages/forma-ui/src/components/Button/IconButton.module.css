@@ -40,7 +40,7 @@
  * overlap follows it.
  */
 .icons {
-  --icon-size: 20px;
+  --icon-size: var(--icon-button-glyph-size);
   --icon-overlap: 0.7;
   display: inline-flex;
   align-items: center;

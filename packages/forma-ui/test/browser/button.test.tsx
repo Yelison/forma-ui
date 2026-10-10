@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 import {
   Button,
@@ -399,6 +399,17 @@ describe('IconButton icons', () => {
     expect(second.left - first.left).toBeCloseTo(6, 1)
     expect(second.left).toBeLessThan(first.right)
     expect(icons.getBoundingClientRect().width).toBeCloseTo(26, 1)
+  })
+
+  it('draws each icon 20px wide and tall, or as --icon-button-glyph-size says', () => {
+    const { drawings } = mountIconButton(iconButtons[0] as IconButtonProps)
+    expect(drawings.map((drawing) => getComputedStyle(drawing).width)).toEqual(['20px', '20px'])
+    expect(drawings.map((drawing) => getComputedStyle(drawing).height)).toEqual(['20px', '20px'])
+
+    // A literal that equals the token's current value would pass the check above, so the spec changes the token.
+    root.style.setProperty('--icon-button-glyph-size', '30px')
+    onTestFinished(() => root.style.removeProperty('--icon-button-glyph-size'))
+    expect(drawings.map((drawing) => getComputedStyle(drawing).width)).toEqual(['30px', '30px'])
   })
 
   it('centers the group in the button', () => {

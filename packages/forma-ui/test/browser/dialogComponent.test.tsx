@@ -362,6 +362,24 @@ describe('Dialog styles', () => {
     expect(getComputedStyle(dialog('Settings').element()).animationName).toBe('none')
   })
 
+  // The entrance is held at its first frame, where the dialog is 8px below its place and slightly smaller.
+  it.each([
+    { offset: undefined, matrix: 'matrix(0.98, 0, 0, 0.98, 0, 8)' },
+    { offset: '20px', matrix: 'matrix(0.98, 0, 0, 0.98, 0, 20)' },
+  ])('starts its entrance $offset below the final place, from --dialog-enter-offset', ({ offset, matrix }) => {
+    if (offset) {
+      root.style.setProperty('--dialog-enter-offset', offset)
+      onTestFinished(() => root.style.removeProperty('--dialog-enter-offset'))
+    }
+    mount(<Dialog open onClose={() => {}} title="Settings" />)
+    const modal = dialog('Settings').element()
+    const [entrance] = modal.getAnimations()
+    entrance?.pause()
+    if (entrance) entrance.currentTime = 0
+
+    expect(getComputedStyle(modal).transform).toBe(matrix)
+  })
+
   it('enters with an animation, and stands still when the user prefers reduced motion', async () => {
     mount(<Harness />)
     await openDialog()

@@ -37,6 +37,10 @@ const D12_FONT_FAMILY = "'Inter Variable', Inter, system-ui, -apple-system, 'Seg
 const D10_NEW_TOKENS: Record<string, string> = {
   '--badge-min-height': '28px',
   '--spinner-size': '16px',
+  '--icon-button-glyph-size': '20px',
+  '--choice-min-height': '36px',
+  '--tabs-panel-focus-offset': '4px',
+  '--dialog-enter-offset': '8px',
   '--tooltip-max-width': '240px',
   '--dialog-width': '440px',
   '--dialog-width-wide': '640px',
