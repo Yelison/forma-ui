@@ -45,6 +45,11 @@ The package ships its CSS as three files, in this order:
 - The package's files go before your own CSS. A `className` you pass to a component has the same specificity as the
   component's own rule (for example `.forma-badge__blue`), so the later stylesheet wins: yours has to come after
   `styles.css`.
+- **Bundlers order CSS by chunk, not by the order of your `@import`s.** With Vite, for example, the CSS of a shared
+  chunk (your component modules) reaches the page before the CSS of the entry. Import `@yelison/forma-ui/styles.css`
+  first in the module that loads your components (your UI barrel, or the first module that imports from
+  `@yelison/forma-ui`), not only from your entry stylesheet: then its rules land at the start of that chunk, before your
+  own component CSS. Check the order in your production build, not only in the dev server.
 - `tokens.css` is the foundation: the component rules read its custom properties, and without it they render unstyled.
 - Importing `@yelison/forma-ui` pulls in no CSS and has no side effects: the components are tree-shakeable (see
   [Bundle size](#bundle-size)), and the stylesheet is yours to place. `styles.css` is one file for all the components, whether you use them all or not.

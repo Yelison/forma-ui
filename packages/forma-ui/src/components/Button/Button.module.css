@@ -1,6 +1,7 @@
 /*
  * The states (hover, disabled and busy) are wrapped in `:where()`, which adds no specificity: a consumer's own class,
- * such as `.toggle:hover`, then wins over them as long as its stylesheet comes after the library's, as the README says.
+ * such as `.toggle:hover`, then wins over them as long as its rules come after the library's in the cascade (the
+ * README says where to import `styles.css` so that a bundler keeps that order).
  */
 .button {
   /* The library ships no reset, so the box model is set here: the painted height is `--button-height`, border included. */
