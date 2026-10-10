@@ -218,6 +218,20 @@ s_squashbase() { mk; series; echo release >"$T/state/gh/base"; out=$(ship); rc=$
   mk; series; git -C "$W" rev-parse HEAD >"$T/state/gh/merge-commit"; out=$(ship); rc=$?
   check "merge commit not in main: rc 0" test $rc -eq 0; check "merge commit not in main: says so" says x 'is not on origin/main'
   check "merge commit not in main: the task's branch is kept" has_branch feat/impl-a; }
+# A MERGED pull request whose head, base or merge commit is null, empty or missing proves nothing about what main
+# holds, so nothing is deleted: the branch is kept with a note and the task is retired all the same.
+s_squashnull() { local filter field
+  for field in headRefOid baseRefName mergeCommit; do
+    for filter in ".$field = null" ".${field/#mergeCommit/mergeCommit.oid} = \"\"" "del(.$field)"; do
+      mk; series; echo "$filter" >"$T/state/gh/view-jq"; out=$(ship); rc=$?
+      check "$filter: rc 0" test $rc -eq 0; check "$filter: the task's branch is kept" has_branch feat/impl-a
+      check "$filter: says it is kept" says x 'the branch is kept'; check "$filter: the task is retired all the same" retired impl-a
+    done
+  done; }
+# The merge commit must be a 40-hex SHA: a ref such as `main` resolves in git but is not what GitHub reported.
+s_squashsha() { mk; series; echo '.mergeCommit.oid = "main"' >"$T/state/gh/view-jq"; out=$(ship); rc=$?
+  check "merge commit that is not a SHA: rc 0" test $rc -eq 0; check "merge commit that is not a SHA: says it is not on origin/main" says x 'is not on origin/main'
+  check "merge commit that is not a SHA: the branch is kept" has_branch feat/impl-a; }
 # The review's branch goes the same way when the reviewer left it on the head that was merged; one with a commit of its
 # own is not that head and stays.
 s_squashreview() { mk; series; review_branch=$(jq -r .branch "$T/root/tasks/review-impl-a/task.json")
@@ -274,6 +288,6 @@ s_working() { mk; jq '.agent_status="working"' "$T/state/agents/rev-impl-a" >"$T
   out=$(ship); check "working agent: stops" test $? -ne 0; check "working agent: says so" says x 'is working, so it was not sent /exit'; check "working agent: no /exit sent" bash -c "! grep -q '/exit' '$T/state/prompts.log' 2>/dev/null"
   check "working agent: the merge is reported" says x "merged "; check "working agent: reviewer still live" test -e "$T/state/agents/rev-impl-a"; }
 
-scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin squash rebase badmethod method squashclean squashkeep squashbase squashreview happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname slots)
+scen=("$@"); [ ${#scen[@]} -gt 0 ] || scen=(dirty noorigin squash rebase badmethod method squashclean squashkeep squashbase squashnull squashsha squashreview happy compose assignee nochecks two twored reuse red absent multi queued closed open dirtyreview stale lease foreign ahead race working rewritten noname slots)
 for s in "${scen[@]}"; do echo "== $s"; "s_$s"; done
 finish

@@ -104,6 +104,8 @@ new sq-d; out=$("$HERDR/remove-task.sh" --id sq-d --delete-branch --squashed-hea
 out=$("$HERDR/remove-task.sh" --id sq-d --delete-branch --squashed-head main 2>&1); check "squashed head: a ref that is not a full SHA is refused, although git resolves it" test $? -ne 0
 check "squashed head: a malformed SHA removes nothing" bash -c "test -d '$T/root/worktrees/sq-d' && ! grep -q 'Branch' <<<'$out'"
 out=$("$HERDR/remove-task.sh" --id sq-d --squashed-head "$head" 2>&1); check "squashed head: without --delete-branch it is refused" test $? -ne 0; check "squashed head: says it needs --delete-branch" says x 'only makes sense with --delete-branch'
+out=$("$HERDR/remove-task.sh" --id sq-d --delete-branch --squashed-head "" 2>&1); check "squashed head: an empty value is refused" test $? -ne 0; check "squashed head: an empty value says it needs a SHA" says x 'not an empty value'
+check "squashed head: an empty value removes nothing" test -d "$T/root/worktrees/sq-d"
 out=$("$HERDR/remove-task.sh" --id sq-d --delete-branch --squashed-head 0000000000000000000000000000000000000000 2>&1); check "squashed head: an unknown commit is refused" test $? -ne 0; check "squashed head: an unknown commit removes nothing" test -d "$T/root/worktrees/sq-d"
 out=$("$HERDR/remove-task.sh" --id sq-d 2>&1); check "squashed head: the refused task is retired once the options are right" removed sq-d
 
