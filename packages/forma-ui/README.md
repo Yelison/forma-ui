@@ -117,7 +117,7 @@ function ThemeToggle() {
 
 ## Components
 
-`Badge`, `Button`, `IconButton`, `Icon` and `Input` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog` and `Tabs` take only the props they document.
+`Badge`, `Button`, `IconButton`, `Icon`, `Input` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog` and `Tabs` take only the props they document.
 
 | Component               | Use it for                                              | Accessibility                                                                                                                                                            |
 | ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -130,6 +130,7 @@ function ThemeToggle() {
 | `Tooltip`               | A short description for a control.                      | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.            |
 | `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                       | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.               |
 | `Tabs`                  | Panels that share one place, one visible at a time.     | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.            |
+| `Radio`                 | One option of a group that takes a single choice.       | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                           |
 
 Also exported: `buttonClassName` (the classes of a button, for a link that must look like one), `useScrollLock` (the
 scroll lock of the dialog, for an overlay of your own), `useFormaStrings` and `defaultStrings` (the text the components show
@@ -157,12 +158,13 @@ is the source of truth. At the time of writing they are:
 
 | What you import | Size    |
 | --------------- | ------- |
-| Everything      | 7.29 kB |
+| Everything      | 7.44 kB |
 | `{ Button }`    | 2.91 kB |
 | `{ Tabs }`      | 0.66 kB |
+| `{ Radio }`     | 0.31 kB |
 | `{ Badge }`     | 0.23 kB |
 | `{ iconNames }` | 0.15 kB |
-| `styles.css`    | 1.55 kB |
+| `styles.css`    | 1.80 kB |
 
 `Button` is not small because `Icon` looks its path up in one object that holds every icon, so the whole table travels
 with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
