@@ -6,6 +6,7 @@
 //   - `import { Button }` and `import { Badge }`: what one component costs, which is the tree-shaking proof, since a
 //     module with a side effect or an export that is not a named one pulls in everything. Badge is the smallest
 //     component and has no icon: its budget catches what Button's, which carries the whole icon table, would hide;
+//   - `import { iconNames }`: the list of names alone, which must not bring the table of paths with it;
 //   - `dist/styles.css`: one file for every component, whether the consumer uses them all or not.
 //
 // An application build, not a library build: a library build leaves a `//#region <path>` comment for every module,
@@ -17,7 +18,7 @@
 // request and with the reason in its description, so that growth is a decision somebody reviews.
 //
 // Measured on 2026-10-10, with the nine components of v0.1 (Button, IconButton, Badge, Field, Input, Icon, Tooltip,
-// Dialog, Tabs) and the package as one bundled file: 7192 B for every export, 2910 B for Button alone, 225 B for Badge
+// Dialog, Tabs) and the package as one bundled file: 7192 B for every export (7290 B with `iconNames`), 2910 B for Button alone, 225 B for Badge
 // alone and 1551 B for styles.css; Tabs alone is 661 B. Button alone is not small because Icon looks its path up in one
 // object that holds every icon, so the whole table travels with any component that draws an icon.
 import { writeFileSync } from 'node:fs'
@@ -55,6 +56,12 @@ const budgets: Budget[] = [
     source: `import { Badge } from '@yelison/forma-ui'\nconsole.log(Badge)`,
     extension: '.js',
     limit: 300,
+  },
+  {
+    name: 'import { iconNames } from the package',
+    source: `import { iconNames } from '@yelison/forma-ui'\nconsole.log(iconNames)`,
+    extension: '.js',
+    limit: 200,
   },
   {
     name: 'dist/styles.css',

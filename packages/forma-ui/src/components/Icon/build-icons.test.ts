@@ -2,7 +2,8 @@ import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { OUTPUT, SOURCE, generate, loadSource, validate } from '../../../scripts/build-icons.ts'
-import { iconPaths } from './paths.ts'
+import { iconNames as exportedIconNames } from '../../index.ts'
+import { iconNames, iconPaths } from './paths.ts'
 
 const packageRoot = resolve(import.meta.dirname, '../../..')
 const repoRoot = resolve(packageRoot, '..', '..')
@@ -26,6 +27,21 @@ describe('icon generator', () => {
 
     expect(Object.keys(iconPaths)).toHaveLength(23)
     expect(Object.entries(iconPaths)).toEqual(Object.entries(source))
+  })
+
+  it('lists in iconNames exactly the names of the table, once each and in its order', () => {
+    expect(iconNames).toEqual(Object.keys(iconPaths))
+    expect(new Set(iconNames).size).toBe(iconNames.length)
+  })
+
+  it('exports iconNames from the package entry point', () => {
+    expect(exportedIconNames).toBe(iconNames)
+  })
+
+  it('writes iconNames from the icons it is given, so that the list cannot drift from the table', () => {
+    const text = generate({ arrow: ['M0 0'], 'arrow-left': ['M1 1'] })
+
+    expect(text).toContain("export const iconNames: readonly IconName[] = [\n  'arrow',\n  'arrow-left',\n]")
   })
 
   it('is deterministic: the same input gives the same text', async () => {

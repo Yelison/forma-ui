@@ -7,7 +7,8 @@
 //
 // The source is the verified copy of Resolve's `Icon/paths.ts` (design/resolve-c3f02f8/icon-paths.ts), which is
 // never edited. Output (deterministic: source order, fixed formatting, no timestamps):
-//   src/components/Icon/paths.ts   `iconPaths` and `IconName`. Committed; CI regenerates it and fails on any diff.
+//   src/components/Icon/paths.ts   `iconPaths`, `IconName` and `iconNames`. Committed; CI regenerates it and fails on any
+//                                  diff.
 //
 // The script sticks to erasable TypeScript, so type stripping can run it (see build-tokens.ts).
 import { join, resolve } from 'node:path'
@@ -45,8 +46,9 @@ export function validate(source: unknown): IconPaths {
 }
 
 /** The text of `paths.ts` for these icons. */
-export function generate(iconPaths: IconPaths): string {
-  const icons = Object.entries(validate(iconPaths)).map(([name, paths]) => {
+export function generate(source: IconPaths): string {
+  const iconPaths = validate(source)
+  const icons = Object.entries(iconPaths).map(([name, paths]) => {
     const lines = paths.map((d) => `    '${d}',`)
     return `  ${name.includes('-') ? `'${name}'` : name}: [\n${lines.join('\n')}\n  ],`
   })
@@ -57,6 +59,11 @@ export function generate(iconPaths: IconPaths): string {
     '} as const',
     '',
     'export type IconName = keyof typeof iconPaths',
+    '',
+    '/** Every icon name, in the order of the table above. */',
+    'export const iconNames: readonly IconName[] = [',
+    ...Object.keys(iconPaths).map((name) => `  '${name}',`),
+    ']',
     '',
   ].join('\n')
 }
