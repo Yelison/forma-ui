@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Takes a reviewed task to main: checks the branch, pushes it (never a push without a lease), opens or reuses the pull
-# request, waits for every check of HERDR_REQUIRED_CHECKS, merges it (rebase), waits for it, fast-forwards the main
-# checkout and retires the task and its review. It never merges locally and never merges before the required checks
-# are green. Without required checks it merges at once, without --auto (GitHub refuses --auto then); with them it
+# request, waits for every check of HERDR_REQUIRED_CHECKS, merges it (squash by default, or rebase), waits for it,
+# fast-forwards the main checkout and retires the task and its review. It never merges locally and never merges before
+# the required checks are green. Without required checks it merges at once, without --auto (GitHub refuses --auto then); with them it
 # schedules the auto-merge. Adapted from Resolve at c3f02f8. See docs/development/herdr.md.
 set -euo pipefail
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
@@ -11,30 +11,35 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 
 usage() {
   cat <<'USAGE'
-Usage: scripts/herdr/ship.sh --task ID --title TITLE --body FILE [--no-cleanup]
+Usage: scripts/herdr/ship.sh --task ID --title TITLE --body FILE [--merge squash|rebase] [--no-cleanup]
 
   --task ID       Task whose branch is shipped
   --title TITLE   Pull request title (a Conventional Commit line)
   --body FILE     Pull request description
+  --merge METHOD  squash (default): one commit on main, titled "TITLE (#PR)", whose body lists the series and its
+                  Co-Authored-By trailers; or rebase: every commit lands on main, so each must pass on its own
   --no-cleanup    Keep the task and its review (skip /exit and remove-task.sh)
 
-Environment: HERDR_REQUIRED_CHECKS (comma-separated check names to wait for; empty: none), HERDR_PR_ASSIGNEE
+Environment: HERDR_MERGE_METHOD (default for --merge, squash), HERDR_REQUIRED_CHECKS (comma-separated check names to wait for; empty: none), HERDR_PR_ASSIGNEE
 (assignee of a new PR), HERDR_POLL_SECONDS (default 20) and HERDR_SHIP_TIMEOUT_SECONDS (each wait, default 1800).
 USAGE
 }
 
-ID= TITLE= BODY= CLEANUP=1
+ID= TITLE= BODY= CLEANUP=1 METHOD=$HERDR_MERGE_METHOD
 while [ $# -gt 0 ]; do
   case $1 in
     --task) need_arg "$1" $#; ID=${2:-}; shift 2 ;;
     --title) need_arg "$1" $#; TITLE=${2:-}; shift 2 ;;
     --body) need_arg "$1" $#; BODY=${2:-}; shift 2 ;;
+    --merge) need_arg "$1" $#; METHOD=${2:-}; shift 2 ;;
     --no-cleanup) CLEANUP=0; shift ;;
     -h | --help) usage; exit 0 ;;
     *) usage >&2; die "unknown argument: $1" ;;
   esac
 done
 
+# A method GitHub would not understand is refused before anything else, gh included.
+case $METHOD in squash | rebase) ;; *) usage >&2; die "the merge method must be squash or rebase (--merge or HERDR_MERGE_METHOD), not '$METHOD'" ;; esac
 require_herdr
 need gh
 need jq
@@ -122,6 +127,23 @@ while :; do
   sleep "$POLL"
 done
 
+# merge_pr [--auto]: asks GitHub to merge #PR with the chosen method, pinned to the pushed head. A squash is one new
+# commit on main: the title with the PR number, the series it replaces and every co-author of that series (GitHub would
+# otherwise keep only the PR's author), so the history still says who did what.
+merge_pr() {
+  local -a opts=("$@")
+  if [ "$METHOD" = squash ]; then
+    local series coauthors message
+    series=$(git -C "$TASK_WORKTREE" log --reverse --format='- %s' "origin/main..$HEAD_SHA")
+    coauthors=$(git -C "$TASK_WORKTREE" log --format='%(trailers:key=Co-Authored-By,valueonly=false,unfold)' "origin/main..$HEAD_SHA" | grep -v '^$' | sort -u || true)
+    message=$(printf 'Squashed from:\n\n%s\n%s' "$series" "${coauthors:+$'\n'$coauthors}")
+    gh pr merge "$PR" "${opts[@]}" --squash --subject "$TITLE (#$PR)" --body "$message" --match-head-commit "$HEAD_SHA" >/dev/null \
+      || die "gh pr merge ${opts[*]} --squash failed for #$PR"
+  else
+    gh pr merge "$PR" "${opts[@]}" --rebase --match-head-commit "$HEAD_SHA" >/dev/null || die "gh pr merge ${opts[*]} --rebase failed for #$PR"
+  fi
+}
+
 # Required checks. gh pr checks exits non-zero while checks are pending or failed, so read its JSON and decide here.
 mapfile -t CHECKS < <(required_checks)
 check_bucket() {
@@ -152,29 +174,29 @@ if [ "${#CHECKS[@]}" -gt 0 ]; then
     log "Waiting for required checks: ${waiting[*]}…"
     sleep "$POLL"
   done
-  gh pr merge "$PR" --auto --rebase --match-head-commit "$HEAD_SHA" >/dev/null || die "gh pr merge --auto --rebase failed for #$PR"
-  log "Auto-merge (rebase) scheduled for #$PR; waiting for it…"
+  merge_pr --auto
+  log "Auto-merge ($METHOD) scheduled for #$PR; waiting for it…"
 else
   log "No required checks configured: merging #$PR now."
   present=$(gh pr checks "$PR" --json name 2>/dev/null | jq -r '[.[]?.name] | unique | join(", ")' 2>/dev/null || true)
   if [ -n "$present" ]; then
     log "warning: HERDR_REQUIRED_CHECKS is empty but the pull request has checks ($present); none of them is awaited. List the required ones in project.env."
   fi
-  gh pr merge "$PR" --rebase --match-head-commit "$HEAD_SHA" >/dev/null || die "gh pr merge --rebase failed for #$PR"
+  merge_pr
 fi
 if [ "${#CHECKS[@]}" -gt 0 ]; then MERGE_NOTE="the auto-merge stays scheduled"; else MERGE_NOTE="the merge was requested: read the pull request before rerunning"; fi
 SECONDS=0
-MERGED_SHA=
+MERGED_SHA= MERGED_HEAD=
 while :; do
-  if ! view=$(gh pr view "$PR" --json state,mergeCommit --jq '[.state, (.mergeCommit.oid // "")] | @tsv'); then
+  if ! view=$(gh pr view "$PR" --json state,mergeCommit,headRefOid --jq '[.state, (.headRefOid // "-"), (.mergeCommit.oid // "-")] | @tsv'); then
     [ "$SECONDS" -lt "$TIMEOUT" ] || die "gh could not read pull request #$PR in ${TIMEOUT}s; read its state before rerunning"
     log "gh could not read #$PR; retrying…"
     sleep "$POLL"
     continue
   fi
-  state=${view%%$'\t'*}
+  IFS=$'\t' read -r state merged_head merge_oid <<<"$view"
   case $state in
-    MERGED) MERGED_SHA=${view#*$'\t'}; break ;;
+    MERGED) MERGED_SHA=${merge_oid#-}; MERGED_HEAD=${merged_head#-}; break ;;
     CLOSED) die "pull request #$PR was closed without merging" ;;
   esac
   if [ "${#CHECKS[@]}" -gt 0 ] && gh pr checks "$PR" --json bucket 2>/dev/null | jq -e '[.[]? | select(.bucket == "fail")] | length > 0' >/dev/null 2>&1; then
@@ -184,6 +206,20 @@ while :; do
   [ "$SECONDS" -lt "$TIMEOUT" ] || die "pull request #$PR was not merged in ${TIMEOUT}s (state: $state); $MERGE_NOTE"
   sleep "$POLL"
 done
+
+# A squash leaves one new patch on main, which `git cherry` cannot match to the series, so remove-task.sh would keep the
+# branch. It is deleted when GitHub merged exactly what the local branch holds: the merged PR's head is the local tip.
+# Anything else (a commit made after the push, a head that moved) goes through the usual rule, which keeps what it
+# cannot show to be in main.
+SQUASHED_HEAD=
+if [ "$METHOD" = squash ]; then
+  local_tip=$(git -C "$TASK_REPO" rev-parse --verify --quiet "refs/heads/$BRANCH" || true)
+  if [ -n "$MERGED_HEAD" ] && [ "$MERGED_HEAD" = "$local_tip" ]; then
+    SQUASHED_HEAD=$MERGED_HEAD
+  else
+    log "note: GitHub squash-merged ${MERGED_HEAD:-an unknown head} but $BRANCH is at ${local_tip:-nowhere}; the branch is kept"
+  fi
+fi
 
 git -C "$TASK_REPO" fetch -q origin main
 git -C "$TASK_REPO" merge -q --ff-only origin/main \
@@ -197,17 +233,19 @@ if [ "$CLEANUP" = 0 ]; then
   exit 0
 fi
 retire() {
-  local id=$1 occupant name
+  local id=$1 occupant name flags="--volumes --delete-branch"
+  # Only the task's own branch is the squashed head; a review's branches follow the rule that was already there.
+  if [ "$id" = "$ID" ] && [ -n "$SQUASHED_HEAD" ]; then flags="$flags --squashed-head $SQUASHED_HEAD"; fi
   [ -f "$(task_json "$id")" ] || return 0
   load_task "$id"
   [ -z "$TASK_REMOVED_AT" ] || return 0
   occupant=$(agent_in_pane "$TASK_PANE" || true)
   if [ -n "$occupant" ]; then
     name=$(jq -r '.name // empty' <<<"$occupant")
-    [ -n "$name" ] || die "the agent in $TASK_PANE has no name; exit it by hand, then: scripts/herdr/remove-task.sh --id $id --volumes --delete-branch"
+    [ -n "$name" ] || die "the agent in $TASK_PANE has no name; exit it by hand, then: scripts/herdr/remove-task.sh --id $id $flags"
     state=$(jq -r '.agent_status // "unknown"' <<<"$occupant")
     case $state in
-      working | blocked) die "'$name' is $state, so it was not sent /exit; #$PR is merged (main at $MERGED_SHA). Let it finish, then run: scripts/herdr/remove-task.sh --id $id --volumes --delete-branch" ;;
+      working | blocked) die "'$name' is $state, so it was not sent /exit; #$PR is merged (main at $MERGED_SHA). Let it finish, then run: scripts/herdr/remove-task.sh --id $id $flags" ;;
     esac
     log "Exiting '$name'…"
     herdr agent prompt "$name" "/exit" >/dev/null || true
@@ -215,10 +253,11 @@ retire() {
       [ -z "$(agent_in_pane "$TASK_PANE" || true)" ] && break
       sleep 1
     done
-    [ -z "$(agent_in_pane "$TASK_PANE" || true)" ] || die "'$name' did not exit; #$PR is merged. Then run: scripts/herdr/remove-task.sh --id $id --volumes --delete-branch"
+    [ -z "$(agent_in_pane "$TASK_PANE" || true)" ] || die "'$name' did not exit; #$PR is merged. Then run: scripts/herdr/remove-task.sh --id $id $flags"
   fi
-  "$SCRIPT_DIR/remove-task.sh" --id "$id" --volumes --delete-branch \
-    || die "#$PR is merged (main at $MERGED_SHA) but '$id' was not retired; deal with what it reported and run: scripts/herdr/remove-task.sh --id $id --volumes --delete-branch"
+  # shellcheck disable=SC2086 # $flags is a short list of options without spaces in their values
+  "$SCRIPT_DIR/remove-task.sh" --id "$id" $flags \
+    || die "#$PR is merged (main at $MERGED_SHA) but '$id' was not retired; deal with what it reported and run: scripts/herdr/remove-task.sh --id $id $flags"
 }
 retire "review-$ID"
 retire "$ID"
