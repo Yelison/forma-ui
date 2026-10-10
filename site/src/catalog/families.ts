@@ -4,7 +4,7 @@ import { componentPages, sectionPaths } from '../routes'
 /** What a family does for the person using the interface. Filters group the catalog by it. */
 export type CatalogCategory = 'actions' | 'forms' | 'navigation' | 'display' | 'feedback'
 
-export type FamilyId = 'button' | 'input' | 'badge' | 'icon' | 'tabs' | 'tooltip' | 'dialog'
+export type FamilyId = 'button' | 'input' | 'radio' | 'badge' | 'icon' | 'tabs' | 'tooltip' | 'dialog'
 
 /** A reference page that a row links to: the component it documents (never translated) and where it is. */
 export interface CatalogReference {
@@ -59,6 +59,13 @@ export const catalogFamilies: readonly CatalogFamily[] = [
     category: 'forms',
     descriptionId: 'catalog.family.input.description',
     references: [reference('input')],
+  },
+  {
+    id: 'radio',
+    name: 'Radio',
+    category: 'forms',
+    descriptionId: 'catalog.family.radio.description',
+    references: [reference('radio')],
   },
   {
     id: 'badge',

@@ -13,6 +13,7 @@
   "catalog.family.dialog.description": "A modal that confirms a decision before it is made.",
   "catalog.family.icon.description": "The icons of the library, drawn in the color of the text.",
   "catalog.family.input.description": "A text field with its label, hint and error.",
+  "catalog.family.radio.description": "One choice from a group, with the arrow keys moving between the options.",
   "catalog.family.reference": "View the {component} reference",
   "catalog.family.referencePending": "Reference page coming soon",
   "catalog.family.tabs.description": "One panel at a time, chosen from a list of tabs with a click or the keyboard.",

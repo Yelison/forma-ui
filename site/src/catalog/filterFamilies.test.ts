@@ -9,6 +9,7 @@ describe('matchingFamilyIds', () => {
     expect(ids({ category: 'all', name: '' })).toEqual([
       'button',
       'input',
+      'radio',
       'badge',
       'icon',
       'tabs',
@@ -19,6 +20,10 @@ describe('matchingFamilyIds', () => {
 
   it('keeps only the families of the chosen category', () => {
     expect(ids({ category: 'feedback', name: '' })).toEqual(['tooltip', 'dialog'])
+  })
+
+  it('keeps Input and Radio in the forms category', () => {
+    expect(ids({ category: 'forms', name: '' })).toEqual(['input', 'radio'])
   })
 
   it('keeps only Tabs in the navigation category', () => {

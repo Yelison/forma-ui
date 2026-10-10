@@ -18,7 +18,7 @@ describe('CatalogPage', () => {
     renderCatalog()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument()
-    expect(rowNames()).toEqual(['Button', 'Input', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
+    expect(rowNames()).toEqual(['Button', 'Input', 'Radio', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
     for (const planned of ['Checkbox', 'Switch', 'NavItem']) {
       expect(screen.queryByRole('heading', { name: planned })).not.toBeInTheDocument()
     }
@@ -99,6 +99,22 @@ describe('CatalogPage', () => {
       expect(second!.getByRole('tabpanel')).toHaveTextContent('The latest changes.')
     })
 
+    it('show Radio as three groups that work apart: none selected, one selected and one with a disabled option', async () => {
+      renderCatalog()
+
+      const groups = within(row('Radio')).getAllByRole('group', { name: 'Plan' })
+      expect(groups).toHaveLength(3)
+      const [empty, preselected, disabled] = groups.map((group) => within(group))
+      expect(empty!.getAllByRole('radio').filter((radio) => (radio as HTMLInputElement).checked)).toHaveLength(0)
+      expect(preselected!.getByRole('radio', { name: 'Team' })).toBeChecked()
+      expect(disabled!.getByRole('radio', { name: 'Business' })).toBeDisabled()
+
+      await userEvent.click(empty!.getByRole('radio', { name: 'Business' }))
+      expect(empty!.getByRole('radio', { name: 'Business' })).toBeChecked()
+      expect(preselected!.getByRole('radio', { name: 'Team' })).toBeChecked()
+      expect(disabled!.getByRole('radio', { name: 'Free' })).toBeChecked()
+    })
+
     it('open a Dialog from its button, and close it with its own button', async () => {
       renderCatalog()
 
@@ -123,7 +139,7 @@ describe('CatalogPage', () => {
 
       // The names of the components, and the props and values that a label quotes, are code and are never translated.
       const code = /^(variant|tone|icon)="[\w-]+"$|^(IconButton|search|plus|check|arrow|bell|settings|menu|home)$/
-      const componentNames = ['Button', 'Input', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog']
+      const componentNames = ['Button', 'Input', 'Radio', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog']
       expect(untranslatedText(container, componentNames).filter((text) => !code.test(text))).toEqual([])
     })
   })
@@ -133,15 +149,16 @@ describe('CatalogPage', () => {
       renderCatalog()
 
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 7 components$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 8 components$/)
     })
 
     it('offer the categories in the order of the design, with Navigation after Forms', () => {
       renderCatalog()
 
-      expect(screen.getAllByRole('radio').map((radio) => (radio as HTMLInputElement).labels?.[0]?.textContent)).toEqual(
-        ['All', 'Actions', 'Forms', 'Navigation', 'Display', 'Feedback'],
-      )
+      const categories = within(screen.getByRole('group', { name: 'Category' }))
+      expect(
+        categories.getAllByRole('radio').map((radio) => (radio as HTMLInputElement).labels?.[0]?.textContent),
+      ).toEqual(['All', 'Actions', 'Forms', 'Navigation', 'Display', 'Feedback'])
     })
 
     it('keep only the families of a category, and announce the new count', async () => {
@@ -150,6 +167,15 @@ describe('CatalogPage', () => {
       await userEvent.click(screen.getByRole('radio', { name: 'Feedback' }))
 
       expect(rowNames()).toEqual(['Tooltip', 'Dialog'])
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 2 components$/)
+    })
+
+    it('keep Input and Radio under Forms', async () => {
+      renderCatalog()
+
+      await userEvent.click(screen.getByRole('radio', { name: 'Forms' }))
+
+      expect(rowNames()).toEqual(['Input', 'Radio'])
       expect(screen.getByRole('status')).toHaveTextContent(/^Showing 2 components$/)
     })
 
@@ -195,7 +221,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
 
-      expect(rowNames()).toHaveLength(7)
+      expect(rowNames()).toHaveLength(8)
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveValue('')
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveFocus()
@@ -203,7 +229,7 @@ describe('CatalogPage', () => {
 
     it('count in the language of the page', async () => {
       renderCatalog({ locale: 'es' })
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 7 componentes$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 8 componentes$/)
 
       await userEvent.click(screen.getByRole('radio', { name: 'Acciones' }))
 

@@ -13,6 +13,7 @@
   "catalog.family.dialog.description": "Un modal que confirma una decisión antes de tomarla.",
   "catalog.family.icon.description": "Los iconos de la biblioteca, dibujados con el color del texto.",
   "catalog.family.input.description": "Un campo de texto con su etiqueta, su ayuda y su error.",
+  "catalog.family.radio.description": "Una elección dentro de un grupo, con las flechas para moverse entre las opciones.",
   "catalog.family.reference": "Ver la referencia de {component}",
   "catalog.family.referencePending": "Página de referencia próximamente",
   "catalog.family.tabs.description": "Un panel a la vez, elegido en una lista de pestañas con un clic o con el teclado.",
