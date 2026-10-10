@@ -1,11 +1,11 @@
 {
   "docs.radio.a11y.disabled": "<code>disabled</code> es para una opción que no está disponible: se atenúa, muestra un cursor de no permitido y la tecnología de apoyo la lee como no disponible. No existe un radio de solo lectura.",
   "docs.radio.a11y.focus": "El foco del teclado se dibuja con el token del anillo de foco alrededor del control, también cuando la opción está seleccionada, donde el color de marca por sí solo no lo mostraría. Un clic no lo dibuja.",
-  "docs.radio.a11y.group": "Pon las opciones de un grupo en un <code>fieldset</code> con un <code>legend</code> que diga qué elige el grupo, y dale a cada opción el mismo <code>name</code>. Un lector de pantalla lee entonces el legend con cada opción, y el navegador trata las opciones como un solo grupo.",
+  "docs.radio.a11y.group": "Pon las opciones de un grupo en un <code>fieldset</code> con un <code>legend</code> que diga qué elige el grupo, y dale a cada opción el mismo <code>name</code>. Un lector de pantalla lee entonces la leyenda con cada opción, y el navegador trata las opciones como un solo grupo.",
   "docs.radio.a11y.keyboard": "Tab entra una sola vez en el grupo: por la opción seleccionada, o por la primera si no hay ninguna. Las flechas pasan a la opción siguiente o a la anterior, dan la vuelta en los extremos, saltan una opción deshabilitada y seleccionan aquella a la que llegan. Espacio selecciona la opción que tiene el foco.",
   "docs.radio.a11y.native": "Es un input radio nativo dentro de su <code>label</code>: un clic en el texto selecciona la opción, el texto es su nombre accesible, y la agrupación, las teclas y el valor del formulario los pone el navegador, no la biblioteca.",
   "docs.radio.a11y.selected": "Una opción seleccionada muestra un punto dentro de un círculo relleno, así que el estado no depende solo del color, y la tecnología de apoyo lo lee del estado <code>checked</code> nativo.",
-  "docs.radio.a11y.strings": "Radio no tiene texto propio: el label y el legend son tuyos, en el idioma de tu página, y un <code>FormaProvider</code> no cambia nada aquí.",
+  "docs.radio.a11y.strings": "Radio no tiene texto propio: la etiqueta y la leyenda son tuyos, en el idioma de tu página, y un <code>FormaProvider</code> no cambia nada aquí.",
   "docs.radio.a11y.target": "Toda la etiqueta es el objetivo: su fila mide 36 px de alto, y 44 px por debajo de 768 px de ancho.",
   "docs.radio.api.className": "Se añade al <code>label</code>, que contiene la caja y el texto, y no al input: cualquier otro atributo va al input. Es al revés que en Input, donde <code>className</code> va al input.",
   "docs.radio.api.label": "El texto de la opción. Es lo que da nombre al radio, y un clic en él selecciona la opción.",

@@ -38,6 +38,17 @@ const references: Reference[] = [
     },
   },
   {
+    slug: 'radio',
+    name: 'Radio',
+    // In use: the keyboard has moved the selection of the first group, so its second option is selected and focused.
+    open: async (page) => {
+      const [first] = await page.getByRole('region', { name: 'States' }).getByRole('group').all()
+      await first!.getByRole('radio').first().focus()
+      await page.keyboard.press('ArrowDown')
+      await expect(first!.getByRole('radio').nth(1)).toBeFocused()
+    },
+  },
+  {
     slug: 'tooltip',
     name: 'Tooltip',
     open: async (page) => {
@@ -223,6 +234,31 @@ for (const reference of references) {
             await list!.getByRole('tab', { name }).click()
             expect(await below.boundingBox(), name).toEqual(resting)
           }
+        })
+      }
+    }
+
+    if (reference.name === 'Radio') {
+      test('keeps each group apart: the keys and the selection of one never reach another', async ({ page }) => {
+        await openReference(page, reference)
+        const [first, preselected] = await page.getByRole('region', { name: 'States' }).getByRole('group').all()
+        await first!.getByRole('radio').first().focus()
+
+        await page.keyboard.press('ArrowDown')
+        await page.keyboard.press('ArrowDown')
+        await page.keyboard.press('ArrowDown')
+
+        await expect(first!.getByRole('radio').first()).toBeFocused()
+        await expect(first!.getByRole('radio').first()).toBeChecked()
+        await expect(preselected!.getByRole('radio').nth(1)).toBeChecked()
+      })
+
+      for (const width of [320, 390, 767]) {
+        test(`makes the whole label of each option a target of 44 px at ${width} px`, async ({ page }) => {
+          await page.setViewportSize({ width, height: 800 })
+          await openReference(page, reference)
+
+          expect(await smallTargets(page.locator('#states'), 44, 'label'), `${width} px`).toEqual([])
         })
       }
     }
