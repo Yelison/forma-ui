@@ -1,4 +1,5 @@
 {
+  "app.retry": "Retry",
   "app.skipToContent": "Skip to content",
   "drawer.close": "Close menu",
   "drawer.title": "Menu",
@@ -20,6 +21,9 @@
   "nav.primary": "Main",
   "nav.theming": "Theming",
   "notFound.home": "Back to the homepage",
+  "pageError.description": "Check your connection and try again. Retrying also brings the latest version if the site was updated while you were reading.",
+  "pageError.heading": "This page could not be loaded",
+  "pageError.title": "This page could not be loaded · Forma UI",
   "route.accessibility.description": "Keyboard, focus, labels and screen-reader obligations of the components.",
   "route.accessibility.heading": "Accessibility",
   "route.accessibility.title": "Accessibility · Forma UI",
