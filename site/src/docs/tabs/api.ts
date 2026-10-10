@@ -7,7 +7,7 @@ const own = {
   label: { type: 'string', description: 'docs.tabs.api.label' },
   items: { type: 'TabItem[]', description: 'docs.tabs.api.items' },
   value: { type: 'string', description: 'docs.tabs.api.value' },
-  defaultValue: { type: 'string', default: 'the id of the first item', description: 'docs.tabs.api.defaultValue' },
+  defaultValue: { type: 'string', default: 'items[0].id', description: 'docs.tabs.api.defaultValue' },
   onChange: { type: '(id: string) => void', description: 'docs.tabs.api.onChange' },
   className: { type: 'string', description: 'docs.tabs.api.className' },
 } satisfies Record<keyof TabsProps, PropDoc>

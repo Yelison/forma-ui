@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, onTestFinished, vi } from 'vitest'
 import { Tabs, type TabsProps } from './Tabs'
 
 const items = [
@@ -194,11 +194,20 @@ describe('Tabs', () => {
   })
 
   it('ignores the keys of a tab list that has no tab to move to', () => {
+    // React reports an error thrown by a handler to the window, where it would otherwise only fail the whole run.
+    const errors: unknown[] = []
+    const record = (event: ErrorEvent) => {
+      event.preventDefault()
+      errors.push(event.error)
+    }
+    window.addEventListener('error', record)
+    onTestFinished(() => window.removeEventListener('error', record))
     const onChange = vi.fn()
     renderTabs({ items: [], onChange })
 
     fireEvent.keyDown(screen.getByRole('tablist'), { key: 'ArrowRight' })
 
+    expect(errors).toEqual([])
     expect(onChange).not.toHaveBeenCalled()
   })
 

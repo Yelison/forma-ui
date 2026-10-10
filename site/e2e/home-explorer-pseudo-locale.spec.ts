@@ -10,7 +10,7 @@ const longest = [
   { component: 'Button', value: 'loading' },
   { component: 'Input', value: 'error' },
   { component: 'Badge', value: 'amber' },
-  { component: 'Tabs', value: 'files' },
+  { component: 'Tabs', value: 'overview' },
 ]
 // The targets of the explorer: its selector, its selects and its buttons. Below 768 px they are 44 px.
 const targets = 'a, button, select, label:has(input)'
