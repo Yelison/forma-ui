@@ -1,7 +1,6 @@
-
 ## Commits
 
-Los de la ficha, en inglés, Conventional Commits; cada uno pasa por sí solo las comprobaciones de su capa, porque el repositorio funde con rebase y todos los commits llegan a `main`. Trailer: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Identidad de git ya configurada. **Sin push ni PR.** Formatea solo tus archivos (Prettier sobre las rutas autorizadas, nunca sobre un directorio de código entero: reformatearía archivos ajenos o generados).
+Los de la ficha, en inglés, Conventional Commits; **la tarea se fusiona con squash** (un solo commit en `main`, con la serie en su cuerpo), así que basta con que **la punta** pase todas las comprobaciones: haz commits pequeños y legibles, pero no hace falta que cada uno pase por sí solo. **Solo si la ficha dice «fusión con rebase»**, cada commit tiene que pasar por sí solo las comprobaciones de su capa (todos llegan a `main`): compruébalo **una vez, al final**, antes de la última entrega, no en cada ronda. Trailer: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Identidad de git ya configurada. **Sin push ni PR.** Formatea solo tus archivos (Prettier sobre las rutas autorizadas, nunca sobre un directorio de código entero: reformatearía archivos ajenos o generados).
 
 ## Uso de la máquina (varios agentes en paralelo)
 
@@ -39,9 +38,9 @@ Forma UI forma parte de un portafolio público: el código se lee tanto como se 
 - **Tests:** se leen como documentación del comportamiento. Consultas por rol y nombre accesible, sin detalles de implementación ni snapshots grandes.
 - **Comentarios:** explican el porqué, no el qué, al nivel de los del repositorio.
 
-## Comprobar cada commit por separado
+## Comprobar la punta y, solo con rebase, cada commit
 
-Comprueba cada commit con una orden literal propia, en un directorio nuevo: `D=$(mktemp -d <scratchpad>/c1.XXXXXX) && git archive <sha> | tar -x -C "$D" && cd "$D" && npm ci && npm run …`. Usa una llamada por commit, sin `rm`, sin funciones de shell y sin `bash -c` con órdenes guardadas en variables (el clasificador de permisos los bloquea). Los directorios temporales se pueden quedar.
+Con squash comprueba la punta con las órdenes de la ficha. Solo si la ficha dice «fusión con rebase», comprueba además cada commit, **una vez, al final** y no en cada ronda, con una orden literal propia, en un directorio nuevo: `D=$(mktemp -d <scratchpad>/c1.XXXXXX) && git archive <sha> | tar -x -C "$D" && cd "$D" && npm ci && npm run …`. Usa una llamada por commit, sin `rm`, sin funciones de shell y sin `bash -c` con órdenes guardadas en variables (el clasificador de permisos los bloquea). Los directorios temporales se pueden quedar.
 
 ## Autocomprobación antes de entregar
 
@@ -55,7 +54,8 @@ Los revisores encuentran casi siempre estos defectos (`AGENTS.md`, «Self-check 
 - **Todos los estados:** carga, vacío, error con reintento, deshabilitado y de solo lectura (son estados distintos), cada uno con su test.
 - **Una mutación por test nuevo**, anotada en la entrega.
 - **Idioma:** las reglas de la sección anterior, con el pseudo-idioma pasado.
-- **Commits:** cada uno pasa por sí solo, y si un cambio rompe un test, el test cambia en el mismo commit.
+- **Commits:** la punta pasa todo, y si un cambio rompe un test, el test cambia en el mismo commit. Con «fusión con rebase», además, cada commit pasa por sí solo (comprobado una vez, al final).
+- **Rondas de corrección:** verifica en la punta el arreglo de esa ronda y lo que puede afectar; no repitas baterías ni comprobaciones por commit que el arreglo no cambia.
 - **Changeset:** todo cambio visible para quien usa el paquete lleva su changeset (`npm run changeset`; ver `CONTRIBUTING.md`). Si el cambio toca el paquete pero no cambia nada para quien lo instala, decláralo con `npx changeset --empty`: el job `Changeset` lo exige.
 
 ## Entrega

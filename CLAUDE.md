@@ -72,7 +72,7 @@ No publishing, releases or automatic merges without explicit authorization.
 
 ## Execution
 
-Tasks require scope, dependencies, acceptance criteria, tests and evidence. Every change lands through a pull request merged with rebase; `main` is protected.
+Tasks require scope, dependencies, acceptance criteria, tests and evidence. Every change lands through a pull request merged with squash by default, or with rebase when the task asks for it; `main` is protected.
 
 ## Language and URLs
 

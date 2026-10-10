@@ -20,8 +20,9 @@ verified findings.
 3. **Scope:** only allowed files change; no reserved file, new dependency, disabled or weakened test.
 4. **Tests:** new tests would fail without the change (prove it by reverting the key line locally and restoring it)
    and do not restate the implementation.
-5. **Commits:** Conventional Commits in English with the `Co-Authored-By` trailer; every commit passes on its own
-   (check out each one in your worktree and return to `{{SHA}}` at the end).
+5. **Commits:** Conventional Commits in English with the `Co-Authored-By` trailer; The task is squash-merged by
+   default, so the tip has to pass everything. Only when the brief says «fusión con rebase» does every commit have to
+   pass on its own: then check out each one in your worktree, once, and return to `{{SHA}}` at the end.
 6. **Quality (portfolio project):** report quality findings with a severity, not only bugs. Check:
    - structure: small single-purpose modules, no duplication, dead code or speculative abstraction;
    - naming;
