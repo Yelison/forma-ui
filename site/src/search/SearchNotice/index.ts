@@ -1,0 +1,1 @@
+export { SearchNotice } from './SearchNotice'

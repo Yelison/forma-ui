@@ -1,4 +1,5 @@
 {
+  "app.dismiss": "Dismiss",
   "app.retry": "Retry",
   "app.skipToContent": "Skip to content",
   "drawer.close": "Close menu",
@@ -55,6 +56,8 @@
   "search.group.components": "Components",
   "search.group.pages": "Pages",
   "search.label": "Search components and pages",
+  "search.loadFailed": "The search could not be loaded.",
+  "search.loading": "Loading search…",
   "search.placeholder": "Search components and pages…",
   "search.results": "Results",
   "search.title": "Search the documentation",

@@ -1,0 +1,22 @@
+/* Over the page and out of its flow, so showing it moves nothing: it hangs under the top bar, where the dialog it stands
+   in for would open. */
+.notice {
+  position: fixed;
+  inset-block-start: calc(var(--site-nav-height) + var(--space-8));
+  inset-inline: var(--space-16);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+  inline-size: fit-content;
+  max-inline-size: 28rem;
+  margin-inline: auto;
+  padding: var(--space-12) var(--space-16);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-popover);
+  color: var(--color-ink);
+  font: var(--font-body);
+}

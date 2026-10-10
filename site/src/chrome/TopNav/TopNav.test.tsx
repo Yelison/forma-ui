@@ -117,6 +117,9 @@ describe('TopNav', () => {
     })
 
     const searchButton = () => screen.getByRole('button', { name: 'Search…' })
+    // The dialog is fetched the first time it opens: the first test of the group waits for the module to be imported,
+    // which takes longer than a query waits by default.
+    const openedDialog = (name = 'Search the documentation') => screen.findByRole('dialog', { name }, { timeout: 5000 })
     const searchDialog = () => screen.getByRole('dialog', { name: 'Search the documentation' })
     const pressEscape = () => fireEvent(searchDialog(), new Event('cancel', { cancelable: true }))
 
@@ -125,7 +128,7 @@ describe('TopNav', () => {
 
       await userEvent.click(searchButton())
 
-      expect(searchDialog()).toBeInTheDocument()
+      expect(await openedDialog()).toBeInTheDocument()
     })
 
     it('opens from Ctrl+K, in the language of the page', async () => {
@@ -133,12 +136,13 @@ describe('TopNav', () => {
 
       await userEvent.keyboard('{Control>}k{/Control}')
 
-      expect(screen.getByRole('dialog', { name: 'Buscar en la documentación' })).toBeInTheDocument()
+      expect(await openedDialog('Buscar en la documentación')).toBeInTheDocument()
     })
 
     it('gives focus back to its button when it closes', async () => {
       renderInSite(<TopNav />)
       await userEvent.click(searchButton())
+      await openedDialog()
 
       pressEscape()
 
@@ -149,6 +153,7 @@ describe('TopNav', () => {
     it('puts focus on the search button when it closes after the shortcut was pressed with nothing focused', async () => {
       renderInSite(<TopNav />)
       await userEvent.keyboard('{Control>}k{/Control}')
+      await openedDialog()
       expect(document.body).toHaveFocus()
 
       pressEscape()
@@ -159,6 +164,7 @@ describe('TopNav', () => {
     it('puts focus on the menu button instead when the search button is not on screen', async () => {
       renderInSite(<TopNav />)
       await userEvent.keyboard('{Control>}k{/Control}')
+      await openedDialog()
       searchButton().style.display = 'none'
 
       pressEscape()
@@ -174,9 +180,9 @@ describe('TopNav', () => {
         within(screen.getByRole('dialog', { name: 'Menu' })).getByRole('button', { name: 'Search…' }),
       )
 
+      expect(await openedDialog()).toBeInTheDocument()
       expect(screen.queryByRole('dialog', { name: 'Menu' })).not.toBeInTheDocument()
       expect(screen.getByRole('button', { name: 'Open menu' })).toHaveAttribute('aria-expanded', 'false')
-      expect(searchDialog()).toBeInTheDocument()
     })
 
     it('closes the menu when the shortcut opens the search over it', async () => {
@@ -185,13 +191,14 @@ describe('TopNav', () => {
 
       await userEvent.keyboard('{Control>}k{/Control}')
 
+      expect(await openedDialog()).toBeInTheDocument()
       expect(screen.queryByRole('dialog', { name: 'Menu' })).not.toBeInTheDocument()
-      expect(searchDialog()).toBeInTheDocument()
     })
 
     it('closes when a result is chosen', async () => {
       renderInSite(<TopNav />)
       await userEvent.click(searchButton())
+      await openedDialog()
 
       await userEvent.type(screen.getByRole('combobox'), 'foundations{Enter}')
 

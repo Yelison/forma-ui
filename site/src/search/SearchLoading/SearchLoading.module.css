@@ -1,0 +1,6 @@
+/* The top bar lays its children out in a row with a gap, and an empty box in the row still takes one: while the search
+   loads the controls would move by that gap, and move back when the dialog replaces it. Out of the flow, it takes none.
+   The notice inside it is fixed, so where the region sits does not matter. */
+.region {
+  position: absolute;
+}
