@@ -43,6 +43,8 @@ describe('routeCatalogs', () => {
     ['Input', 'docs.input'],
     ['Tooltip', 'docs.tooltip'],
     ['Dialog', 'docs.dialog'],
+    ['Tabs', 'docs.tabs'],
+    ['Radio', 'docs.radio'],
   ])('gives the reference of %s its own catalogue, %s, and no other reference', (name, catalogue) => {
     const path = componentPages.find((page) => page.name === name)?.slug
     const names = routeCatalogs(route(`/docs/components/${path}/`))
@@ -57,9 +59,9 @@ describe('routeCatalogs', () => {
   })
 
   it('fails for a component page whose reference has no catalogue, rather than loading nothing', () => {
-    expect(() => pageCatalogs({ key: 'component', path: '/docs/components/radio/', componentName: 'Radio' })).toThrow(
-      'Radio has no reference catalogue',
-    )
+    expect(() =>
+      pageCatalogs({ key: 'component', path: '/docs/components/checkbox/', componentName: 'Checkbox' }),
+    ).toThrow('Checkbox has no reference catalogue')
   })
 
   it('leaves no catalogue that no route loads, which nothing would ever show', () => {

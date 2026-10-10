@@ -53,6 +53,10 @@ export const catalogLoaders = {
     en: () => import('./catalogs/docs.input.en.json'),
     es: () => import('./catalogs/docs.input.es.json'),
   },
+  'docs.radio': {
+    en: () => import('./catalogs/docs.radio.en.json'),
+    es: () => import('./catalogs/docs.radio.es.json'),
+  },
   'docs.tabs': {
     en: () => import('./catalogs/docs.tabs.en.json'),
     es: () => import('./catalogs/docs.tabs.es.json'),

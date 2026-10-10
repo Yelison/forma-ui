@@ -1,0 +1,17 @@
+/* A fieldset has a border, a padding and a minimum width of its own: they would push a narrow page sideways. */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  margin-block-end: var(--space-8);
+  color: var(--color-ink);
+  font: var(--font-label);
+}

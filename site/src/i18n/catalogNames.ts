@@ -28,6 +28,7 @@ export const catalogNames = [
   'docs.dialog',
   'docs.iconButton',
   'docs.input',
+  'docs.radio',
   'docs.tabs',
   'docs.tooltip',
 ] as const
