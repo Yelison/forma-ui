@@ -45,6 +45,10 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ Dialog: expect.any(Function), Modal: entry.Dialog })
   })
 
+  it('exports Tabs', () => {
+    expect(entry).toMatchObject({ Tabs: expect.any(Function) })
+  })
+
   it('exports the hook that locks the page scroll', () => {
     expect(entry).toMatchObject({ useScrollLock: expect.any(Function) })
   })

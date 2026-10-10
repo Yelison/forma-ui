@@ -1,0 +1,45 @@
+/*
+ * The hover and selected states are wrapped in `:where()`, which adds no specificity: a consumer's own class, such as
+ * `.tab:hover`, then wins over them as long as its stylesheet comes after the library's, as the README says.
+ */
+.list {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.tab {
+  /* The library ships no reset, so the box model is set here: the painted height is `--button-height`. */
+  box-sizing: border-box;
+  min-height: var(--button-height);
+  padding: 0 var(--space-12);
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  font: var(--font-label);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) ease,
+    color var(--duration-fast) ease;
+}
+
+.tab:where(:hover:not([aria-selected='true'])) {
+  background: var(--color-surface-hover);
+}
+
+.tab:where([aria-selected='true']) {
+  background: var(--color-blue-bg);
+  color: var(--color-blue-ink);
+}
+
+.tab:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.panel:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 4px;
+}

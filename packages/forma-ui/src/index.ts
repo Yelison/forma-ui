@@ -29,4 +29,5 @@ export {
   type TooltipTriggerProps,
 } from './components/Tooltip/index.js'
 export { Dialog, Modal, type DialogProps, type ModalProps } from './components/Dialog/index.js'
+export { Tabs, type TabItem, type TabsProps } from './components/Tabs/index.js'
 export { useScrollLock } from './lib/scrollLock.js'
