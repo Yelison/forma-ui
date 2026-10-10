@@ -46,7 +46,7 @@ The machine is shared by several agents; without limits the load climbs far abov
 
 - Every heavy run (Playwright, Vitest in browser mode, axe, a build, `pack:check`, `pack:reproducible`, `check:consumer`, a per-commit `git archive`
   check) runs at low priority with `nice -n 10`, in parallel with other agents. If `~/.herdr-heavy-serial` exists, the owner has
-  brought back the machine-wide lock shared with Resolve: `[ -e ~/.herdr-heavy-serial ] && flock /tmp/herdr-heavy.lock nice -n 10 <command> || nice -n 10 <command>`.
+  brought back the machine-wide lock shared with Resolve: `if [ -e ~/.herdr-heavy-serial ]; then flock /tmp/herdr-heavy.lock nice -n 10 <command>; else nice -n 10 <command>; fi`.
 - Run Playwright and Vitest in browser mode with one worker (`--workers=1` / `--maxWorkers=1`), Vitest in jsdom with `--maxWorkers=2`.
 - Never run the full end-to-end or browser suite locally: run the specs the change can affect and list them in the report; CI runs the full
   suites on the pull request.
