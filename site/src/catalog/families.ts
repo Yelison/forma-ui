@@ -27,7 +27,7 @@ export interface CatalogFamily {
   readonly references?: readonly CatalogReference[]
 }
 
-/** Categories in the order of the filter, which is the one of the design: Navigation sits between Forms and Feedback. */
+/** Categories in the order of the filter. Navigation follows Forms, as it does in the design. */
 export const catalogCategories = [
   'actions',
   'forms',

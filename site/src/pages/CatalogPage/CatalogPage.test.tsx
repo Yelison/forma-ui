@@ -136,6 +136,14 @@ describe('CatalogPage', () => {
       expect(screen.getByRole('status')).toHaveTextContent(/^Showing 7 components$/)
     })
 
+    it('offer the categories in the order of the design, with Navigation after Forms', () => {
+      renderCatalog()
+
+      expect(screen.getAllByRole('radio').map((radio) => (radio as HTMLInputElement).labels?.[0]?.textContent)).toEqual(
+        ['All', 'Actions', 'Forms', 'Navigation', 'Display', 'Feedback'],
+      )
+    })
+
     it('keep only the families of a category, and announce the new count', async () => {
       renderCatalog()
 
