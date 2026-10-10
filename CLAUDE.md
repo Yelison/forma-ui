@@ -70,6 +70,8 @@ Validate the built package in a consumer, not only through source aliases. Check
 
 No publishing, releases or automatic merges without explicit authorization.
 
+A visual change to the package (CSS, a token value, the markup a component renders) is released as at least a minor version, never a patch: consumers merge patch releases automatically.
+
 ## Execution
 
 Tasks require scope, dependencies, acceptance criteria, tests and evidence. Every change lands through a pull request merged with squash by default, or with rebase when the task asks for it; `main` is protected.

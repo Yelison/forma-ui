@@ -17,7 +17,9 @@ verified findings.
 
 1. **Requirements:** each acceptance criterion, one by one, with evidence (a test, a command or the code).
 2. **Behaviour:** the change does what it claims at the edges, not only on the happy path; look for regressions.
-3. **Scope:** only allowed files change; no reserved file, new dependency, disabled or weakened test.
+3. **Scope:** only allowed files change; no reserved file, new dependency, disabled or weakened test. If the package
+   changes, its changeset has the right bump: any visual change (CSS, a token value, rendered markup) is at least
+   `minor`, never `patch`, because consumers merge patches automatically.
 4. **Tests:** new tests would fail without the change (prove it by reverting the key line locally and restoring it)
    and do not restate the implementation.
 5. **Commits:** Conventional Commits in English with the `Co-Authored-By` trailer; The task is squash-merged by
