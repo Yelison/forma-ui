@@ -27,6 +27,17 @@ const references: Reference[] = [
   },
   { slug: 'badge', name: 'Badge' },
   {
+    slug: 'tabs',
+    name: 'Tabs',
+    // In use: the keyboard has moved the selection, so the second tab is the selected one and has the focus.
+    open: async (page) => {
+      const [first] = await page.getByRole('region', { name: 'States' }).getByRole('tablist').all()
+      await first!.getByRole('tab').first().focus()
+      await page.keyboard.press('ArrowRight')
+      await expect(first!.getByRole('tab').nth(1)).toBeFocused()
+    },
+  },
+  {
     slug: 'tooltip',
     name: 'Tooltip',
     open: async (page) => {
@@ -180,6 +191,42 @@ for (const reference of references) {
       })
     }
 
+    if (reference.name === 'Tabs') {
+      test('moves the selection and the focus with the real keyboard, and Tab goes on to the panel', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const [list] = await page.getByRole('region', { name: 'States' }).getByRole('tablist').all()
+        const panel = page.getByRole('region', { name: 'States' }).getByRole('tabpanel').first()
+        await list!.getByRole('tab').first().focus()
+
+        await page.keyboard.press('End')
+        await expect(list!.getByRole('tab').last()).toHaveAttribute('aria-selected', 'true')
+        await expect(panel).toContainText('The attached documents.')
+        await page.keyboard.press('ArrowRight')
+        await expect(list!.getByRole('tab').first()).toBeFocused()
+        await page.keyboard.press('Tab')
+
+        await expect(panel).toBeFocused()
+      })
+
+      for (const width of [320, 1440]) {
+        test(`does not move what is below the tabs when another tab is selected at ${width} px`, async ({ page }) => {
+          await page.setViewportSize({ width, height: 800 })
+          await openReference(page, reference)
+          const states = page.getByRole('region', { name: 'States' })
+          const [list] = await states.getByRole('tablist').all()
+          const below = page.locator('#controlled')
+          const resting = await below.boundingBox()
+
+          for (const name of ['Activity', 'Files', 'Overview']) {
+            await list!.getByRole('tab', { name }).click()
+            expect(await below.boundingBox(), name).toEqual(resting)
+          }
+        })
+      }
+    }
+
     if (reference.name === 'Tooltip') {
       test('closes the tooltip with the first Escape and the dialog with the second, and gives back the focus', async ({
         page,
@@ -239,8 +286,9 @@ for (const reference of references) {
         for (const width of [320, 767, 768]) {
           await page.setViewportSize({ width, height: 800 })
           await openReference(page, reference, './__pseudo__')
-          // The code panel of the usage holds a long line, which scrolls inside its block and not the page.
-          await page.getByRole('tab').last().click()
+          // The code panel of the usage holds a long line, which scrolls inside its block and not the page. The tabs
+          // of the playground are the first of the section: the reference of Tabs shows tabs of its own after them.
+          await page.locator('#usage').getByRole('tablist').first().getByRole('tab').last().click()
 
           expect(await overflow(page), `${width} px`).toEqual({ scroll: 0, outside: [], clipped: [] })
           if (width < 768) expect(await smallTargets(page.getByRole('main')), `${width} px`).toEqual([])

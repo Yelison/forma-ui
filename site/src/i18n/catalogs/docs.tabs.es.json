@@ -31,6 +31,6 @@
   "docs.tabs.state.defaultHint": "La primera pestaña empieza seleccionada.",
   "docs.tabs.state.defaultValueHint": "Otra pestaña empieza seleccionada.",
   "docs.tabs.states.description": "Una pestaña está seleccionada o no, y el hover y el foco del teclado se dibujan encima. Todo funciona aquí: pasa el puntero por una pestaña, o pulsa Tab y luego las flechas.",
-  "docs.tabs.summary": "Paneles que comparten un mismo lugar: una lista de pestañas y el panel de la seleccionada.",
+  "docs.tabs.summary": "Paneles que comparten un mismo lugar: una lista de pestañas y el panel de la pestaña activa.",
   "docs.tabs.usage.description": "Importa Tabs y pásale un <code>label</code> y los <code>items</code>. Cada elemento tiene un <code>id</code>, el <code>label</code> de su pestaña y el <code>content</code> de su panel."
 }
