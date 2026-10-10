@@ -4,10 +4,10 @@ import type { MessageId } from '../../i18n'
 /** Looks a message up in the language of the page. The specimens take their text from here, never from literals. */
 export type Translate = (id: MessageId) => string
 
-export type ComponentName = 'Button' | 'Input' | 'Badge'
+export type ComponentName = 'Button' | 'Input' | 'Badge' | 'Tabs'
 
 /** What a control changes in the specimen. Each one is the name of a prop, or of the state a prop stands for. */
-export type ControlId = 'variant' | 'tone' | 'size' | 'state'
+export type ControlId = 'variant' | 'tone' | 'size' | 'state' | 'defaultValue'
 
 export interface ControlOption {
   readonly value: string
@@ -54,14 +54,35 @@ interface BadgeSpecimenProps {
   tone: BadgeTone
 }
 
+/** One tab as the explorer writes it: plain strings, because the JSX that it prints is made from them. */
+interface TabSpecimenItem {
+  id: string
+  label: string
+  content: string
+}
+
+interface TabsSpecimenProps {
+  label: string
+  defaultValue: string
+  items: TabSpecimenItem[]
+}
+
 /** What the explorer renders and prints: one value, so the specimen and its code cannot say different things. */
 export type Specimen =
   | { component: 'Button'; props: ButtonSpecimenProps; children: string }
   | { component: 'Input'; props: InputSpecimenProps }
   | { component: 'Badge'; props: BadgeSpecimenProps; children: string }
+  | { component: 'Tabs'; props: TabsSpecimenProps }
+
+/**
+ * How the stage lays the specimen out: `natural` is as wide as its content, and `fitted` is as wide as a comfortable
+ * measure, up to the card, for a component that fills the width it is given (a field, a list of tabs and its panel).
+ */
+export type SpecimenLayout = 'natural' | 'fitted'
 
 export interface ComponentDefinition {
   readonly name: ComponentName
+  readonly layout: SpecimenLayout
   readonly controls: readonly Control[]
   readonly specimen: (values: Values, translate: Translate) => Specimen
 }
@@ -69,6 +90,7 @@ export interface ComponentDefinition {
 const buttonVariants = ['primary', 'secondary', 'ghost', 'danger'] as const satisfies readonly ButtonVariant[]
 const buttonStates = ['default', 'disabled', 'loading'] as const
 const inputStates = ['default', 'error', 'disabled', 'readOnly'] as const
+const tabIds = ['overview', 'activity', 'files'] as const
 const badgeTones = ['neutral', 'blue', 'green', 'amber', 'red'] as const satisfies readonly BadgeTone[]
 
 const options = (values: readonly string[]): readonly ControlOption[] => values.map((value) => ({ value }))
@@ -86,6 +108,7 @@ function pick<T extends string>(allowed: readonly [T, ...T[]], value: string | u
 
 const button: ComponentDefinition = {
   name: 'Button',
+  layout: 'natural',
   controls: [
     { id: 'variant', label: 'explorer.control.variant', options: options(buttonVariants) },
     // Button has one height (`--button-height`). 32, 40 and 48 are a proposal that no consumer has adopted.
@@ -114,6 +137,7 @@ const button: ComponentDefinition = {
 
 const input: ComponentDefinition = {
   name: 'Input',
+  layout: 'fitted',
   controls: [{ id: 'state', label: 'explorer.control.state', options: states(inputStates) }],
   specimen(values, translate) {
     const state = pick(inputStates, values.state)
@@ -133,6 +157,7 @@ const input: ComponentDefinition = {
 
 const badge: ComponentDefinition = {
   name: 'Badge',
+  layout: 'natural',
   controls: [{ id: 'tone', label: 'explorer.control.tone', options: options(badgeTones) }],
   specimen(values, translate) {
     const tone = pick(badgeTones, values.tone)
@@ -141,9 +166,42 @@ const badge: ComponentDefinition = {
   },
 }
 
-const definitions: Record<ComponentName, ComponentDefinition> = { Button: button, Input: input, Badge: badge }
+const tabs: ComponentDefinition = {
+  name: 'Tabs',
+  layout: 'fitted',
+  // The only prop that changes what Tabs shows when it is not controlled. `value` is left out: a controlled Tabs needs a
+  // parent that holds the state, and the explorer prints one component.
+  controls: [
+    {
+      id: 'defaultValue',
+      label: 'explorer.control.defaultValue',
+      options: tabIds.map((id) => ({ value: id, label: `explorer.specimen.tabs.${id}` })),
+    },
+  ],
+  specimen(values, translate) {
+    return {
+      component: 'Tabs',
+      props: {
+        label: translate('explorer.specimen.tabs.label'),
+        defaultValue: pick(tabIds, values.defaultValue),
+        items: tabIds.map((id) => ({
+          id,
+          label: translate(`explorer.specimen.tabs.${id}`),
+          content: translate(`explorer.specimen.tabs.${id}Content`),
+        })),
+      },
+    }
+  },
+}
 
-/** The components of the explorer, in the order of its selector. Tabs joins them when the library ships it. */
+const definitions: Record<ComponentName, ComponentDefinition> = {
+  Button: button,
+  Input: input,
+  Badge: badge,
+  Tabs: tabs,
+}
+
+/** The components of the explorer, in the order of its selector. */
 export const componentDefinitions: readonly ComponentDefinition[] = Object.values(definitions)
 
 export const definitionOf = (name: ComponentName): ComponentDefinition => definitions[name]

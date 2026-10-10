@@ -7,6 +7,7 @@ const text = {
     category: 'Category',
     filterByName: 'Filter by name',
     actions: 'Actions',
+    navigation: 'Navigation',
     feedback: 'Feedback',
     all: 'All',
     count: (count: number) => `Showing ${count} component${count === 1 ? '' : 's'}`,
@@ -20,6 +21,7 @@ const text = {
     category: 'Categoría',
     filterByName: 'Filtrar por nombre',
     actions: 'Acciones',
+    navigation: 'Navegación',
     feedback: 'Feedback',
     all: 'Todos',
     count: (count: number) => `Mostrando ${count} componente${count === 1 ? '' : 's'}`,
@@ -47,8 +49,8 @@ for (const locale of ['en', 'es'] as const) {
     })
 
     test('shows a row for each family of the library, with its specimens', async ({ page }) => {
-      expect(await rowNames(page)).toEqual(['Button', 'Input', 'Badge', 'Icon', 'Tooltip', 'Dialog'])
-      await expect(countOf(page)).toHaveText(t.count(6))
+      expect(await rowNames(page)).toEqual(['Button', 'Input', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
+      await expect(countOf(page)).toHaveText(t.count(7))
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
@@ -62,6 +64,18 @@ for (const locale of ['en', 'es'] as const) {
 
       expect(await rowNames(page)).toEqual(['Tooltip', 'Dialog'])
       await expect(countOf(page)).toHaveText(t.count(2))
+    })
+
+    test('shows the Tabs row under Navigation, with tabs that answer the keyboard', async ({ page }) => {
+      await page.getByText(t.navigation, { exact: true }).click()
+
+      expect(await rowNames(page)).toEqual(['Tabs'])
+      await expect(countOf(page)).toHaveText(t.count(1))
+      const [first] = await page.getByRole('tablist').all()
+      await first!.getByRole('tab').first().focus()
+      await page.keyboard.press('ArrowRight')
+      await expect(first!.getByRole('tab').nth(1)).toBeFocused()
+      await expect(first!.getByRole('tab').nth(1)).toHaveAttribute('aria-selected', 'true')
     })
 
     test('narrows the list from the keyboard alone, and focus stays on the filter', async ({ page }) => {
@@ -93,7 +107,7 @@ for (const locale of ['en', 'es'] as const) {
 
       await page.getByRole('button', { name: t.clear }).click()
 
-      expect(await rowNames(page)).toHaveLength(6)
+      expect(await rowNames(page)).toHaveLength(7)
       await expect(page.getByRole('textbox', { name: t.filterByName })).toBeFocused()
       await expect(page.getByRole('textbox', { name: t.filterByName })).toHaveValue('')
     })

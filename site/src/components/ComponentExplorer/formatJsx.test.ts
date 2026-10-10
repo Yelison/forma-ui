@@ -46,6 +46,42 @@ describe('formatJsx', () => {
     expect(formatJsx(input)).toBe('<Input label={"Say \\"hi\\""} />')
   })
 
+  it('writes a list of records as an expression with a record on each line, inside the indented tag', () => {
+    const tabs: Specimen = {
+      component: 'Tabs',
+      props: {
+        label: 'Sections',
+        defaultValue: 'b',
+        items: [
+          { id: 'a', label: 'One', content: 'First' },
+          { id: 'b', label: 'Two', content: 'Second' },
+        ],
+      },
+    }
+
+    expect(formatJsx(tabs)).toBe(
+      [
+        '<Tabs',
+        '  label="Sections"',
+        '  defaultValue="b"',
+        '  items={[',
+        "    { id: 'a', label: 'One', content: 'First' },",
+        "    { id: 'b', label: 'Two', content: 'Second' },",
+        '  ]}',
+        '/>',
+      ].join('\n'),
+    )
+  })
+
+  it('escapes a quote inside a record, so that the code compiles as it is written', () => {
+    const tabs: Specimen = {
+      component: 'Tabs',
+      props: { label: 'Sections', defaultValue: 'a', items: [{ id: 'a', label: "It's", content: 'Back\\slash' }] },
+    }
+
+    expect(formatJsx(tabs)).toContain("{ id: 'a', label: 'It\\'s', content: 'Back\\\\slash' },")
+  })
+
   it('writes children with braces or angle brackets as an expression', () => {
     expect(formatJsx(button({}, 'a < b'))).toBe('<Button variant="primary">\n  {"a < b"}\n</Button>')
   })

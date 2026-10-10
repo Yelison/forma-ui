@@ -5,6 +5,7 @@ import { ButtonSpecimens } from './ButtonSpecimens'
 import { DialogSpecimens } from './DialogSpecimens'
 import { IconSpecimens } from './IconSpecimens'
 import { InputSpecimens } from './InputSpecimens'
+import { TabsSpecimens } from './TabsSpecimens'
 import { TooltipSpecimens } from './TooltipSpecimens'
 
 /** The live specimens of each family: a new family without them is a type error. */
@@ -13,6 +14,7 @@ export const familySpecimens: Record<FamilyId, ComponentType> = {
   input: InputSpecimens,
   badge: BadgeSpecimens,
   icon: IconSpecimens,
+  tabs: TabsSpecimens,
   tooltip: TooltipSpecimens,
   dialog: DialogSpecimens,
 }

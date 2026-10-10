@@ -8,6 +8,8 @@ import type {
   IconButtonProps,
   InputProps,
   ModalProps,
+  TabItem,
+  TabsProps,
   TooltipProps,
   TooltipTriggerProps,
 } from '@yelison/forma-ui'
@@ -17,6 +19,7 @@ import { buttonApi } from './button/api'
 import { dialogApi } from './dialog/api'
 import { iconButtonApi } from './icon-button/api'
 import { inputApi } from './input/api'
+import { tabsApi } from './tabs/api'
 import { tooltipApi } from './tooltip/api'
 import type { OwnProps } from './types'
 
@@ -46,3 +49,8 @@ expectTypeOf<keyof (typeof tooltipApi.related)[0]['own']>().toEqualTypeOf<keyof 
 // Dialog, and Modal with it: the same props, and none of them native, so every one of them is its own.
 expectTypeOf<keyof typeof dialogApi.own>().toEqualTypeOf<keyof DialogProps>()
 expectTypeOf<DialogProps>().toEqualTypeOf<ModalProps>()
+
+// Tabs adds no native attributes, since it renders a wrapper of its own that takes only a class name: every prop of it is
+// its own, and so is every field of the items it takes.
+expectTypeOf<keyof typeof tabsApi.own>().toEqualTypeOf<keyof TabsProps>()
+expectTypeOf<keyof (typeof tabsApi.related)[0]['own']>().toEqualTypeOf<keyof TabItem>()

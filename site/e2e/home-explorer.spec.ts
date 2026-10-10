@@ -121,6 +121,25 @@ test.describe('with the keyboard alone', () => {
     await expect(code(page)).toContainText('<Badge tone="neutral">')
   })
 
+  test('Tabs works with the keyboard in the specimen, and its code names the tab that starts selected', async ({
+    page,
+  }) => {
+    await openHome(page)
+    await choose(page, 'Tabs')
+    await expect(code(page)).toContainText('defaultValue="overview"')
+
+    await control(page, 'Selected tab').selectOption('files')
+    await expect(code(page)).toContainText('defaultValue="files"')
+    await expect(page.getByRole('tab', { selected: true })).toHaveText('Files')
+
+    await page.getByRole('tab', { selected: true }).focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(page.getByRole('tab', { name: 'Overview' })).toBeFocused()
+    await expect(page.getByRole('tabpanel')).toHaveText('A summary of the project.')
+    // The code is what the component starts from: using it does not rewrite it.
+    await expect(code(page)).toContainText('defaultValue="files"')
+  })
+
   test('the code of a narrow screen scrolls, and the keyboard can reach it', async ({ page }) => {
     await openHome(page, { width: 320 })
     await choose(page, 'Input')
@@ -223,7 +242,7 @@ test.describe('the layout', () => {
       const properties = page.getByRole('group', { name: 'Properties' })
       const top = async () => (await properties.boundingBox())!.y
 
-      for (const component of ['Button', 'Input', 'Badge']) {
+      for (const component of ['Button', 'Input', 'Badge', 'Tabs']) {
         await choose(page, component)
         const resting = await top()
         const select = page.getByRole('combobox').last()
@@ -253,6 +272,8 @@ for (const theme of themes) {
       ['Badge', 'Tone', 'green', 'Badge green'],
       ['Badge', 'Tone', 'amber', 'Badge amber'],
       ['Badge', 'Tone', 'red', 'Badge red'],
+      ['Tabs', 'Selected tab', 'activity', 'Tabs with the second tab selected'],
+      ['Tabs', 'Selected tab', 'files', 'Tabs with the third tab selected'],
     ]
 
     test('the explorer on load has no axe violations', async ({ page }) => {

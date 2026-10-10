@@ -6,11 +6,23 @@ const ids = (filters: Parameters<typeof matchingFamilyIds>[1]) => [...matchingFa
 
 describe('matchingFamilyIds', () => {
   it('keeps every family when nothing is filtered', () => {
-    expect(ids({ category: 'all', name: '' })).toEqual(['button', 'input', 'badge', 'icon', 'tooltip', 'dialog'])
+    expect(ids({ category: 'all', name: '' })).toEqual([
+      'button',
+      'input',
+      'badge',
+      'icon',
+      'tabs',
+      'tooltip',
+      'dialog',
+    ])
   })
 
   it('keeps only the families of the chosen category', () => {
     expect(ids({ category: 'feedback', name: '' })).toEqual(['tooltip', 'dialog'])
+  })
+
+  it('keeps only Tabs in the navigation category', () => {
+    expect(ids({ category: 'navigation', name: '' })).toEqual(['tabs'])
   })
 
   it('finds a family by part of its name, ignoring case and the spaces around the text', () => {

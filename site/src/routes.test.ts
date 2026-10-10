@@ -14,6 +14,7 @@ describe('the route manifest', () => {
       '/docs/components/input/',
       '/docs/components/tooltip/',
       '/docs/components/dialog/',
+      '/docs/components/tabs/',
       '/docs/guides/theming/',
       '/docs/guides/accessibility/',
       '/changelog/',

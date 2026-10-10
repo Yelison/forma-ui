@@ -112,7 +112,7 @@ function ThemeToggle() {
 
 ## Components
 
-`Badge`, `Button`, `IconButton`, `Icon` and `Input` forward the attributes of their native element. `Field`, `Tooltip` and `Dialog` take only the props they document.
+`Badge`, `Button`, `IconButton`, `Icon` and `Input` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog` and `Tabs` take only the props they document.
 
 | Component               | Use it for                                              | Accessibility                                                                                                                                                            |
 | ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -124,6 +124,7 @@ function ThemeToggle() {
 | `Icon`                  | One of the library's icons, as inline SVG.              | Decorative and hidden from screen readers unless you give it a `label`.                                                                                                  |
 | `Tooltip`               | A short description for a control.                      | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.            |
 | `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                       | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.               |
+| `Tabs`                  | Panels that share one place, one visible at a time.     | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.            |
 
 Also exported: `buttonClassName` (the classes of a button, for a link that must look like one), `useScrollLock` (the
 scroll lock of the dialog, for an overlay of your own), `useFormaStrings` and `defaultStrings` (the text the components show
@@ -151,10 +152,11 @@ is the source of truth. At the time of writing they are:
 
 | What you import | Size    |
 | --------------- | ------- |
-| Everything      | 6.76 kB |
+| Everything      | 7.19 kB |
 | `{ Button }`    | 2.91 kB |
+| `{ Tabs }`      | 0.66 kB |
 | `{ Badge }`     | 0.23 kB |
-| `styles.css`    | 1.47 kB |
+| `styles.css`    | 1.55 kB |
 
 `Button` is not small because `Icon` looks its path up in one object that holds every icon, so the whole table travels
 with any component that draws an icon.

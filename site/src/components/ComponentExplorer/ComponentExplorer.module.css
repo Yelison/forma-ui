@@ -87,8 +87,8 @@
   max-width: 100%;
 }
 
-/* A field is as wide as its input, up to a comfortable measure. */
-.fieldSpecimen {
+/* The `fitted` layout of a definition: as wide as a comfortable measure, up to the card. */
+.fittedSpecimen {
   width: min(100%, 20rem);
 }
 
