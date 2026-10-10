@@ -157,14 +157,16 @@ is the source of truth. At the time of writing they are:
 
 | What you import | Size    |
 | --------------- | ------- |
-| Everything      | 7.19 kB |
+| Everything      | 7.29 kB |
 | `{ Button }`    | 2.91 kB |
 | `{ Tabs }`      | 0.66 kB |
 | `{ Badge }`     | 0.23 kB |
+| `{ iconNames }` | 0.15 kB |
 | `styles.css`    | 1.55 kB |
 
 `Button` is not small because `Icon` looks its path up in one object that holds every icon, so the whole table travels
-with any component that draws an icon.
+with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
+and importing it alone does not bring the table.
 
 ## Compatibility
 
