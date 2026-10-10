@@ -57,6 +57,7 @@ export const componentPages = [
   { slug: 'tooltip', name: 'Tooltip' },
   { slug: 'dialog', name: 'Dialog' },
   { slug: 'tabs', name: 'Tabs' },
+  { slug: 'radio', name: 'Radio' },
 ] as const
 
 export const routes: readonly SiteRoute[] = [

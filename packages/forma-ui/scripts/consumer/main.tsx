@@ -1,7 +1,7 @@
 // The minimal consumer that scripts/check-consumer.ts compiles with `moduleResolution: nodenext` against the packed
 // package and then runs. It imports the package the way an application does, by name, and prints the markup of the
 // components it renders, which the script checks against the shipped styles.css.
-import { Badge, Button, Dialog, FormaProvider, IconButton, Input, Tabs, Tooltip } from '@yelison/forma-ui'
+import { Badge, Button, Dialog, FormaProvider, IconButton, Input, Radio, Tabs, Tooltip } from '@yelison/forma-ui'
 import { renderToStaticMarkup } from 'react-dom/server'
 
 // One sample per component that has styles. A component that ships CSS is added here, with the props it needs; the
@@ -23,6 +23,11 @@ const samples = (
     >
       <p>It cannot be restored.</p>
     </Dialog>
+    <fieldset>
+      <legend>Plan</legend>
+      <Radio name="plan" value="free" label="Free" defaultChecked />
+      <Radio name="plan" value="team" label="Team" />
+    </fieldset>
     <Tabs
       label="Ticket view"
       items={[

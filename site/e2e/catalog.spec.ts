@@ -7,6 +7,7 @@ const text = {
     category: 'Category',
     filterByName: 'Filter by name',
     actions: 'Actions',
+    forms: 'Forms',
     navigation: 'Navigation',
     feedback: 'Feedback',
     all: 'All',
@@ -21,6 +22,7 @@ const text = {
     category: 'Categoría',
     filterByName: 'Filtrar por nombre',
     actions: 'Acciones',
+    forms: 'Formularios',
     navigation: 'Navegación',
     feedback: 'Feedback',
     all: 'Todos',
@@ -49,8 +51,8 @@ for (const locale of ['en', 'es'] as const) {
     })
 
     test('shows a row for each family of the library, with its specimens', async ({ page }) => {
-      expect(await rowNames(page)).toEqual(['Button', 'Input', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
-      await expect(countOf(page)).toHaveText(t.count(7))
+      expect(await rowNames(page)).toEqual(['Button', 'Input', 'Radio', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
+      await expect(countOf(page)).toHaveText(t.count(8))
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
@@ -64,6 +66,19 @@ for (const locale of ['en', 'es'] as const) {
 
       expect(await rowNames(page)).toEqual(['Tooltip', 'Dialog'])
       await expect(countOf(page)).toHaveText(t.count(2))
+    })
+
+    test('shows the Radio row under Forms, with groups that answer the arrow keys apart', async ({ page }) => {
+      await page.getByText(t.forms, { exact: true }).click()
+
+      expect(await rowNames(page)).toEqual(['Input', 'Radio'])
+      await expect(countOf(page)).toHaveText(t.count(2))
+      const [empty, preselected] = await page.getByRole('region', { name: 'Radio' }).getByRole('group').all()
+      await empty!.getByRole('radio').first().focus()
+      await page.keyboard.press('ArrowDown')
+      await expect(empty!.getByRole('radio').nth(1)).toBeFocused()
+      await expect(empty!.getByRole('radio').nth(1)).toBeChecked()
+      await expect(preselected!.getByRole('radio').nth(1)).toBeChecked()
     })
 
     test('shows the Tabs row under Navigation, with tabs that answer the keyboard', async ({ page }) => {
@@ -107,7 +122,7 @@ for (const locale of ['en', 'es'] as const) {
 
       await page.getByRole('button', { name: t.clear }).click()
 
-      expect(await rowNames(page)).toHaveLength(7)
+      expect(await rowNames(page)).toHaveLength(8)
       await expect(page.getByRole('textbox', { name: t.filterByName })).toBeFocused()
       await expect(page.getByRole('textbox', { name: t.filterByName })).toHaveValue('')
     })

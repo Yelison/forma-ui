@@ -21,6 +21,10 @@
 // Dialog, Tabs) and the package as one bundled file: 7192 B for every export (7290 B with `iconNames`), 2910 B for Button alone, 225 B for Badge
 // alone and 1551 B for styles.css; Tabs alone is 661 B. Button alone is not small because Icon looks its path up in one
 // object that holds every icon, so the whole table travels with any component that draws an icon.
+//
+// Radio, on 2026-10-10: 7.44 kB for every export, 0.31 kB for Radio alone and 1.80 kB for styles.css, which was 1.55 kB.
+// The stylesheet is the one that grew (Radio and the choice rules it shares with the checkbox and the switch to come) and
+// its budget had no room left for it, so it goes from 1800 to 2200 B.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -67,7 +71,7 @@ const budgets: Budget[] = [
     name: 'dist/styles.css',
     source: `import '@yelison/forma-ui/styles.css'`,
     extension: '.css',
-    limit: 1800,
+    limit: 2200,
   },
 ]
 

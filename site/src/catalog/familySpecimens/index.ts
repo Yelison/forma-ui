@@ -5,6 +5,7 @@ import { ButtonSpecimens } from './ButtonSpecimens'
 import { DialogSpecimens } from './DialogSpecimens'
 import { IconSpecimens } from './IconSpecimens'
 import { InputSpecimens } from './InputSpecimens'
+import { RadioSpecimens } from './RadioSpecimens'
 import { TabsSpecimens } from './TabsSpecimens'
 import { TooltipSpecimens } from './TooltipSpecimens'
 
@@ -12,6 +13,7 @@ import { TooltipSpecimens } from './TooltipSpecimens'
 export const familySpecimens: Record<FamilyId, ComponentType> = {
   button: ButtonSpecimens,
   input: InputSpecimens,
+  radio: RadioSpecimens,
   badge: BadgeSpecimens,
   icon: IconSpecimens,
   tabs: TabsSpecimens,
