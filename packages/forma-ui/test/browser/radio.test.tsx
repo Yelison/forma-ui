@@ -299,6 +299,22 @@ describe('Radio target size', () => {
     expect(label('team').getBoundingClientRect().height).toBe(36)
   })
 
+  it.each(themes)('keeps a minimum height of 36px in the %s theme', async (theme) => {
+    root.setAttribute('data-theme', theme)
+    await page.viewport(1024, 768)
+    const { label } = mountGroup()
+
+    expect(getComputedStyle(label('team')).minHeight).toBe('36px')
+  })
+
+  // A literal that equals the token's current value would pass the comparison above, so the spec changes the token.
+  it('takes its minimum height from --choice-min-height', async () => {
+    await page.viewport(1024, 768)
+    const { label } = mountGroup({ style: { '--choice-min-height': '52px' } as CSSProperties })
+
+    expect(label('team').getBoundingClientRect().height).toBe(52)
+  })
+
   // The target is a token that a consumer can raise: a literal 44 would pass until someone does.
   it.each(['44px', '52px'])('is %s tall below 768px when --touch-target says so', async (size) => {
     await page.viewport(390, 844)

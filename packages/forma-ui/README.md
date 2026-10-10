@@ -136,6 +136,8 @@ function ThemeToggle() {
 | `Tabs`                  | Panels that share one place, one visible at a time.     | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.            |
 | `Radio`                 | One option of a group that takes a single choice.       | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                           |
 
+`Tabs` starts the arrows from the selected tab, not the focused one. With a controlled `value` whose parent refuses a tab, the focus still moves to it, but the next arrow press goes on from the selected tab.
+
 Also exported: `buttonClassName` (the classes of a button, for a link that must look like one), `useScrollLock` (the
 scroll lock of the dialog, for an overlay of your own), `useFormaStrings` and `defaultStrings` (the text the components show
 on their own), `contrastRatio` and `relativeLuminance` (WCAG contrast, over `#rgb` and `#rrggbb` colors) and every props

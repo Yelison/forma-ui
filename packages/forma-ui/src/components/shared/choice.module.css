@@ -4,15 +4,15 @@
  * radio matches `:indeterminate` while nothing in its group is checked.
  *
  * The checked and disabled states are wrapped in `:where()`, which adds no specificity: a consumer's own class wins over
- * them as long as its stylesheet comes after the library's, as the README says. No token holds the 36px of the row or
- * the opacity of a disabled choice, so they stay as Resolve had them.
+ * them as long as its stylesheet comes after the library's, as the README says. No token holds the opacity of a
+ * disabled choice, so it stays as Resolve had it.
  */
 .choice {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: var(--space-12);
-  min-height: 36px;
+  min-height: var(--choice-min-height);
   font: var(--font-body);
   color: var(--color-ink);
   cursor: pointer;

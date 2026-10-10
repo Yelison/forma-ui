@@ -120,6 +120,24 @@ describe('Tabs keyboard', () => {
     expect([tabStyle.outlineStyle, tabStyle.outlineWidth, tabStyle.outlineOffset]).toEqual(['solid', '2px', '2px'])
     expect(tabStyle.outlineColor).toBe(resolved('outline-color', '--color-focus'))
   })
+
+  // The arrows start from the selected tab, not from the focused one: a parent that refuses the change leaves them
+  // where they were, so a second press goes to the same neighbour instead of the next tab along.
+  it('starts every arrow press from the selected tab when a controlled parent refuses the change', async () => {
+    const container = mount(<Tabs label="Ticket view" items={items} value="conversation" onChange={() => {}} />)
+    const tab = (name: string) =>
+      [...container.querySelectorAll<HTMLElement>('[role="tab"]')].find((node) => node.textContent === name)
+
+    await pressTab()
+    expect(document.activeElement).toBe(tab('Conversation'))
+
+    await userEvent.keyboard('{ArrowRight}')
+    expect(document.activeElement).toBe(tab('Activity'))
+
+    await userEvent.keyboard('{ArrowRight}')
+    expect(document.activeElement).toBe(tab('Activity'))
+    expect(tab('Conversation')?.getAttribute('aria-selected')).toBe('true')
+  })
 })
 
 describe('Tabs appearance', () => {
@@ -146,6 +164,25 @@ describe('Tabs appearance', () => {
 
     await userEvent.hover(tab('Activity'))
     expect(getComputedStyle(tab('Activity')).backgroundColor).toBe(resolved('background-color', '--color-blue-bg'))
+  })
+
+  it.each(themes)('keeps the focus ring of the panel 4px away in the %s theme', async (theme) => {
+    root.setAttribute('data-theme', theme)
+    const { container } = mountTabs()
+
+    await pressTab()
+    await pressTab()
+    expect(document.activeElement).toBe(container.querySelector('[role="tabpanel"]:not([hidden])'))
+    expect(getComputedStyle(document.activeElement as Element).outlineOffset).toBe('4px')
+  })
+
+  it('takes the offset of the panel focus ring from --tabs-panel-focus-offset', async () => {
+    const { container } = mountTabs(undefined, { '--tabs-panel-focus-offset': '9px' } as CSSProperties)
+
+    await pressTab()
+    await pressTab()
+    expect(document.activeElement).toBe(container.querySelector('[role="tabpanel"]:not([hidden])'))
+    expect(getComputedStyle(document.activeElement as Element).outlineOffset).toBe('9px')
   })
 
   // A literal that equals the token's current value would pass a plain comparison, so the spec changes the token.

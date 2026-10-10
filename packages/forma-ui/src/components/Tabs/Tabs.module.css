@@ -44,5 +44,5 @@
 
 .panel:focus-visible {
   outline: var(--focus-ring);
-  outline-offset: 4px;
+  outline-offset: var(--tabs-panel-focus-offset);
 }
