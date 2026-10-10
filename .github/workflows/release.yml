@@ -141,7 +141,10 @@ jobs:
       # Contents, types, exports, one copy of React and the size budget, on a tarball that `pack:check` packs from this same
       # dist/. `npm pack` is reproducible byte for byte, so the tarball packed below is the one that was checked.
       - run: npm run pack:check -w @yelison/forma-ui
-      - run: npm pack -w @yelison/forma-ui --pack-destination "$RUNNER_TEMP/tarball"
+      # `npm pack --pack-destination` does not create the folder.
+      - run: |
+          mkdir -p "$RUNNER_TEMP/tarball"
+          npm pack -w @yelison/forma-ui --pack-destination "$RUNNER_TEMP/tarball"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: tarball
