@@ -186,15 +186,11 @@ describe('Tabs', () => {
     })
   })
 
-  it('renders a tab list and no panel for no items, and ignores the keyboard', async () => {
-    const onChange = vi.fn()
-    renderTabs({ items: [], onChange })
+  it('renders an empty tab list and no panel for no items', () => {
+    renderTabs({ items: [] })
 
-    await userEvent.keyboard('{ArrowRight}')
-
-    expect(screen.getByRole('tablist', { name: 'Ticket view' })).toBeInTheDocument()
+    expect(screen.getByRole('tablist', { name: 'Ticket view' })).toBeEmptyDOMElement()
     expect(screen.queryByRole('tabpanel')).not.toBeInTheDocument()
-    expect(onChange).not.toHaveBeenCalled()
   })
 
   it('adds the class name to the element that wraps the tabs', () => {

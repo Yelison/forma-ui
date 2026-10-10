@@ -25,10 +25,11 @@ afterEach(() => {
   root.removeAttribute('data-theme')
 })
 
-// The page of a consumer paints its own background: the tab list has none, so its tabs sit on this one.
+// The page of a consumer paints its own background: the tab list has none, so its tabs sit on this one. The transition
+// is switched off: a spec that reads a color or runs axe right after a tab is selected would catch it halfway.
 function mountTabs(defaultValue?: string, style?: CSSProperties) {
   const container = mount(
-    <div style={{ background: 'var(--color-bg)', padding: 16, ...style }}>
+    <div style={{ background: 'var(--color-bg)', padding: 16, '--duration-fast': '0s', ...style } as CSSProperties}>
       <Tabs label="Ticket view" items={items} defaultValue={defaultValue} />
     </div>,
   )
@@ -129,8 +130,7 @@ describe('Tabs appearance', () => {
   )
 
   it('shades an unselected tab on hover and keeps the selected one as it is', async () => {
-    // The transition would let the spec read a color halfway between the two.
-    const { tab } = mountTabs('activity', { '--duration-fast': '0s' } as CSSProperties)
+    const { tab } = mountTabs('activity')
 
     await userEvent.hover(tab('Files'))
     expect(getComputedStyle(tab('Files')).backgroundColor).toBe(resolved('background-color', '--color-surface-hover'))
