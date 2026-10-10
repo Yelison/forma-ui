@@ -157,6 +157,23 @@ describe('Tabs', () => {
       expect(screen.getByRole('tab', { name: 'Activity' })).toHaveAttribute('aria-selected', 'true')
     })
 
+    it('moves the focus to a tab that the parent refuses, and keeps the selection where it was', async () => {
+      function OnlyFirstTwo() {
+        const [value, setValue] = useState('conversation')
+        return (
+          <Tabs label="Ticket view" items={items} value={value} onChange={(id) => id !== 'activity' && setValue(id)} />
+        )
+      }
+      render(<OnlyFirstTwo />)
+      await userEvent.tab()
+
+      await userEvent.keyboard('{ArrowRight}')
+
+      expect(screen.getByRole('tab', { name: 'Activity' })).toHaveFocus()
+      expect(screen.getByRole('tab', { name: 'Conversation' })).toHaveAttribute('aria-selected', 'true')
+      expect(screen.getByRole('tabpanel')).toHaveTextContent('Messages')
+    })
+
     it('ignores defaultValue', () => {
       renderTabs({ value: 'files', defaultValue: 'activity' })
 

@@ -1,5 +1,5 @@
 {
-  "docs.tabs.a11y.activation": "La selección sigue al foco: moverse a una pestaña la selecciona y llama a <code>onChange</code>, así que el panel siempre corresponde a la pestaña que tiene el foco. Un clic funciona igual.",
+  "docs.tabs.a11y.activation": "La selección sigue al foco: moverse a una pestaña la selecciona y llama a <code>onChange</code>, así que el panel corresponde a la pestaña que tiene el foco. Un clic funciona igual. La excepción es un padre controlado que rechaza el cambio: el foco va a la pestaña y la selección se queda donde estaba.",
   "docs.tabs.a11y.focus": "El foco del teclado se dibuja con el token del anillo de foco, en la pestaña y en el panel. Un clic no lo dibuja.",
   "docs.tabs.a11y.keyboard": "Las flechas se mueven entre las pestañas y dan la vuelta en los extremos, y Home y End van a la primera y a la última. Solo la pestaña seleccionada está en el orden de tabulación, así que Tab sale de la lista en vez de recorrer cada pestaña.",
   "docs.tabs.a11y.name": "<code>label</code> da nombre a la lista de pestañas, y un lector de pantalla lo lee cuando el foco entra. Di entre qué cambian las pestañas, no «Pestañas».",

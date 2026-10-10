@@ -10,7 +10,7 @@
 }
 
 .tab {
-  /* The library ships no reset, so the box model is set here: the painted height is `--button-height`. */
+  /* The library ships no reset, so the box model is set here: a border or a vertical padding that a consumer adds stays inside `--button-height`. */
   box-sizing: border-box;
   min-height: var(--button-height);
   padding: 0 var(--space-12);

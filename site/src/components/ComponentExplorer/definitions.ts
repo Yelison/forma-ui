@@ -74,8 +74,15 @@ export type Specimen =
   | { component: 'Badge'; props: BadgeSpecimenProps; children: string }
   | { component: 'Tabs'; props: TabsSpecimenProps }
 
+/**
+ * How the stage lays the specimen out: `natural` is as wide as its content, and `fitted` is as wide as a comfortable
+ * measure, up to the card, for a component that fills the width it is given (a field, a list of tabs and its panel).
+ */
+export type SpecimenLayout = 'natural' | 'fitted'
+
 export interface ComponentDefinition {
   readonly name: ComponentName
+  readonly layout: SpecimenLayout
   readonly controls: readonly Control[]
   readonly specimen: (values: Values, translate: Translate) => Specimen
 }
@@ -101,6 +108,7 @@ function pick<T extends string>(allowed: readonly [T, ...T[]], value: string | u
 
 const button: ComponentDefinition = {
   name: 'Button',
+  layout: 'natural',
   controls: [
     { id: 'variant', label: 'explorer.control.variant', options: options(buttonVariants) },
     // Button has one height (`--button-height`). 32, 40 and 48 are a proposal that no consumer has adopted.
@@ -129,6 +137,7 @@ const button: ComponentDefinition = {
 
 const input: ComponentDefinition = {
   name: 'Input',
+  layout: 'fitted',
   controls: [{ id: 'state', label: 'explorer.control.state', options: states(inputStates) }],
   specimen(values, translate) {
     const state = pick(inputStates, values.state)
@@ -148,6 +157,7 @@ const input: ComponentDefinition = {
 
 const badge: ComponentDefinition = {
   name: 'Badge',
+  layout: 'natural',
   controls: [{ id: 'tone', label: 'explorer.control.tone', options: options(badgeTones) }],
   specimen(values, translate) {
     const tone = pick(badgeTones, values.tone)
@@ -158,6 +168,7 @@ const badge: ComponentDefinition = {
 
 const tabs: ComponentDefinition = {
   name: 'Tabs',
+  layout: 'fitted',
   // The only prop that changes what Tabs shows when it is not controlled. `value` is left out: a controlled Tabs needs a
   // parent that holds the state, and the explorer prints one component.
   controls: [

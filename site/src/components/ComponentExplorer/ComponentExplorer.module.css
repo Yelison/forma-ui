@@ -87,7 +87,7 @@
   max-width: 100%;
 }
 
-/* A field, or a list of tabs with its panel, is as wide as a comfortable measure, up to the card. */
+/* The `fitted` layout of a definition: as wide as a comfortable measure, up to the card. */
 .fittedSpecimen {
   width: min(100%, 20rem);
 }

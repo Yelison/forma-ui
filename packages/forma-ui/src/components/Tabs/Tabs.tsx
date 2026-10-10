@@ -32,9 +32,10 @@ export interface TabsProps {
  * around, `Home` and `End` go to the first and the last, and only the selected tab is in the tab order: `Tab` leaves
  * the list for the panel.
  *
- * The activation is automatic: moving to a tab with the keyboard selects it and calls `onChange`, so the panel always
- * matches the focused tab. Use it when showing a panel is cheap; a panel that is slow to load is better served by a
- * control that waits for `Enter`.
+ * The activation is automatic: moving to a tab with the keyboard selects it and calls `onChange`, so the panel matches
+ * the focused tab. The exception is a controlled parent that refuses the change: the focus still goes to the tab, and
+ * the selection stays where it was. Use it when showing a panel is cheap; a panel that is slow to load is better served
+ * by a control that waits for `Enter`.
  *
  * It is controlled when `value` is set and uncontrolled otherwise. A `value` that matches no tab selects the first
  * one, so the list is never left without a selected tab.

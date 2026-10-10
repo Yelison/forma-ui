@@ -124,6 +124,19 @@ describe('ComponentExplorer', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Pestaña seleccionada: Actividad. Código actualizado.')
   })
 
+  it('lays out the specimens that fill their width as fitted, and the others as they are', async () => {
+    renderInSite(<ComponentExplorer />)
+    const stage = () => screen.getByRole('group', { name: /^Preview of / }).firstElementChild
+
+    expect(stage()).not.toHaveClass(/fitted/i)
+    await userEvent.click(screen.getByRole('radio', { name: 'Input' }))
+    expect(stage()).toHaveClass(/fitted/i)
+    await userEvent.click(screen.getByRole('radio', { name: 'Badge' }))
+    expect(stage()).not.toHaveClass(/fitted/i)
+    await userEvent.click(screen.getByRole('radio', { name: 'Tabs' }))
+    expect(stage()).toHaveClass(/fitted/i)
+  })
+
   it('keeps a read-only input apart from a disabled one', async () => {
     renderInSite(<ComponentExplorer />)
     await userEvent.click(screen.getByRole('radio', { name: 'Input' }))

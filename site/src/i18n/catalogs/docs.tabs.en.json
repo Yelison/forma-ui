@@ -1,5 +1,5 @@
 {
-  "docs.tabs.a11y.activation": "Selection follows the focus: moving to a tab selects it and calls <code>onChange</code>, so the panel always matches the tab that has the focus. A click works the same way.",
+  "docs.tabs.a11y.activation": "Selection follows the focus: moving to a tab selects it and calls <code>onChange</code>, so the panel matches the tab that has the focus. A click works the same way. The exception is a controlled parent that refuses the change: the focus goes to the tab, and the selection stays where it was.",
   "docs.tabs.a11y.focus": "Keyboard focus is drawn with the focus ring token, on the tab and on the panel. A click does not draw it.",
   "docs.tabs.a11y.keyboard": "The arrow keys move between the tabs and wrap around at the ends, and Home and End go to the first and the last. Only the selected tab is in the tab order, so Tab leaves the list instead of crossing every tab.",
   "docs.tabs.a11y.name": "<code>label</code> names the tab list, and a screen reader reads it when the focus enters. Say what the tabs switch between, not «Tabs».",

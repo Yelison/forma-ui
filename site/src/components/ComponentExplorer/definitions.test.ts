@@ -83,6 +83,15 @@ describe('the explorer components', () => {
     expect(propsOf('error')).toMatchObject({ error: 'Enter a valid email address', disabled: undefined })
   })
 
+  it('says how each specimen is laid out: the ones that fill their width are fitted', () => {
+    expect(componentDefinitions.map(({ name, layout }) => [name, layout])).toEqual([
+      ['Button', 'natural'],
+      ['Input', 'fitted'],
+      ['Badge', 'natural'],
+      ['Tabs', 'fitted'],
+    ])
+  })
+
   it('offers Tabs one control, the tab that starts selected, with the three tabs as options', () => {
     const tabs = componentDefinitions.find(({ name }) => name === 'Tabs')!
 
