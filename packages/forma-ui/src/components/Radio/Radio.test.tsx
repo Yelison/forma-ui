@@ -159,6 +159,13 @@ describe('Radio', () => {
       expect(input).toHaveAttribute('aria-describedby', 'hint')
     })
 
+    it('is a radio whatever type is passed, because it always sets its own', () => {
+      // @ts-expect-error: type is not a prop of Radio
+      render(<Radio name="plan" label="Team" type="checkbox" />)
+
+      expect(screen.getByRole('radio', { name: 'Team' })).toBeInTheDocument()
+    })
+
     it('takes no type and no children, because it is always a radio that renders its label', () => {
       expectTypeOf<RadioProps>().not.toHaveProperty('type')
       expectTypeOf<RadioProps>().not.toHaveProperty('children')

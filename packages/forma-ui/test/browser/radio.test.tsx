@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, onTestFinished } from 'vitest'
 import { page, userEvent } from 'vitest/browser'
 import { Radio, type RadioProps } from '../../src/components/Radio'
 import { expectNoAxeViolations } from '../axe'
@@ -185,6 +185,20 @@ describe('Radio focus ring', () => {
     expect(style.outlineColor).toBe(resolved('outline-color', '--color-focus'))
   })
 
+  it.each(themes)(
+    'paints the border of an option that is not selected in the focus color, in the %s theme',
+    async (theme) => {
+      root.setAttribute('data-theme', theme)
+      const { input } = mountGroup()
+
+      await pressTab()
+
+      expect(document.activeElement).toBe(input('solo'))
+      expect(getComputedStyle(input('solo')).borderTopColor).toBe(resolved('border-color', '--color-focus'))
+      expect(getComputedStyle(input('team')).borderTopColor).toBe(resolved('border-color', '--color-line'))
+    },
+  )
+
   it('is not drawn on an option that a click selects', async () => {
     const { input } = mountGroup()
 
@@ -245,10 +259,10 @@ describe('Radio painting', () => {
     const consumer = document.createElement('style')
     consumer.textContent = '.mine { opacity: 0.8 }'
     document.head.append(consumer)
+    onTestFinished(() => consumer.remove())
     const { label } = mountGroup({ disabled: ['business'], radio: { business: { className: 'mine' } } })
 
     expect(getComputedStyle(label('business')).opacity).toBe('0.8')
-    consumer.remove()
   })
 
   it('animates its colors by default and not under prefers-reduced-motion', async () => {

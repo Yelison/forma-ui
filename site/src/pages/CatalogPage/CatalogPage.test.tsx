@@ -105,7 +105,7 @@ describe('CatalogPage', () => {
       const groups = within(row('Radio')).getAllByRole('group', { name: 'Plan' })
       expect(groups).toHaveLength(3)
       const [empty, preselected, disabled] = groups.map((group) => within(group))
-      expect(empty!.getAllByRole('radio').filter((radio) => (radio as HTMLInputElement).checked)).toHaveLength(0)
+      expect(empty!.queryAllByRole('radio', { checked: true })).toEqual([])
       expect(preselected!.getByRole('radio', { name: 'Team' })).toBeChecked()
       expect(disabled!.getByRole('radio', { name: 'Business' })).toBeDisabled()
 

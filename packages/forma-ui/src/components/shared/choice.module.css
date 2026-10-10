@@ -53,8 +53,12 @@
   background: var(--color-brand);
 }
 
-/* The brand color is also the focus color in the light theme, so the border alone would not show the focus of a checked control. */
+/*
+ * The border takes the focus color, as the border of a text control does, and the ring is drawn on top of it: the brand
+ * color is also the focus color in the light theme, so the border alone would not show the focus of a checked control.
+ */
 .input:focus-visible {
+  border-color: var(--color-focus);
   outline: var(--focus-ring);
   outline-offset: 2px;
 }
