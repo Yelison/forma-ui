@@ -15,6 +15,13 @@ describe('explorerReducer', () => {
     expect(state.values).toEqual({ variant: 'danger', size: 'default', state: 'default' })
   })
 
+  it('starts Tabs with its first tab selected', () => {
+    expect(explorerReducer(initialExplorerState, { type: 'selectComponent', component: 'Tabs' })).toEqual({
+      component: 'Tabs',
+      values: { defaultValue: 'overview' },
+    })
+  })
+
   it('starts another component from its own defaults', () => {
     const changed = explorerReducer(initialExplorerState, { type: 'setControl', control: 'state', value: 'loading' })
     const state = explorerReducer(changed, { type: 'selectComponent', component: 'Input' })

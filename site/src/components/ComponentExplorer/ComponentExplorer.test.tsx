@@ -10,7 +10,7 @@ import { ComponentExplorer } from './ComponentExplorer'
 const codeOf = (component = 'Button') => screen.getByRole('figure', { name: `JSX · ${component}` })
 
 // What the glossary keeps in every language: the names of the components and the values of their props.
-const fixedTerms = ['Button', 'Input', 'Badge', 'primary', 'secondary', 'ghost', 'danger']
+const fixedTerms = ['Button', 'Input', 'Badge', 'Tabs', 'primary', 'secondary', 'ghost', 'danger']
 
 describe('ComponentExplorer', () => {
   it('opens on Button with the first variant, the real button and its code', () => {
@@ -84,6 +84,44 @@ describe('ComponentExplorer', () => {
     expect(screen.getAllByRole('combobox').map((control) => control.getAttribute('id'))).toHaveLength(1)
     expect(screen.getByRole('combobox', { name: 'Tone' })).toHaveValue('neutral')
     expect(codeOf('Badge')).toHaveTextContent('<Badge tone="neutral"> Draft </Badge>')
+  })
+
+  it('offers Tabs the tab that starts selected, and shows the same tab in the specimen and in the code', async () => {
+    renderInSite(<ComponentExplorer />)
+
+    await userEvent.click(screen.getByRole('radio', { name: 'Tabs' }))
+    expect(screen.getByRole('combobox', { name: 'Selected tab' })).toHaveValue('overview')
+    expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Overview')
+    expect(codeOf('Tabs')).toHaveTextContent('defaultValue="overview"')
+
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Selected tab' }), 'Files')
+
+    expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Files')
+    expect(screen.getByRole('tabpanel')).toHaveTextContent('The attached documents.')
+    expect(codeOf('Tabs')).toHaveTextContent('defaultValue="files"')
+  })
+
+  it('shows the tab that the code selects, not the one the visitor chose in the specimen before', async () => {
+    renderInSite(<ComponentExplorer />)
+    await userEvent.click(screen.getByRole('radio', { name: 'Tabs' }))
+    await userEvent.click(screen.getByRole('tab', { name: 'Activity' }))
+
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Selected tab' }), 'Files')
+    await userEvent.click(screen.getByRole('button', { name: 'Reset' }))
+
+    expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Overview')
+    expect(codeOf('Tabs')).toHaveTextContent('defaultValue="overview"')
+  })
+
+  it('writes the tabs and the code of Tabs in the language of the page', async () => {
+    renderInSite(<ComponentExplorer />, { locale: 'es' })
+
+    await userEvent.click(screen.getByRole('radio', { name: 'Tabs' }))
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Pestaña seleccionada' }), 'Actividad')
+
+    expect(screen.getByRole('tablist', { name: 'Secciones del proyecto' })).toBeInTheDocument()
+    expect(screen.getByRole('tab', { selected: true })).toHaveTextContent('Actividad')
+    expect(screen.getByRole('status')).toHaveTextContent('Pestaña seleccionada: Actividad. Código actualizado.')
   })
 
   it('keeps a read-only input apart from a disabled one', async () => {

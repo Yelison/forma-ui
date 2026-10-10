@@ -1,4 +1,4 @@
-import { Badge, Button, Input } from '@yelison/forma-ui'
+import { Badge, Button, Input, Tabs } from '@yelison/forma-ui'
 import type { Specimen } from './definitions'
 
 export interface SpecimenViewProps {
@@ -14,5 +14,7 @@ export function SpecimenView({ specimen }: SpecimenViewProps) {
       return <Input {...specimen.props} />
     case 'Badge':
       return <Badge {...specimen.props}>{specimen.children}</Badge>
+    case 'Tabs':
+      return <Tabs {...specimen.props} />
   }
 }

@@ -4,10 +4,10 @@ import type { MessageId } from '../../i18n'
 /** Looks a message up in the language of the page. The specimens take their text from here, never from literals. */
 export type Translate = (id: MessageId) => string
 
-export type ComponentName = 'Button' | 'Input' | 'Badge'
+export type ComponentName = 'Button' | 'Input' | 'Badge' | 'Tabs'
 
 /** What a control changes in the specimen. Each one is the name of a prop, or of the state a prop stands for. */
-export type ControlId = 'variant' | 'tone' | 'size' | 'state'
+export type ControlId = 'variant' | 'tone' | 'size' | 'state' | 'defaultValue'
 
 export interface ControlOption {
   readonly value: string
@@ -54,11 +54,25 @@ interface BadgeSpecimenProps {
   tone: BadgeTone
 }
 
+/** One tab as the explorer writes it: plain strings, because the JSX that it prints is made from them. */
+interface TabSpecimenItem {
+  id: string
+  label: string
+  content: string
+}
+
+interface TabsSpecimenProps {
+  label: string
+  defaultValue: string
+  items: TabSpecimenItem[]
+}
+
 /** What the explorer renders and prints: one value, so the specimen and its code cannot say different things. */
 export type Specimen =
   | { component: 'Button'; props: ButtonSpecimenProps; children: string }
   | { component: 'Input'; props: InputSpecimenProps }
   | { component: 'Badge'; props: BadgeSpecimenProps; children: string }
+  | { component: 'Tabs'; props: TabsSpecimenProps }
 
 export interface ComponentDefinition {
   readonly name: ComponentName
@@ -69,6 +83,7 @@ export interface ComponentDefinition {
 const buttonVariants = ['primary', 'secondary', 'ghost', 'danger'] as const satisfies readonly ButtonVariant[]
 const buttonStates = ['default', 'disabled', 'loading'] as const
 const inputStates = ['default', 'error', 'disabled', 'readOnly'] as const
+const tabIds = ['overview', 'activity', 'files'] as const
 const badgeTones = ['neutral', 'blue', 'green', 'amber', 'red'] as const satisfies readonly BadgeTone[]
 
 const options = (values: readonly string[]): readonly ControlOption[] => values.map((value) => ({ value }))
@@ -141,9 +156,41 @@ const badge: ComponentDefinition = {
   },
 }
 
-const definitions: Record<ComponentName, ComponentDefinition> = { Button: button, Input: input, Badge: badge }
+const tabs: ComponentDefinition = {
+  name: 'Tabs',
+  // The only prop that changes what Tabs shows when it is not controlled. `value` is left out: a controlled Tabs needs a
+  // parent that holds the state, and the explorer prints one component.
+  controls: [
+    {
+      id: 'defaultValue',
+      label: 'explorer.control.defaultValue',
+      options: tabIds.map((id) => ({ value: id, label: `explorer.specimen.tabs.${id}` })),
+    },
+  ],
+  specimen(values, translate) {
+    return {
+      component: 'Tabs',
+      props: {
+        label: translate('explorer.specimen.tabs.label'),
+        defaultValue: pick(tabIds, values.defaultValue),
+        items: tabIds.map((id) => ({
+          id,
+          label: translate(`explorer.specimen.tabs.${id}`),
+          content: translate(`explorer.specimen.tabs.${id}Content`),
+        })),
+      },
+    }
+  },
+}
 
-/** The components of the explorer, in the order of its selector. Tabs joins them when the library ships it. */
+const definitions: Record<ComponentName, ComponentDefinition> = {
+  Button: button,
+  Input: input,
+  Badge: badge,
+  Tabs: tabs,
+}
+
+/** The components of the explorer, in the order of its selector. */
 export const componentDefinitions: readonly ComponentDefinition[] = Object.values(definitions)
 
 export const definitionOf = (name: ComponentName): ComponentDefinition => definitions[name]

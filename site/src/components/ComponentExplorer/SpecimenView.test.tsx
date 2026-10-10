@@ -12,10 +12,21 @@ interface Written {
   /** The props of the opening tag: a string, or `true` for a bare one. */
   props: Record<string, string | true>
   children?: string
+  /** The `items={[…]}` of Tabs: a record on each line. */
+  items?: { id: string; label: string; content: string }[]
 }
 
 /** Reads back the JSX that the explorer prints, the way a reader of the page would. */
 function read(code: string): Written {
+  if (code.startsWith('<Tabs')) {
+    const props = Object.fromEntries(
+      [...code.matchAll(/^ {2}(\w+)="([^"]*)"$/gm)].map(([, name = '', value = '']) => [name, value]),
+    )
+    const items = [...code.matchAll(/\{ id: '([^']*)', label: '([^']*)', content: '([^']*)' \}/g)].map(
+      ([, id = '', label = '', content = '']) => ({ id, label, content }),
+    )
+    return { props, items }
+  }
   const match = /^<(\w+)((?:\s+\w+(?:="[^"]*")?)*)\s*(?:\/>|>\s*([^<]*?)\s*<\/\1>)$/.exec(code)
   if (!match) throw new Error(`Not the JSX the explorer prints:\n${code}`)
   const props = Object.fromEntries(
@@ -51,12 +62,21 @@ function observe(name: string, container: HTMLElement) {
       defaultValue: input.value || undefined,
     }
   }
+  if (name === 'Tabs') {
+    const tabs = screen.getAllByRole('tab')
+    return {
+      label: screen.getByRole('tablist').getAttribute('aria-label'),
+      labels: tabs.map((tab) => tab.textContent),
+      selected: tabs.find((tab) => tab.getAttribute('aria-selected') === 'true')?.textContent,
+      panel: screen.getByRole('tabpanel').textContent,
+    }
+  }
   const badge = container.firstElementChild
   return { tone: toneOf(badge?.className ?? ''), text: badge?.textContent }
 }
 
 /** What the written code promises, in the same terms. */
-function promise(name: string, { props, children }: Written) {
+function promise(name: string, { props, children, items = [] }: Written) {
   if (name === 'Button') {
     const { variant, disabled, loading, loadingLabel } = props
     return { variant, disabled, loading, text: loading ? loadingLabel : children }
@@ -64,6 +84,15 @@ function promise(name: string, { props, children }: Written) {
   if (name === 'Input') {
     const { label, error, disabled, readOnly, defaultValue } = props
     return { label, error, disabled, readOnly, defaultValue }
+  }
+  if (name === 'Tabs') {
+    const selected = items.find(({ id }) => id === props.defaultValue)
+    return {
+      label: props.label,
+      labels: items.map(({ label }) => label),
+      selected: selected?.label,
+      panel: selected?.content,
+    }
   }
   return { tone: props.tone, text: children }
 }

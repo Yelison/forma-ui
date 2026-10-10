@@ -93,7 +93,11 @@ export function ComponentExplorer() {
           aria-label={intl.formatMessage({ id: 'explorer.preview.label' }, { component: state.component })}
         >
           {/* Keyed by its code: a specimen that changes starts over, with the value its props give it. */}
-          <div className={specimen.component === 'Input' ? styles.fieldSpecimen : styles.specimen}>
+          <div
+            className={
+              specimen.component === 'Input' || specimen.component === 'Tabs' ? styles.fittedSpecimen : styles.specimen
+            }
+          >
             <SpecimenView key={code} specimen={specimen} />
           </div>
         </div>
