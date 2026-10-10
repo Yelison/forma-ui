@@ -1,6 +1,7 @@
 import { Icon } from '@yelison/forma-ui'
 import type { Ref } from 'react'
 import { useIntl } from 'react-intl'
+import { preloadSearchDialog } from '../LazySearchDialog'
 import { searchShortcut } from '../shortcut'
 import styles from './SearchTrigger.module.css'
 
@@ -40,6 +41,10 @@ export function SearchTrigger({
       aria-label={name}
       aria-haspopup="dialog"
       aria-keyshortcuts={keyShortcuts}
+      // The dialog is fetched on its first use. Hovering or focusing the button is the intent to use it, and the fetch
+      // then has the moment before the click.
+      onPointerEnter={preloadSearchDialog}
+      onFocus={preloadSearchDialog}
       onClick={onClick}
     >
       <Icon name="search" size={16} />

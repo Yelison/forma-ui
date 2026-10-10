@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { Link, useLocation } from 'react-router'
 import { productName } from '../../brand'
 import { sectionPaths } from '../../routes'
-import { SearchDialog } from '../../search/SearchDialog'
+import { LazySearchDialog } from '../../search/LazySearchDialog'
 import { SearchTrigger } from '../../search/SearchTrigger'
 import { useSearchShortcut } from '../../search/useSearchShortcut'
 import { Drawer } from '../Drawer'
@@ -16,13 +16,18 @@ import styles from './TopNav.module.css'
 /**
  * The top bar: the wordmark, Documentation (highlighted across its whole section), the search, the theme, GitHub, the
  * language and, on narrow screens, the menu, which holds the links and both choices, and the search again. It also owns
- * the search, which opens from either button and from Ctrl+K or ⌘+K.
+ * the search, which opens from either button and from Ctrl+K or ⌘+K and is fetched the first time it does.
  */
 export function TopNav() {
   const intl = useIntl()
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
+  // The page the search was opened on, or none. Going to another page closes it, which matters while its chunk is still
+  // on the way: it must not open over a page the person has left. This is state adjusted while rendering, not an effect,
+  // so there is no frame with the search open on the new page.
+  const [searchPath, setSearchPath] = useState<string | null>(null)
+  if (searchPath !== null && searchPath !== pathname) setSearchPath(null)
+  const searchOpen = searchPath !== null
   const wordmarkRef = useRef<HTMLAnchorElement>(null)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const searchButtonRef = useRef<HTMLButtonElement>(null)
@@ -31,13 +36,13 @@ export function TopNav() {
   // The menu closes first, so that the search is not stacked on top of it and a page that is chosen is not left behind it.
   function openSearch() {
     setMenuOpen(false)
-    setSearchOpen(true)
+    setSearchPath(pathname)
   }
   useSearchShortcut(openSearch)
 
   function handleSearchClose() {
     searchClosedByUser.current = true
-    setSearchOpen(false)
+    setSearchPath(null)
   }
 
   // The search gives focus back to what had it when it opened. When that was the page itself (the shortcut pressed with
@@ -98,7 +103,7 @@ export function TopNav() {
           <span aria-hidden="true">☰</span>
         </button>
         <Drawer open={menuOpen} onClose={handleDrawerClose} onSearch={openSearch} />
-        <SearchDialog open={searchOpen} onClose={handleSearchClose} />
+        <LazySearchDialog open={searchOpen} onClose={handleSearchClose} />
       </div>
     </header>
   )

@@ -1,4 +1,5 @@
 {
+  "app.dismiss": "Cerrar",
   "app.retry": "Reintentar",
   "app.skipToContent": "Saltar al contenido",
   "drawer.close": "Cerrar menú",
@@ -55,6 +56,8 @@
   "search.group.components": "Componentes",
   "search.group.pages": "Páginas",
   "search.label": "Buscar componentes y páginas",
+  "search.loadFailed": "No se pudo cargar la búsqueda.",
+  "search.loading": "Cargando la búsqueda…",
   "search.placeholder": "Buscar componentes y páginas…",
   "search.results": "Resultados",
   "search.title": "Buscar en la documentación",

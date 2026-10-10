@@ -2,13 +2,45 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderInSite } from '../../../test/render'
+import { preloadSearchDialog } from '../LazySearchDialog'
 import { SearchTrigger } from './SearchTrigger'
+
+vi.mock('../LazySearchDialog', () => ({ preloadSearchDialog: vi.fn() }))
 
 const platform = (value: string) => vi.spyOn(navigator, 'platform', 'get').mockReturnValue(value)
 
 afterEach(() => vi.restoreAllMocks())
 
 describe('SearchTrigger', () => {
+  describe('the fetch of the dialog', () => {
+    it('does not start until the person shows intent', () => {
+      vi.mocked(preloadSearchDialog).mockClear()
+
+      renderInSite(<SearchTrigger onClick={() => {}} />)
+
+      expect(preloadSearchDialog).not.toHaveBeenCalled()
+    })
+
+    it('starts when the pointer comes over the button', async () => {
+      vi.mocked(preloadSearchDialog).mockClear()
+      renderInSite(<SearchTrigger onClick={() => {}} />)
+
+      await userEvent.hover(screen.getByRole('button', { name: 'Search…' }))
+
+      expect(preloadSearchDialog).toHaveBeenCalled()
+    })
+
+    it('starts when the button takes focus, which is how a keyboard gets there', async () => {
+      vi.mocked(preloadSearchDialog).mockClear()
+      renderInSite(<SearchTrigger onClick={() => {}} />)
+
+      await userEvent.tab()
+
+      expect(screen.getByRole('button', { name: 'Search…' })).toHaveFocus()
+      expect(preloadSearchDialog).toHaveBeenCalled()
+    })
+  })
+
   it.each([
     ['en', 'Search…'],
     ['es', 'Buscar…'],
