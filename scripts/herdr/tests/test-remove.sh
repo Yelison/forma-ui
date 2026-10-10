@@ -87,6 +87,26 @@ out=$("$HERDR/remove-task.sh" --id br-f --delete-branch 2>&1); check "whitespace
 check "whitespace: the branch is kept" has_branch feat/br-f; check "whitespace: says why" says x 'merging it into main would change main'
 check "whitespace: a kept branch is announced once" test "$(grep -c 'feat/br-f kept' <<<"$out")" -eq 1
 
+echo "== --squashed-head: the head GitHub squash-merged is deleted, anything else is judged as before"
+# What GitHub's squash merge leaves in main: the whole series as one new patch, which `git cherry` does not match.
+land_squashed() { git -C "$T/repo" cherry-pick -n "$1~1" "$1" >/dev/null && GIT_COMMITTER_NAME=GitHub GIT_COMMITTER_EMAIL=noreply@github.com git -C "$T/repo" commit -q -m "feat: squashed"; }
+tip_of() { git -C "$T/repo" rev-parse "refs/heads/$1"; }
+new sq-a; commit_in sq-a a1.txt; commit_in sq-a a2.txt; land_squashed feat/sq-a; head=$(tip_of feat/sq-a)
+out=$("$HERDR/remove-task.sh" --id sq-a --delete-branch 2>&1); check "squash without the flag: git cherry keeps the series" has_branch feat/sq-a
+new sq-b; commit_in sq-b b1.txt; commit_in sq-b b2.txt; land_squashed feat/sq-b; head=$(tip_of feat/sq-b)
+out=$("$HERDR/remove-task.sh" --id sq-b --delete-branch --squashed-head "$head" 2>&1); rc=$?
+check "squashed head: rc 0" test $rc -eq 0; check "squashed head: retired" removed sq-b
+check "squashed head: the branch is deleted" bash -c "! git -C '$T/repo' rev-parse -q --verify refs/heads/feat/sq-b"; check "squashed head: says why" says x 'exactly the head GitHub squash-merged'
+new sq-c; commit_in sq-c c1.txt; commit_in sq-c c2.txt; land_squashed feat/sq-c; head=$(tip_of feat/sq-c); commit_in sq-c late.txt
+out=$("$HERDR/remove-task.sh" --id sq-c --delete-branch --squashed-head "$head" 2>&1); check "a commit past the squashed head: retired" removed sq-c
+check "a commit past the squashed head: the branch is kept" has_branch feat/sq-c; check "a commit past the squashed head: says so" says x 'feat/sq-c kept'
+new sq-d; out=$("$HERDR/remove-task.sh" --id sq-d --delete-branch --squashed-head not-a-sha 2>&1); check "squashed head: a malformed SHA is refused" test $? -ne 0
+out=$("$HERDR/remove-task.sh" --id sq-d --delete-branch --squashed-head main 2>&1); check "squashed head: a ref that is not a full SHA is refused, although git resolves it" test $? -ne 0
+check "squashed head: a malformed SHA removes nothing" bash -c "test -d '$T/root/worktrees/sq-d' && ! grep -q 'Branch' <<<'$out'"
+out=$("$HERDR/remove-task.sh" --id sq-d --squashed-head "$head" 2>&1); check "squashed head: without --delete-branch it is refused" test $? -ne 0; check "squashed head: says it needs --delete-branch" says x 'only makes sense with --delete-branch'
+out=$("$HERDR/remove-task.sh" --id sq-d --delete-branch --squashed-head 0000000000000000000000000000000000000000 2>&1); check "squashed head: an unknown commit is refused" test $? -ne 0; check "squashed head: an unknown commit removes nothing" test -d "$T/root/worktrees/sq-d"
+out=$("$HERDR/remove-task.sh" --id sq-d 2>&1); check "squashed head: the refused task is retired once the options are right" removed sq-d
+
 echo "== forced"
 new left-d; echo "abc123 forma-ui-left-d-postgres-1 (Up 2 minutes)" >"$T/state/containers"; echo forma-ui-left-d >"$T/state/compose-projects"; rm -f "$T/state/docker.log"
 out=$("$HERDR/remove-task.sh" --id left-d --force-leftovers 2>&1); rc=$?
