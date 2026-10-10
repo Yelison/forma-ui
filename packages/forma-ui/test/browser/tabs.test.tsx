@@ -129,7 +129,8 @@ describe('Tabs appearance', () => {
   )
 
   it('shades an unselected tab on hover and keeps the selected one as it is', async () => {
-    const { tab } = mountTabs('activity')
+    // The transition would let the spec read a color halfway between the two.
+    const { tab } = mountTabs('activity', { '--duration-fast': '0s' } as CSSProperties)
 
     await userEvent.hover(tab('Files'))
     expect(getComputedStyle(tab('Files')).backgroundColor).toBe(resolved('background-color', '--color-surface-hover'))

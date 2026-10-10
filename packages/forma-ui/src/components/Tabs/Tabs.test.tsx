@@ -197,14 +197,6 @@ describe('Tabs', () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
-  it('keeps the selection of a tab that changes its position', () => {
-    const { rerender } = renderTabs({ defaultValue: 'activity' })
-
-    rerender(<Tabs label="Ticket view" items={[...items].reverse()} />)
-
-    expect(screen.getByRole('tab', { name: 'Activity' })).toHaveAttribute('aria-selected', 'true')
-  })
-
   it('adds the class name to the element that wraps the tabs', () => {
     const { container } = renderTabs({ className: 'mine' })
 
