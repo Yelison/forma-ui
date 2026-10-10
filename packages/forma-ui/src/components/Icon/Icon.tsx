@@ -1,6 +1,7 @@
 import type { SVGProps } from 'react'
 import { iconPaths, type IconName } from './paths.js'
 
+export { iconNames } from './paths.js'
 export type { IconName }
 
 /** The props of `Icon`. Anything else is passed to the `<svg>` element and wins over the defaults below. */

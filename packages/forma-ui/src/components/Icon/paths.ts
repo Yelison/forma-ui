@@ -83,3 +83,30 @@ export const iconPaths = {
 } as const
 
 export type IconName = keyof typeof iconPaths
+
+/** Every icon name, in the order of the table above. */
+export const iconNames: readonly IconName[] = [
+  'arrow',
+  'attach',
+  'bell',
+  'book',
+  'check',
+  'chevron',
+  'clients',
+  'collapse',
+  'expand',
+  'file',
+  'home',
+  'lock',
+  'menu',
+  'moon',
+  'more',
+  'plus',
+  'report',
+  'search',
+  'send',
+  'settings',
+  'sun',
+  'team',
+  'ticket',
+]
