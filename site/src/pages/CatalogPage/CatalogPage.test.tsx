@@ -18,8 +18,8 @@ describe('CatalogPage', () => {
     renderCatalog()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument()
-    expect(rowNames()).toEqual(['Button', 'Input', 'Badge', 'Icon', 'Tooltip', 'Dialog'])
-    for (const planned of ['Checkbox', 'Switch', 'Tabs', 'NavItem']) {
+    expect(rowNames()).toEqual(['Button', 'Input', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
+    for (const planned of ['Checkbox', 'Switch', 'NavItem']) {
       expect(screen.queryByRole('heading', { name: planned })).not.toBeInTheDocument()
     }
   })
@@ -84,6 +84,21 @@ describe('CatalogPage', () => {
       expect(input.getByRole('textbox', { description: 'Enter your full name.' })).toBeInvalid()
     })
 
+    it('show Tabs with three panels, once with the first tab selected and once with the second', async () => {
+      renderCatalog()
+
+      const tabs = within(row('Tabs'))
+      const lists = tabs.getAllByRole('tablist', { name: 'Project sections' })
+      expect(lists).toHaveLength(2)
+      const [first, second] = lists.map((list) => within(list.parentElement!))
+      expect(first!.getByRole('tab', { selected: true })).toHaveTextContent('Overview')
+      expect(second!.getByRole('tab', { selected: true })).toHaveTextContent('Activity')
+
+      await userEvent.click(first!.getByRole('tab', { name: 'Files' }))
+      expect(first!.getByRole('tabpanel')).toHaveTextContent('The attached documents.')
+      expect(second!.getByRole('tabpanel')).toHaveTextContent('The latest changes.')
+    })
+
     it('open a Dialog from its button, and close it with its own button', async () => {
       renderCatalog()
 
@@ -108,7 +123,7 @@ describe('CatalogPage', () => {
 
       // The names of the components, and the props and values that a label quotes, are code and are never translated.
       const code = /^(variant|tone|icon)="[\w-]+"$|^(IconButton|search|plus|check|arrow|bell|settings|menu|home)$/
-      const componentNames = ['Button', 'Input', 'Badge', 'Icon', 'Tooltip', 'Dialog']
+      const componentNames = ['Button', 'Input', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog']
       expect(untranslatedText(container, componentNames).filter((text) => !code.test(text))).toEqual([])
     })
   })
@@ -118,7 +133,7 @@ describe('CatalogPage', () => {
       renderCatalog()
 
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 6 components$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 7 components$/)
     })
 
     it('keep only the families of a category, and announce the new count', async () => {
@@ -128,6 +143,18 @@ describe('CatalogPage', () => {
 
       expect(rowNames()).toEqual(['Tooltip', 'Dialog'])
       expect(screen.getByRole('status')).toHaveTextContent(/^Showing 2 components$/)
+    })
+
+    it('keep only Tabs under Navigation, which the design has between Forms and Feedback', async () => {
+      renderCatalog()
+
+      await userEvent.click(screen.getByRole('radio', { name: 'Navigation' }))
+
+      expect(rowNames()).toEqual(['Tabs'])
+      expect(within(row('Tabs')).getByRole('link', { name: /View the Tabs reference/ })).toHaveAttribute(
+        'href',
+        '/docs/components/tabs/',
+      )
     })
 
     it('can be operated from the keyboard, with the arrows moving through the categories', async () => {
@@ -160,7 +187,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
 
-      expect(rowNames()).toHaveLength(6)
+      expect(rowNames()).toHaveLength(7)
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveValue('')
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveFocus()
@@ -168,7 +195,7 @@ describe('CatalogPage', () => {
 
     it('count in the language of the page', async () => {
       renderCatalog({ locale: 'es' })
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 6 componentes$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 7 componentes$/)
 
       await userEvent.click(screen.getByRole('radio', { name: 'Acciones' }))
 

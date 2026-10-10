@@ -2,9 +2,9 @@ import type { MessageId } from '../i18n'
 import { componentPages, sectionPaths } from '../routes'
 
 /** What a family does for the person using the interface. Filters group the catalog by it. */
-export type CatalogCategory = 'actions' | 'forms' | 'display' | 'feedback'
+export type CatalogCategory = 'actions' | 'forms' | 'navigation' | 'display' | 'feedback'
 
-export type FamilyId = 'button' | 'input' | 'badge' | 'icon' | 'tooltip' | 'dialog'
+export type FamilyId = 'button' | 'input' | 'badge' | 'icon' | 'tabs' | 'tooltip' | 'dialog'
 
 /** A reference page that a row links to: the component it documents (never translated) and where it is. */
 export interface CatalogReference {
@@ -27,10 +27,11 @@ export interface CatalogFamily {
   readonly references?: readonly CatalogReference[]
 }
 
-/** Categories in the order of the filter. «Navigation» is left out until NavItem and Tabs are in the library. */
+/** Categories in the order of the filter, which is the one of the design: Navigation sits between Forms and Feedback. */
 export const catalogCategories = [
   'actions',
   'forms',
+  'navigation',
   'display',
   'feedback',
 ] as const satisfies readonly CatalogCategory[]
@@ -42,7 +43,7 @@ const reference = (slug: (typeof componentPages)[number]['slug']): CatalogRefere
 
 /**
  * The families of the v0.1 library, in reading order. Button carries IconButton, which is the same family drawn
- * without text. Checkbox, Switch, Tabs and NavItem are in the design but not in the library, so they have no row.
+ * without text. Checkbox, Switch and NavItem are in the design but not in the library, so they have no row.
  */
 export const catalogFamilies: readonly CatalogFamily[] = [
   {
@@ -67,6 +68,13 @@ export const catalogFamilies: readonly CatalogFamily[] = [
     references: [reference('badge')],
   },
   { id: 'icon', name: 'Icon', category: 'display', descriptionId: 'catalog.family.icon.description' },
+  {
+    id: 'tabs',
+    name: 'Tabs',
+    category: 'navigation',
+    descriptionId: 'catalog.family.tabs.description',
+    references: [reference('tabs')],
+  },
   {
     id: 'tooltip',
     name: 'Tooltip',
