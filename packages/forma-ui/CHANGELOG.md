@@ -1,5 +1,18 @@
 # @yelison/forma-ui
 
+## 0.2.0
+
+### Minor Changes
+
+- 3caef97: Add `Radio`, ported from Resolve with the same props (`label` and every native `input` attribute except `type` and `children`; `className` goes to the label): a native radio inside its label, to be grouped by the same `name` in a `fieldset` with a `legend`.
+- 417c9c2: Add `Tabs`, ported from Resolve with the same props (`label`, `items`, `value`, `defaultValue`, `onChange`, `className`): the ARIA tabs pattern with arrow keys, `Home` and `End`, and a panel for each tab.
+- d1fa3ea: Export `iconNames`, a read-only list of every `IconName` in the order of the icon table, generated with it so that the two cannot drift apart. It replaces the list of names an application kept by hand.
+
+### Documentation
+
+- The README says where to import `styles.css`: bundlers order CSS by chunk, so import it first in the module that loads your components, not only from your entry stylesheet (#55).
+- The README says how to allow the `themeScript` first-paint script under a Content Security Policy, and that a change to its output ships as at least a minor version (#58).
+
 ## 0.1.0
 
 ### Minor Changes
