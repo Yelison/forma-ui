@@ -369,7 +369,9 @@ describe('Dialog styles', () => {
   ])('starts its entrance at $matrix, from --dialog-enter-offset', ({ offset, matrix }) => {
     if (offset) {
       root.style.setProperty('--dialog-enter-offset', offset)
-      onTestFinished(() => root.style.removeProperty('--dialog-enter-offset'))
+      onTestFinished(() => {
+        root.style.removeProperty('--dialog-enter-offset')
+      })
     }
     mount(<Dialog open onClose={() => {}} title="Settings" />)
     const modal = dialog('Settings').element()

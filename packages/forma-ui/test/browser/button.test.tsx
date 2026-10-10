@@ -408,7 +408,9 @@ describe('IconButton icons', () => {
 
     // A literal that equals the token's current value would pass the check above, so the spec changes the token.
     root.style.setProperty('--icon-button-glyph-size', '30px')
-    onTestFinished(() => root.style.removeProperty('--icon-button-glyph-size'))
+    onTestFinished(() => {
+      root.style.removeProperty('--icon-button-glyph-size')
+    })
     expect(drawings.map((drawing) => getComputedStyle(drawing).width)).toEqual(['30px', '30px'])
   })
 

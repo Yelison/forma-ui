@@ -36,9 +36,9 @@ const APP_LAYOUT = [
 const D12_FONT_FAMILY = "'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif"
 const D10_NEW_TOKENS: Record<string, string> = {
   '--badge-min-height': '28px',
-  '--spinner-size': '16px',
-  '--icon-button-glyph-size': '20px',
   '--choice-min-height': '36px',
+  '--icon-button-glyph-size': '20px',
+  '--spinner-size': '16px',
   '--tabs-panel-focus-offset': '4px',
   '--dialog-enter-offset': '8px',
   '--tooltip-max-width': '240px',
