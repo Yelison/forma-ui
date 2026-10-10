@@ -9,7 +9,7 @@ SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)
 
 usage() {
   cat <<'USAGE'
-Usage: scripts/herdr/remove-task.sh --id ID [--delete-branch] [--volumes] [--force-leftovers]
+Usage: scripts/herdr/remove-task.sh --id ID [--delete-branch [--squashed-head SHA]] [--volumes] [--force-leftovers]
 
   --id ID            Task to retire
   --delete-branch    Also delete the branch when everything on it is already in main (`git cherry main BRANCH`
@@ -17,17 +17,23 @@ Usage: scripts/herdr/remove-task.sh --id ID [--delete-branch] [--volumes] [--for
                      with a review's older review/<id>-<sha7> branches. A branch is kept, with a note, when it has a
                      `+` commit or merge commits of its own, when `git cherry` fails, when merging it would change
                      main or when it is checked out elsewhere
+  --squashed-head SHA
+                     With --delete-branch: GitHub squash-merged exactly SHA, so a task branch that still points at
+                     SHA is deleted although `git cherry` cannot see it as merged (a squash is one new patch). Any
+                     other tip, a commit past SHA included, follows the rule above. ship.sh passes it once it has
+                     confirmed the merge
   --volumes          Also remove the task's Docker volumes; does nothing unless Compose is on (HERDR_COMPOSE=1)
   --force-leftovers  Go on although processes still listen on the slot's ports or containers of the task's Compose
                      project exist (the script lists them, and never kills anything itself)
 USAGE
 }
 
-ID= DELETE_BRANCH=0 VOLUMES=0 FORCE_LEFTOVERS=0
+ID= DELETE_BRANCH=0 SQUASHED_HEAD= VOLUMES=0 FORCE_LEFTOVERS=0
 while [ $# -gt 0 ]; do
   case $1 in
     --id) need_arg "$1" $#; ID=${2:-}; shift 2 ;;
     --delete-branch) DELETE_BRANCH=1; shift ;;
+    --squashed-head) need_arg "$1" $#; SQUASHED_HEAD=${2:-}; shift 2 ;;
     --volumes) VOLUMES=1; shift ;;
     --force-leftovers) FORCE_LEFTOVERS=1; shift ;;
     -h | --help) usage; exit 0 ;;
@@ -108,6 +114,19 @@ delete_if_in_main() {
   log "Branch $branch deleted: its content is in main."
 }
 
+# A branch that still points exactly at the head GitHub squash-merged has nothing that is not in main, whatever `git cherry`
+# says about a series that became one patch. The tip is read here, right before the deletion, not taken from an earlier
+# read: a commit made after the merge makes it differ, and then the branch is judged by delete_if_in_main.
+delete_if_squashed() {
+  local branch=$1
+  [ -n "$SQUASHED_HEAD" ] && [ "$(git -C "$TASK_REPO" rev-parse --verify --quiet "refs/heads/$branch" || true)" = "$SQUASHED_HEAD" ] || return 1
+  if ! git -C "$TASK_REPO" branch -q -D "$branch"; then
+    log "warning: could not delete $branch (is it checked out in another worktree?); the branch is kept"
+    return 1
+  fi
+  log "Branch $branch deleted: it is exactly the head GitHub squash-merged ($SQUASHED_HEAD)."
+}
+
 # What a kept task branch leaves behind, said only when it is kept. How many commits it holds beyond main is
 # "unknown" when git cannot tell (no main), never 0.
 note_kept_branch() {
@@ -124,7 +143,12 @@ note_kept_branch() {
 require_herdr
 need ss
 [ -n "$ID" ] || { usage >&2; die "--id is required"; }
+[ -z "$SQUASHED_HEAD" ] || [ "$DELETE_BRANCH" = 1 ] || die "--squashed-head only makes sense with --delete-branch"
 load_task "$ID"
+if [ -n "$SQUASHED_HEAD" ]; then
+  [[ $SQUASHED_HEAD =~ ^[0-9a-f]{40}$ ]] || die "--squashed-head must be a full commit SHA: $SQUASHED_HEAD"
+  git -C "$TASK_REPO" cat-file -e "$SQUASHED_HEAD^{commit}" 2>/dev/null || die "--squashed-head $SQUASHED_HEAD is not a commit of this repository (nothing was removed)"
+fi
 [ -z "$TASK_REMOVED_AT" ] || die "task '$ID' was already removed on $TASK_REMOVED_AT"
 
 if [ -d "$TASK_WORKTREE" ]; then
@@ -191,7 +215,7 @@ if git -C "$TASK_REPO" worktree list --porcelain | grep -Fqx "worktree $TASK_WOR
 fi
 
 if [ "$DELETE_BRANCH" = 1 ]; then
-  delete_if_in_main "$TASK_BRANCH" || note_kept_branch "$TASK_BRANCH"
+  delete_if_squashed "$TASK_BRANCH" || delete_if_in_main "$TASK_BRANCH" || note_kept_branch "$TASK_BRANCH"
   # A review moves to a new branch (review/<id>-<sha7>, as new-review.sh names it) when the task is rebased: the older
   # ones go with it. Exactly that shape: review/<id>-x-<sha7> belongs to the task <id>-x.
   review_of=$(jq -r '.review.of // empty' "$(task_json "$ID")")
