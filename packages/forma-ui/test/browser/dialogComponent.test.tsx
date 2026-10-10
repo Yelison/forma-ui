@@ -366,7 +366,7 @@ describe('Dialog styles', () => {
   it.each([
     { offset: undefined, matrix: 'matrix(0.98, 0, 0, 0.98, 0, 8)' },
     { offset: '20px', matrix: 'matrix(0.98, 0, 0, 0.98, 0, 20)' },
-  ])('starts its entrance $offset below the final place, from --dialog-enter-offset', ({ offset, matrix }) => {
+  ])('starts its entrance at $matrix, from --dialog-enter-offset', ({ offset, matrix }) => {
     if (offset) {
       root.style.setProperty('--dialog-enter-offset', offset)
       onTestFinished(() => root.style.removeProperty('--dialog-enter-offset'))
