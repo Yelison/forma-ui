@@ -220,12 +220,13 @@ s_squashbase() { mk; series; echo release >"$T/state/gh/base"; out=$(ship); rc=$
   check "merge commit not in main: the task's branch is kept" has_branch feat/impl-a; }
 # A MERGED pull request whose head, base or merge commit is null, empty or missing proves nothing about what main
 # holds, so nothing is deleted: the branch is kept with a note and the task is retired all the same.
-s_squashnull() { local filter field
+s_squashnull() { local filter field note
   for field in headRefOid baseRefName mergeCommit; do
+    case $field in headRefOid) note="an unknown head" ;; baseRefName) note="an unknown base" ;; *) note="the merge commit (unknown)" ;; esac
     for filter in ".$field = null" ".${field/#mergeCommit/mergeCommit.oid} = \"\"" "del(.$field)"; do
       mk; series; echo "$filter" >"$T/state/gh/view-jq"; out=$(ship); rc=$?
       check "$filter: rc 0" test $rc -eq 0; check "$filter: the task's branch is kept" has_branch feat/impl-a
-      check "$filter: says it is kept" says x 'the branch is kept'; check "$filter: the task is retired all the same" retired impl-a
+      check "$filter: says what was missing" says x "$note"; check "$filter: the task is retired all the same" retired impl-a
     done
   done; }
 # The merge commit must be a 40-hex SHA: a ref such as `main` resolves in git but is not what GitHub reported.
