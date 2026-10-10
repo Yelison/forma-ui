@@ -1,7 +1,8 @@
 # Contributing
 
 Read [`AGENTS.md`](AGENTS.md) for the working rules and [`CLAUDE.md`](CLAUDE.md) for the scope of the project. Every change
-lands through a pull request that is merged with rebase, and `main` is protected: `Library`, `Site` and `Site e2e` must pass.
+lands through a pull request, squash-merged by default (rebase when a task needs its commits on `main`), and `main` is
+protected: `Library`, `Site` and `Site e2e` must pass.
 
 ## Changesets
 
