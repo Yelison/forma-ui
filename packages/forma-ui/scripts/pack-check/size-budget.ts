@@ -16,10 +16,10 @@
 // or two, not for a dependency that slipped in. A change that needs more raises the number here, in the same pull
 // request and with the reason in its description, so that growth is a decision somebody reviews.
 //
-// Measured on 2026-10-09, with the eight components of v0.1 (Button, IconButton, Badge, Field, Input, Icon, Tooltip,
-// Dialog) and the package as one bundled file: 6729 B for every export, 2917 B for Button alone, 237 B for Badge alone
-// and 1467 B for styles.css. Button alone is not small because Icon looks its path up in one object that holds every
-// icon, so the whole table travels with any component that draws an icon.
+// Measured on 2026-10-10, with the nine components of v0.1 (Button, IconButton, Badge, Field, Input, Icon, Tooltip,
+// Dialog, Tabs) and the package as one bundled file: 7192 B for every export, 2910 B for Button alone, 225 B for Badge
+// alone and 1551 B for styles.css; Tabs alone is 661 B. Button alone is not small because Icon looks its path up in one
+// object that holds every icon, so the whole table travels with any component that draws an icon.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
