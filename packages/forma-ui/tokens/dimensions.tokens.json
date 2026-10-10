@@ -119,10 +119,24 @@
       "$value": "28px"
     }
   },
+  "choice": {
+    "min-height": {
+      "$type": "dimension",
+      "$value": "36px",
+      "$description": "The row of a Radio; Resolve's value, which no other token holds."
+    }
+  },
   "spinner": {
     "size": {
       "$type": "dimension",
       "$value": "16px"
+    }
+  },
+  "tabs": {
+    "panel-focus-offset": {
+      "$type": "dimension",
+      "$value": "4px",
+      "$description": "Gap between a focused tab panel and its focus ring; the tabs themselves use 2px."
     }
   },
   "tooltip": {
