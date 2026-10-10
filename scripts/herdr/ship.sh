@@ -188,12 +188,13 @@ if [ "${#CHECKS[@]}" -gt 0 ]; then MERGE_NOTE="the auto-merge stays scheduled"; 
 SECONDS=0
 MERGED_SHA= MERGED_HEAD= MERGED_BASE=
 while :; do
-  if ! view=$(gh pr view "$PR" --json state,mergeCommit,headRefOid,baseRefName --jq '[.state, (.headRefOid // "-"), (.baseRefName // "-"), (.mergeCommit.oid // "-")] | @tsv'); then
+  if ! view=$(gh pr view "$PR" --json state,mergeCommit,headRefOid,baseRefName --jq 'def d: if . == null or . == "" then "-" else . end; [.state, (.headRefOid | d), (.baseRefName | d), (.mergeCommit.oid | d)] | @tsv'); then
     [ "$SECONDS" -lt "$TIMEOUT" ] || die "gh could not read pull request #$PR in ${TIMEOUT}s; read its state before rerunning"
     log "gh could not read #$PR; retrying…"
     sleep "$POLL"
     continue
   fi
+  # "-" stands for a missing or empty value: tab is IFS whitespace, so an empty field would shift the ones after it.
   IFS=$'\t' read -r state merged_head merged_base merge_oid <<<"$view"
   case $state in
     MERGED) MERGED_SHA=${merge_oid#-}; MERGED_HEAD=${merged_head#-}; MERGED_BASE=${merged_base#-}; break ;;
@@ -226,7 +227,7 @@ if [ "$METHOD" = squash ]; then
 fi
 
 git -C "$TASK_REPO" fetch -q origin main
-if [ -n "$SQUASHED_HEAD" ] && { [ -z "$MERGED_SHA" ] || ! git -C "$TASK_REPO" merge-base --is-ancestor "$MERGED_SHA" origin/main; }; then
+if [ -n "$SQUASHED_HEAD" ] && { ! [[ $MERGED_SHA =~ ^[0-9a-f]{40}$ ]] || ! git -C "$TASK_REPO" merge-base --is-ancestor "$MERGED_SHA^{commit}" origin/main; }; then
   SQUASHED_HEAD=
   squash_note="the merge commit ${MERGED_SHA:-(unknown)} is not on origin/main"
 fi

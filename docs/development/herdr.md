@@ -333,13 +333,15 @@ In order, stopping at the first problem and saying what it did and did not do:
    GitHub's rebase merge rewrites the SHAs, so `git branch -d` would call the branches unmerged: `--delete-branch` asks
    `git cherry main <branch>` instead. A squash turns the whole series into one new patch, which `git cherry` cannot
    match to any of its commits, so the branches get one more path: when the merged PR is `MERGED`, its `headRefOid` is
-   exactly the local tip of the task's branch, its base is `main` and its merge commit is on `origin/main` (checked
-   after the fetch), `ship.sh` passes `--squashed-head <that sha>` to the task **and to its review**, and
+   exactly the local tip of the task's branch, its base is `main` and its merge commit is a 40-character SHA that is on
+   `origin/main` (checked after the fetch), `ship.sh` passes `--squashed-head <that sha>` to the task **and to its review**, and
    `remove-task.sh` deletes a branch that still points at that commit (read again right before the deletion, so a
    branch with anything of its own, such as a reviewer's notes commit, is not that commit and stays). A commit made
-   after the push, a head that moved, a PR retargeted at another base or a merge commit that is not on `main` never get
-   there: the branch follows the rule below, which keeps what it cannot show to be in `main`. The older
-   `review/<id>-<sha7>` branches of a review always follow the rule below. A branch with no `+` commit (every patch is in `main`), no merge commits of its own and
+   after the push, a head that moved, a PR retargeted at another base, a merge commit that is not on `main`, or a
+   `MERGED` PR whose `headRefOid`, `baseRefName` or `mergeCommit` comes back null, empty or missing never get there: the
+   branch follows the rule below, which keeps what it cannot show to be in `main`. The review's branch of an earlier
+   round (one that does not point at the merged head) is kept too: the comparison is exact, so delete it by hand. The
+   older `review/<id>-<sha7>` branches of a review always follow the rule below. A branch with no `+` commit (every patch is in `main`), no merge commits of its own and
    a merge into `main` that changes nothing is deleted, the task's branch and the older `review/<id>-<sha7>` branches of
    its review (exactly that shape: `review/<id>-x-<sha7>` belongs to the task `<id>-x`). A branch is kept, with a
    note, when it has a `+` commit or merge commits of its own, when `git cherry` fails, when merging it would change
@@ -361,7 +363,7 @@ kills a process itself: stop them yourself, or rerun with `--force-leftovers`. T
 stops the task's Compose project (`--volumes` also removes its volumes, even when no container is left); with Compose
 off it never calls `docker`, and `--volumes` does nothing. It runs `herdr worktree remove` (which also closes the
 workspace) and marks the task as removed. It refuses while the checkout has uncommitted changes or a live agent, warns
-about commits that are not pushed when it keeps the branch, and with `--delete-branch` deletes the branch only under the conditions above (a rebase merge counts as merged; a review also loses its older `review/<id>-<sha7>` branches under the same rule), keeping the others with a note. `--squashed-head <sha>` (with `--delete-branch`, a full commit SHA that exists) also deletes the task's branch when it is exactly that commit, the head GitHub squash-merged. Logs stay
+about commits that are not pushed when it keeps the branch, and with `--delete-branch` deletes the branch only under the conditions above (a rebase merge counts as merged; a review also loses its older `review/<id>-<sha7>` branches under the same rule), keeping the others with a note. `--squashed-head <sha>` (with `--delete-branch`, a full commit SHA that exists; an empty value is refused) also deletes the task's branch when it is exactly that commit, the head GitHub squash-merged. Logs stay
 in `logs/<id>/`.
 
 ## Docker Compose
