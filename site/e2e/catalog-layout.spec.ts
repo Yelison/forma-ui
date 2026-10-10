@@ -50,11 +50,13 @@ test.describe('the catalog at 390 px', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 
     expect(await smallTargets(page.getByRole('main'))).toEqual([])
-    for (const chip of await page.getByRole('radio').all()) {
+    // The chips only: the radios of the Radio row are 20 px controls whose label is the target, checked below.
+    for (const chip of await page.getByRole('group', { name: 'Category' }).getByRole('radio').all()) {
       const box = await chip.boundingBox()
       expect(box?.height).toBeGreaterThanOrEqual(44)
       expect(box?.width).toBeGreaterThanOrEqual(44)
     }
+    expect(await smallTargets(page.getByRole('region', { name: 'Radio' }), 44, 'label')).toEqual([])
   })
 })
 
