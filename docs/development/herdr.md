@@ -22,7 +22,8 @@ Rules that keep the checkouts independent:
 - Each task gets a **port slot** (below), so two tasks can run the dev server, Playwright and Storybook at the same time.
 - One owner per shared file (token source, exports, `package.json` and its lockfile, CI configuration): a task that
   needs to change one says so before doing it.
-- Nothing is merged locally into `main`: every branch reaches it through a pull request merged with rebase.
+- Nothing is merged locally into `main`: every branch reaches it through a pull request, squash-merged by default or
+  merged with rebase when the task asks for it («fusión con rebase»).
 
 ## Prerequisites
 
@@ -43,6 +44,7 @@ without an assignee). `HERDR_PROJECT_ENV` points the scripts at another settings
 | `HERDR_SLOT_MIN`, `HERDR_SLOT_MAX`                 | `1`, `9`                                                                   | Range of port slots                                                        |
 | `HERDR_PORTS`                                      | `DEV_SERVER_PORT:5280:VITE PLAYWRIGHT_PORT:4280:PW STORYBOOK_PORT:6080:SB` | Ports of a slot, as `NAME:BASE:MARKER` entries                             |
 | `HERDR_REQUIRED_CHECKS`                            | empty                                                                      | Checks `ship.sh` waits for, comma-separated, exact names                   |
+| `HERDR_MERGE_METHOD`                               | `squash`                                                                   | Default of `ship.sh --merge`: `squash` or `rebase`                         |
 | `HERDR_PR_ASSIGNEE`                                | `Yelison`                                                                  | Assignee of the pull requests `ship.sh` opens                              |
 | `HERDR_REVIEW_MODEL`                               | `claude-opus-5-5`                                                          | Model of the reviewers `new-review.sh` starts                              |
 | `HERDR_INSTALL_DIR`, `HERDR_INSTALL_CMD`           | `.`, `npm ci`                                                              | What `new-task.sh --install` runs, and where (relative to the worktree)    |
@@ -263,6 +265,14 @@ and `effort.history` in the review's `task.json`; with a live reviewer it is res
 level applies when it starts again). A refusal there, such as a loaded machine, leaves the review where it was. When every finding is low, the reviewer also
 writes `fixes-proposal.md` for the coordinator to approve or annotate.
 
+**Merge method and review rounds (owner decision, 2026-10-10).** A task is squash-merged by default, so only the tip of
+its branch has to pass every check, and the brief's footer no longer asks for a per-commit check. A brief that needs the
+series on `main` says «fusión con rebase»: then every commit must pass on its own, checked **once, at the end**, before
+the last delivery and not in every round, and `ship.sh` runs with `--merge rebase`. From round 2 on, the review verifies
+that round's fixes and what they can affect, at the tip; it does not repeat the first review. When a round leaves only
+low findings, the coordinator may verify the fix itself instead of opening another round (a `git range-diff` against the
+reviewed series, the diff of the new commit and the mutation evidence in the delivery) and ship it.
+
 ## Follow progress
 
 ```sh
@@ -281,7 +291,7 @@ again. A blocked agent is answered in its chat (`herdr agent prompt <name> "…"
 ## Ship a task with `ship.sh`
 
 ```sh
-scripts/herdr/ship.sh --task <id> --title "feat(scope): summary" --body ~/forma-ui-herdr/tasks/<id>/pr-body.md [--no-cleanup]
+scripts/herdr/ship.sh --task <id> --title "feat(scope): summary" --body ~/forma-ui-herdr/tasks/<id>/pr-body.md [--merge squash|rebase] [--no-cleanup]
 ```
 
 In order, stopping at the first problem and saying what it did and did not do:
@@ -305,17 +315,30 @@ In order, stopping at the first problem and saying what it did and did not do:
    - **With `HERDR_REQUIRED_CHECKS`** it polls `gh pr checks --json` until **every** listed check passes (the most recent
      run of each; a rerun still in the queue counts as the newest, so it waits for it). A check that fails, is cancelled
      or skipped stops it **without merging**, whatever the others say; a check that never shows up makes it give up after
-     `HERDR_SHIP_TIMEOUT_SECONDS`. Then it runs `gh pr merge --auto --rebase --match-head-commit <sha>` and waits for the
-     merge.
-   - **With the list empty** (the repository has no CI yet) it reads no checks and runs
-     `gh pr merge --rebase --match-head-commit <sha>` at once, **without `--auto`**: GitHub rejects auto-merge when no
-     check is required.
+     `HERDR_SHIP_TIMEOUT_SECONDS`. Then it schedules the merge (`gh pr merge --auto`, below) and waits for it.
+   - **With the list empty** (the repository has no CI yet) it reads no checks and merges at once, **without `--auto`**:
+     GitHub rejects auto-merge when no check is required.
+   - **The method** is `--merge squash|rebase`; without it, `HERDR_MERGE_METHOD` (`squash` in `project.env`). Anything
+     else is refused before `gh` is called. A **squash** (the default) is
+     `gh pr merge --squash --subject "<title> (#PR)" --body "<series>" --match-head-commit <sha>`: one commit on `main`,
+     titled with `--title` (even when an open PR is reused) and the PR number, whose body lists the squashed commits
+     (oldest first) and each `Co-Authored-By` trailer of the series once, because GitHub would otherwise keep only the
+     PR's author. A **rebase** is `gh pr merge --rebase --match-head-commit <sha>`: every commit lands on `main`, so
+     each must pass on its own. Use it only for a task whose brief says «fusión con rebase»; with a squash only the
+     tip has to pass everything.
 6. It runs `git fetch origin main && git merge --ff-only origin/main` in the main checkout and prints `merged <sha>`.
 7. Unless `--no-cleanup`: sends `/exit` to the agents of the task and of `review-<id>` (an agent that is `working` or
    `blocked` is not sent anything: the script says so, after the merge, and stops) and runs
    `remove-task.sh --id <id> --volumes --delete-branch` for each, the review first. It never passes `--force-leftovers`.
    GitHub's rebase merge rewrites the SHAs, so `git branch -d` would call the branches unmerged: `--delete-branch` asks
-   `git cherry main <branch>` instead. A branch with no `+` commit (every patch is in `main`), no merge commits of its own and
+   `git cherry main <branch>` instead. A squash turns the whole series into one new patch, which `git cherry` cannot
+   match to any of its commits, so the task's branch gets one more path: when the merged PR is `MERGED` and its
+   `headRefOid` is exactly the local tip of the branch, `ship.sh` passes `--squashed-head <that sha>` and
+   `remove-task.sh` deletes the branch if it still points at that commit (read again right before the deletion). A
+   branch with a commit made after the push, or a head that moved, never gets there: it follows the rule below, which
+   keeps what it cannot show to be in `main`. The review's branches (`review/<id>-<sha7>`) always follow the rule
+   below, never the squashed-head path: a review may hold commits of its own, so only `git cherry` and an unchanged
+   merge may delete them, and after a squash of several commits they are kept, with a note. A branch with no `+` commit (every patch is in `main`), no merge commits of its own and
    a merge into `main` that changes nothing is deleted, the task's branch and the older `review/<id>-<sha7>` branches of
    its review (exactly that shape: `review/<id>-x-<sha7>` belongs to the task `<id>-x`). A branch is kept, with a
    note, when it has a `+` commit or merge commits of its own, when `git cherry` fails, when merging it would change
@@ -337,7 +360,7 @@ kills a process itself: stop them yourself, or rerun with `--force-leftovers`. T
 stops the task's Compose project (`--volumes` also removes its volumes, even when no container is left); with Compose
 off it never calls `docker`, and `--volumes` does nothing. It runs `herdr worktree remove` (which also closes the
 workspace) and marks the task as removed. It refuses while the checkout has uncommitted changes or a live agent, warns
-about commits that are not pushed when it keeps the branch, and with `--delete-branch` deletes the branch only under the conditions above (a rebase merge counts as merged; a review also loses its older `review/<id>-<sha7>` branches under the same rule), keeping the others with a note. Logs stay
+about commits that are not pushed when it keeps the branch, and with `--delete-branch` deletes the branch only under the conditions above (a rebase merge counts as merged; a review also loses its older `review/<id>-<sha7>` branches under the same rule), keeping the others with a note. `--squashed-head <sha>` (with `--delete-branch`, a full commit SHA that exists) also deletes the task's branch when it is exactly that commit, the head GitHub squash-merged. Logs stay
 in `logs/<id>/`.
 
 ## Docker Compose
