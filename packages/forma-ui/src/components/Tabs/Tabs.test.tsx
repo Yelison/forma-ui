@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
@@ -191,6 +191,15 @@ describe('Tabs', () => {
 
     expect(screen.getByRole('tablist', { name: 'Ticket view' })).toBeEmptyDOMElement()
     expect(screen.queryByRole('tabpanel')).not.toBeInTheDocument()
+  })
+
+  it('ignores the keys of a tab list that has no tab to move to', () => {
+    const onChange = vi.fn()
+    renderTabs({ items: [], onChange })
+
+    fireEvent.keyDown(screen.getByRole('tablist'), { key: 'ArrowRight' })
+
+    expect(onChange).not.toHaveBeenCalled()
   })
 
   it('adds the class name to the element that wraps the tabs', () => {
