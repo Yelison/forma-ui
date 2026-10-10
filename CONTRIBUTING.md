@@ -70,11 +70,11 @@ formatting. One changeset per user-visible change, so that each one has its own 
 
 Versions follow [Semantic Versioning](https://semver.org). The package is below 1.0, where a minor release may break:
 
-| Bump    | Use it for                                                               |
-| ------- | ------------------------------------------------------------------------ |
-| `minor` | A new feature, **or a breaking change** while the version is below 1.0.  |
-| `patch` | A fix or a change that nobody has to react to.                           |
-| `major` | Not used before 1.0. It is the release of `1.0.0`, decided by the owner. |
+| Bump    | Use it for                                                                   |
+| ------- | ---------------------------------------------------------------------------- |
+| `minor` | A new feature, **any visual change**, or a breaking change while below 1.0.  |
+| `patch` | A fix that changes nothing anyone can see, and nothing anyone must react to. |
+| `major` | Not used before 1.0. It is the release of `1.0.0`, decided by the owner.     |
 
 **Breaking** is a change that makes code or styles that worked with the previous version stop working, or work
 differently, without the consumer changing anything:
@@ -82,6 +82,11 @@ differently, without the consumer changing anything:
 - removing or renaming an export, a prop, a subpath or a public CSS custom property (`--color-*`, `--space-*`…);
 - changing a prop's type, default or behavior, a default string, or the value of a token;
 - narrowing the supported `react` or Node range, or dropping a module format.
+
+**A visual change is never a patch.** Anything that can change how a component or page looks (CSS, a token value, the
+markup a component renders) is at least `minor`. Consumers such as Resolve merge patch releases automatically once
+their checks pass, so a patch must never change how anything looks; reviewers check the bump of every changeset against
+this rule.
 
 The `forma-*` class names are not API (see the package's README) and changing them is not breaking. Start the summary of
 a breaking change with `**Breaking:**` and say what to do instead, so that it is easy to find in the changelog. Consumers

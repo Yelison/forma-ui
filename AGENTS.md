@@ -32,6 +32,7 @@ An idle agent is not acceptance evidence. Check files, tests and completion crit
 ## Working rules
 
 - **Commits:** Conventional Commits in English, with a `Co-Authored-By` trailer when an assistant contributed. Pull requests are squash-merged by default (one commit on `main`, titled `<title> (#PR)`, whose body lists the series and its `Co-Authored-By` trailers), so only the tip has to pass everything. When a task asks for «fusión con rebase», every commit reaches `main` and must pass the checks of its layer on its own, verified once at the end.
+- **Changesets:** every change a package user can notice carries a changeset (see `CONTRIBUTING.md`). A visual change (CSS, a token value, the markup a component renders) is at least `minor`, never `patch`: consumers merge patches automatically.
 - **Formatting:** format only the files you changed, never a whole source directory.
 - **Mutations to prove a test:** commit first, or back up the file, and restore from that. Never `git checkout -- <file>` over uncommitted work.
 - **Shell safety:** `rm` only with literal paths or guarded variables (`"${DIR:?}"/x`). Never `pkill -f` or `pgrep -f`; stop your own processes by PID. Use only your task's ports, and free them when you finish.

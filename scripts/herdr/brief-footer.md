@@ -56,7 +56,7 @@ Los revisores encuentran casi siempre estos defectos (`AGENTS.md`, «Self-check 
 - **Idioma:** las reglas de la sección anterior, con el pseudo-idioma pasado.
 - **Commits:** la punta pasa todo, y si un cambio rompe un test, el test cambia en el mismo commit. Con «fusión con rebase», además, cada commit pasa por sí solo (comprobado una vez, al final).
 - **Rondas de corrección:** verifica en la punta el arreglo de esa ronda y lo que puede afectar; no repitas baterías ni comprobaciones por commit que el arreglo no cambia.
-- **Changeset:** todo cambio visible para quien usa el paquete lleva su changeset (`npm run changeset`; ver `CONTRIBUTING.md`). Si el cambio toca el paquete pero no cambia nada para quien lo instala, decláralo con `npx changeset --empty`: el job `Changeset` lo exige.
+- **Changeset:** todo cambio visible para quien usa el paquete lleva su changeset (`npm run changeset`; ver `CONTRIBUTING.md`). **Un cambio visual (CSS, el valor de un token o el marcado que pinta un componente) es como mínimo `minor`, nunca `patch`:** los consumidores funden los parches automáticamente. Si el cambio toca el paquete pero no cambia nada para quien lo instala, decláralo con `npx changeset --empty`: el job `Changeset` lo exige.
 
 ## Entrega
 
