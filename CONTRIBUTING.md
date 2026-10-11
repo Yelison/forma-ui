@@ -88,6 +88,11 @@ markup a component renders) is at least `minor`. Consumers such as Resolve merge
 their checks pass, so a patch must never change how anything looks; reviewers check the bump of every changeset against
 this rule.
 
+A patch that adds or changes a token, even with no visible effect, still reaches consumers as a change to `tokens.css`.
+Resolve, for example, keeps a synced copy of `tokens.css` and its test fails until it is synced, so such a patch is
+reviewed and merged by hand there, not merged automatically. Patches that touch only component code or component CSS
+merge automatically.
+
 The `forma-*` class names are not API (see the package's README) and changing them is not breaking. Start the summary of
 a breaking change with `**Breaking:**` and say what to do instead, so that it is easy to find in the changelog. Consumers
 pin an exact version.
