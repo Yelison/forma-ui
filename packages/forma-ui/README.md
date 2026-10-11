@@ -142,7 +142,7 @@ flash on resize): pinned to the bottom edge at the full width, with rounded top 
 at the full width. From 768 px it is the usual centered dialog, and the default `presentation="dialog"` is that at every
 width. The footer reads bottom to top: the DOM order is unchanged, so the first button, the one that takes the initial
 focus, is the lowest, and the last is on top. Put the safe action first and the primary action last, and Tab goes from the
-bottom button to the top one. With `prefers-reduced-motion` the sheet does not slide in.
+bottom button to the top one. The handle is decorative: it is not dragged. The stacking reaches the direct children of the footer, so buttons wrapped in another element stay as they are. With `prefers-reduced-motion` the sheet does not slide in.
 
 `Tabs` starts the arrows from the selected tab, not the focused one. With a controlled `value` whose parent refuses a tab, the focus still moves to it, but the next arrow press goes on from the selected tab.
 

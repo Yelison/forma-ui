@@ -1,5 +1,5 @@
 /*
- * The animation is wrapped in `:where()`, which adds no specificity: a consumer's own class, such as `.sheet`, then
+ * The animation is wrapped in `:where()`, which adds no specificity: a consumer's own class, such as `.mine`, then
  * wins over it as long as its stylesheet comes after the library's, as the README says. The widths are the
  * `--dialog-width` and `--dialog-width-wide` tokens.
  */

@@ -442,9 +442,9 @@ describe.each([320, 390, 767, 768, 1024, 1199, 1200, 1440])('Dialog at %i px', (
 describe('Dialog as a sheet on narrow screens', () => {
   const sheetProps = { presentation: 'sheet-on-narrow' } as const
   const geometry = (modal: Element) => {
-    const { left, top, width, height } = modal.getBoundingClientRect()
+    const { left, top, width, height, bottom } = modal.getBoundingClientRect()
     const { borderTopLeftRadius, borderBottomLeftRadius, paddingBottom } = getComputedStyle(modal)
-    return { left, top, width, height, borderTopLeftRadius, borderBottomLeftRadius, paddingBottom }
+    return { left, top, width, height, bottom, borderTopLeftRadius, borderBottomLeftRadius, paddingBottom }
   }
 
   describe.each(['light', 'dark'] as const)('in the %s theme', (theme) => {
@@ -453,7 +453,7 @@ describe('Dialog as a sheet on narrow screens', () => {
       await emulateMedia({ colorScheme: theme })
     })
 
-    it.each([390, 767])(
+    it.each([320, 390, 767])(
       'is pinned to the bottom at the full width at %i px, with no horizontal scroll',
       async (width) => {
         await page.viewport(width, 800)
@@ -478,7 +478,8 @@ describe('Dialog as a sheet on narrow screens', () => {
       const modal = await openDialog()
       await settled(modal)
       const asSheet = geometry(modal)
-      // `reset()` also takes the stylesheets off the page.
+      // `reset()` also takes the stylesheets off the page and the emulated color scheme, which the geometry does not
+      // depend on. The modal is measured above: after it, it is no longer in the document.
       await reset()
       loadTokens()
       loadStyles()
@@ -488,7 +489,7 @@ describe('Dialog as a sheet on narrow screens', () => {
 
       expect(asSheet).toEqual(geometry(plain))
       expect(asSheet.width).toBeLessThan(width)
-      expect(modal.getBoundingClientRect().bottom).toBeLessThan(window.innerHeight)
+      expect(asSheet.bottom).toBeLessThan(window.innerHeight)
     })
   })
 
@@ -617,6 +618,28 @@ describe('Dialog accessibility', () => {
             Reason <input />
           </label>
         </Dialog>,
+      )
+      await settled(dialog().element())
+
+      await expectNoAxeViolations(container)
+    })
+
+    it('has no axe violations as a sheet', async () => {
+      await page.viewport(390, 800)
+      const container = mount(
+        <Dialog
+          open
+          onClose={() => {}}
+          title="Delete this ticket?"
+          description="This removes the ticket and its history."
+          presentation="sheet-on-narrow"
+          footer={
+            <>
+              <Button variant="secondary">Cancel</Button>
+              <Button variant="danger">Delete</Button>
+            </>
+          }
+        />,
       )
       await settled(dialog().element())
 

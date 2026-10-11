@@ -29,7 +29,9 @@ export interface DialogProps {
    * below 768 px, pinned to the bottom edge at the full width, with rounded top corners, a handle and its footer
    * buttons stacked at the full width; from 768 px it is the `dialog`. The change is CSS only, so there is no flash on
    * resize. The footer reads bottom to top: the first button is the lowest and takes the initial focus, and the last is
-   * on top, so put the safe action first and the primary action last. Defaults to `dialog`.
+   * on top, so put the safe action first and the primary action last. The handle is decorative and is not dragged, and the
+   * stacking reaches the direct children of the footer, so buttons wrapped in another element stay as they are.
+   * Defaults to `dialog`.
    */
   presentation?: 'dialog' | 'sheet-on-narrow'
   /** Extra class names for the `<dialog>`, added after the library's own. */
