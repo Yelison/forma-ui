@@ -24,6 +24,16 @@ export interface DialogProps {
   footer?: ReactNode
   /** Width of the dialog: `--dialog-width` for `default` and `--dialog-width-wide` for `wide`. Defaults to `default`. */
   size?: 'default' | 'wide'
+  /**
+   * How the dialog is presented. `dialog` is a centered panel at every width. `sheet-on-narrow` is the same panel
+   * below 768 px, pinned to the bottom edge at the full width, with rounded top corners, a handle and its footer
+   * buttons stacked at the full width; from 768 px it is the `dialog`. The change is CSS only, so there is no flash on
+   * resize. The footer reads bottom to top: the first button is the lowest and takes the initial focus, and the last is
+   * on top, so put the safe action first and the primary action last. The handle is decorative and is not dragged, and the
+   * stacking reaches the direct children of the footer, so buttons wrapped in another element stay as they are.
+   * Defaults to `dialog`.
+   */
+  presentation?: 'dialog' | 'sheet-on-narrow'
   /** Extra class names for the `<dialog>`, added after the library's own. */
   className?: string
   /** The content between the description and the footer. It is rendered only while the dialog is open. */
@@ -56,6 +66,7 @@ export function Dialog({
   description,
   footer,
   size = 'default',
+  presentation = 'dialog',
   className,
   children,
 }: DialogProps) {
@@ -66,12 +77,18 @@ export function Dialog({
   return (
     <dialog
       {...dialogProps}
-      className={cx(styles.dialog, size === 'wide' && styles.wide, className)}
+      className={cx(
+        styles.dialog,
+        size === 'wide' && styles.wide,
+        presentation === 'sheet-on-narrow' && styles.sheet,
+        className,
+      )}
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
     >
       {open && (
         <div className={styles.content}>
+          {presentation === 'sheet-on-narrow' && <span className={styles.handle} aria-hidden="true" />}
           <h2 id={titleId} className={styles.title}>
             {title}
           </h2>

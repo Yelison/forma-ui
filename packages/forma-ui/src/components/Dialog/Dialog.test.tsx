@@ -155,6 +155,20 @@ describe('Dialog', () => {
 
     expect(screen.getByRole('dialog')).toHaveClass('dialog', 'wide', 'mine')
   })
+
+  it('is a plain dialog by default: no sheet class and no handle', () => {
+    const { container } = render(<Dialog open onClose={vi.fn()} title="Settings" />)
+
+    expect(screen.getByRole('dialog')).not.toHaveClass('sheet')
+    expect(container.querySelector('.handle')).toBeNull()
+  })
+
+  it('becomes a sheet on narrow screens when asked, with a handle that assistive technology skips', () => {
+    const { container } = render(<Dialog open onClose={vi.fn()} title="Settings" presentation="sheet-on-narrow" />)
+
+    expect(screen.getByRole('dialog')).toHaveClass('dialog', 'sheet')
+    expect(container.querySelector('.handle')).toHaveAttribute('aria-hidden', 'true')
+  })
 })
 
 describe('Modal', () => {

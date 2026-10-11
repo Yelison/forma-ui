@@ -1,5 +1,5 @@
 /*
- * The animation is wrapped in `:where()`, which adds no specificity: a consumer's own class, such as `.sheet`, then
+ * The animation is wrapped in `:where()`, which adds no specificity: a consumer's own class, such as `.mine`, then
  * wins over it as long as its stylesheet comes after the library's, as the README says. The widths are the
  * `--dialog-width` and `--dialog-width-wide` tokens.
  */
@@ -57,10 +57,65 @@
   gap: var(--space-12);
 }
 
+.handle {
+  display: none;
+}
+
+/*
+ * `sheet-on-narrow`: below 768 px the dialog is a sheet pinned to the bottom edge, as the choice rows get their touch
+ * target below the same width. The sheet needs no token of its own: the top corners are `--radius-panel`, the handle is
+ * `--space-40` by `--space-4`, and the height leaves `--space-64` of the page showing above it, about 90% of a phone.
+ * Its padding is on `.content` and not on the dialog, which is all content so that a press on the dialog itself is on
+ * the backdrop. It comes before the reduced-motion block, which must win over its animation at equal specificity.
+ */
+@media (max-width: 767.98px) {
+  .sheet {
+    width: 100%;
+    max-height: calc(100dvh - var(--space-64));
+    margin: auto 0 0;
+    border-width: 1px 0 0;
+    border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+  }
+
+  .sheet:where([open]) {
+    animation-name: enter-from-bottom;
+  }
+
+  .sheet .content {
+    padding-top: var(--space-12);
+    padding-bottom: calc(var(--space-24) + env(safe-area-inset-bottom));
+  }
+
+  .handle {
+    display: block;
+    align-self: center;
+    width: var(--space-40);
+    height: var(--space-4);
+    border-radius: var(--radius-round);
+    background: var(--color-line);
+  }
+
+  /*
+   * The primary action goes on top, as in the design, while the DOM and so the focus order stay as the footer is
+   * written: the safe action first, which takes the initial focus. Tab then goes from the bottom button to the top one.
+   */
+  .sheet .footer {
+    flex-direction: column-reverse;
+    flex-wrap: nowrap;
+    align-items: stretch;
+  }
+}
+
 @keyframes enter {
   from {
     opacity: 0;
     transform: translateY(var(--dialog-enter-offset)) scale(0.98);
+  }
+}
+
+@keyframes enter-from-bottom {
+  from {
+    transform: translateY(100%);
   }
 }
 

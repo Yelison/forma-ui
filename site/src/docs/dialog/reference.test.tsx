@@ -9,13 +9,14 @@ const openerIn = (section: string, name: string) =>
   within(screen.getByRole('region', { name: section })).getByRole('button', { name })
 
 describe('the reference of Dialog', () => {
-  it('lists its sections: the states, the sizes, the built-in text and the usual ones', () => {
+  it('lists its sections: the states, the sizes, the presentation, the built-in text and the usual ones', () => {
     renderReference('Dialog')
 
     expect(screen.getByRole('heading', { level: 1, name: 'Dialog' })).toBeInTheDocument()
     expect(sectionsOfPage()).toEqual([
       'States',
       'Sizes',
+      'Presentation',
       'Built-in text',
       'Usage',
       'API',
@@ -107,7 +108,7 @@ describe('the reference of Dialog', () => {
     expect(accessibility.getByText(/Dialog has no text of its own/)).toHaveTextContent('that you put in the footer')
   })
 
-  it('documents the eight props of the library, and no native attribute', () => {
+  it('documents the nine props of the library, and no native attribute', () => {
     renderReference('Dialog')
 
     const api = within(screen.getByRole('region', { name: 'API' }))
@@ -119,6 +120,7 @@ describe('the reference of Dialog', () => {
       'description',
       'footer',
       'size',
+      'presentation',
       'className',
       'children',
     ])

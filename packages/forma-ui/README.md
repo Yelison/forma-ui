@@ -136,6 +136,14 @@ function ThemeToggle() {
 | `Tabs`                  | Panels that share one place, one visible at a time.     | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.            |
 | `Radio`                 | One option of a group that takes a single choice.       | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                           |
 
+`Dialog` takes `presentation="sheet-on-narrow"` to become a bottom sheet below 768 px (a CSS media query, so there is no
+flash on resize): pinned to the bottom edge at the full width, with rounded top corners, a decorative handle, up to about
+90% of the viewport height with its own scroll, the bottom safe area added to its padding, and the footer buttons stacked
+at the full width. From 768 px it is the usual centered dialog, and the default `presentation="dialog"` is that at every
+width. The footer reads bottom to top: the DOM order is unchanged, so the first button, the one that takes the initial
+focus, is the lowest, and the last is on top. Put the safe action first and the primary action last, and Tab goes from the
+bottom button to the top one. The handle is decorative: it is not dragged. The stacking reaches the direct children of the footer, so buttons wrapped in another element stay as they are. With `prefers-reduced-motion` the sheet does not slide in.
+
 `Tabs` starts the arrows from the selected tab, not the focused one. With a controlled `value` whose parent refuses a tab, the focus still moves to it, but the next arrow press goes on from the selected tab.
 
 Also exported: `buttonClassName` (the classes of a button, for a link that must look like one), `useScrollLock` (the

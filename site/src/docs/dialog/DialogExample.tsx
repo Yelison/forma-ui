@@ -8,6 +8,7 @@ export interface DialogExampleProps {
   title: string
   description: string
   size?: DialogProps['size']
+  presentation?: DialogProps['presentation']
   /** Asks for an action that cannot be undone: the button that confirms is `danger`, and so is the one that opens. */
   destructive?: boolean
   /** The label of a field placed first in the dialog, which takes the focus when it opens. */
@@ -20,7 +21,16 @@ export interface DialogExampleProps {
  * A dialog that opens from its button, as it does in an application: the focus goes inside it and, when it closes,
  * back to the button. The dialog is always in the page and only its content comes and goes, as `Dialog` documents.
  */
-export function DialogExample({ trigger, title, description, size, destructive, field, footer }: DialogExampleProps) {
+export function DialogExample({
+  trigger,
+  title,
+  description,
+  size,
+  presentation,
+  destructive,
+  field,
+  footer,
+}: DialogExampleProps) {
   const [open, setOpen] = useState(false)
   const close = () => setOpen(false)
 
@@ -29,7 +39,15 @@ export function DialogExample({ trigger, title, description, size, destructive, 
       <Button variant={destructive ? 'danger' : 'secondary'} aria-haspopup="dialog" onClick={() => setOpen(true)}>
         {trigger}
       </Button>
-      <Dialog open={open} onClose={close} title={title} description={description} size={size} footer={footer(close)}>
+      <Dialog
+        open={open}
+        onClose={close}
+        title={title}
+        description={description}
+        size={size}
+        presentation={presentation}
+        footer={footer(close)}
+      >
         {field !== undefined && <Input label={field} />}
       </Dialog>
     </>
