@@ -453,21 +453,24 @@ describe('Dialog as a sheet on narrow screens', () => {
       await emulateMedia({ colorScheme: theme })
     })
 
-    it.each([390, 767])('is pinned to the bottom at the full width at %i px, with no horizontal scroll', async (width) => {
-      await page.viewport(width, 800)
-      mount(<Harness {...sheetProps} />)
-      const modal = await openDialog()
-      await settled(modal)
+    it.each([390, 767])(
+      'is pinned to the bottom at the full width at %i px, with no horizontal scroll',
+      async (width) => {
+        await page.viewport(width, 800)
+        mount(<Harness {...sheetProps} />)
+        const modal = await openDialog()
+        await settled(modal)
 
-      const box = modal.getBoundingClientRect()
-      expect(box.left).toBe(0)
-      expect(box.width).toBe(width)
-      expect(box.bottom).toBe(window.innerHeight)
-      expect(box.height).toBeLessThan(window.innerHeight)
-      expect(getComputedStyle(modal).borderTopLeftRadius).not.toBe('0px')
-      expect(getComputedStyle(modal).borderBottomLeftRadius).toBe('0px')
-      expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width)
-    })
+        const box = modal.getBoundingClientRect()
+        expect(box.left).toBe(0)
+        expect(box.width).toBe(width)
+        expect(box.bottom).toBe(window.innerHeight)
+        expect(box.height).toBeLessThan(window.innerHeight)
+        expect(getComputedStyle(modal).borderTopLeftRadius).not.toBe('0px')
+        expect(getComputedStyle(modal).borderBottomLeftRadius).toBe('0px')
+        expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width)
+      },
+    )
 
     it.each([768, 1024])('is the same dialog as without the prop at %i px', async (width) => {
       await page.viewport(width, 800)

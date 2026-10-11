@@ -9,13 +9,14 @@ const openerIn = (section: string, name: string) =>
   within(screen.getByRole('region', { name: section })).getByRole('button', { name })
 
 describe('the reference of Dialog', () => {
-  it('lists its sections: the states, the sizes, the built-in text and the usual ones', () => {
+  it('lists its sections: the states, the sizes, the presentation, the built-in text and the usual ones', () => {
     renderReference('Dialog')
 
     expect(screen.getByRole('heading', { level: 1, name: 'Dialog' })).toBeInTheDocument()
     expect(sectionsOfPage()).toEqual([
       'States',
       'Sizes',
+      'Presentation',
       'Built-in text',
       'Usage',
       'API',

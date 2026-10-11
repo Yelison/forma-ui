@@ -11,6 +11,11 @@ const own = {
   description: { type: 'ReactNode', description: 'docs.dialog.api.description' },
   footer: { type: 'ReactNode', description: 'docs.dialog.api.footer' },
   size: { type: `'default' | 'wide'`, default: `'default'`, description: 'docs.dialog.api.size' },
+  presentation: {
+    type: `'dialog' | 'sheet-on-narrow'`,
+    default: `'dialog'`,
+    description: 'docs.dialog.api.presentation',
+  },
   className: { type: 'string', description: 'docs.dialog.api.className' },
   children: { type: 'ReactNode', description: 'docs.dialog.api.children' },
 } satisfies Record<keyof DialogProps, PropDoc>

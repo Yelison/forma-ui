@@ -20,12 +20,13 @@ interface Words {
 /** What differs between the examples of the reference: the rest is the same dialog. */
 interface Variation {
   size?: DialogProps['size']
+  presentation?: DialogProps['presentation']
   destructive?: boolean
   withField?: boolean
 }
 
 /** The state and the elements that open and fill a dialog, written as an application writes them. */
-function dialogCode(words: Words, { size, destructive, withField }: Variation): string {
+function dialogCode(words: Words, { size, presentation, destructive, withField }: Variation): string {
   const confirmVariant = destructive ? ' variant="danger"' : ''
   const closeIt = 'onClick={() => setOpen(false)}'
   const attributes = [
@@ -34,6 +35,7 @@ function dialogCode(words: Words, { size, destructive, withField }: Variation): 
     attribute('title', words.title),
     attribute('description', words.description),
     attribute('size', size),
+    attribute('presentation', presentation),
   ].filter((written) => written !== undefined)
 
   return [
@@ -89,6 +91,7 @@ function confirmDialog(words: Words, variation: Variation = {}): Pick<Example, '
         title={words.title}
         description={words.description}
         size={variation.size}
+        presentation={variation.presentation}
         destructive={variation.destructive}
         field={variation.withField ? words.field : undefined}
         footer={(close) => (
@@ -154,6 +157,18 @@ export function dialogExamples(intl: IntlShape): { usage: Example; groups: reado
             label: { code: 'size="wide"' },
             hint: say('docs.dialog.size.wideHint'),
             ...confirmDialog(confirm, { size: 'wide', withField: true }),
+          },
+        ],
+      },
+      {
+        id: 'presentation',
+        title: 'docs.dialog.presentation.title',
+        description: 'docs.dialog.presentation.description',
+        examples: [
+          {
+            label: { code: 'presentation="sheet-on-narrow"' },
+            hint: say('docs.dialog.presentation.sheetHint'),
+            ...confirmDialog(destructive, { presentation: 'sheet-on-narrow', destructive: true }),
           },
         ],
       },
