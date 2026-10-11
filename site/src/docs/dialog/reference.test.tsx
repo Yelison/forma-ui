@@ -108,7 +108,7 @@ describe('the reference of Dialog', () => {
     expect(accessibility.getByText(/Dialog has no text of its own/)).toHaveTextContent('that you put in the footer')
   })
 
-  it('documents the eight props of the library, and no native attribute', () => {
+  it('documents the nine props of the library, and no native attribute', () => {
     renderReference('Dialog')
 
     const api = within(screen.getByRole('region', { name: 'API' }))
@@ -120,6 +120,7 @@ describe('the reference of Dialog', () => {
       'description',
       'footer',
       'size',
+      'presentation',
       'className',
       'children',
     ])
