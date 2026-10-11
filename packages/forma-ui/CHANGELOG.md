@@ -1,5 +1,11 @@
 # @yelison/forma-ui
 
+## 0.2.1
+
+### Patch Changes
+
+- 2d10296: Move the four sizes that were still literals in the CSS into tokens: `--choice-min-height` (36px, the row of a `Radio`), `--tabs-panel-focus-offset` (4px, the gap of the focused `Tabs` panel's ring), `--icon-button-glyph-size` (20px, each icon of an `IconButton`) and `--dialog-enter-offset` (8px, where the `Dialog` entrance starts). The computed values do not change. Consumers that keep a synced copy of `tokens.css` will see that copy change, because it gains the four declarations.
+
 ## 0.2.0
 
 ### Minor Changes
