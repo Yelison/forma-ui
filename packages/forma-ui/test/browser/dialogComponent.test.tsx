@@ -5,7 +5,7 @@ import { Button } from '../../src/components/Button/Button'
 import { Dialog, type DialogProps } from '../../src/components/Dialog/Dialog'
 import { Tooltip } from '../../src/components/Tooltip/Tooltip'
 import { expectNoAxeViolations } from '../axe'
-import { emulateMedia, loadStyles, loadTokens, mount, pressEscape, pressShiftTab, pressTab } from './support'
+import { emulateMedia, loadStyles, loadTokens, mount, pressEscape, pressShiftTab, pressTab, reset } from './support'
 
 // The Dialog component in a real Chromium, with the built styles.css: a real `showModal()`, the top layer, trusted
 // keyboard and pointer events, and the layout a consumer receives. Its props and callbacks are in
@@ -434,6 +434,136 @@ describe.each([320, 390, 767, 768, 1024, 1199, 1200, 1440])('Dialog at %i px', (
     // At 320 px the two labels do not fit side by side: the second one wraps under the first, still inside the box.
     if (width === 320)
       expect(confirm.getBoundingClientRect().top).toBeGreaterThanOrEqual(cancel.getBoundingClientRect().bottom)
+  })
+})
+
+// `presentation="sheet-on-narrow"`: a bottom sheet below 768 px, the same dialog from there up. The widths are those of
+// the media query: 767 is the last that is a sheet and 768 the first that is not.
+describe('Dialog as a sheet on narrow screens', () => {
+  const sheetProps = { presentation: 'sheet-on-narrow' } as const
+  const geometry = (modal: Element) => {
+    const { left, top, width, height } = modal.getBoundingClientRect()
+    const { borderTopLeftRadius, borderBottomLeftRadius, paddingBottom } = getComputedStyle(modal)
+    return { left, top, width, height, borderTopLeftRadius, borderBottomLeftRadius, paddingBottom }
+  }
+
+  describe.each(['light', 'dark'] as const)('in the %s theme', (theme) => {
+    beforeEach(async () => {
+      root.dataset.theme = theme
+      await emulateMedia({ colorScheme: theme })
+    })
+
+    it.each([390, 767])('is pinned to the bottom at the full width at %i px, with no horizontal scroll', async (width) => {
+      await page.viewport(width, 800)
+      mount(<Harness {...sheetProps} />)
+      const modal = await openDialog()
+      await settled(modal)
+
+      const box = modal.getBoundingClientRect()
+      expect(box.left).toBe(0)
+      expect(box.width).toBe(width)
+      expect(box.bottom).toBe(window.innerHeight)
+      expect(box.height).toBeLessThan(window.innerHeight)
+      expect(getComputedStyle(modal).borderTopLeftRadius).not.toBe('0px')
+      expect(getComputedStyle(modal).borderBottomLeftRadius).toBe('0px')
+      expect(document.documentElement.scrollWidth).toBeLessThanOrEqual(width)
+    })
+
+    it.each([768, 1024])('is the same dialog as without the prop at %i px', async (width) => {
+      await page.viewport(width, 800)
+      mount(<Harness {...sheetProps} />)
+      const modal = await openDialog()
+      await settled(modal)
+      const asSheet = geometry(modal)
+      // `reset()` also takes the stylesheets off the page.
+      await reset()
+      loadTokens()
+      loadStyles()
+      mount(<Harness />)
+      const plain = await openDialog()
+      await settled(plain)
+
+      expect(asSheet).toEqual(geometry(plain))
+      expect(asSheet.width).toBeLessThan(width)
+      expect(modal.getBoundingClientRect().bottom).toBeLessThan(window.innerHeight)
+    })
+  })
+
+  it('scrolls inside itself, within the top gap, when its content is tall', async () => {
+    await page.viewport(390, 480)
+    mount(
+      <Dialog open onClose={() => {}} title="Terms" footer={<Button>Accept</Button>} {...sheetProps}>
+        <div style={{ height: 1200 }}>A long text</div>
+      </Dialog>,
+    )
+    const modal = dialog('Terms').element()
+    await settled(modal)
+
+    const box = modal.getBoundingClientRect()
+    expect(box.top).toBeGreaterThan(0)
+    expect(box.bottom).toBe(window.innerHeight)
+    expect(modal.scrollHeight).toBeGreaterThan(modal.clientHeight)
+  })
+
+  it('stacks the footer at the full width with the last button on top and Tab following the DOM', async () => {
+    await page.viewport(390, 800)
+    mount(<Harness {...sheetProps} />)
+    const modal = await openDialog()
+    await settled(modal)
+
+    const [cancel, confirm] = [button('Cancel').element(), button('Delete').element()]
+    const [cancelBox, confirmBox] = [cancel.getBoundingClientRect(), confirm.getBoundingClientRect()]
+    expect(confirmBox.bottom).toBeLessThanOrEqual(cancelBox.top)
+    expect(confirmBox.width).toBe(cancelBox.width)
+    expect(cancelBox.width).toBeGreaterThan(300)
+    await expect.element(cancel).toHaveFocus()
+    await pressTab()
+    await expect.element(confirm).toHaveFocus()
+  })
+
+  it('keeps the focus inside, returns it to the opener, and closes on Escape and on the backdrop', async () => {
+    await page.viewport(390, 800)
+    const onClose = vi.fn()
+    mount(<Harness onClose={onClose} {...sheetProps} />)
+    const modal = await openDialog()
+    await settled(modal)
+
+    await expectFocusToStayIn(modal)
+    await pressEscape()
+    expect(dialog().query()).toBeNull()
+    await expect.element(button('Delete ticket')).toHaveFocus()
+
+    await openDialog()
+    // Above the sheet, in the middle of the page: the backdrop.
+    await userEvent.click(dialog(), { position: { x: 195, y: -40 } })
+
+    expect(dialog().query()).toBeNull()
+    expect(onClose).toHaveBeenCalledTimes(2)
+    await expect.element(button('Delete ticket')).toHaveFocus()
+  })
+
+  it('does not close on a press on its own bottom padding', async () => {
+    await page.viewport(390, 800)
+    const onClose = vi.fn()
+    mount(<Harness onClose={onClose} {...sheetProps} />)
+    const modal = await openDialog()
+    await settled(modal)
+
+    await userEvent.click(dialog(), { position: { x: 195, y: modal.getBoundingClientRect().height - 4 } })
+
+    await expect.element(dialog()).toBeVisible()
+    expect(onClose).not.toHaveBeenCalled()
+  })
+
+  it('enters from the bottom, and stands still when the user prefers reduced motion', async () => {
+    await page.viewport(390, 800)
+    mount(<Harness {...sheetProps} />)
+    await openDialog()
+    expect(getComputedStyle(dialog().element()).animationName).toContain('enter-from-bottom')
+
+    await emulateMedia({ reducedMotion: 'reduce' })
+
+    expect(getComputedStyle(dialog().element()).animationName).toBe('none')
   })
 })
 
