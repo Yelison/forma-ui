@@ -137,13 +137,14 @@ describe('SearchField read-only against disabled', () => {
     expect(document.activeElement).toBe(document.body)
   })
 
-  it('keeps its text when Escape is pressed in a read-only field', async () => {
-    const { readOnly } = mountPair()
+  it('does not clear a read-only field on Escape', async () => {
+    const onValueChange = vi.fn()
+    mount(<SearchField label="Plan search" value="Team" onValueChange={onValueChange} readOnly />)
 
     await pressTab()
     await pressEscape()
 
-    await expect.element(readOnly).toHaveValue('Team')
+    expect(onValueChange).not.toHaveBeenCalled()
   })
 })
 
@@ -184,6 +185,16 @@ describe('SearchField box', () => {
     expect(input.parentElement!.parentElement!.getBoundingClientRect().height).toBe(
       input.getBoundingClientRect().height,
     )
+  })
+
+  it('sizes the magnifier and the room for it from the same token', () => {
+    mount(<Search />)
+    const input = searchbox().element()
+    input.parentElement!.style.setProperty('--control-icon-size', '28px')
+    const icon = input.parentElement!.querySelector('svg')!.getBoundingClientRect()
+
+    expect([icon.width, icon.height]).toEqual([28, 28])
+    expect(getComputedStyle(input).paddingLeft).toBe('48px')
   })
 
   it('lets a click on the magnifier reach the input', async () => {

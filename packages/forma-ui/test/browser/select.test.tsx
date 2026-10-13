@@ -167,6 +167,16 @@ describe('Select box', () => {
     expect(chevron.top + chevron.height / 2).toBe(box.top + box.height / 2)
   })
 
+  it('sizes the chevron and the room for it from the same token', () => {
+    mount(<Priority />)
+    const select = combobox().element()
+    select.parentElement!.style.setProperty('--control-icon-size', '28px')
+    const chevron = select.parentElement!.querySelector('svg')!.getBoundingClientRect()
+
+    expect([chevron.width, chevron.height]).toEqual([28, 28])
+    expect(getComputedStyle(select).paddingRight).toBe('48px')
+  })
+
   it('lets a click on the chevron reach the select', async () => {
     mount(<Priority />)
     const chevron = combobox().element().parentElement!.querySelector('svg')!.getBoundingClientRect()
