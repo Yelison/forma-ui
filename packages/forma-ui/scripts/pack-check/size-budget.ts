@@ -31,6 +31,9 @@
 //
 // Avatar, review round 1 (grapheme initials with a code-point fallback, and the failed `src` in state): 7.96 kB for every
 // export and 0.59 kB for Avatar alone, which had 0.60 kB; its budget goes to 0.80 kB. styles.css is unchanged.
+//
+// After rebasing onto the eight icons of #67, with Avatar: 8.17 kB for every export, which had 8.10 kB, so that budget goes
+// to 8.80 kB; Button alone is 3.11 kB, iconNames 0.16 kB and styles.css 2.14 kB.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -53,7 +56,7 @@ const budgets: Budget[] = [
     name: 'dist/index.js (every export)',
     source: `import * as forma from '@yelison/forma-ui'\nconsole.log(forma)`,
     extension: '.js',
-    limit: 8100,
+    limit: 8800,
   },
   {
     name: 'import { Button } from the package',
