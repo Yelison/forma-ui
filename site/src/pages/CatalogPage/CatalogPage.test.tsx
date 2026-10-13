@@ -1,5 +1,6 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { iconNames } from '@yelison/forma-ui'
 import { describe, expect, it } from 'vitest'
 import { markedMessages, renderInSite } from '../../../test/render'
 import { untranslatedText } from '../../../test/untranslated'
@@ -45,6 +46,16 @@ describe('CatalogPage', () => {
     )
     expect(within(row('Icon')).queryByRole('link')).not.toBeInTheDocument()
     expect(within(row('Icon')).getByText('Reference page coming soon')).toBeInTheDocument()
+  })
+
+  it('shows every icon of the library in the row of Icon, each with its name', () => {
+    renderCatalog()
+
+    const names = within(row('Icon'))
+      .getAllByRole('listitem')
+      .map((item) => item.textContent)
+    expect(names).toEqual([...iconNames])
+    expect(names).toHaveLength(31)
   })
 
   it('links the row of Button to the reference of IconButton too, which the row shows', () => {
@@ -138,9 +149,12 @@ describe('CatalogPage', () => {
       const { container } = renderCatalog({ messages: markedMessages })
 
       // The names of the components, and the props and values that a label quotes, are code and are never translated.
-      const code = /^(variant|tone|icon)="[\w-]+"$|^(IconButton|search|plus|check|arrow|bell|settings|menu|home)$/
+      const code = /^(variant|tone|icon)="[\w-]+"$|^IconButton$/
+      const isIconName = (text: string) => (iconNames as readonly string[]).includes(text)
       const componentNames = ['Button', 'Input', 'Radio', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog']
-      expect(untranslatedText(container, componentNames).filter((text) => !code.test(text))).toEqual([])
+      expect(
+        untranslatedText(container, componentNames).filter((text) => !code.test(text) && !isIconName(text)),
+      ).toEqual([])
     })
   })
 
