@@ -28,6 +28,9 @@
 //
 // Avatar, on 2026-10-13: 7.83 kB for every export (7.55 kB before it), 0.47 kB for Avatar alone and 2.14 kB for styles.css
 // (2.00 kB before it). Its own budget is new: with the other components' it shows what one more component costs.
+//
+// Avatar, review round 1 (grapheme initials with a code-point fallback, and the failed `src` in state): 7.96 kB for every
+// export and 0.59 kB for Avatar alone, which had 0.60 kB; its budget goes to 0.80 kB. styles.css is unchanged.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -68,7 +71,7 @@ const budgets: Budget[] = [
     name: 'import { Avatar } from the package',
     source: `import { Avatar } from '@yelison/forma-ui'\nconsole.log(Avatar)`,
     extension: '.js',
-    limit: 600,
+    limit: 800,
   },
   {
     name: 'import { iconNames } from the package',

@@ -176,7 +176,7 @@ is the source of truth. At the time of writing they are:
 | Everything      | 7.76 kB |
 | `{ Button }`    | 3.11 kB |
 | `{ Tabs }`      | 0.66 kB |
-| `{ Avatar }`    | 0.47 kB |
+| `{ Avatar }`    | 0.59 kB |
 | `{ Radio }`     | 0.31 kB |
 | `{ Badge }`     | 0.23 kB |
 | `{ iconNames }` | 0.16 kB |
