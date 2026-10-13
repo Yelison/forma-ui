@@ -12,34 +12,22 @@ describe('the explorer components', () => {
     expect(componentDefinitions.map(({ name }) => name)).toEqual(['Button', 'Input', 'Badge', 'Tabs'])
   })
 
-  it.each(componentDefinitions)(
-    '$name: the default of every control is an option the library supports',
-    (definition) => {
-      for (const control of definition.controls) {
-        expect(control.options[0]?.proposed, control.id).toBeUndefined()
-      }
-      expect(Object.keys(defaultValues(definition)).sort()).toEqual(definition.controls.map(({ id }) => id).sort())
-    },
-  )
+  it.each(componentDefinitions)('$name: every control has a default', (definition) => {
+    expect(Object.keys(defaultValues(definition)).sort()).toEqual(definition.controls.map(({ id }) => id).sort())
+  })
 
-  it('offers the Button sizes of the proposal as disabled options, and the current height as the default', () => {
+  it('offers the two Button sizes that the library has, with the default one first', () => {
     const [button] = componentDefinitions
     const size = button?.controls.find(({ id }) => id === 'size')
 
-    expect(size?.options.map(({ value, proposed }) => [value, proposed])).toEqual([
-      ['default', undefined],
-      ['32', true],
-      ['40', true],
-      ['48', true],
-    ])
+    expect(size?.options.map(({ value }) => value)).toEqual(['default', 'compact'])
   })
 
-  it('never prints a size: no combination, not even one that asks for a proposed size, shows a prop that does not exist', () => {
+  it('prints size="compact" for the compact Button, and no size for the default one', () => {
     const [button] = componentDefinitions
-    const proposed = button?.specimen({ size: '32' }, english)
 
-    expect(proposed && formatJsx(proposed)).not.toMatch(/size/i)
-    for (const values of combinations(button!)) {
+    expect(formatJsx(button!.specimen({ size: 'compact' }, english))).toContain('size="compact"')
+    for (const values of combinations(button!).filter(({ size }) => size !== 'compact')) {
       expect(formatJsx(button!.specimen(values, english))).not.toMatch(/size/i)
     }
   })
@@ -48,9 +36,9 @@ describe('the explorer components', () => {
     for (const definition of componentDefinitions) {
       for (const values of combinations(definition)) {
         const specimen = definition.specimen(values, marked)
-        // `variant` and `tone` are values of the code, which the glossary keeps: everything else is text.
+        // `variant`, `size` and `tone` are values of the code, which the glossary keeps: everything else is text.
         const props = Object.entries(specimen.props).filter(
-          ([name]) => name !== 'variant' && name !== 'tone' && name !== 'defaultValue',
+          ([name]) => name !== 'variant' && name !== 'size' && name !== 'tone' && name !== 'defaultValue',
         )
         // The `id` of a tab is code too: what a tab says is its label and its content.
         const items =

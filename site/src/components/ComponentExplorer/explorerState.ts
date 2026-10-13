@@ -27,8 +27,7 @@ export function explorerReducer(state: ExplorerState, action: ExplorerAction): E
       const option = definitionOf(state.component)
         .controls.find((control) => control.id === action.control)
         ?.options.find((candidate) => candidate.value === action.value)
-      // A proposed option is not in the library: the select disables it, and the state refuses it all the same.
-      if (!option || option.proposed) return state
+      if (!option) return state
       return { ...state, values: { ...state.values, [action.control]: action.value } }
     }
     case 'reset':

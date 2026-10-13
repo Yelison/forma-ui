@@ -45,8 +45,11 @@ const toneOf = (className: string) => /forma-badge__(\w+)/.exec(className)?.[1]
 function observe(name: string, container: HTMLElement) {
   if (name === 'Button') {
     const button = screen.getByRole('button')
+    const compact = button.className.split(' ').includes(buttonClassName({ size: 'compact' }).split(' ').at(-1) ?? '')
+    const size = compact ? 'compact' : undefined
     return {
-      variant: buttonVariants.find((variant) => button.className === buttonClassName({ variant })),
+      variant: buttonVariants.find((variant) => button.className === buttonClassName({ variant, size })),
+      size,
       disabled: button.hasAttribute('disabled') || undefined,
       loading: button.getAttribute('aria-busy') === 'true' || undefined,
       text: button.textContent,
@@ -78,8 +81,8 @@ function observe(name: string, container: HTMLElement) {
 /** What the written code promises, in the same terms. */
 function promise(name: string, { props, children, items = [] }: Written) {
   if (name === 'Button') {
-    const { variant, disabled, loading, loadingLabel } = props
-    return { variant, disabled, loading, text: loading ? loadingLabel : children }
+    const { variant, size, disabled, loading, loadingLabel } = props
+    return { variant, size, disabled, loading, text: loading ? loadingLabel : children }
   }
   if (name === 'Input') {
     const { label, error, disabled, readOnly, defaultValue } = props

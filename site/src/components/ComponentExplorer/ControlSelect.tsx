@@ -10,7 +10,7 @@ export interface ControlSelectProps {
   onChange: (option: ControlOption) => void
 }
 
-/** One control of the explorer: a native `select`, with its label. An option that is only proposed is disabled. */
+/** One control of the explorer: a native `select`, with its label. */
 export function ControlSelect({ control, value, onChange }: ControlSelectProps) {
   const intl = useIntl()
   const id = useId()
@@ -30,7 +30,7 @@ export function ControlSelect({ control, value, onChange }: ControlSelectProps) 
         }}
       >
         {control.options.map((option) => (
-          <option key={option.value} value={option.value} disabled={option.proposed}>
+          <option key={option.value} value={option.value}>
             {optionLabel(intl, option)}
           </option>
         ))}

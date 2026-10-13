@@ -13,6 +13,7 @@
   "explorer.heading": "Explorador de componentes",
   "explorer.preview.label": "Vista previa de {component}",
   "explorer.reset": "Restablecer",
+  "explorer.size.compact": "Compacto",
   "explorer.size.default": "Predeterminado",
   "explorer.specimen.badge.amber": "Pendiente",
   "explorer.specimen.badge.blue": "En revisión",

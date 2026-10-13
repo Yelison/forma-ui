@@ -6,7 +6,7 @@ import { componentDefinitions } from './definitions'
 describe('codeLines', () => {
   it.each([
     // Button is longest while loading: one line for each prop, the tag closing and the children.
-    ['Button', 7],
+    ['Button', 8],
     // Input is longest read-only: its tag lists the label, the flag and the value.
     ['Input', 5],
     ['Badge', 3],

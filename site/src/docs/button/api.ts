@@ -9,6 +9,7 @@ const own = {
     default: `'primary'`,
     description: 'docs.button.api.variant',
   },
+  size: { type: `'default' | 'compact'`, default: `'default'`, description: 'docs.button.api.size' },
   icon: { type: 'IconName', description: 'docs.button.api.icon' },
   loading: { type: 'boolean', default: 'false', description: 'docs.button.api.loading' },
   loadingLabel: { type: 'ReactNode', description: 'docs.button.api.loadingLabel' },

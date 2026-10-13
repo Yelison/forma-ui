@@ -1,4 +1,4 @@
-import { Button, type ButtonVariant, type IconName } from '@yelison/forma-ui'
+import { Button, type ButtonSize, type ButtonVariant, type IconName } from '@yelison/forma-ui'
 import type { IntlShape } from 'react-intl'
 import type { MessageId } from '../../i18n'
 import { formatJsx } from '../../components/ComponentExplorer/formatJsx'
@@ -9,6 +9,7 @@ const variants = ['primary', 'secondary', 'ghost', 'danger'] as const satisfies 
 /** The props that an example sets: values that JSX can print, typed with the library's own types. */
 interface ButtonExampleProps {
   variant: ButtonVariant
+  size?: Extract<ButtonSize, 'compact'>
   icon?: IconName
   disabled?: true
   'aria-disabled'?: true
@@ -30,18 +31,11 @@ export function buttonExamples(intl: IntlShape): { usage: Example; groups: reado
   const action = say('docs.button.sample.action')
   const primary = { variant: 'primary' } as const
 
-  const sizes: Example[] = [
-    // The only height there is: the same button as the default one, so it has no JSX of its own.
-    { label: { message: 'docs.button.size.current' }, element: <Button {...primary}>{action}</Button> },
-    ...(['small', 'medium', 'large'] as const).map((size, index) => ({
-      label: { message: `docs.button.size.${size}` as const },
-      element: (
-        <Button variant="secondary" disabled>
-          {intl.formatMessage({ id: 'explorer.size.proposed' }, { value: [32, 40, 48][index] })}
-        </Button>
-      ),
-    })),
-  ]
+  const sizes: Example[] = (['default', 'compact'] as const).map((size) => ({
+    label: { code: `size="${size}"` },
+    // `default` is a button without the prop, so its code shows it as a plain `<Button>`.
+    ...buttonExample(size === 'default' ? primary : { ...primary, size }, action),
+  }))
 
   return {
     usage: { label: { code: 'Button' }, ...buttonExample(primary, action) },
@@ -59,8 +53,8 @@ export function buttonExamples(intl: IntlShape): { usage: Example; groups: reado
         id: 'sizes',
         title: 'detail.section.sizes',
         description: 'docs.button.sizes.description',
-        // The heights of --button-height, which the library takes from Resolve: 42 px, and 44 px below 768 px.
-        note: { id: 'docs.button.sizes.note', values: { regular: 42, touch: 44 } },
+        // The heights of --button-height and --button-height-compact; both are --touch-target below 768 px.
+        note: { id: 'docs.button.sizes.note', values: { regular: 42, compact: 36, touch: 44 } },
         examples: sizes,
       },
       {

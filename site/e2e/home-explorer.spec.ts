@@ -44,11 +44,11 @@ test.describe('with the keyboard alone', () => {
     await expect(control(page, 'Variant')).toHaveValue('secondary')
     await expect(code(page)).toContainText('<Button variant="secondary">')
 
-    // The proposed sizes cannot be reached: the arrow keys skip a disabled option.
     await page.keyboard.press('Tab')
     await expect(control(page, 'Size')).toBeFocused()
     await page.keyboard.press('ArrowDown')
-    await expect(control(page, 'Size')).toHaveValue('default')
+    await expect(control(page, 'Size')).toHaveValue('compact')
+    await expect(code(page)).toContainText('size="compact"')
 
     await page.keyboard.press('Tab')
     await expect(control(page, 'State')).toBeFocused()
@@ -185,15 +185,42 @@ test.describe('with the keyboard alone', () => {
   })
 })
 
-test.describe('the proposed Button sizes', () => {
-  test('are listed as disabled options marked as proposed, and the current height is chosen', async ({ page }) => {
+test.describe('the Button sizes', () => {
+  test('are the two that the library has, and the default one is chosen without a size in the code', async ({
+    page,
+  }) => {
     await openHome(page)
 
     await expect(control(page, 'Size')).toHaveValue('default')
-    for (const size of ['32', '40', '48']) {
-      await expect(page.getByRole('option', { name: `${size} px · Proposed` })).toBeDisabled()
-    }
+    await expect(control(page, 'Size').getByRole('option')).toHaveText(['Default', 'Compact'])
     await expect(code(page)).not.toContainText('size')
+  })
+
+  for (const { width, compact } of [
+    { width: 1440, compact: 36 },
+    { width: 390, compact: 44 },
+  ]) {
+    test(`measure 42 px and ${compact} px at ${width} px, and Reset brings the default back`, async ({ page }) => {
+      await openHome(page, { width })
+      const specimen = page.getByRole('button', { name: 'Save changes' })
+      const height = async () => (await specimen.boundingBox())?.height
+
+      expect(await height()).toBe(width < 768 ? 44 : 42)
+      await control(page, 'Size').selectOption('compact')
+      await expect(code(page)).toContainText('size="compact"')
+      expect(await height()).toBe(compact)
+
+      await page.getByRole('button', { name: 'Reset' }).click()
+      await expect(control(page, 'Size')).toHaveValue('default')
+      await expect(code(page)).not.toContainText('size')
+      expect(await height()).toBe(width < 768 ? 44 : 42)
+    })
+  }
+
+  test('are named in Spanish', async ({ page }) => {
+    await openHome(page, { locale: 'es' })
+
+    await expect(control(page, 'Tamaño').getByRole('option')).toHaveText(['Predeterminado', 'Compacto'])
   })
 })
 

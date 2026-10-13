@@ -1,4 +1,4 @@
-import type { BadgeTone, ButtonVariant } from '@yelison/forma-ui'
+import type { BadgeTone, ButtonSize, ButtonVariant } from '@yelison/forma-ui'
 import type { MessageId } from '../../i18n'
 
 /** Looks a message up in the language of the page. The specimens take their text from here, never from literals. */
@@ -16,15 +16,13 @@ export interface ControlOption {
    * value of a `variant` or a `tone` is code, which the glossary keeps in every language.
    */
   readonly label?: MessageId
-  /** Not in the library yet (D15): the option is listed, disabled, and cannot be chosen. */
-  readonly proposed?: true
 }
 
 export interface Control {
   readonly id: ControlId
   /** The message that names the control. */
   readonly label: MessageId
-  /** The first option is the default and is never a proposed one. */
+  /** The first option is the default. */
   readonly options: readonly ControlOption[]
 }
 
@@ -36,6 +34,8 @@ export type Values = Readonly<Partial<Record<ControlId, string>>>
 // JSX of the explorer can show.
 interface ButtonSpecimenProps {
   variant: ButtonVariant
+  /** Only `compact` is passed: the default size is what a button is without the prop, so its code does not show it. */
+  size?: Extract<ButtonSize, 'compact'>
   disabled?: true
   loading?: true
   /** Passed on purpose: without a `FormaProvider` the button would say «Loading…» in English on a Spanish page. */
@@ -88,13 +88,13 @@ export interface ComponentDefinition {
 }
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'danger'] as const satisfies readonly ButtonVariant[]
+const buttonSizes = ['default', 'compact'] as const satisfies readonly ButtonSize[]
 const buttonStates = ['default', 'disabled', 'loading'] as const
 const inputStates = ['default', 'error', 'disabled', 'readOnly'] as const
 const tabIds = ['overview', 'activity', 'files'] as const
 const badgeTones = ['neutral', 'blue', 'green', 'amber', 'red'] as const satisfies readonly BadgeTone[]
 
 const options = (values: readonly string[]): readonly ControlOption[] => values.map((value) => ({ value }))
-const proposed = (value: string): ControlOption => ({ value, label: 'explorer.size.proposed', proposed: true })
 
 /** The states of a control are words, not code: each has a message. */
 const states = <State extends 'default' | 'disabled' | 'loading' | 'error' | 'readOnly'>(
@@ -111,11 +111,10 @@ const button: ComponentDefinition = {
   layout: 'natural',
   controls: [
     { id: 'variant', label: 'explorer.control.variant', options: options(buttonVariants) },
-    // Button has one height (`--button-height`). 32, 40 and 48 are a proposal that no consumer has adopted.
     {
       id: 'size',
       label: 'explorer.control.size',
-      options: [{ value: 'default', label: 'explorer.size.default' }, proposed('32'), proposed('40'), proposed('48')],
+      options: buttonSizes.map((value) => ({ value, label: `explorer.size.${value}` as const })),
     },
     { id: 'state', label: 'explorer.control.state', options: states(buttonStates) },
   ],
@@ -126,6 +125,7 @@ const button: ComponentDefinition = {
       component: 'Button',
       props: {
         variant: pick(buttonVariants, values.variant),
+        size: pick(buttonSizes, values.size) === 'compact' ? 'compact' : undefined,
         disabled: state === 'disabled' || undefined,
         loading: loading || undefined,
         loadingLabel: loading ? translate('explorer.specimen.button.loadingLabel') : undefined,
