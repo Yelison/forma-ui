@@ -41,9 +41,8 @@
 // table of icons, and they have no budget of their own.
 //
 // FilterChip, on 2026-10-13, on top of the purple Badge tone: 8.66 kB for every export (8.51 kB before it) and 2.46 kB for
-// styles.css (2.38 kB before it), both
-// within their budgets, so none is raised. FilterChip alone is 2.86 kB: like Button, it carries the table of icons for its
-// chevron, and it has no budget of its own.
+// styles.css (2.38 kB before it), both within their budgets, so none is raised. FilterChip alone is 2.86 kB: like Button, it
+// carries the table of icons for its chevron, and it has no budget of its own.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
