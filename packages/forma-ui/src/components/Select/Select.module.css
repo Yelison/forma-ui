@@ -1,0 +1,34 @@
+/* The select and its chevron share one grid cell, so the chevron sits over the end of the control without a wrapper
+   that would take the clicks: it ignores the pointer, and a click on it reaches the select. */
+.wrapper {
+  display: grid;
+  align-items: center;
+}
+
+.select,
+.chevron {
+  grid-area: 1 / 1;
+}
+
+.select {
+  appearance: none; /* the native arrow is replaced by the chevron */
+  padding-right: calc(var(--space-12) + var(--control-icon-size) + var(--space-8));
+  cursor: pointer;
+}
+
+.chevron {
+  justify-self: end;
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
+  margin-right: var(--space-12);
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+/* Unavailable without losing the focus: a select with aria-disabled (while it saves, for instance) is still focusable.
+   It is dimmed like the other disabled controls of the library, whose opacity no token holds, and shows the cursor of
+   what does not take changes. */
+.select[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

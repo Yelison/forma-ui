@@ -34,6 +34,9 @@
 //
 // After rebasing onto the eight icons of #67, with Avatar: 8.17 kB for every export, which had 8.10 kB, so that budget goes
 // to 8.80 kB; Button alone is 3.11 kB, iconNames 0.16 kB and styles.css 2.14 kB.
+//
+// SearchField, Select and `Input hideLabel`, on 2026-10-13: 7.84 kB for every export (7.55 kB before), within the 8100 B it
+// already had, and 2.22 kB for styles.css (2.00 kB before), over its 2200 B: it goes to 2700 B, the measure plus 20%.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -86,7 +89,7 @@ const budgets: Budget[] = [
     name: 'dist/styles.css',
     source: `import '@yelison/forma-ui/styles.css'`,
     extension: '.css',
-    limit: 2200,
+    limit: 2700,
   },
 ]
 

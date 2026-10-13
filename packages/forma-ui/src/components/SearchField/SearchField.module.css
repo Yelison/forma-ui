@@ -1,0 +1,29 @@
+/* The input and the magnifier share one grid cell, as in Select: the control box stays the one of Input, with its
+   hover, focus ring, read-only and disabled states, and the icon sits over its start without taking clicks. */
+.wrapper {
+  display: grid;
+  align-items: center;
+}
+
+.input,
+.icon {
+  grid-area: 1 / 1;
+}
+
+.input {
+  padding-left: calc(var(--space-12) + var(--control-icon-size) + var(--space-8));
+}
+
+.icon {
+  justify-self: start;
+  width: var(--control-icon-size);
+  height: var(--control-icon-size);
+  margin-left: var(--space-12);
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+/* The native clear button is replaced by the Escape key, which works the same in every browser. */
+.input::-webkit-search-cancel-button {
+  appearance: none;
+}

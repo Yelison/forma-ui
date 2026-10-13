@@ -13,6 +13,8 @@ export { Badge, type BadgeProps, type BadgeTone } from './components/Badge/index
 export { Icon, iconNames, type IconName, type IconProps } from './components/Icon/index.js'
 export { Field, type FieldControlProps, type FieldProps } from './components/Field/index.js'
 export { Input, type InputProps } from './components/Input/index.js'
+export { SearchField, type SearchFieldProps } from './components/SearchField/index.js'
+export { Select, type SelectProps } from './components/Select/index.js'
 export {
   Button,
   IconButton,
