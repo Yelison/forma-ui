@@ -177,6 +177,23 @@ describe('Select box', () => {
     expect(getComputedStyle(select).paddingRight).toBe('48px')
   })
 
+  it('draws the chevron at the end edge in a right-to-left page: inside the border, outside the text', () => {
+    mount(
+      <div dir="rtl">
+        <Priority />
+      </div>,
+    )
+    const select = combobox().element()
+    const box = select.getBoundingClientRect()
+    const chevron = select.parentElement!.querySelector('svg')!.getBoundingClientRect()
+    const style = getComputedStyle(select)
+    const textEdge = box.left + parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft)
+
+    expect(chevron.left).toBeGreaterThanOrEqual(box.left + parseFloat(style.borderLeftWidth))
+    expect(chevron.right).toBeLessThanOrEqual(textEdge)
+    expect(parseFloat(style.paddingRight)).toBe(12)
+  })
+
   it('lets a click on the chevron reach the select', async () => {
     mount(<Priority />)
     const chevron = combobox().element().parentElement!.querySelector('svg')!.getBoundingClientRect()

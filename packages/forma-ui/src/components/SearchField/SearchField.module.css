@@ -11,14 +11,14 @@
 }
 
 .input {
-  padding-left: calc(var(--space-12) + var(--control-icon-size) + var(--space-8));
+  padding-inline-start: calc(var(--space-12) + var(--control-icon-size) + var(--space-8));
 }
 
 .icon {
-  justify-self: start;
+  justify-self: start; /* the start edge: the left in LTR, the right in RTL */
   width: var(--control-icon-size);
   height: var(--control-icon-size);
-  margin-left: calc(var(--space-12) + var(--space-1)); /* the padding of the control, inside its 1px border */
+  margin-inline-start: calc(var(--space-12) + var(--space-1)); /* the padding of the control, inside its 1px border */
   color: var(--color-muted);
   pointer-events: none;
 }

@@ -6,10 +6,13 @@ import { Icon } from '../Icon/Icon.js'
 import styles from './SearchField.module.css'
 
 /**
- * The props of {@link SearchField}: every native `input` attribute except `type`, `value` and `onChange`, which it
- * owns, plus the label, the value and its change handler.
+ * The props of {@link SearchField}: every native `input` attribute except `type`, `value`, `defaultValue` and `onChange`,
+ * which it owns (the field is always controlled), plus the label, the value and its change handler.
  */
-export interface SearchFieldProps extends Omit<ComponentProps<'input'>, 'type' | 'value' | 'onChange' | 'children'> {
+export interface SearchFieldProps extends Omit<
+  ComponentProps<'input'>,
+  'type' | 'value' | 'defaultValue' | 'onChange' | 'children'
+> {
   /** Accessible name of the field. A search box is named by its icon and placeholder for sighted people, so it is not drawn. */
   label: string
   /** The text of the search. The field is always controlled: it shows this value and nothing else. */

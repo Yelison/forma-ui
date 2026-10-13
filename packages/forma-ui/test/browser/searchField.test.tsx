@@ -198,6 +198,23 @@ describe('SearchField box', () => {
     expect(getComputedStyle(input).paddingLeft).toBe('48px')
   })
 
+  it('draws the magnifier at the start edge in a right-to-left page: inside the border, outside the text', () => {
+    mount(
+      <div dir="rtl">
+        <Search />
+      </div>,
+    )
+    const input = searchbox().element()
+    const box = input.getBoundingClientRect()
+    const icon = input.parentElement!.querySelector('svg')!.getBoundingClientRect()
+    const style = getComputedStyle(input)
+    const textEdge = box.right - parseFloat(style.borderRightWidth) - parseFloat(style.paddingRight)
+
+    expect(icon.right).toBeLessThanOrEqual(box.right - parseFloat(style.borderRightWidth))
+    expect(icon.left).toBeGreaterThanOrEqual(textEdge)
+    expect(parseFloat(style.paddingLeft)).toBe(12)
+  })
+
   it('lets a click on the magnifier reach the input', async () => {
     mount(<Search />)
     const icon = searchbox().element().parentElement!.querySelector('svg')!.getBoundingClientRect()
