@@ -26,6 +26,7 @@ const references: Reference[] = [
     },
   },
   { slug: 'badge', name: 'Badge' },
+  { slug: 'avatar', name: 'Avatar' },
   {
     slug: 'tabs',
     name: 'Tabs',
@@ -236,6 +237,21 @@ for (const reference of references) {
           }
         })
       }
+    }
+
+    if (reference.name === 'Avatar') {
+      test('measures 28, 36 and 48 px, and shows the initials where the picture fails to load', async ({ page }) => {
+        await openReference(page, reference)
+        const sizes = page.getByRole('region', { name: 'Sizes' }).getByRole('img', { name: 'Laura Méndez' })
+        const picture = page.getByRole('region', { name: 'Picture' })
+
+        expect(
+          await sizes.evaluateAll((avatars) => avatars.map((avatar) => avatar.getBoundingClientRect().width)),
+        ).toEqual([28, 36, 48])
+        // The first example loads its picture and the second fails: the initials replace it, at the same size.
+        await expect(picture.locator('img')).toHaveCount(1)
+        await expect(picture.getByText('LM')).toHaveCount(1)
+      })
     }
 
     if (reference.name === 'Radio') {

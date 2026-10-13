@@ -17,6 +17,7 @@ const referenceCatalogs: Record<(typeof componentPages)[number]['name'], Catalog
   Dialog: 'docs.dialog',
   Tabs: 'docs.tabs',
   Radio: 'docs.radio',
+  Avatar: 'docs.avatar',
 }
 
 const pageCatalogsByKey: Partial<Record<SiteRoute['key'], readonly CatalogName[]>> = {

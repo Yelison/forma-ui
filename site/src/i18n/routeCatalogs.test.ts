@@ -45,6 +45,7 @@ describe('routeCatalogs', () => {
     ['Dialog', 'docs.dialog'],
     ['Tabs', 'docs.tabs'],
     ['Radio', 'docs.radio'],
+    ['Avatar', 'docs.avatar'],
   ])('gives the reference of %s its own catalogue, %s, and no other reference', (name, catalogue) => {
     const path = componentPages.find((page) => page.name === name)?.slug
     const names = routeCatalogs(route(`/docs/components/${path}/`))

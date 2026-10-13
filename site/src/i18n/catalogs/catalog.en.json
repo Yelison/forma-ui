@@ -8,6 +8,7 @@
   "catalog.count": "{count, plural, one {Showing # component} other {Showing # components}}",
   "catalog.empty": "No component matches these filters.",
   "catalog.empty.clear": "Clear filters",
+  "catalog.family.avatar.description": "A round picture of a person, or their initials, in three sizes and five tones.",
   "catalog.family.badge.description": "A short label that tags an item with a status or category.",
   "catalog.family.button.description": "Primary, secondary and destructive actions, with an icon-only button.",
   "catalog.family.dialog.description": "A modal that confirms a decision before it is made.",

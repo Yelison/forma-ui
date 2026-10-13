@@ -1,4 +1,5 @@
 import type { componentPages } from '../routes'
+import { avatarDoc } from './avatar'
 import { badgeDoc } from './badge'
 import { buttonDoc } from './button'
 import { dialogDoc } from './dialog'
@@ -22,6 +23,7 @@ export const componentDocs: Partial<Record<(typeof componentPages)[number]['slug
   dialog: dialogDoc,
   tabs: tabsDoc,
   radio: radioDoc,
+  avatar: avatarDoc,
 }
 
 export type { ComponentDoc } from './types'

@@ -1,5 +1,8 @@
 {
   "catalog.sample.action": "Continue",
+  "catalog.sample.avatar.laura": "Laura Méndez",
+  "catalog.sample.avatar.marcos": "Marcos",
+  "catalog.sample.avatar.maria": "María Pérez Gómez",
   "catalog.sample.badge.amber": "Pending",
   "catalog.sample.badge.blue": "In review",
   "catalog.sample.badge.green": "Published",

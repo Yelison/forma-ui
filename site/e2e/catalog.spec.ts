@@ -51,8 +51,18 @@ for (const locale of ['en', 'es'] as const) {
     })
 
     test('shows a row for each family of the library, with its specimens', async ({ page }) => {
-      expect(await rowNames(page)).toEqual(['Button', 'Input', 'Radio', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
-      await expect(countOf(page)).toHaveText(t.count(8))
+      expect(await rowNames(page)).toEqual([
+        'Button',
+        'Input',
+        'Radio',
+        'Avatar',
+        'Badge',
+        'Icon',
+        'Tabs',
+        'Tooltip',
+        'Dialog',
+      ])
+      await expect(countOf(page)).toHaveText(t.count(9))
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
@@ -79,6 +89,21 @@ for (const locale of ['en', 'es'] as const) {
       await expect(empty!.getByRole('radio').nth(1)).toBeFocused()
       await expect(empty!.getByRole('radio').nth(1)).toBeChecked()
       await expect(preselected!.getByRole('radio').nth(1)).toBeChecked()
+    })
+
+    test('shows the Avatar row at its three sizes, with the initials where a picture fails to load', async ({
+      page,
+    }) => {
+      const row = page.getByRole('region', { name: 'Avatar' })
+      const sizes = await row
+        .getByRole('img', { name: 'Laura Méndez' })
+        .evaluateAll((avatars) => avatars.slice(0, 3).map((avatar) => avatar.getBoundingClientRect().width))
+
+      expect(sizes).toEqual([28, 36, 48])
+      // The picture that fails is replaced by the initials once the browser reports the error, so one image is left. The
+      // initials show ten times: three sizes, five tones, the failed picture and the decorative avatar.
+      await expect(row.getByText('LM')).toHaveCount(10)
+      await expect(row.locator('img')).toHaveCount(1)
     })
 
     test('shows the Tabs row under Navigation, with tabs that answer the keyboard', async ({ page }) => {
@@ -122,7 +147,7 @@ for (const locale of ['en', 'es'] as const) {
 
       await page.getByRole('button', { name: t.clear }).click()
 
-      expect(await rowNames(page)).toHaveLength(8)
+      expect(await rowNames(page)).toHaveLength(9)
       await expect(page.getByRole('textbox', { name: t.filterByName })).toBeFocused()
       await expect(page.getByRole('textbox', { name: t.filterByName })).toHaveValue('')
     })

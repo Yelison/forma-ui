@@ -1,6 +1,7 @@
 // Type tests: nothing here runs. `npm run typecheck` compiles this file, and it fails to compile when the reference
 // of a component stops documenting the props that the library has.
 import type {
+  AvatarProps,
   BadgeProps,
   ButtonProps,
   DialogProps,
@@ -15,6 +16,7 @@ import type {
   TooltipTriggerProps,
 } from '@yelison/forma-ui'
 import { expectTypeOf } from 'vitest'
+import { avatarApi } from './avatar/api'
 import { badgeApi } from './badge/api'
 import { buttonApi } from './button/api'
 import { dialogApi } from './dialog/api'
@@ -60,3 +62,6 @@ expectTypeOf<DialogProps>().toEqualTypeOf<ModalProps>()
 // its own, and so is every field of the items it takes.
 expectTypeOf<keyof typeof tabsApi.own>().toEqualTypeOf<keyof TabsProps>()
 expectTypeOf<keyof (typeof tabsApi.related)[0]['own']>().toEqualTypeOf<keyof TabItem>()
+
+// Avatar forwards no native attributes, so every prop of it is its own.
+expectTypeOf<keyof typeof avatarApi.own>().toEqualTypeOf<keyof AvatarProps>()

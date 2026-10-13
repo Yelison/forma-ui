@@ -10,6 +10,7 @@ describe('matchingFamilyIds', () => {
       'button',
       'input',
       'radio',
+      'avatar',
       'badge',
       'icon',
       'tabs',
