@@ -1,5 +1,24 @@
 # @yelison/forma-ui
 
+## 0.4.0
+
+### Minor Changes
+
+- 42db460: Add `Avatar`, ported from Resolve with its props (`name`, `size`, `src`, `decorative` and `className`): a round picture of a person that shows their initials when there is no picture or it fails to load. It adds `tone`, which takes the tones of `Badge` and defaults to `blue`, the color Resolve paints.
+
+  Three behaviors improve on Resolve's, which agreed to them: the initials are cut by user-perceived character (an accent written as a combining mark or an emoji stays whole, and a letter whose capital is two letters, like `ß`, stays as it is); an empty `name` hides the avatar from assistive technology instead of leaving an image with no name; and a new `src` is tried after a previous one failed.
+
+  Adds the tokens `--avatar-size-small` (28px), `--avatar-size-medium` (36px) and `--avatar-size-large` (48px), the sizes of the three `size` values. Applications that keep their own copy of `tokens.css` will see it change when they sync it.
+
+- 3f38f9b: Add `SearchField` and `Select`, ported from Resolve, and `hideLabel` on `Input` and `Field`.
+
+  - `SearchField`: a native `type="search"` with a magnifier, controlled by `value` and `onValueChange`; its `label` names it for screen readers and is not drawn. `Escape` clears a field that has text and does not propagate, so a search box in a dialog empties before the dialog closes; a read-only field keeps its text. It takes the box of `Input` (a visual drift from Resolve, which painted `--color-bg`: the background is now `--color-surface`, with the hover and focus states of `Input`).
+  - `Select`: a native `<select>` on `Field` with `label`, `hint`, `error`, `announce` and `fieldClassName`, drawn like `Input` with a chevron. `aria-disabled="true"` dims it and keeps it focusable, as in Resolve.
+  - `Input` and `Field` take `hideLabel`: the label stays the accessible name and is not drawn, and takes no room; the hint and the error stay visible and described. Without it nothing changes.
+  - New token `--control-icon-size` (20px), the size of the icon inside a text control and the room reserved for it.
+
+- 3fae565: `Icon` draws eight new icons: `align`, `clock`, `close`, `comment`, `folder`, `link`, `list` and `star`, drawn on the same 24 grid and 1.7 stroke as the 23 it had, so `IconName` and `iconNames` grow to 31 names. `iconNames` was already alphabetical and now guarantees it: the eight new names fall in among the existing ones, which keep their order, so a list that renders `iconNames` shows them interleaved. Nothing that took an `IconName` changes. `{ Icon }` weighs about 190 B more gzipped, because the table of paths travels whole with the component.
+
 ## 0.3.0
 
 ### Minor Changes
