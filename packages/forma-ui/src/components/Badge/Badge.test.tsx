@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { Badge } from './Badge'
 
 // The unit config keeps CSS Module class names as written, so the tests can name them.
-const tones = ['blue', 'green', 'amber', 'red', 'neutral'] as const
+const tones = ['blue', 'green', 'amber', 'red', 'purple', 'neutral'] as const
 
 describe('Badge', () => {
   it('shows its content and accepts native attributes', () => {
@@ -27,6 +27,36 @@ describe('Badge', () => {
     render(<Badge>Label</Badge>)
 
     expect(screen.getByText('Label')).toHaveClass('neutral')
+  })
+
+  describe('shape', () => {
+    it('is the default one when omitted: the markup is the same as with shape="default", and has no pill class', () => {
+      const { container: omitted } = render(<Badge tone="green">Label</Badge>)
+      const { container: explicit } = render(
+        <Badge tone="green" shape="default">
+          Label
+        </Badge>,
+      )
+
+      expect(omitted.innerHTML).toBe(explicit.innerHTML)
+      expect(omitted.firstElementChild?.className.split(' ')).toEqual(['badge', 'green'])
+    })
+
+    it('adds the pill class for shape="pill", next to the tone and before the caller\'s classes', () => {
+      render(
+        <Badge tone="purple" shape="pill" className="custom">
+          Label
+        </Badge>,
+      )
+
+      expect(screen.getByText('Label').className.split(' ')).toEqual(['badge', 'purple', 'pill', 'custom'])
+    })
+
+    it('does not forward shape to the DOM', () => {
+      render(<Badge shape="pill">Label</Badge>)
+
+      expect(screen.getByText('Label')).not.toHaveAttribute('shape')
+    })
   })
 
   it('keeps the class names of the caller next to its own', () => {

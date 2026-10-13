@@ -119,6 +119,7 @@ describe('Avatar in a real browser', () => {
     green: { background: '--color-green-bg', ink: '--color-green-ink' },
     amber: { background: '--color-amber-bg', ink: '--color-amber-ink' },
     red: { background: '--color-red-bg', ink: '--color-red-ink' },
+    purple: { background: '--color-purple-bg', ink: '--color-purple-ink' },
     neutral: { background: '--color-bg', ink: '--color-muted' },
   }
 

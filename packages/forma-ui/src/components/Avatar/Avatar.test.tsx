@@ -81,7 +81,7 @@ describe('Avatar', () => {
     expect(screen.getByRole('img')).toHaveClass(size)
   })
 
-  it.each(['blue', 'green', 'amber', 'red', 'neutral'] as const)('applies the %s tone', (tone) => {
+  it.each(['blue', 'green', 'amber', 'red', 'purple', 'neutral'] as const)('applies the %s tone', (tone) => {
     render(<Avatar name="Laura Méndez" tone={tone} />)
 
     expect(screen.getByRole('img').className.split(' ')).toEqual(['avatar', 'medium', tone])
