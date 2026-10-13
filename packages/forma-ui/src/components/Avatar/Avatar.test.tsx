@@ -13,6 +13,8 @@ describe('initialsOf', () => {
     ['   ', ''],
     ['Álvaro Ñúñez', 'ÁÑ'],
     ['élodie', 'É'],
+    // The capitals do not follow the language of the machine: the server and the browser must give the same letters.
+    ['iván iglesias', 'II'],
     ['··', '·'],
     ['laura@acme.example', 'L'],
   ])('%j → %j', (name, expected) => {
@@ -32,8 +34,11 @@ describe('initialsOf', () => {
   describe('without Intl.Segmenter', () => {
     afterEach(() => vi.unstubAllGlobals())
 
-    it('falls back to code points, which keep an emoji whole, and does not throw', () => {
+    it('falls back to code points, which keep an emoji whole, and does not throw', async () => {
       vi.stubGlobal('Intl', { ...Intl, Segmenter: undefined })
+      // A fresh module, so that no segmenter cached by an earlier test hides the missing one.
+      vi.resetModules()
+      const { initialsOf } = await import('./initials')
 
       expect(initialsOf('😀 Smile')).toBe('😀S')
       expect(initialsOf('Álvaro Ñúñez')).toBe('ÁÑ')
