@@ -6,16 +6,18 @@ import { OptionGroup } from '../radio/OptionGroup'
 export interface StatusFilterProps {
   /** The options of the filter; the first one means «no filter». */
   options: readonly string[]
+  /** The option that starts applied. Defaults to the first one, which means «no filter». */
+  initialValue?: string
 }
 
 /**
  * A chip in popup mode: it opens a dialog of the options, which the application renders: the chip only says that it
  * does. Focus goes back to the chip when the dialog closes, because the native dialog does it.
  */
-export function StatusFilter({ options }: StatusFilterProps) {
+export function StatusFilter({ options, initialValue = options[0] }: StatusFilterProps) {
   const intl = useIntl()
   const [open, setOpen] = useState(false)
-  const [status, setStatus] = useState(options[0])
+  const [status, setStatus] = useState(initialValue)
   const name = useId()
   const close = () => setOpen(false)
 

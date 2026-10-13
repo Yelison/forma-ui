@@ -29,12 +29,12 @@ describe('the reference of FilterChip', () => {
     expect(toggles.map((toggle) => toggle.getAttribute('aria-pressed'))).toEqual(['false', 'true', 'false'])
     expect(toggles[2]).toBeDisabled()
     for (const popup of states.getAllByRole('button', { name: /^Status: / })) {
-      expect(popup).toHaveAttribute('aria-haspopup', 'menu')
+      expect(popup).toHaveAttribute('aria-haspopup', 'dialog')
       expect(popup).not.toHaveAttribute('aria-pressed')
     }
     const code = codeOf('States')
     expect(code).toContain('<FilterChip selected>Can edit</FilterChip>')
-    expect(code).toContain('<FilterChip aria-haspopup="menu" aria-expanded={false} selected>Status: Open</FilterChip>')
+    expect(code).toContain('<FilterChip aria-haspopup="dialog" aria-expanded={open} selected>Status: Open</FilterChip>')
   })
 
   it('presses one chip at a time in the group, which has the name the example gives it', async () => {
@@ -61,6 +61,25 @@ describe('the reference of FilterChip', () => {
     expect(chip).toHaveAccessibleName('Status: Open')
     expect(chip).toHaveAttribute('aria-expanded', 'false')
     expect(chip).toHaveFocus()
+  })
+
+  it('opens the dialog from each popup chip of the states, so that none announces what it does not do', async () => {
+    renderReference('FilterChip')
+
+    for (const chip of region('States').getAllByRole('button', { name: /^Status: / })) {
+      await userEvent.click(chip)
+      expect(chip).toHaveAttribute('aria-expanded', 'true')
+      await userEvent.click(await screen.findByRole('button', { name: 'Done' }))
+      expect(chip).toHaveFocus()
+    }
+  })
+
+  it('writes the comment of the popup example whole in Spanish, with no English left in the code', () => {
+    renderReference('FilterChip', 'es')
+
+    const code = codeOf('Disparador de un popup')
+    expect(code).toContain('{/* Tu propio diálogo, popover o menú con las opciones */}')
+    expect(code).not.toContain('Your own')
   })
 
   it('documents selected as its own prop and the attributes it changes', () => {

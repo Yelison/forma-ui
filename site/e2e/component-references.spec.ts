@@ -342,16 +342,21 @@ for (const reference of references) {
     }
 
     if (reference.name === 'FilterChip') {
-      test('presses one chip at a time with the keyboard, and Tab skips the disabled one', async ({ page }) => {
+      test('skips the disabled chip with Tab and presses the next one with Enter', async ({ page }) => {
         await openReference(page, reference)
-        const group = page.getByRole('region', { name: 'Single-choice row' }).getByRole('group', { name: 'Permission' })
+        // The second group of the section is the one with a disabled option, the second of three.
+        const group = page
+          .getByRole('region', { name: 'Single-choice row' })
+          .getByRole('group', { name: 'Permission' })
+          .nth(1)
         const chips = group.getByRole('button')
 
         await chips.first().focus()
         await page.keyboard.press('Tab')
+        await expect(chips.nth(2)).toBeFocused()
         await page.keyboard.press('Enter')
 
-        await expect(chips.nth(1)).toHaveAttribute('aria-pressed', 'true')
+        await expect(chips.nth(2)).toHaveAttribute('aria-pressed', 'true')
         await expect(chips.first()).toHaveAttribute('aria-pressed', 'false')
       })
 

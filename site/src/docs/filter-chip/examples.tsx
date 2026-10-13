@@ -2,25 +2,19 @@ import { FilterChip } from '@yelison/forma-ui'
 import type { IntlShape } from 'react-intl'
 import type { MessageId } from '../../i18n'
 import { attribute, quote } from '../jsx'
+import { permissionKeys, statusKeys } from './options'
 import type { Example, ExampleGroup } from '../types'
 import { ChipRow } from './ChipRow'
 import { StatusFilter } from './StatusFilter'
 
-/** One chip and its JSX, made from the same props. */
-function chipExample(
-  label: string,
-  props: { selected?: true; disabled?: true; popup?: true },
-): Pick<Example, 'element' | 'code'> {
-  const popup = props.popup ? { 'aria-haspopup': 'menu' as const, 'aria-expanded': false } : {}
-  const written = [
-    props.popup ? 'aria-haspopup="menu"' : undefined,
-    props.popup ? 'aria-expanded={false}' : undefined,
-    attribute('selected', props.selected),
-    attribute('disabled', props.disabled),
-  ].filter((one) => one !== undefined)
+/** A toggle chip and its JSX, made from the same props. */
+function toggleExample(label: string, props: { selected?: true; disabled?: true }): Pick<Example, 'element' | 'code'> {
+  const written = [attribute('selected', props.selected), attribute('disabled', props.disabled)].filter(
+    (one) => one !== undefined,
+  )
   return {
     element: (
-      <FilterChip {...popup} selected={props.selected} disabled={props.disabled}>
+      <FilterChip selected={props.selected} disabled={props.disabled}>
         {label}
       </FilterChip>
     ),
@@ -28,15 +22,29 @@ function chipExample(
   }
 }
 
+/**
+ * A popup chip that opens what it announces, with the JSX of the chip alone: the state around it (`open`, `status`) is
+ * in the example of the popup below.
+ */
+function popupExample(
+  statuses: readonly string[],
+  label: string,
+  selected: boolean,
+  initialValue?: string,
+): Pick<Example, 'element' | 'code'> {
+  return {
+    element: <StatusFilter options={statuses} initialValue={initialValue} />,
+    code: `<FilterChip aria-haspopup="dialog" aria-expanded={open}${selected ? ' selected' : ''}>${label}</FilterChip>`,
+  }
+}
+
 /** The examples of the reference of FilterChip, with their text in the language of `intl`. */
 export function filterChipExamples(intl: IntlShape): { usage: Example; groups: readonly ExampleGroup[] } {
   const say = (id: MessageId) => intl.formatMessage({ id })
   const legend = say('catalog.sample.permission.legend')
-  const permissions = ['everyone', 'canEdit', 'readOnly'].map((key) =>
-    say(`catalog.sample.permission.${key}` as MessageId),
-  )
+  const permissions = permissionKeys.map((key) => say(`catalog.sample.permission.${key}`))
   const [everyone = '', canEdit = ''] = permissions
-  const statuses = ['all', 'open', 'closed'].map((key) => say(`catalog.sample.status.${key}` as MessageId))
+  const statuses = statusKeys.map((key) => say(`catalog.sample.status.${key}`))
   const [allStatuses = '', openStatus = ''] = statuses
   const chip = (value: string) => intl.formatMessage({ id: 'catalog.sample.status.chip' }, { value })
 
@@ -65,7 +73,7 @@ export function filterChipExamples(intl: IntlShape): { usage: Example; groups: r
     `>`,
     `  ${chip('{status}')}`,
     `</FilterChip>`,
-    `{/* Your own dialog, popover or menu with the options: ${say('docs.filterChip.popup.comment')} */}`,
+    `{/* ${say('docs.filterChip.popup.comment')} */}`,
   ].join('\n')
 
   return {
@@ -83,27 +91,27 @@ export function filterChipExamples(intl: IntlShape): { usage: Example; groups: r
           {
             label: { message: 'docs.filterChip.state.toggle' },
             hint: say('docs.filterChip.state.toggleHint'),
-            ...chipExample(canEdit, {}),
+            ...toggleExample(canEdit, {}),
           },
           {
             label: { code: 'selected' },
             hint: say('docs.filterChip.state.selectedHint'),
-            ...chipExample(canEdit, { selected: true }),
+            ...toggleExample(canEdit, { selected: true }),
           },
           {
             label: { message: 'catalog.state.disabled' },
             hint: say('docs.filterChip.state.disabledHint'),
-            ...chipExample(canEdit, { disabled: true }),
+            ...toggleExample(canEdit, { disabled: true }),
           },
           {
             label: { code: 'aria-haspopup' },
             hint: say('docs.filterChip.state.popupHint'),
-            ...chipExample(chip(allStatuses), { popup: true }),
+            ...popupExample(statuses, chip(allStatuses), false),
           },
           {
             label: { code: 'aria-haspopup, selected' },
             hint: say('docs.filterChip.state.popupSelectedHint'),
-            ...chipExample(chip(openStatus), { popup: true, selected: true }),
+            ...popupExample(statuses, chip(openStatus), true, openStatus),
           },
         ],
       },
