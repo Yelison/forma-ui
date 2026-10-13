@@ -7,7 +7,7 @@ import { loadStyles, loadTokens, mount } from './support'
 
 // Axe computes contrast from the real styles, so the page gets the generated tokens and the built styles.css, as a
 // consumer's does: what is checked is the CSS the package ships, not the module the runner would serve.
-const tones: BadgeTone[] = ['blue', 'green', 'amber', 'red', 'neutral']
+const tones: BadgeTone[] = ['blue', 'green', 'amber', 'red', 'purple', 'neutral']
 const themes = ['light', 'dark'] as const
 const root = document.documentElement
 

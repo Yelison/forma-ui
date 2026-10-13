@@ -9,7 +9,7 @@ import { loadStyles, loadTokens, mount } from './support'
 // The page gets the generated tokens and the built styles.css, as a consumer's does: what is checked is the CSS the
 // package ships, not the module the runner would serve. Axe does not measure the contrast of text inside an element
 // with `role="img"`, which is what an avatar is, so the contrast of the initials is measured here, from the painted colors.
-const tones: BadgeTone[] = ['blue', 'green', 'amber', 'red', 'neutral']
+const tones: BadgeTone[] = ['blue', 'green', 'amber', 'red', 'purple', 'neutral']
 const sizes: AvatarSize[] = ['small', 'medium', 'large']
 const themes = ['light', 'dark'] as const
 const root = document.documentElement
