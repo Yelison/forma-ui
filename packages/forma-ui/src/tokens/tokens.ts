@@ -56,6 +56,7 @@ export const tokenNames = [
   '--radius-small',
   '--radius-round',
   '--control-height',
+  '--control-icon-size',
   '--button-height',
   '--touch-target',
   '--avatar-size-small',

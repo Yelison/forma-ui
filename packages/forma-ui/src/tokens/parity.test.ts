@@ -37,6 +37,8 @@ const D12_FONT_FAMILY = "'Inter Variable', Inter, system-ui, -apple-system, 'Seg
 // The tokens that the library added to Resolve's: D10 (the literal sizes and the layers that Resolve left in its
 // components) and the Avatar sizes of d2-avatar, which Resolve writes as literals in `Avatar.module.css`.
 const NEW_TOKENS: Record<string, string> = {
+  // the icon inside a text control (SearchField, Select)
+  '--control-icon-size': '20px',
   // d2-avatar
   '--avatar-size-small': '28px',
   '--avatar-size-medium': '36px',
