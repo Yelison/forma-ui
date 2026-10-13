@@ -4,6 +4,7 @@ import { AvatarSpecimens } from './AvatarSpecimens'
 import { BadgeSpecimens } from './BadgeSpecimens'
 import { ButtonSpecimens } from './ButtonSpecimens'
 import { DialogSpecimens } from './DialogSpecimens'
+import { FilterChipSpecimens } from './FilterChipSpecimens'
 import { IconSpecimens } from './IconSpecimens'
 import { InputSpecimens } from './InputSpecimens'
 import { RadioSpecimens } from './RadioSpecimens'
@@ -18,6 +19,7 @@ export const familySpecimens: Record<FamilyId, ComponentType> = {
   input: InputSpecimens,
   'search-field': SearchFieldSpecimens,
   select: SelectSpecimens,
+  'filter-chip': FilterChipSpecimens,
   radio: RadioSpecimens,
   avatar: AvatarSpecimens,
   badge: BadgeSpecimens,

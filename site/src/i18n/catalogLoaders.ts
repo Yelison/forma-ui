@@ -49,6 +49,10 @@ export const catalogLoaders = {
     en: () => import('./catalogs/docs.dialog.en.json'),
     es: () => import('./catalogs/docs.dialog.es.json'),
   },
+  'docs.filterChip': {
+    en: () => import('./catalogs/docs.filterChip.en.json'),
+    es: () => import('./catalogs/docs.filterChip.es.json'),
+  },
   'docs.iconButton': {
     en: () => import('./catalogs/docs.iconButton.en.json'),
     es: () => import('./catalogs/docs.iconButton.es.json'),

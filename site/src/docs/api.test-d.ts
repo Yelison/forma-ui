@@ -7,6 +7,7 @@ import type {
   DialogProps,
   FieldProps,
   IconButtonProps,
+  FilterChipProps,
   InputProps,
   ModalProps,
   RadioProps,
@@ -22,6 +23,7 @@ import { avatarApi } from './avatar/api'
 import { badgeApi } from './badge/api'
 import { buttonApi } from './button/api'
 import { dialogApi } from './dialog/api'
+import { filterChipApi } from './filter-chip/api'
 import { iconButtonApi } from './icon-button/api'
 import { inputApi } from './input/api'
 import { radioApi } from './radio/api'
@@ -71,6 +73,17 @@ expectTypeOf(controlled).toBeObject()
 // Select, against a `<select>`: the same two rules.
 expectTypeOf<keyof typeof selectApi.own>().toEqualTypeOf<OwnProps<SelectProps, 'select'>>()
 expectTypeOf<keyof typeof selectApi.changed>().toExtend<keyof SelectProps>()
+
+// FilterChip, against a `<button>`: the same two rules.
+expectTypeOf<keyof typeof filterChipApi.own>().toEqualTypeOf<OwnProps<FilterChipProps, 'button'>>()
+expectTypeOf<keyof typeof filterChipApi.changed>().toExtend<keyof FilterChipProps>()
+
+// `aria-pressed` comes from `selected`, so the type refuses it, and the reference lists no row for it.
+const pressed: FilterChipProps = {
+  // @ts-expect-error `aria-pressed` is omitted from the props of FilterChip.
+  'aria-pressed': true,
+}
+expectTypeOf(pressed).toBeObject()
 
 // Tooltip wraps no element, so every prop of it is its own, and so is every prop that it hands to its trigger.
 expectTypeOf<keyof typeof tooltipApi.own>().toEqualTypeOf<keyof TooltipProps>()

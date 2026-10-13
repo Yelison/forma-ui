@@ -5,7 +5,18 @@ import { componentPages, sectionPaths } from '../routes'
 export type CatalogCategory = 'actions' | 'forms' | 'navigation' | 'display' | 'feedback'
 
 export type FamilyId =
-  'button' | 'input' | 'search-field' | 'select' | 'radio' | 'avatar' | 'badge' | 'icon' | 'tabs' | 'tooltip' | 'dialog'
+  | 'button'
+  | 'input'
+  | 'search-field'
+  | 'select'
+  | 'filter-chip'
+  | 'radio'
+  | 'avatar'
+  | 'badge'
+  | 'icon'
+  | 'tabs'
+  | 'tooltip'
+  | 'dialog'
 
 /** A reference page that a row links to: the component it documents (never translated) and where it is. */
 export interface CatalogReference {
@@ -74,6 +85,13 @@ export const catalogFamilies: readonly CatalogFamily[] = [
     category: 'forms',
     descriptionId: 'catalog.family.select.description',
     references: [reference('select')],
+  },
+  {
+    id: 'filter-chip',
+    name: 'FilterChip',
+    category: 'actions',
+    descriptionId: 'catalog.family.filterChip.description',
+    references: [reference('filter-chip')],
   },
   {
     id: 'radio',

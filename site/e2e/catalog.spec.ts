@@ -56,6 +56,7 @@ for (const locale of ['en', 'es'] as const) {
         'Input',
         'SearchField',
         'Select',
+        'FilterChip',
         'Radio',
         'Avatar',
         'Badge',
@@ -64,7 +65,7 @@ for (const locale of ['en', 'es'] as const) {
         'Tooltip',
         'Dialog',
       ])
-      await expect(countOf(page)).toHaveText(t.count(11))
+      await expect(countOf(page)).toHaveText(t.count(12))
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
@@ -165,7 +166,7 @@ for (const locale of ['en', 'es'] as const) {
 
       await page.getByRole('button', { name: t.clear }).click()
 
-      expect(await rowNames(page)).toHaveLength(11)
+      expect(await rowNames(page)).toHaveLength(12)
       await expect(page.getByRole('textbox', { name: t.filterByName })).toBeFocused()
       await expect(page.getByRole('textbox', { name: t.filterByName })).toHaveValue('')
     })
