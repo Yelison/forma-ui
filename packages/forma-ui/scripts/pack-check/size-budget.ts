@@ -35,8 +35,10 @@
 // After rebasing onto the eight icons of #67, with Avatar: 8.17 kB for every export, which had 8.10 kB, so that budget goes
 // to 8.80 kB; Button alone is 3.11 kB, iconNames 0.16 kB and styles.css 2.14 kB.
 //
-// SearchField, Select and `Input hideLabel`, on 2026-10-13: 7.84 kB for every export (7.55 kB before), within the 8100 B it
-// already had, and 2.22 kB for styles.css (2.00 kB before), over its 2200 B: it goes to 2700 B, the measure plus 20%.
+// SearchField, Select and `Input hideLabel`, on 2026-10-13, measured on top of the icons and Avatar: 8.46 kB for every export
+// (8.17 kB before), within the 8800 B it already had, and 2.35 kB for styles.css (2.14 kB before), over its 2200 B, which
+// goes to 2700 B (the measure plus 15%). SearchField alone is 3.29 kB and Select alone 3.16 kB: like Button, they carry the
+// table of icons, and they have no budget of their own.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
