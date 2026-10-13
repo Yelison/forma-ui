@@ -19,7 +19,7 @@
   "docs.avatar.limit.interactive": "Un avatar no es un botón ni un enlace: no tiene comportamiento al pasar el cursor, al enfocar ni al pulsar. Envuélvelo en un control propio cuando lo necesite y ponle nombre a ese control.",
   "docs.avatar.limit.native": "Solo admite las props de arriba: no reenvía <code>id</code>, <code>title</code> ni <code>data-*</code>. Pon el atributo en un elemento que lo envuelva.",
   "docs.avatar.limit.sizes": "Hay tres tamaños, fijados por los tokens <code>--avatar-size-small</code>, <code>--avatar-size-medium</code> y <code>--avatar-size-large</code>. No hay prop ni propiedad personalizada para otro tamaño.",
-  "docs.avatar.limit.tones": "Hay cinco tonos y ninguna forma de añadir otro. El tono no depende del nombre: lo eliges tú, y no lo uses como única señal de quién es alguien.",
+  "docs.avatar.limit.tones": "Hay seis tonos y ninguna forma de añadir otro. El tono no depende del nombre: lo eliges tú, y no lo uses como única señal de quién es alguien.",
   "docs.avatar.picture.description": "Una imagen llena el círculo y lo cubre. Si el enlace falta o falla, el avatar muestra las iniciales con el mismo tamaño, así que el diseño no se mueve. El JSX nombra un archivo propio.",
   "docs.avatar.picture.failedHint": "La imagen no carga: se muestran las iniciales.",
   "docs.avatar.picture.loadedHint": "La imagen carga y cubre el círculo.",
@@ -27,7 +27,7 @@
   "docs.avatar.sizes.description": "Tres tamaños, 28, 36 y 48 px. El predeterminado es medium.",
   "docs.avatar.sizes.title": "Tamaños",
   "docs.avatar.summary": "Una imagen redonda de una persona, o sus iniciales cuando no hay imagen.",
-  "docs.avatar.tones.description": "Cinco roles de color, los mismos que Badge. Cada uno se muestra sobre una tarjeta, porque el avatar neutro tiene el fondo del panel. El predeterminado es blue.",
+  "docs.avatar.tones.description": "Seis roles de color, los mismos que Badge. Cada uno se muestra sobre una tarjeta, porque el avatar neutro tiene el fondo del panel. El predeterminado es blue.",
   "docs.avatar.tones.title": "Tonos",
   "docs.avatar.usage.description": "Importa Avatar y pasa el nombre completo: forma las iniciales y da nombre al avatar para un lector de pantalla."
 }

@@ -175,16 +175,16 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size    |
 | ----------------- | ------- |
-| Everything        | 8.46 kB |
+| Everything        | 8.51 kB |
 | `{ SearchField }` | 3.29 kB |
 | `{ Select }`      | 3.16 kB |
 | `{ Button }`      | 3.11 kB |
 | `{ Tabs }`        | 0.66 kB |
 | `{ Avatar }`      | 0.59 kB |
 | `{ Radio }`       | 0.31 kB |
-| `{ Badge }`       | 0.23 kB |
+| `{ Badge }`       | 0.26 kB |
 | `{ iconNames }`   | 0.16 kB |
-| `styles.css`      | 2.35 kB |
+| `styles.css`      | 2.38 kB |
 
 `Button`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
 the whole table travels with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,

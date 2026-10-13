@@ -5,12 +5,15 @@ import styles from './Badge.module.css'
 /** The color roles a badge can take. */
 export type BadgeTone = 'blue' | 'green' | 'amber' | 'red' | 'purple' | 'neutral'
 
+/** The outline of a badge: `default` has the corners of a control, `pill` rounds both ends completely. */
+export type BadgeShape = 'default' | 'pill'
+
 /** Props of {@link Badge}: the native `span` attributes plus the tone and the shape. */
 export interface BadgeProps extends ComponentProps<'span'> {
   /** Color of the badge. Defaults to `neutral`. */
   tone?: BadgeTone
   /** Outline of the badge: `default` has the corners of a control. `pill` rounds the ends completely and keeps the height. Defaults to `default`. */
-  shape?: 'default' | 'pill'
+  shape?: BadgeShape
 }
 
 /**

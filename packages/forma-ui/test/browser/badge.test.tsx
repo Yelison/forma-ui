@@ -1,9 +1,8 @@
 import type { CSSProperties } from 'react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { Badge, type BadgeTone } from '../../src/components/Badge'
-import { contrastRatio } from '../../src/tokens/contrast'
 import { expectNoAxeViolations } from '../axe'
-import { loadStyles, loadTokens, mount } from './support'
+import { loadStyles, loadTokens, mount, paintedContrast } from './support'
 
 // Axe computes contrast from the real styles, so the page gets the generated tokens and the built styles.css, as a
 // consumer's does: what is checked is the CSS the package ships, not the module the runner would serve.
@@ -73,21 +72,15 @@ describe('Badge in a real browser', () => {
     },
   )
 
-  // `getComputedStyle` reports `rgb(r, g, b)`; the contrast helper reads hex, as `tokens.json` holds the colors.
-  const toHex = (rgb: string) =>
-    `#${(rgb.match(/\d+/g) ?? [])
-      .slice(0, 3)
-      .map((channel) => Number(channel).toString(16).padStart(2, '0'))
-      .join('')}`
-
   it.each(themes.flatMap((theme) => tones.map((tone) => ({ theme, tone }))))(
     'shows the text of the $tone tone at 4.5:1 or more in the $theme theme',
     ({ theme, tone }) => {
       root.setAttribute('data-theme', theme)
       const container = mount(<Badge tone={tone}>Label</Badge>)
-      const style = getComputedStyle(container.querySelector('span') as HTMLSpanElement)
+      const badge = container.querySelector('span')
+      if (!badge) throw new Error('the badge did not render')
 
-      expect(contrastRatio(toHex(style.color), toHex(style.backgroundColor))).toBeGreaterThanOrEqual(4.5)
+      expect(paintedContrast(badge)).toBeGreaterThanOrEqual(4.5)
     },
   )
 

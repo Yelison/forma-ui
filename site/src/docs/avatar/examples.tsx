@@ -7,7 +7,7 @@ import { NamedAvatar } from './NamedAvatar'
 import { brokenPicture, workingPicture } from './samplePictures'
 
 const sizes = ['small', 'medium', 'large'] as const satisfies readonly AvatarSize[]
-const tones = ['blue', 'green', 'amber', 'red', 'neutral'] as const satisfies readonly BadgeTone[]
+const tones = ['blue', 'green', 'amber', 'red', 'purple', 'neutral'] as const satisfies readonly BadgeTone[]
 
 /** The JSX of an avatar: `props` are the ones the example sets, written as they are in the code. */
 const avatarCode = (name: string, ...props: (string | undefined)[]) =>

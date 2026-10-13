@@ -2,9 +2,8 @@ import type { CSSProperties } from 'react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { Avatar, type AvatarSize } from '../../src/components/Avatar'
 import type { BadgeTone } from '../../src/components/Badge'
-import { contrastRatio } from '../../src/tokens/contrast'
 import { expectNoAxeViolations } from '../axe'
-import { loadStyles, loadTokens, mount } from './support'
+import { loadStyles, loadTokens, mount, paintedContrast } from './support'
 
 // The page gets the generated tokens and the built styles.css, as a consumer's does: what is checked is the CSS the
 // package ships, not the module the runner would serve. Axe does not measure the contrast of text inside an element
@@ -134,20 +133,13 @@ describe('Avatar in a real browser', () => {
     },
   )
 
-  // `getComputedStyle` reports `rgb(r, g, b)`; the contrast helper reads hex, as `tokens.json` holds the colors.
-  const toHex = (rgb: string) =>
-    `#${(rgb.match(/\d+/g) ?? [])
-      .slice(0, 3)
-      .map((channel) => Number(channel).toString(16).padStart(2, '0'))
-      .join('')}`
-
   it.each(themes.flatMap((theme) => tones.map((tone) => ({ theme, tone }))))(
     'shows the initials of the $tone tone at 4.5:1 or more in the $theme theme',
     ({ theme, tone }) => {
       root.setAttribute('data-theme', theme)
-      const style = getComputedStyle(avatarIn(mount(<Avatar name="Laura Méndez" tone={tone} />)))
+      const avatar = avatarIn(mount(<Avatar name="Laura Méndez" tone={tone} />))
 
-      expect(contrastRatio(toHex(style.color), toHex(style.backgroundColor))).toBeGreaterThanOrEqual(4.5)
+      expect(paintedContrast(avatar)).toBeGreaterThanOrEqual(4.5)
     },
   )
 

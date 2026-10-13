@@ -1,5 +1,6 @@
-import { Badge, type BadgeProps, type BadgeTone } from '@yelison/forma-ui'
+import { Badge, type BadgeShape, type BadgeTone } from '@yelison/forma-ui'
 import type { IntlShape } from 'react-intl'
+import { attribute } from '../jsx'
 import { formatJsx } from '../../components/ComponentExplorer/formatJsx'
 import type { Example, ExampleGroup } from '../types'
 
@@ -19,10 +20,7 @@ function badgeExample(tone: BadgeTone, text: string): Pick<Example, 'element' | 
  * A badge of the purple tone in one shape. The explorer's specimens have no `shape` (it is not one of the props it
  * offers), so the JSX is written here, in the layout that `formatJsx` gives the tone examples.
  */
-function shapeExample(
-  shape: NonNullable<BadgeProps['shape']>,
-  text: string,
-): Pick<Example, 'element' | 'code' | 'surface'> {
+function shapeExample(shape: BadgeShape, text: string): Pick<Example, 'element' | 'code' | 'surface'> {
   return {
     surface: true,
     element: (
@@ -30,7 +28,7 @@ function shapeExample(
         {text}
       </Badge>
     ),
-    code: `<Badge tone="purple" shape="${shape}">\n  ${text}\n</Badge>`,
+    code: `<Badge ${[attribute('tone', 'purple'), attribute('shape', shape)].join(' ')}>\n  ${text}\n</Badge>`,
   }
 }
 
