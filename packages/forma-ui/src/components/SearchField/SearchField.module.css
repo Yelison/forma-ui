@@ -18,7 +18,7 @@
   justify-self: start;
   width: var(--control-icon-size);
   height: var(--control-icon-size);
-  margin-left: var(--space-12);
+  margin-left: calc(var(--space-12) + var(--space-1)); /* the padding of the control, inside its 1px border */
   color: var(--color-muted);
   pointer-events: none;
 }
