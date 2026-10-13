@@ -9,6 +9,7 @@ import {
   FilterChip,
   FormaProvider,
   IconButton,
+  initialsOf,
   Input,
   Radio,
   SearchField,
@@ -23,6 +24,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 const samples = (
   <>
     <Avatar name="Laura Méndez" size="large" tone="green" />
+    <span>{initialsOf('Laura Méndez')}</span>
     <Badge tone="blue">New</Badge>
     <Button variant="secondary">Save</Button>
     <IconButton icon="bell" label="Notifications" />
