@@ -2,9 +2,9 @@ import { Badge, type BadgeTone } from '@yelison/forma-ui'
 import { useIntl } from 'react-intl'
 import { Specimen, SpecimenGrid } from '../SpecimenGrid'
 
-const tones = ['neutral', 'blue', 'green', 'amber', 'red'] as const satisfies readonly BadgeTone[]
+const tones = ['neutral', 'blue', 'green', 'amber', 'red', 'purple'] as const satisfies readonly BadgeTone[]
 
-/** Each tone of Badge. The text says what the badge means: the color only reinforces it. Each one sits on a card of the
+/** Each tone of Badge, and the pill shape. The text says what the badge means: the color only reinforces it. Each one sits on a card of the
  * surface color: the neutral badge has the background of the panel and would not show as a badge on it. */
 export function BadgeSpecimens() {
   const intl = useIntl()
@@ -16,6 +16,11 @@ export function BadgeSpecimens() {
           <Badge tone={tone}>{intl.formatMessage({ id: `catalog.sample.badge.${tone}` })}</Badge>
         </Specimen>
       ))}
+      <Specimen label={<code>{`tone="purple" shape="pill"`}</code>} surface>
+        <Badge tone="purple" shape="pill">
+          {intl.formatMessage({ id: 'catalog.sample.badge.purple' })}
+        </Badge>
+      </Specimen>
     </SpecimenGrid>
   )
 }

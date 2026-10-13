@@ -6,13 +6,16 @@
   "docs.badge.api.children": "The text of the badge, which is what says what it means. Keep it to a word or two.",
   "docs.badge.api.className": "Added after the library's own class names.",
   "docs.badge.api.others": "Every other attribute of the native <code>span</code> element goes to it as it is: <code>id</code>, <code>title</code>, <code>role</code>, <code>aria-*</code>, <code>data-*</code>, the event handlers and <code>ref</code>.",
+  "docs.badge.api.shape": "The outline of the badge. <code>default</code> has the rounded corners of a control, and <code>pill</code> rounds both ends completely. The height is the same in both.",
   "docs.badge.api.tone": "The color role of the badge. It colors the badge and says nothing by itself: its text must say the same thing.",
   "docs.badge.limit.interactive": "A badge is not a button or a link: it has no hover, focus or dismiss behavior. Put an interactive control next to it when it needs one.",
   "docs.badge.limit.size": "There is one size and no icon slot. A badge is text.",
-  "docs.badge.limit.tones": "There are five tones and no way to add one: a status that none of them fits takes the neutral one, and its text says the rest.",
+  "docs.badge.limit.tones": "There are six tones and no way to add one: a status that none of them fits takes the neutral one, and its text says the rest.",
   "docs.badge.limit.wrap": "The text never wraps, so a long one makes the badge wider than a narrow container. Keep it short.",
+  "docs.badge.shapes.description": "The default corners suit a status in a list or a table. The pill suits a role or a category that stands apart from the text around it. Both are 28 px tall.",
+  "docs.badge.shapes.title": "Shapes",
   "docs.badge.summary": "A short label that tags an item with a status or a category.",
-  "docs.badge.tones.description": "Five color roles for a badge. Each one is shown on a card, because the neutral badge has the background of the panel.",
+  "docs.badge.tones.description": "Six color roles for a badge. Each one is shown on a card, because the neutral badge has the background of the panel.",
   "docs.badge.tones.title": "Tones",
   "docs.badge.usage.description": "Import Badge and write the status in its text. The <code>tone</code> only colors the badge: the word is what says what it means."
 }

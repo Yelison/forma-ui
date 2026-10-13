@@ -230,3 +230,28 @@ for (const theme of ['light', 'dark'] as const) {
     expect(badgeBackground).not.toBe(behindBadge)
   })
 }
+
+// The pill shape rounds the purple badge completely, and the badge keeps its 28 px, in both themes.
+for (const theme of ['light', 'dark'] as const) {
+  test(`shows the purple pill fully rounded and as tall as the other badges in the ${theme} theme`, async ({
+    page,
+  }) => {
+    await page.addInitScript((value) => localStorage.setItem('forma-ui-theme', value), theme)
+    await page.goto('./docs/components/')
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
+
+    const commenters = page.getByRole('region', { name: 'Badge' }).getByText('Commenter', { exact: true })
+    await expect(commenters).toHaveCount(2)
+    const [defaultShape, pill] = await commenters.evaluateAll((elements) =>
+      elements.map((element) => ({
+        radius: getComputedStyle(element).borderTopLeftRadius,
+        height: element.getBoundingClientRect().height,
+      })),
+    )
+
+    expect(defaultShape?.radius).toBe('8px')
+    expect(pill?.radius).not.toBe('8px')
+    expect(Number.parseFloat(pill?.radius ?? '0')).toBeGreaterThan(14)
+    expect(pill?.height).toBe(defaultShape?.height)
+  })
+}

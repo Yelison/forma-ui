@@ -184,6 +184,18 @@ describe('CatalogPage', () => {
       expect(within(row('Avatar')).getByText('Picture fails to load')).toBeInTheDocument()
     })
 
+    it('show Badge in its six tones and in the pill shape, each labeled with its props', () => {
+      renderCatalog()
+
+      const badge = within(row('Badge'))
+      for (const word of ['Draft', 'In review', 'Published', 'Pending', 'Failed']) {
+        expect(badge.getByText(word)).toBeInTheDocument()
+      }
+      expect(badge.getAllByText('Commenter')).toHaveLength(2)
+      expect(badge.getByText('tone="purple"')).toBeInTheDocument()
+      expect(badge.getByText('tone="purple" shape="pill"')).toBeInTheDocument()
+    })
+
     it('put Avatar under Display, with the Badge', async () => {
       renderCatalog()
 

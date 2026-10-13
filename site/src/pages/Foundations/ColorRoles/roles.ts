@@ -61,6 +61,8 @@ export const colorRoleGroups = [
       { name: 'amber-bg', label: 'foundations.color.amberBg' },
       { name: 'red-ink', label: 'foundations.color.redInk' },
       { name: 'red-bg', label: 'foundations.color.redBg' },
+      { name: 'purple-ink', label: 'foundations.color.purpleInk' },
+      { name: 'purple-bg', label: 'foundations.color.purpleBg' },
     ],
   },
 ] as const satisfies readonly { group: string; roles: readonly ColorRole[] }[]
