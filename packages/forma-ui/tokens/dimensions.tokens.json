@@ -110,6 +110,18 @@
           }
         }
       }
+    },
+    "height-compact": {
+      "$type": "dimension",
+      "$value": "36px",
+      "$description": "The height of a compact Button. Below 768px it is touch.target, as button.height is: a compact button is as big as a default one on a small screen, so that the touch target is never smaller than the package's minimum.",
+      "$extensions": {
+        "forma": {
+          "media": {
+            "(max-width: 767.98px)": "{touch.target}"
+          }
+        }
+      }
     }
   },
   "touch": {

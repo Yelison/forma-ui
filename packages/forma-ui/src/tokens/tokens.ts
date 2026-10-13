@@ -60,6 +60,7 @@ export const tokenNames = [
   '--control-height',
   '--control-icon-size',
   '--button-height',
+  '--button-height-compact',
   '--touch-target',
   '--avatar-size-small',
   '--avatar-size-medium',

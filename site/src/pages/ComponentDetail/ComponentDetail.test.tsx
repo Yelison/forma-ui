@@ -68,16 +68,15 @@ describe('ComponentDetail', () => {
     expect(codeOf('States')).toContain('<Button variant="primary" aria-disabled>')
   })
 
-  it('lists the proposed sizes disabled and marked, and never in the JSX', () => {
+  it('shows the two sizes that the library has, with the JSX of the compact one, and no proposed size', () => {
     renderButton()
 
     const sizes = screen.getByRole('region', { name: 'Sizes' })
-    for (const proposed of ['32 px · Proposed', '40 px · Proposed', '48 px · Proposed']) {
-      expect(within(sizes).getByRole('button', { name: proposed })).toBeDisabled()
-    }
-    expect(within(sizes).getByText('Small · proposed')).toBeInTheDocument()
-    expect(within(sizes).queryByRole('figure')).not.toBeInTheDocument()
-    expect(document.body.textContent).not.toContain('size=')
+    expect(within(sizes).getByText('size="default"')).toBeInTheDocument()
+    expect(within(sizes).getByText('size="compact"')).toBeInTheDocument()
+    expect(codeOf('Sizes')).toContain('<Button variant="primary" size="compact">')
+    expect(sizes).not.toHaveTextContent(/proposed/i)
+    expect(within(sizes).queryByRole('button', { name: /px · Proposed/ })).not.toBeInTheDocument()
   })
 
   it('documents the props of the library, and the native ones that Button changes', () => {

@@ -58,7 +58,7 @@ export interface Example {
    * is the panel's, such as the neutral Badge, which is a bare word there. Defaults to `false`.
    */
   surface?: boolean
-  /** The JSX of the example. An example whose JSX is that of another one, or that has none (a proposal), leaves it out. */
+  /** The JSX of the example. An example whose JSX is that of another one, or that has none, leaves it out. */
   code?: string
 }
 
@@ -68,7 +68,7 @@ export interface ExampleGroup {
   id: string
   title: MessageId
   description: MessageId
-  /** A caveat under the examples, such as the sizes being a proposal, with the values its message takes. */
+  /** A caveat under the examples, such as a limit of the example, with the values its message takes. */
   note?: { id: MessageId; values?: Readonly<Record<string, number>> }
   examples: readonly Example[]
 }

@@ -50,16 +50,29 @@ describe('ComponentExplorer', () => {
     expect(codeOf()).toHaveTextContent('loading loadingLabel="Guardando…" > Guardar cambios </Button>')
   })
 
-  it('lists the proposed Button sizes disabled and marked as proposed, with the current height chosen', () => {
+  it('offers the two sizes that Button has, and nothing proposed', () => {
     renderInSite(<ComponentExplorer />)
 
     const size = screen.getByRole('combobox', { name: 'Size' })
 
     expect(size).toHaveValue('default')
-    for (const proposed of ['32', '40', '48']) {
-      expect(within(size).getByRole('option', { name: `${proposed} px · Proposed` })).toBeDisabled()
-    }
-    expect(within(size).getByRole('option', { name: 'Default' })).toBeEnabled()
+    expect(
+      within(size)
+        .getAllByRole('option')
+        .map((option) => [option.textContent, (option as HTMLOptionElement).disabled]),
+    ).toEqual([
+      ['Default', false],
+      ['Compact', false],
+    ])
+  })
+
+  it('makes the specimen and its code compact when the size is chosen, in the language of the page', async () => {
+    renderInSite(<ComponentExplorer />, { locale: 'es' })
+
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Tamaño' }), 'Compacto')
+
+    expect(screen.getByRole('button', { name: 'Guardar cambios' })).toHaveClass('forma-button__compact')
+    expect(codeOf()).toHaveTextContent('size="compact"')
   })
 
   it('moves to another component with the arrow keys, and shows its own controls and code', async () => {

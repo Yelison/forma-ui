@@ -1,4 +1,4 @@
-import { buttonClassName, type ButtonVariant } from '@yelison/forma-ui'
+import { buttonClassName, type ButtonSize, type ButtonVariant } from '@yelison/forma-ui'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Locale } from '../../i18n'
@@ -39,14 +39,24 @@ function read(code: string): Written {
 }
 
 const buttonVariants: readonly ButtonVariant[] = ['primary', 'secondary', 'ghost', 'danger']
+const buttonSizes: readonly ButtonSize[] = ['default', 'compact']
 const toneOf = (className: string) => /forma-badge__(\w+)/.exec(className)?.[1]
 
 /** What is on screen for the specimen, in the terms of the props that would produce it. */
 function observe(name: string, container: HTMLElement) {
   if (name === 'Button') {
     const button = screen.getByRole('button')
+    // The pair whose class names are the button's: `default` is a button without the prop, so it prints no size.
+    const [variant, size] =
+      buttonVariants
+        .flatMap((candidate) => buttonSizes.map((candidateSize) => [candidate, candidateSize] as const))
+        .find(
+          ([candidate, candidateSize]) =>
+            button.className === buttonClassName({ variant: candidate, size: candidateSize }),
+        ) ?? []
     return {
-      variant: buttonVariants.find((variant) => button.className === buttonClassName({ variant })),
+      variant,
+      size: size === 'compact' ? size : undefined,
       disabled: button.hasAttribute('disabled') || undefined,
       loading: button.getAttribute('aria-busy') === 'true' || undefined,
       text: button.textContent,
@@ -78,8 +88,8 @@ function observe(name: string, container: HTMLElement) {
 /** What the written code promises, in the same terms. */
 function promise(name: string, { props, children, items = [] }: Written) {
   if (name === 'Button') {
-    const { variant, disabled, loading, loadingLabel } = props
-    return { variant, disabled, loading, text: loading ? loadingLabel : children }
+    const { variant, size, disabled, loading, loadingLabel } = props
+    return { variant, size, disabled, loading, text: loading ? loadingLabel : children }
   }
   if (name === 'Input') {
     const { label, error, disabled, readOnly, defaultValue } = props

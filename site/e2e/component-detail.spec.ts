@@ -62,6 +62,36 @@ test.describe('the reference of Button', () => {
     await expect(usage.getByRole('tabpanel', { name: 'Preview' })).toBeVisible()
   })
 
+  test.describe('the sizes', () => {
+    for (const { width, heights } of [
+      { width: 1024, heights: [42, 36] },
+      { width: 390, heights: [44, 44] },
+    ]) {
+      test(`measure ${heights.join(' and ')} px at ${width} px, with the code of the compact one`, async ({ page }) => {
+        await page.setViewportSize({ width, height: 800 })
+        await openButtonPage(page)
+        const sizes = page.getByRole('region', { name: 'Sizes', exact: true })
+
+        const boxes = await sizes
+          .getByRole('button', { name: 'Continue' })
+          .evaluateAll((buttons) => buttons.map((button) => button.getBoundingClientRect().height))
+
+        expect(boxes).toEqual(heights)
+        await expect(sizes).toContainText('size="compact"')
+        await expect(sizes).not.toContainText(/proposed/i)
+      })
+    }
+
+    test('are explained in Spanish, and the discarded scale is not offered', async ({ page }) => {
+      await page.addInitScript(() => localStorage.setItem('forma-ui-locale', 'es'))
+      await page.goto(path)
+      const sizes = page.getByRole('region', { name: 'Tamaños', exact: true })
+
+      await expect(sizes).toContainText('descartó')
+      await expect(sizes.getByRole('button', { name: /px · Propuesto/ })).toHaveCount(0)
+    })
+  })
+
   test.describe('the links to its sections', () => {
     test('scroll to the section and leave the focus where the link was, not on the heading', async ({ page }) => {
       await openButtonPage(page)

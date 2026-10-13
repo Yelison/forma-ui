@@ -1,16 +1,17 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from 'vitest'
-import { userEvent } from 'vitest/browser'
+import { page, userEvent } from 'vitest/browser'
 import {
   Button,
   IconButton,
   buttonClassName,
   type ButtonProps,
+  type ButtonSize,
   type ButtonVariant,
   type IconButtonProps,
 } from '../../src/components/Button'
 import { expectNoAxeViolations } from '../axe'
-import { emulateMedia, loadStyles, loadTokens, mount, pressTab } from './support'
+import { emulateMedia, loadStyles, loadTokens, mount, pressTab, reset } from './support'
 
 // Axe computes contrast from the real styles, so the page gets the generated tokens and the built styles.css, as a
 // consumer's does: what is checked is the CSS the package ships, not the module the runner would serve.
@@ -67,6 +68,16 @@ describe('Button accessibility', () => {
     async ({ theme, variant, state }) => {
       root.setAttribute('data-theme', theme)
       const { container } = mountButton({ variant, ...stateProps[state] })
+
+      await expectNoAxeViolations(container)
+    },
+  )
+
+  it.each(themes.flatMap((theme) => variants.flatMap((variant) => states.map((state) => ({ theme, variant, state })))))(
+    'has no axe violations for a $state compact $variant button in the $theme theme',
+    async ({ theme, variant, state }) => {
+      root.setAttribute('data-theme', theme)
+      const { container } = mountButton({ variant, size: 'compact', ...stateProps[state] })
 
       await expectNoAxeViolations(container)
     },
@@ -254,6 +265,218 @@ describe('Button painting', () => {
         .poll(() => getComputedStyle(button).backgroundColor)
         .toBe(resolved('background-color', '--color-surface-hover'))
     })
+  })
+})
+
+// The painted height of each size. Below 768 px the two sizes are one: --button-height-compact falls back to
+// --touch-target, as --button-height does, so a compact button is never smaller than the package's touch minimum.
+// The runner's window is narrower than 768 px, where the heights are the touch target: these specs set the width they
+// measure at, and put the window back.
+const original = { width: window.innerWidth, height: window.innerHeight }
+
+function useDesktopViewport() {
+  beforeEach(async () => {
+    await page.viewport(1024, 768)
+  })
+
+  afterEach(async () => {
+    await page.viewport(original.width, original.height)
+  })
+}
+
+describe('Button size', () => {
+  useDesktopViewport()
+
+  const heightOf = (button: HTMLElement) => button.getBoundingClientRect().height
+
+  it.each([
+    { size: 'default', width: 1024, painted: 42 },
+    { size: 'compact', width: 1024, painted: 36 },
+    { size: 'default', width: 390, painted: 44 },
+    { size: 'compact', width: 390, painted: 44 },
+    { size: 'compact', width: 768, painted: 36 },
+    { size: 'compact', width: 767, painted: 44 },
+  ] as const)(
+    'is $painted px tall as a $size button in a $width px wide viewport',
+    async ({ size, width, painted }) => {
+      await page.viewport(width, 844)
+      const { button } = mountButton({ size })
+
+      expect(heightOf(button)).toBe(painted)
+    },
+  )
+
+  it.each(themes)('is 42 px by default and 36 px when compact in the %s theme', (theme) => {
+    root.setAttribute('data-theme', theme)
+    const { button: regular } = mountButton({ variant: 'secondary' })
+    const { button: compact } = mountButton({ variant: 'secondary', size: 'compact' })
+
+    expect([heightOf(regular), heightOf(compact)]).toEqual([42, 36])
+  })
+
+  // A literal that equals the token's current value would pass the check above, so the spec changes the token.
+  it.each(['30px', '28px'])('is %s tall when --button-height-compact says so, border included', (height) => {
+    const { button } = mountButton({ size: 'compact' }, { '--button-height-compact': height } as CSSProperties)
+
+    expect(heightOf(button)).toBe(Number.parseFloat(height))
+  })
+
+  it('does not follow --button-height when it is compact', () => {
+    const { button } = mountButton({ size: 'compact' }, { '--button-height': '60px' } as CSSProperties)
+
+    expect(heightOf(button)).toBe(36)
+  })
+
+  it('is as tall as --button-height-compact on a link that takes its look from buttonClassName', () => {
+    const container = mount(
+      <Page style={{ '--button-height-compact': '30px' } as CSSProperties}>
+        <a href="/docs" className={buttonClassName({ variant: 'secondary', size: 'compact' })}>
+          Docs
+        </a>
+      </Page>,
+    )
+
+    expect(heightOf(container.querySelector('a') as HTMLElement)).toBe(30)
+  })
+
+  // The label is 20 px and the border 2 px, so what is left inside a 36 px button is 14 px: the icon (20 px), the
+  // spinner (16 px) and the label sit centered, with no growth of the box.
+  it('keeps the box at 36 px with an icon, and with the spinner of a loading button', () => {
+    const withIcon = mountButton({ size: 'compact', icon: 'plus' }).button
+    const loading = mountButton({ size: 'compact', loading: true }).button
+
+    expect([heightOf(withIcon), heightOf(loading)]).toEqual([36, 36])
+  })
+
+  it('keeps the padding, the gap and the type of the default size', () => {
+    const regular = getComputedStyle(mountButton({ icon: 'plus' }).button)
+    const compact = getComputedStyle(mountButton({ icon: 'plus', size: 'compact' }).button)
+
+    for (const property of ['padding', 'columnGap', 'fontSize', 'fontWeight', 'lineHeight', 'borderRadius'] as const) {
+      expect(compact[property], property).toBe(regular[property])
+    }
+  })
+})
+
+// Without `size` a button is the one that Resolve has: the size option must not touch its markup or its styles.
+describe('Button without size', () => {
+  useDesktopViewport()
+
+  const styleProperties = [
+    'minHeight',
+    'height',
+    'width',
+    'padding',
+    'columnGap',
+    'fontSize',
+    'fontWeight',
+    'lineHeight',
+    'borderTopWidth',
+    'borderRadius',
+    'display',
+    'backgroundColor',
+    'color',
+  ] as const
+
+  it.each(variants)('has the markup and the computed styles of the size="default" %s button', (variant) => {
+    const plain = mountButton({ variant, icon: 'plus' }).button
+    const explicit = mountButton({ variant, icon: 'plus', size: 'default' }).button
+
+    expect(plain.outerHTML).toBe(explicit.outerHTML)
+    for (const property of styleProperties) {
+      expect(getComputedStyle(plain)[property], property).toBe(getComputedStyle(explicit)[property])
+    }
+  })
+
+  it('is 42 px tall, with the 8 px padding and gap that Resolve has', () => {
+    const { button } = mountButton({ icon: 'plus' })
+
+    const style = getComputedStyle(button)
+    expect([button.getBoundingClientRect().height, style.paddingLeft, style.columnGap]).toEqual([42, '8px', '8px'])
+    expect(button.className).not.toMatch(/compact/)
+  })
+})
+
+// The six states of Button, on the compact size: each paints as it does on the default size, and none changes the box.
+describe('A compact Button in its six states', () => {
+  useDesktopViewport()
+
+  const instant = { '--duration-fast': '0s' } as CSSProperties
+  const paint = ['backgroundColor', 'color', 'borderTopColor', 'cursor', 'outlineStyle', 'outlineWidth'] as const
+
+  type StateName = 'default' | 'hover' | 'focus' | 'disabled' | 'ariaDisabled' | 'loading'
+  const sixStates: Record<StateName, ButtonProps> = {
+    default: {},
+    hover: {},
+    focus: {},
+    disabled: { disabled: true },
+    ariaDisabled: { 'aria-disabled': true },
+    loading: { loading: true },
+  }
+
+  async function reach(state: StateName, button: HTMLButtonElement) {
+    if (state === 'hover') await userEvent.hover(button)
+    if (state === 'focus') await pressTab()
+  }
+
+  it.each(
+    themes.flatMap((theme) =>
+      (Object.keys(sixStates) as StateName[]).flatMap((state) =>
+        variants.map((variant) => ({ theme, state, variant })),
+      ),
+    ),
+  )(
+    'is 36 px tall and paints as the default size does, $state $variant in the $theme theme',
+    async ({ theme, state, variant }) => {
+      root.setAttribute('data-theme', theme)
+      // One button at a time: the keyboard reaches the first button of the page, and the pointer stays where it was.
+      async function paintOf(size: ButtonSize) {
+        const { button } = mountButton({ variant, size, ...sixStates[state] }, instant)
+        await reach(state, button)
+        const painted = Object.fromEntries(paint.map((property) => [property, getComputedStyle(button)[property]]))
+        return { height: button.getBoundingClientRect().height, painted }
+      }
+
+      const regular = await paintOf('default')
+      // `reset()` also removes the stylesheets that `beforeEach` loaded.
+      await reset()
+      loadTokens()
+      loadStyles()
+      const compact = await paintOf('compact')
+
+      expect([regular.height, compact.height]).toEqual([42, 36])
+      expect(compact.painted).toEqual(regular.painted)
+    },
+  )
+
+  it('draws the focus ring of the library when the keyboard reaches it, at the same distance as the default size', async () => {
+    root.setAttribute('data-theme', 'dark')
+    const { button } = mountButton({ size: 'compact' })
+
+    await pressTab()
+
+    expect(document.activeElement).toBe(button)
+    const style = getComputedStyle(button)
+    expect([style.outlineStyle, style.outlineWidth, style.outlineOffset]).toEqual(['solid', '2px', '2px'])
+    expect(style.outlineColor).toBe(resolved('outline-color', '--color-focus'))
+  })
+
+  it('stays focusable while loading and is skipped when disabled', async () => {
+    const container = mount(
+      <Page>
+        <Button size="compact" disabled>
+          Disabled
+        </Button>
+        <Button size="compact" loading>
+          Save
+        </Button>
+      </Page>,
+    )
+    const [, loading] = container.querySelectorAll('button')
+
+    await pressTab()
+
+    expect(document.activeElement).toBe(loading)
   })
 })
 

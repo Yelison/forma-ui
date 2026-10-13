@@ -36,7 +36,14 @@ describe('explorerReducer', () => {
     expect(explorerReducer(changed, { type: 'reset' })).toEqual(input)
   })
 
-  it.each(['32', '40', '48'])('refuses the proposed size %s: the library has no such prop', (size) => {
+  it('sets the compact size, and goes back to the default one with a reset', () => {
+    const compact = explorerReducer(initialExplorerState, { type: 'setControl', control: 'size', value: 'compact' })
+
+    expect(compact.values.size).toBe('compact')
+    expect(explorerReducer(compact, { type: 'reset' })).toEqual(initialExplorerState)
+  })
+
+  it.each(['32', '40', '48'])('refuses the size %s: the library has no such value', (size) => {
     const state = explorerReducer(initialExplorerState, { type: 'setControl', control: 'size', value: size })
 
     expect(state).toBe(initialExplorerState)
