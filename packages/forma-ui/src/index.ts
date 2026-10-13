@@ -21,6 +21,7 @@ export {
   IconButton,
   buttonClassName,
   type ButtonProps,
+  type ButtonSize,
   type IconButtonProps,
   type ButtonStyleOptions,
   type ButtonVariant,

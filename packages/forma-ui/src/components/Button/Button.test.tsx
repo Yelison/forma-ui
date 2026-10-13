@@ -6,7 +6,7 @@ import * as entry from '../../index.js'
 import { FormaProvider } from '../../provider/index.js'
 import type { IconName } from '../Icon/index.js'
 import { Button, type ButtonProps } from './Button.js'
-import type { ButtonStyleOptions, ButtonVariant } from './buttonClassName.js'
+import type { ButtonSize, ButtonStyleOptions, ButtonVariant } from './buttonClassName.js'
 
 // The unit config keeps CSS Module class names as written, so the tests can name them.
 const variants = ['primary', 'secondary', 'ghost', 'danger'] as const
@@ -76,6 +76,26 @@ describe('Button', () => {
       render(<Button>Save</Button>)
 
       expect(screen.getByRole('button')).toHaveClass('primary')
+    })
+
+    it('is compact only when it asks for the size', () => {
+      render(
+        <>
+          <Button size="compact">Compact</Button>
+          <Button size="default">Default</Button>
+          <Button>Plain</Button>
+        </>,
+      )
+
+      expect(screen.getByRole('button', { name: 'Compact' })).toHaveClass('button', 'compact')
+      expect(screen.getByRole('button', { name: 'Default' })).not.toHaveClass('compact')
+      expect(screen.getByRole('button', { name: 'Plain' })).not.toHaveClass('compact')
+    })
+
+    it('does not hand the size to the DOM', () => {
+      render(<Button size="compact">Save</Button>)
+
+      expect(screen.getByRole('button')).not.toHaveAttribute('size')
     })
 
     it('fills its container with block', () => {
@@ -238,9 +258,9 @@ describe('the public API of Button', () => {
     expectTypeOf<ButtonProps>().toExtend<ButtonStyleOptions>()
   })
 
-  it('adds exactly the props that Resolve had to the native ones', () => {
+  it('adds exactly these props to the native ones: the five of Resolve and size', () => {
     expectTypeOf<Exclude<keyof ButtonProps, keyof ComponentProps<'button'>>>().toEqualTypeOf<
-      'icon' | 'loading' | 'loadingLabel' | 'variant' | 'block'
+      'icon' | 'loading' | 'loadingLabel' | 'variant' | 'size' | 'block'
     >()
   })
 
@@ -249,6 +269,8 @@ describe('the public API of Button', () => {
     expectTypeOf<ButtonProps['loading']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<ButtonProps['loadingLabel']>().toEqualTypeOf<ReactNode>()
     expectTypeOf<ButtonProps['variant']>().toEqualTypeOf<ButtonVariant | undefined>()
+    expectTypeOf<ButtonProps['size']>().toEqualTypeOf<ButtonSize | undefined>()
+    expectTypeOf<ButtonSize>().toEqualTypeOf<'default' | 'compact'>()
     expectTypeOf<ButtonProps['block']>().toEqualTypeOf<boolean | undefined>()
     expectTypeOf<ButtonVariant>().toEqualTypeOf<'primary' | 'secondary' | 'ghost' | 'danger'>()
   })

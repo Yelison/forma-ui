@@ -45,6 +45,8 @@ const NEW_TOKENS: Record<string, string> = {
   '--color-purple-ink': '#7751b8',
   // the icon inside a text control (SearchField, Select)
   '--control-icon-size': '20px',
+  // e3-button-compact: the 36 px Button (`size="compact"`), agreed by the coordinators on 2026-10-13
+  '--button-height-compact': '36px',
   // d2-avatar
   '--avatar-size-small': '28px',
   '--avatar-size-medium': '36px',
@@ -113,9 +115,11 @@ describe('parity with Resolve c3f02f8', () => {
   it('overrides the control and button heights below 768px as global.css does', () => {
     const expected = declarationMap(findRule(findRule(resolveGlobal, MOBILE), ':root'))
     expect(expected.size).toBe(2)
-    expect(Object.fromEntries(declarationMap(findRule(findRule(generated, MOBILE), ':root')))).toEqual(
-      Object.fromEntries(expected),
-    )
+    // `--button-height-compact` is the library's own (e3-button-compact) and takes the same override: Resolve has no such token.
+    const generatedOverride = declarationMap(findRule(findRule(generated, MOBILE), ':root'))
+    expect(generatedOverride.get('--button-height-compact')).toBe('var(--touch-target)')
+    generatedOverride.delete('--button-height-compact')
+    expect(Object.fromEntries(generatedOverride)).toEqual(Object.fromEntries(expected))
   })
 
   it('emits the viewport override after :root and the dark blocks after both, in Resolve order', () => {

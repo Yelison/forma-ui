@@ -17,6 +17,17 @@ describe('buttonClassName', () => {
     expect(buttonClassName({ block: false })).toBe('button primary')
   })
 
+  it('adds the compact class only for the compact size', () => {
+    expect(buttonClassName({ size: 'compact' })).toBe('button primary compact')
+    expect(buttonClassName({ size: 'default' })).toBe('button primary')
+  })
+
+  it('keeps the order of the classes when the options are combined', () => {
+    expect(buttonClassName({ variant: 'ghost', size: 'compact', block: true, className: 'nav-link' })).toBe(
+      'button ghost compact block nav-link',
+    )
+  })
+
   it('puts the class names of the caller last', () => {
     expect(buttonClassName({ variant: 'ghost', block: true, className: 'nav-link' })).toBe(
       'button ghost block nav-link',

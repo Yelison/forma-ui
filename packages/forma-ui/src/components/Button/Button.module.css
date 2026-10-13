@@ -37,6 +37,15 @@
   cursor: progress;
 }
 
+/*
+ * Only the height changes: the padding, the gap and the label stay as they are. The label is 20 px tall, so 34 px are left
+ * inside the border, and the 20 px icon and the 16 px spinner fit with room to spare; the horizontal padding does not
+ * depend on the height.
+ */
+.compact {
+  min-height: var(--button-height-compact);
+}
+
 .block {
   width: 100%;
 }

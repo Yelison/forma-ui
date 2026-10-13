@@ -26,6 +26,7 @@ export interface ButtonProps extends ComponentProps<'button'>, ButtonStyleOption
  */
 export function Button({
   variant,
+  size,
   block,
   className,
   icon,
@@ -51,7 +52,7 @@ export function Button({
     <button
       {...props}
       type={type}
-      className={buttonClassName({ variant, block, className })}
+      className={buttonClassName({ variant, size, block, className })}
       aria-busy={loading || props['aria-busy']}
       aria-disabled={loading || props['aria-disabled']}
       onClick={handleClick}
