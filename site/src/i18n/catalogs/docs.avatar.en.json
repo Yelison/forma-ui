@@ -13,7 +13,7 @@
   "docs.avatar.decorative.description": "The name is written beside the avatar, so the avatar leaves the accessibility tree and nothing is read twice.",
   "docs.avatar.decorative.hint": "A screen reader reads the name once.",
   "docs.avatar.decorative.title": "Decorative",
-  "docs.avatar.initials.description": "The initials are the first letter of the first word of the name and of the last one, in capitals: a middle name is skipped, and a name of one word gives one letter.",
+  "docs.avatar.initials.description": "The initials are the first letter of the first word of the name and of the last one, in capitals: a middle name is skipped, and a name of one word gives one letter. To draw the same initials for something that is not an avatar, import <code>initialsOf</code>, which gives exactly what Avatar draws.",
   "docs.avatar.initials.title": "Initials",
   "docs.avatar.limit.initials": "The initials are the first letter of the first and of the last word, cut by user-perceived character, so a letter with a combining accent or an emoji stays whole. They are made capital with <code>toUpperCase()</code>, which takes no language so that the server and the browser agree: a language with its own capitals, such as Turkish «i» → «İ», shows «I». A letter whose capital is two letters, like «ß», stays as it is. A browser without <code>Intl.Segmenter</code> (Firefox before 125) cuts by code point, which can split a letter with a combining accent.",
   "docs.avatar.limit.interactive": "An avatar is not a button or a link: it has no hover, focus or press behavior. Wrap it in a control of your own when it needs one, and name that control.",

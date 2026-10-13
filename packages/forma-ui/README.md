@@ -140,6 +140,12 @@ function ThemeToggle() {
 | `Radio`                 | One option of a group that takes a single choice.                                      | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                                                                                                                                                                                                             |
 | `Avatar`                | A round picture of a person, or their initials.                                        | An image named after `name`, or hidden with `decorative` when the name is beside it. A picture that fails to load gives way to the initials. `tone` takes the tones of `Badge`.                                                                                                                                                                            |
 
+`Input`, `SearchField` and `Select` share one contract for classes: `fieldClassName` goes to the container, the `.forma-field` element that holds the label, the box and the messages, and `className` goes to the control, the `<input>` or `<select>`, which is the box you can see. Decorate the box with `className`, and match its focus with `:focus` on the control, not with `:focus-within` on the container. A control paints its text with `--color-ink` (`--color-muted` when disabled) whatever colour its parent has, even under a reset such as `input { color: inherit }`.
+
+`SearchField` is always controlled and leaves two native props out: `defaultValue`, since the text lives in your component and the field only shows it, and `children`, since an input has none and the magnifier is all the field adds. The types refuse both.
+
+`initialsOf(name)` gives the initials that `Avatar` draws for a name, so that something that is not an avatar, such as a workspace, can show the same letters. An empty or blank name gives an empty string.
+
 `Dialog` takes `presentation="sheet-on-narrow"` to become a bottom sheet below 768 px (a CSS media query, so there is no
 flash on resize): pinned to the bottom edge at the full width, with rounded top corners, a decorative handle, up to about
 90% of the viewport height with its own scroll, the bottom safe area added to its padding, and the footer buttons stacked

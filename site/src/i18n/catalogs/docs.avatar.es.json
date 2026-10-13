@@ -13,7 +13,7 @@
   "docs.avatar.decorative.description": "El nombre está escrito junto al avatar, así que el avatar sale del árbol de accesibilidad y no se lee nada dos veces.",
   "docs.avatar.decorative.hint": "Un lector de pantalla lee el nombre una vez.",
   "docs.avatar.decorative.title": "Decorativo",
-  "docs.avatar.initials.description": "Las iniciales son la primera letra de la primera palabra del nombre y de la última, en mayúsculas: un segundo nombre se salta, y un nombre de una palabra da una letra.",
+  "docs.avatar.initials.description": "Las iniciales son la primera letra de la primera palabra del nombre y de la última, en mayúsculas: un segundo nombre se salta, y un nombre de una palabra da una letra. Para dibujar las mismas iniciales de algo que no es un avatar, importa <code>initialsOf</code>, que da exactamente lo que dibuja Avatar.",
   "docs.avatar.initials.title": "Iniciales",
   "docs.avatar.limit.initials": "Las iniciales son la primera letra de la primera y de la última palabra, cortadas por carácter percibido, así que una letra con acento combinado o un emoji se mantiene entera. Se ponen en mayúscula con <code>toUpperCase()</code>, que no usa idioma para que el servidor y el navegador coincidan: un idioma con mayúsculas propias, como la «i» turca → «İ», muestra «I». Una letra cuya mayúscula son dos letras, como «ß», se queda como está. Un navegador sin <code>Intl.Segmenter</code> (Firefox anterior a 125) corta por punto de código, lo que puede separar una letra con acento combinado.",
   "docs.avatar.limit.interactive": "Un avatar no es un botón ni un enlace: no tiene comportamiento al pasar el cursor, al enfocar ni al pulsar. Envuélvelo en un control propio cuando lo necesite y ponle nombre a ese control.",
