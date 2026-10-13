@@ -205,6 +205,9 @@ describe('Input hideLabel', () => {
       return page.getByText(hint).element().getBoundingClientRect().top - input.getBoundingClientRect().bottom
     }
 
+    expect(page.getByRole('textbox', { name: 'Email' }).element().getBoundingClientRect().top).toBe(
+      page.getByText('Hidden label').element().parentElement!.getBoundingClientRect().top,
+    )
     expect(distance('Email', 'Hidden label')).toBe(distance('Name', 'Visible label'))
     expect(page.getByText('Hidden label').element()).toBeVisible()
   })

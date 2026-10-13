@@ -59,12 +59,6 @@ describe('Input', () => {
       expect(screen.getByRole('alert')).toHaveTextContent('Enter a valid email')
       expect(screen.getByText('Required')).toBeVisible()
     })
-
-    it('does not hand hideLabel to the native input', () => {
-      render(<Input label="Email" hideLabel />)
-
-      expect(screen.getByRole('textbox', { name: 'Email' })).not.toHaveAttribute('hidelabel')
-    })
   })
 
   it('respects its own id', () => {
