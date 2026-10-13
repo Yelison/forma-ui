@@ -3,8 +3,6 @@
  * them as long as its rules come after the library's in the cascade.
  */
 .chip {
-  /* The library ships no reset, so the box model is set here: the painted height is `--choice-min-height`, border included. */
-  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   gap: var(--space-8);

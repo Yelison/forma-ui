@@ -17,7 +17,7 @@
   "docs.filterChip.group.hint": "Tab reaches each chip, and Space or Enter presses it.",
   "docs.filterChip.group.title": "Single-choice row",
   "docs.filterChip.limit.color": "A pressed chip differs from the others by its border and its colors, which the pair of <code>blue-ink</code> and <code>blue-bg</code> makes distinct, and by <code>aria-pressed</code>. It has no check mark.",
-  "docs.filterChip.limit.design": "The component comes from Resolve, where it is the trigger of a menu. The toggle mode and the focus ring are additions of Forma UI, and the chip is measured to 36 px with the border included, where Resolve's was 38 px.",
+  "docs.filterChip.limit.design": "The component comes from Resolve, where it is the trigger of a menu. The toggle mode, the focus ring and the disabled look are additions of Forma UI, and its height comes from the token <code>--choice-min-height</code> instead of a literal 36 px.",
   "docs.filterChip.limit.group": "There is no component for the group: the <code>role=\"group\"</code>, its name, the layout of the row and which chip is pressed are yours. The example above is the whole pattern.",
   "docs.filterChip.limit.menu": "There is no menu or popover to go with a popup chip yet. The application opens and closes what the chip points at, and sets <code>aria-expanded</code>.",
   "docs.filterChip.limit.pressed": "A chip in popup mode never announces <code>selected</code>. If the same chip must toggle and open something, it is two controls.",

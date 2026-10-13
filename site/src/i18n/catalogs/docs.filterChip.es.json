@@ -17,7 +17,7 @@
   "docs.filterChip.group.hint": "Tab llega a cada chip, y Espacio o Intro lo pulsa.",
   "docs.filterChip.group.title": "Fila de opción única",
   "docs.filterChip.limit.color": "Un chip pulsado se distingue de los demás por el borde y los colores, que el par <code>blue-ink</code> y <code>blue-bg</code> hace distintos, y por <code>aria-pressed</code>. No tiene marca de verificación.",
-  "docs.filterChip.limit.design": "El componente viene de Resolve, donde es el disparador de un menú. El modo conmutador y el anillo de foco son añadidos de Forma UI, y el chip mide 36 px con el borde incluido, donde el de Resolve medía 38 px.",
+  "docs.filterChip.limit.design": "El componente viene de Resolve, donde es el disparador de un menú. El modo conmutador, el anillo de foco y el aspecto deshabilitado son añadidos de Forma UI, y su altura sale del token <code>--choice-min-height</code> en vez de un 36 px literal.",
   "docs.filterChip.limit.group": "No hay un componente para el grupo: el <code>role=\"group\"</code>, su nombre, la disposición de la fila y qué chip está pulsado son tuyos. El ejemplo de arriba es el patrón completo.",
   "docs.filterChip.limit.menu": "Todavía no hay un menú ni un popover que acompañe a un chip de popup. La aplicación abre y cierra lo que el chip señala, y pone <code>aria-expanded</code>.",
   "docs.filterChip.limit.pressed": "Un chip en modo popup nunca anuncia <code>selected</code>. Si un mismo chip debe conmutar y abrir algo, son dos controles.",
