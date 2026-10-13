@@ -61,8 +61,8 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ Radio: expect.any(Function) })
   })
 
-  it('exports Avatar', () => {
-    expect(entry).toMatchObject({ Avatar: expect.any(Function) })
+  it('exports Avatar and initialsOf', () => {
+    expect(entry).toMatchObject({ Avatar: expect.any(Function), initialsOf: expect.any(Function) })
   })
 
   it('exports the hook that locks the page scroll', () => {

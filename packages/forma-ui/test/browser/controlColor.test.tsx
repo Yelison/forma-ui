@@ -34,7 +34,8 @@ const colorOf = (css: string) => {
   return color
 }
 
-// A text colour that no token has, so a control that inherits it cannot be mistaken for one that uses a token.
+// White, the colour that a parent has in the case that was reported: no text token is white in either theme, so a
+// control that inherits it cannot pass for one that uses `--color-ink`.
 const parentColor = 'rgb(255, 255, 255)'
 
 function mountInWhiteParent(ui: React.ReactNode) {

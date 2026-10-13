@@ -60,13 +60,15 @@ expectTypeOf<keyof typeof radioApi.changed>().toExtend<keyof RadioProps>()
 expectTypeOf<keyof typeof searchFieldApi.own>().toEqualTypeOf<OwnProps<SearchFieldProps, 'input'>>()
 expectTypeOf<keyof typeof searchFieldApi.changed>().toExtend<keyof SearchFieldProps>()
 
-// SearchField is always controlled, so it takes no `defaultValue`: the type refuses it, and the reference does not list it.
+// SearchField is always controlled, so it takes no `defaultValue` and no `children`: the type refuses both, and the reference does not list it.
 const controlled: SearchFieldProps = {
   label: 'Search',
   value: '',
   onValueChange: () => {},
   // @ts-expect-error `defaultValue` is omitted from the props of SearchField.
   defaultValue: '',
+  // @ts-expect-error `children` is omitted too: the magnifier is the only thing the field draws besides the input.
+  children: 'x',
 }
 expectTypeOf(controlled).toBeObject()
 

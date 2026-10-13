@@ -6,8 +6,8 @@ import { Icon } from '../Icon/Icon.js'
 import styles from './SearchField.module.css'
 
 /**
- * The props of {@link SearchField}: every native `input` attribute except `type`, `value`, `defaultValue` and `onChange`,
- * which it owns (the field is always controlled), plus the label, the value and its change handler.
+ * The props of {@link SearchField}: every native `input` attribute except `type`, `value`, `defaultValue`, `onChange` and `children`,
+ * which it owns or does not take (the field is always controlled and draws only its magnifier), plus the label, the value and its change handler.
  */
 export interface SearchFieldProps extends Omit<
   ComponentProps<'input'>,
