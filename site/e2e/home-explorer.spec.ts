@@ -196,16 +196,18 @@ test.describe('the Button sizes', () => {
     await expect(code(page)).not.toContainText('size')
   })
 
-  for (const { width, compact } of [
-    { width: 1440, compact: 36 },
-    { width: 390, compact: 44 },
+  for (const { width, regular, compact } of [
+    { width: 1440, regular: 42, compact: 36 },
+    { width: 390, regular: 44, compact: 44 },
   ]) {
-    test(`measure 42 px and ${compact} px at ${width} px, and Reset brings the default back`, async ({ page }) => {
+    test(`measure ${regular} px and ${compact} px at ${width} px, and Reset brings the default back`, async ({
+      page,
+    }) => {
       await openHome(page, { width })
       const specimen = page.getByRole('button', { name: 'Save changes' })
       const height = async () => (await specimen.boundingBox())?.height
 
-      expect(await height()).toBe(width < 768 ? 44 : 42)
+      expect(await height()).toBe(regular)
       await control(page, 'Size').selectOption('compact')
       await expect(code(page)).toContainText('size="compact"')
       expect(await height()).toBe(compact)
@@ -213,7 +215,7 @@ test.describe('the Button sizes', () => {
       await page.getByRole('button', { name: 'Reset' }).click()
       await expect(control(page, 'Size')).toHaveValue('default')
       await expect(code(page)).not.toContainText('size')
-      expect(await height()).toBe(width < 768 ? 44 : 42)
+      expect(await height()).toBe(regular)
     })
   }
 

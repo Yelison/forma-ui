@@ -380,7 +380,7 @@ describe('Button without size', () => {
 
   it.each(variants)('has the markup and the computed styles of the size="default" %s button', (variant) => {
     const plain = mountButton({ variant, icon: 'plus' }).button
-    const explicit = mountButton({ variant, icon: 'plus', size: 'default' as ButtonSize }).button
+    const explicit = mountButton({ variant, icon: 'plus', size: 'default' }).button
 
     expect(plain.outerHTML).toBe(explicit.outerHTML)
     for (const property of styleProperties) {
