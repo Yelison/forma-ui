@@ -86,7 +86,7 @@ export function avatarExamples(intl: IntlShape): { usage: Example; groups: reado
               `<p>`,
               ...avatarCode(laura, attribute('decorative', true))
                 .split('\n')
-                .map((l) => `  ${l}`),
+                .map((line) => `  ${line}`),
               `  ${laura}`,
               `</p>`,
             ].join('\n'),

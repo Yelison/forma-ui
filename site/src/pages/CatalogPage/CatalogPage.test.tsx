@@ -126,7 +126,8 @@ describe('CatalogPage', () => {
       expect(disabled!.getByRole('radio', { name: 'Free' })).toBeChecked()
     })
 
-    it('show Avatar in every size and tone, with the picture that fails falling back to the initials', () => {
+    // jsdom never reports a failed load: the fall back to the initials is covered by e2e/catalog.spec.ts.
+    it('show Avatar in every size and tone, with two pictures and a decorative avatar', () => {
       renderCatalog()
 
       const avatars = within(row('Avatar')).getAllByRole('img', { name: 'Laura Méndez' })

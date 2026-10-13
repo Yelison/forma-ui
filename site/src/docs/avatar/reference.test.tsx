@@ -50,7 +50,9 @@ describe('the reference of Avatar', () => {
     expect(within(initials).getByRole('img', { name: 'María Pérez Gómez' })).toHaveTextContent('MG')
   })
 
-  it('shows a picture, and the initials where the picture does not load', () => {
+  // jsdom never reports a failed load, so this checks that both examples render a picture; the fall back to the initials
+  // in a real browser is covered by e2e/component-references.spec.ts.
+  it('renders the two picture examples, the one that loads and the one that does not', () => {
     renderReference('Avatar')
 
     const picture = screen.getByRole('region', { name: 'Picture' })

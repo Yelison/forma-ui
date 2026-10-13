@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest'
 import { Avatar } from './Avatar'
 import { initialsOf } from './initials'
 
-// The unit config keeps CSS Module class names as written, so the tests can name them.
 describe('initialsOf', () => {
   it.each([
     ['Laura Méndez', 'LM'],
@@ -19,6 +18,7 @@ describe('initialsOf', () => {
   })
 })
 
+// The unit config keeps CSS Module class names as written, so the tests can name them.
 describe('Avatar', () => {
   it('is announced with the full name', () => {
     render(<Avatar name="Laura Méndez" />)

@@ -19,7 +19,7 @@
   "docs.avatar.limit.interactive": "Un avatar no es un botón ni un enlace: no tiene comportamiento al pasar el cursor, al enfocar ni al pulsar. Envuélvelo en un control propio cuando lo necesite y ponle nombre a ese control.",
   "docs.avatar.limit.native": "Solo admite las props de arriba: no reenvía <code>id</code>, <code>title</code> ni <code>data-*</code>. Pon el atributo en un elemento que lo envuelva.",
   "docs.avatar.limit.retry": "Cuando una imagen no carga, las iniciales se quedan aunque <code>src</code> cambie después a una URL que funcione. Dale al avatar una <code>key</code> que incluya la URL para probar la nueva.",
-  "docs.avatar.limit.sizes": "Hay tres tamaños y ninguna prop ni propiedad personalizada para otro. Un tamaño se cambia para toda la aplicación fijando su token.",
+  "docs.avatar.limit.sizes": "Hay tres tamaños, fijados por los tokens <code>--avatar-size-small</code>, <code>--avatar-size-medium</code> y <code>--avatar-size-large</code>. No hay prop ni propiedad personalizada para otro tamaño.",
   "docs.avatar.limit.tones": "Hay cinco tonos y ninguna forma de añadir otro. El tono no depende del nombre: lo eliges tú, y no lo uses como única señal de quién es alguien.",
   "docs.avatar.picture.description": "Una imagen llena el círculo y lo cubre. Si el enlace falta o falla, el avatar muestra las iniciales con el mismo tamaño, así que el diseño no se mueve. El JSX nombra un archivo propio.",
   "docs.avatar.picture.failedHint": "La imagen no carga: se muestran las iniciales.",
