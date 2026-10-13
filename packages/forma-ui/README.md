@@ -130,7 +130,7 @@ function ThemeToggle() {
 | `Badge`                 | A short status or category tag, in five tones.          | The tone only colors it: the text has to say the same thing.                                                                                                             |
 | `Field`                 | A label, hint and error around a control you provide.   | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`; `announce="off"` shows it without announcing it.           |
 | `Input`                 | A native text input with its `Field`.                   | Same linking as `Field`, and it forwards `announce` to it; `disabled` and `readOnly` stay different states.                                                              |
-| `Icon`                  | One of the library's icons, as inline SVG.              | Decorative and hidden from screen readers unless you give it a `label`. `iconNames` lists every `IconName`.                                                              |
+| `Icon`                  | One of the library's icons, as inline SVG.              | Decorative and hidden from screen readers unless you give it a `label`. `iconNames` lists every `IconName`, 31 of them, in alphabetical order.                           |
 | `Tooltip`               | A short description for a control.                      | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.            |
 | `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                       | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.               |
 | `Tabs`                  | Panels that share one place, one visible at a time.     | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.            |
@@ -172,13 +172,13 @@ is the source of truth. At the time of writing they are:
 
 | What you import | Size    |
 | --------------- | ------- |
-| Everything      | 7.44 kB |
-| `{ Button }`    | 2.91 kB |
+| Everything      | 7.76 kB |
+| `{ Button }`    | 3.11 kB |
 | `{ Tabs }`      | 0.66 kB |
 | `{ Radio }`     | 0.31 kB |
 | `{ Badge }`     | 0.23 kB |
-| `{ iconNames }` | 0.15 kB |
-| `styles.css`    | 1.80 kB |
+| `{ iconNames }` | 0.16 kB |
+| `styles.css`    | 2.00 kB |
 
 `Button` is not small because `Icon` looks its path up in one object that holds every icon, so the whole table travels
 with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
