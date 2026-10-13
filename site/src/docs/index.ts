@@ -6,6 +6,8 @@ import { dialogDoc } from './dialog'
 import { iconButtonDoc } from './icon-button'
 import { inputDoc } from './input'
 import { radioDoc } from './radio'
+import { searchFieldDoc } from './search-field'
+import { selectDoc } from './select'
 import { tabsDoc } from './tabs'
 import { tooltipDoc } from './tooltip'
 import type { ComponentDoc } from './types'
@@ -24,6 +26,8 @@ export const componentDocs: Partial<Record<(typeof componentPages)[number]['slug
   tabs: tabsDoc,
   radio: radioDoc,
   avatar: avatarDoc,
+  'search-field': searchFieldDoc,
+  select: selectDoc,
 }
 
 export type { ComponentDoc } from './types'

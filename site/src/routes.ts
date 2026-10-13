@@ -59,6 +59,8 @@ export const componentPages = [
   { slug: 'tabs', name: 'Tabs' },
   { slug: 'radio', name: 'Radio' },
   { slug: 'avatar', name: 'Avatar' },
+  { slug: 'search-field', name: 'SearchField' },
+  { slug: 'select', name: 'Select' },
 ] as const
 
 export const routes: readonly SiteRoute[] = [

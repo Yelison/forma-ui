@@ -19,7 +19,19 @@ describe('CatalogPage', () => {
     renderCatalog()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument()
-    expect(rowNames()).toEqual(['Button', 'Input', 'Radio', 'Avatar', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
+    expect(rowNames()).toEqual([
+      'Button',
+      'Input',
+      'SearchField',
+      'Select',
+      'Radio',
+      'Avatar',
+      'Badge',
+      'Icon',
+      'Tabs',
+      'Tooltip',
+      'Dialog',
+    ])
     for (const planned of ['Checkbox', 'Switch', 'NavItem']) {
       expect(screen.queryByRole('heading', { name: planned })).not.toBeInTheDocument()
     }
@@ -93,6 +105,38 @@ describe('CatalogPage', () => {
       expect(fields.filter((field) => field.hasAttribute('disabled'))).toHaveLength(1)
       expect(fields.filter((field) => field.hasAttribute('readonly'))).toHaveLength(1)
       expect(input.getByRole('textbox', { description: 'Enter your full name.' })).toBeInvalid()
+    })
+
+    it('show SearchField empty, with text, disabled and read-only, each a search box named by its label', () => {
+      renderCatalog()
+
+      const boxes = within(row('SearchField')).getAllByRole('searchbox', { name: 'Search the library' })
+      expect(boxes.map((box) => (box as HTMLInputElement).value)).toEqual(['', 'button', 'button', 'button'])
+      expect(boxes.filter((box) => box.hasAttribute('disabled'))).toHaveLength(1)
+      expect(boxes.filter((box) => box.hasAttribute('readonly'))).toHaveLength(1)
+    })
+
+    it('clear a SearchField specimen with Escape, and leave the others as they are', async () => {
+      renderCatalog()
+      const [, withText, , readOnly] = within(row('SearchField')).getAllByRole('searchbox')
+
+      await userEvent.click(withText!)
+      await userEvent.keyboard('{Escape}')
+
+      expect(withText).toHaveValue('')
+      expect(readOnly).toHaveValue('button')
+    })
+
+    it('tell disabled from aria-disabled in Select, and show its error where a screen reader reads it', () => {
+      renderCatalog()
+
+      const select = within(row('Select'))
+      const fields = select.getAllByRole('combobox', { name: 'Priority' })
+      expect(fields).toHaveLength(5)
+      expect(fields.filter((field) => field.hasAttribute('disabled'))).toHaveLength(1)
+      expect(fields.filter((field) => field.getAttribute('aria-disabled') === 'true')).toHaveLength(1)
+      expect(select.getByRole('combobox', { description: 'Choose a priority.' })).toBeInvalid()
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     })
 
     it('show Tabs with three panels, once with the first tab selected and once with the second', async () => {
@@ -174,7 +218,19 @@ describe('CatalogPage', () => {
       // An empty `alt` (the picture of an avatar, which the avatar's own name already describes) says nothing in any language.
       const code = /^(variant|tone|icon)="[\w-]+"$|^IconButton$|^alt=""$/
       const isIconName = (text: string) => (iconNames as readonly string[]).includes(text)
-      const componentNames = ['Button', 'Input', 'Radio', 'Avatar', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog']
+      const componentNames = [
+        'Button',
+        'Input',
+        'SearchField',
+        'Select',
+        'Radio',
+        'Avatar',
+        'Badge',
+        'Icon',
+        'Tabs',
+        'Tooltip',
+        'Dialog',
+      ]
       // The initials of an avatar are the first letter of its name, here the mark of a message: they are made of the name.
       expect(
         untranslatedText(container, [...componentNames, '⟦']).filter((text) => !code.test(text) && !isIconName(text)),
@@ -187,7 +243,7 @@ describe('CatalogPage', () => {
       renderCatalog()
 
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 9 components$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 11 components$/)
     })
 
     it('offer the categories in the order of the design, with Navigation after Forms', () => {
@@ -208,13 +264,13 @@ describe('CatalogPage', () => {
       expect(screen.getByRole('status')).toHaveTextContent(/^Showing 2 components$/)
     })
 
-    it('keep Input and Radio under Forms', async () => {
+    it('keep Input, SearchField, Select and Radio under Forms', async () => {
       renderCatalog()
 
       await userEvent.click(screen.getByRole('radio', { name: 'Forms' }))
 
-      expect(rowNames()).toEqual(['Input', 'Radio'])
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 2 components$/)
+      expect(rowNames()).toEqual(['Input', 'SearchField', 'Select', 'Radio'])
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 4 components$/)
     })
 
     it('keep only Tabs under Navigation, which the design has between Forms and Feedback', async () => {
@@ -259,7 +315,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
 
-      expect(rowNames()).toHaveLength(9)
+      expect(rowNames()).toHaveLength(11)
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveValue('')
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveFocus()
@@ -267,7 +323,7 @@ describe('CatalogPage', () => {
 
     it('count in the language of the page', async () => {
       renderCatalog({ locale: 'es' })
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 9 componentes$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 11 componentes$/)
 
       await userEvent.click(screen.getByRole('radio', { name: 'Acciones' }))
 

@@ -5,6 +5,7 @@ import type { ComponentApi, NativeProps, OwnProps, PropDoc } from '../types'
 // a prop added without a row here fails `npm run typecheck`.
 const own = {
   label: { type: 'ReactNode', description: 'docs.input.api.label' },
+  hideLabel: { type: 'boolean', default: 'false', description: 'docs.input.api.hideLabel' },
   hint: { type: 'ReactNode', description: 'docs.input.api.hint' },
   error: { type: 'ReactNode', description: 'docs.input.api.error' },
   announce: { type: "'assertive' | 'off'", description: 'docs.input.api.announce' },
@@ -22,6 +23,7 @@ const changed = {
 // prop of it is its own.
 const field = {
   label: { type: 'ReactNode', description: 'docs.input.field.api.label' },
+  hideLabel: { type: 'boolean', default: 'false', description: 'docs.input.field.api.hideLabel' },
   hint: { type: 'ReactNode', description: 'docs.input.field.api.hint' },
   error: { type: 'ReactNode', description: 'docs.input.field.api.error' },
   announce: { type: "'assertive' | 'off'", description: 'docs.input.field.api.announce' },

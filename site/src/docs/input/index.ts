@@ -11,6 +11,7 @@ export const inputDoc: ComponentDoc = {
   api: inputApi,
   accessibility: [
     'docs.input.a11y.label',
+    'docs.input.a11y.hideLabel',
     'docs.input.a11y.describedby',
     'docs.input.a11y.error',
     'docs.input.a11y.disabled',

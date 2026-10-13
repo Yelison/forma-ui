@@ -17,6 +17,8 @@
   "catalog.family.radio.description": "One choice from a group, with the arrow keys moving between the options.",
   "catalog.family.reference": "View the {component} reference",
   "catalog.family.referencePending": "Reference page coming soon",
+  "catalog.family.searchField.description": "A search box with a magnifier, controlled by its text, that Escape clears.",
+  "catalog.family.select.description": "A native select with its label, hint and error.",
   "catalog.family.tabs.description": "One panel at a time, chosen from a list of tabs with a click or the keyboard.",
   "catalog.family.tooltip.description": "Short context for a control, on hover and on keyboard focus.",
   "catalog.filter.category": "Category",

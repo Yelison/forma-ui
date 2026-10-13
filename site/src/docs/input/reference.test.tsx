@@ -4,11 +4,19 @@ import { messages } from '../../../test/messages'
 import { codeOf, renderReference, sectionsOfPage, textOutsideMessages } from '../referenceTestUtils'
 
 describe('the reference of Input', () => {
-  it('lists its sections: the states, Field and the usual ones', () => {
+  it('lists its sections: the states, the hidden label, Field and the usual ones', () => {
     renderReference('Input')
 
     expect(screen.getByRole('heading', { level: 1, name: 'Input' })).toBeInTheDocument()
-    expect(sectionsOfPage()).toEqual(['States', 'Field', 'Usage', 'API', 'Accessibility', 'Limitations'])
+    expect(sectionsOfPage()).toEqual([
+      'States',
+      'Hidden label',
+      'Field',
+      'Usage',
+      'API',
+      'Accessibility',
+      'Limitations',
+    ])
   })
 
   it('shows the states that the library has, each one a field with its label and its JSX', () => {
@@ -56,6 +64,18 @@ describe('the reference of Input', () => {
     expect(both).toBeInvalid()
   })
 
+  it('shows the hidden label as an input that is still named, with its hint and error visible and linked', () => {
+    renderReference('Input')
+
+    const hidden = within(screen.getByRole('region', { name: 'Hidden label' }))
+    const [alone, withMessages] = hidden.getAllByRole('textbox', { name: 'Full name' })
+    expect(alone).toBeInTheDocument()
+    expect(withMessages).toHaveAccessibleDescription('Enter your full name. As it appears on your ID.')
+    expect(withMessages).toBeInvalid()
+    expect(hidden.getByText('As it appears on your ID.')).toBeVisible()
+    expect(codeOf('Hidden label')).toContain('<Input label="Full name" hideLabel />')
+  })
+
   it('shows Field around a control of the consumer, linked to its label and hint', () => {
     renderReference('Input')
 
@@ -93,6 +113,7 @@ describe('the reference of Input', () => {
     const documented = api.getAllByRole('listitem').map((item) => item.firstElementChild?.textContent)
     expect(documented).toEqual([
       'label',
+      'hideLabel',
       'hint',
       'error',
       'announce',
@@ -102,6 +123,7 @@ describe('the reference of Input', () => {
       'aria-invalid',
       'className',
       'label',
+      'hideLabel',
       'hint',
       'error',
       'announce',

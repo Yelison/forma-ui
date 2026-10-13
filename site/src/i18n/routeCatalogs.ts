@@ -18,6 +18,8 @@ const referenceCatalogs: Record<(typeof componentPages)[number]['name'], Catalog
   Tabs: 'docs.tabs',
   Radio: 'docs.radio',
   Avatar: 'docs.avatar',
+  SearchField: 'docs.searchField',
+  Select: 'docs.select',
 }
 
 const pageCatalogsByKey: Partial<Record<SiteRoute['key'], readonly CatalogName[]>> = {
