@@ -53,6 +53,10 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ Radio: expect.any(Function) })
   })
 
+  it('exports Avatar', () => {
+    expect(entry).toMatchObject({ Avatar: expect.any(Function) })
+  })
+
   it('exports the hook that locks the page scroll', () => {
     expect(entry).toMatchObject({ useScrollLock: expect.any(Function) })
   })

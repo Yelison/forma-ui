@@ -1,5 +1,8 @@
 {
   "catalog.sample.action": "Continue",
+  "catalog.sample.avatar.laura": "Laura Méndez",
+  "catalog.sample.avatar.marcos": "Marcos",
+  "catalog.sample.avatar.maria": "María Pérez Gómez",
   "catalog.sample.badge.amber": "Pending",
   "catalog.sample.badge.blue": "In review",
   "catalog.sample.badge.green": "Published",
@@ -39,6 +42,7 @@
   "catalog.state.hint": "With hint",
   "catalog.state.hoverFocus": "On hover and focus",
   "catalog.state.loading": "Loading",
+  "catalog.state.pictureFailed": "Picture fails to load",
   "catalog.state.readOnly": "Read-only",
   "docs.iconButton.sample.add": "Add"
 }

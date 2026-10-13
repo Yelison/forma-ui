@@ -30,5 +30,6 @@ export {
 } from './components/Tooltip/index.js'
 export { Dialog, Modal, type DialogProps, type ModalProps } from './components/Dialog/index.js'
 export { Radio, type RadioProps } from './components/Radio/index.js'
+export { Avatar, type AvatarProps, type AvatarSize } from './components/Avatar/index.js'
 export { Tabs, type TabItem, type TabsProps } from './components/Tabs/index.js'
 export { useScrollLock } from './lib/scrollLock.js'

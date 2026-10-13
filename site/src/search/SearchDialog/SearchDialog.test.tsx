@@ -48,7 +48,7 @@ describe('SearchDialog', () => {
   it('has no text that a translation does not reach, apart from the names of the components', () => {
     renderInSite(<Harness />, { messages: markedMessages })
 
-    const componentNames = ['Button', 'IconButton', 'Badge', 'Input', 'Tooltip', 'Dialog', 'Tabs', 'Radio']
+    const componentNames = ['Button', 'IconButton', 'Badge', 'Input', 'Tooltip', 'Dialog', 'Tabs', 'Radio', 'Avatar']
     expect(untranslatedText(screen.getByRole('dialog'), componentNames)).toEqual([])
   })
 
@@ -64,6 +64,7 @@ describe('SearchDialog', () => {
       'Dialog',
       'Tabs',
       'Radio',
+      'Avatar',
       'Getting started',
       'Foundations',
       'Components',
@@ -77,7 +78,7 @@ describe('SearchDialog', () => {
     expect(screen.getByRole('group', { name: 'Pages' })).toContainElement(
       screen.getByRole('option', { name: /^Theming/ }),
     )
-    expect(status()).toHaveTextContent('14 results')
+    expect(status()).toHaveTextContent('15 results')
   })
 
   it('narrows the results as the person types, and announces the new count', async () => {
@@ -218,6 +219,6 @@ describe('SearchDialog', () => {
     await userEvent.click(screen.getByRole('button', { name: 'open the search' }))
 
     expect(search()).toHaveValue('')
-    expect(options()).toHaveLength(14)
+    expect(options()).toHaveLength(15)
   })
 })

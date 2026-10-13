@@ -19,7 +19,7 @@ describe('CatalogPage', () => {
     renderCatalog()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Components' })).toBeInTheDocument()
-    expect(rowNames()).toEqual(['Button', 'Input', 'Radio', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
+    expect(rowNames()).toEqual(['Button', 'Input', 'Radio', 'Avatar', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog'])
     for (const planned of ['Checkbox', 'Switch', 'NavItem']) {
       expect(screen.queryByRole('heading', { name: planned })).not.toBeInTheDocument()
     }
@@ -126,6 +126,28 @@ describe('CatalogPage', () => {
       expect(disabled!.getByRole('radio', { name: 'Free' })).toBeChecked()
     })
 
+    // jsdom never reports a failed load: the fall back to the initials is covered by e2e/catalog.spec.ts.
+    it('show Avatar in every size and tone, with two pictures and a decorative avatar', () => {
+      renderCatalog()
+
+      const avatars = within(row('Avatar')).getAllByRole('img', { name: 'Laura Méndez' })
+      // Three sizes, five tones, a picture, a picture that fails and (hidden, beside its name) a decorative one.
+      expect(avatars).toHaveLength(10)
+      expect(within(row('Avatar')).getAllByText('LM')).toHaveLength(9)
+      expect(avatars.filter((avatar) => avatar.querySelector('img'))).toHaveLength(2)
+      // The picture that fails to load is labeled as a state, not with the same `src` as the one that loads.
+      expect(within(row('Avatar')).getAllByText('src')).toHaveLength(1)
+      expect(within(row('Avatar')).getByText('Picture fails to load')).toBeInTheDocument()
+    })
+
+    it('put Avatar under Display, with the Badge', async () => {
+      renderCatalog()
+
+      await userEvent.click(screen.getByRole('radio', { name: 'Display' }))
+
+      expect(rowNames()).toEqual(['Avatar', 'Badge', 'Icon'])
+    })
+
     it('open a Dialog from its button, and close it with its own button', async () => {
       renderCatalog()
 
@@ -149,11 +171,13 @@ describe('CatalogPage', () => {
       const { container } = renderCatalog({ messages: markedMessages })
 
       // The names of the components, and the props and values that a label quotes, are code and are never translated.
-      const code = /^(variant|tone|icon)="[\w-]+"$|^IconButton$/
+      // An empty `alt` (the picture of an avatar, which the avatar's own name already describes) says nothing in any language.
+      const code = /^(variant|tone|icon)="[\w-]+"$|^IconButton$|^alt=""$/
       const isIconName = (text: string) => (iconNames as readonly string[]).includes(text)
-      const componentNames = ['Button', 'Input', 'Radio', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog']
+      const componentNames = ['Button', 'Input', 'Radio', 'Avatar', 'Badge', 'Icon', 'Tabs', 'Tooltip', 'Dialog']
+      // The initials of an avatar are the first letter of its name, here the mark of a message: they are made of the name.
       expect(
-        untranslatedText(container, componentNames).filter((text) => !code.test(text) && !isIconName(text)),
+        untranslatedText(container, [...componentNames, '⟦']).filter((text) => !code.test(text) && !isIconName(text)),
       ).toEqual([])
     })
   })
@@ -163,7 +187,7 @@ describe('CatalogPage', () => {
       renderCatalog()
 
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 8 components$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 9 components$/)
     })
 
     it('offer the categories in the order of the design, with Navigation after Forms', () => {
@@ -235,7 +259,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
 
-      expect(rowNames()).toHaveLength(8)
+      expect(rowNames()).toHaveLength(9)
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveValue('')
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveFocus()
@@ -243,7 +267,7 @@ describe('CatalogPage', () => {
 
     it('count in the language of the page', async () => {
       renderCatalog({ locale: 'es' })
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 8 componentes$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 9 componentes$/)
 
       await userEvent.click(screen.getByRole('radio', { name: 'Acciones' }))
 

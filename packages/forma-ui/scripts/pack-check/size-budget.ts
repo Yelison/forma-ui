@@ -25,6 +25,15 @@
 // Radio, on 2026-10-10: 7.44 kB for every export, 0.31 kB for Radio alone and 1.80 kB for styles.css, which was 1.55 kB.
 // The stylesheet is the one that grew (Radio and the choice rules it shares with the checkbox and the switch to come) and
 // its budget had no room left for it, so it goes from 1800 to 2200 B.
+//
+// Avatar, on 2026-10-13: 7.83 kB for every export (7.55 kB before it), 0.47 kB for Avatar alone and 2.14 kB for styles.css
+// (2.00 kB before it). Its own budget is new: with the other components' it shows what one more component costs.
+//
+// Avatar, review round 1 (grapheme initials with a code-point fallback, and the failed `src` in state): 7.96 kB for every
+// export and 0.59 kB for Avatar alone, which had 0.60 kB; its budget goes to 0.80 kB. styles.css is unchanged.
+//
+// After rebasing onto the eight icons of #67, with Avatar: 8.17 kB for every export, which had 8.10 kB, so that budget goes
+// to 8.80 kB; Button alone is 3.11 kB, iconNames 0.16 kB and styles.css 2.14 kB.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -47,7 +56,7 @@ const budgets: Budget[] = [
     name: 'dist/index.js (every export)',
     source: `import * as forma from '@yelison/forma-ui'\nconsole.log(forma)`,
     extension: '.js',
-    limit: 8100,
+    limit: 8800,
   },
   {
     name: 'import { Button } from the package',
@@ -60,6 +69,12 @@ const budgets: Budget[] = [
     source: `import { Badge } from '@yelison/forma-ui'\nconsole.log(Badge)`,
     extension: '.js',
     limit: 300,
+  },
+  {
+    name: 'import { Avatar } from the package',
+    source: `import { Avatar } from '@yelison/forma-ui'\nconsole.log(Avatar)`,
+    extension: '.js',
+    limit: 800,
   },
   {
     name: 'import { iconNames } from the package',

@@ -33,6 +33,10 @@ export const catalogLoaders = {
   changelog: { en: () => import('./catalogs/changelog.en.json'), es: () => import('./catalogs/changelog.es.json') },
   specimens: { en: () => import('./catalogs/specimens.en.json'), es: () => import('./catalogs/specimens.es.json') },
   detail: { en: () => import('./catalogs/detail.en.json'), es: () => import('./catalogs/detail.es.json') },
+  'docs.avatar': {
+    en: () => import('./catalogs/docs.avatar.en.json'),
+    es: () => import('./catalogs/docs.avatar.es.json'),
+  },
   'docs.badge': {
     en: () => import('./catalogs/docs.badge.en.json'),
     es: () => import('./catalogs/docs.badge.es.json'),
