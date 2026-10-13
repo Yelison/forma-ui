@@ -70,7 +70,7 @@ test.describe('the reference of Button', () => {
       test(`measure ${heights.join(' and ')} px at ${width} px, with the code of the compact one`, async ({ page }) => {
         await page.setViewportSize({ width, height: 800 })
         await openButtonPage(page)
-        const sizes = page.getByRole('region', { name: 'Sizes' })
+        const sizes = page.getByRole('region', { name: 'Sizes', exact: true })
 
         const boxes = await sizes
           .getByRole('button', { name: 'Continue' })
@@ -85,7 +85,7 @@ test.describe('the reference of Button', () => {
     test('are explained in Spanish, and the discarded scale is not offered', async ({ page }) => {
       await page.addInitScript(() => localStorage.setItem('forma-ui-locale', 'es'))
       await page.goto(path)
-      const sizes = page.getByRole('region', { name: 'Tamaños' })
+      const sizes = page.getByRole('region', { name: 'Tamaños', exact: true })
 
       await expect(sizes).toContainText('descartó')
       await expect(sizes.getByRole('button', { name: /px · Propuesto/ })).toHaveCount(0)
