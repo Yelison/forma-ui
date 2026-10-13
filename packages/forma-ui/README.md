@@ -121,7 +121,7 @@ function ThemeToggle() {
 
 ## Components
 
-`Badge`, `Button`, `IconButton`, `Icon`, `Input` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
+`Badge`, `Button`, `IconButton`, `Icon`, `Input`, `SearchField`, `Select` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
 
 | Component               | Use it for                                              | Accessibility                                                                                                                                                                   |
 | ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,9 @@ function ThemeToggle() {
 | `IconButton`            | An action with an icon and no visible text.             | `label` is required and becomes `aria-label`; show it in a `Tooltip` too.                                                                                                       |
 | `Badge`                 | A short status or category tag, in five tones.          | The tone only colors it: the text has to say the same thing.                                                                                                                    |
 | `Field`                 | A label, hint and error around a control you provide.   | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`; `announce="off"` shows it without announcing it.                  |
-| `Input`                 | A native text input with its `Field`.                   | Same linking as `Field`, and it forwards `announce` to it; `disabled` and `readOnly` stay different states.                                                                     |
+| `Input`                 | A native text input with its `Field`.                   | Same linking as `Field`, and it forwards `announce` to it; `hideLabel` keeps the label for screen readers and draws nothing; `disabled` and `readOnly` stay different.   |
+| `SearchField`           | A search box with a magnifier, controlled by `value`.   | A native `type="search"` named by `label`, which is not drawn. `Escape` clears a field with text and goes no further; a read-only field keeps its text.                  |
+| `Select`                | A native `<select>` with its `Field`.                   | Same linking as `Input`, with the browser's keyboard and picker. No read-only state: `disabled` leaves the tab order, `aria-disabled` dims it and keeps the focus.       |
 | `Icon`                  | One of the library's icons, as inline SVG.              | Decorative and hidden from screen readers unless you give it a `label`. `iconNames` lists every `IconName`, 31 of them, in alphabetical order.                                  |
 | `Tooltip`               | A short description for a control.                      | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.                   |
 | `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                       | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.                      |
@@ -182,8 +184,8 @@ is the source of truth. At the time of writing they are:
 | `{ iconNames }` | 0.16 kB |
 | `styles.css`    | 2.14 kB |
 
-`Button` is not small because `Icon` looks its path up in one object that holds every icon, so the whole table travels
-with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
+`Button`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
+the whole table travels with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
 and importing it alone does not bring the table.
 
 ## Compatibility
