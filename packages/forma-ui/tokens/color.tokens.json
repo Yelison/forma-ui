@@ -232,6 +232,32 @@
         }
       }
     },
+    "purple-bg": {
+      "$type": "color",
+      "$value": "#efe7ff",
+      "$description": "Added for the purple Badge and Avatar tone (Draftroom's commenter role); Resolve has no purple. The contrast test guards it.",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#efe7ff",
+            "dark": "#31244a"
+          }
+        }
+      }
+    },
+    "purple-ink": {
+      "$type": "color",
+      "$value": "#7751b8",
+      "$description": "Added for the purple Badge and Avatar tone (Draftroom's commenter role); Resolve has no purple. The contrast test guards it.",
+      "$extensions": {
+        "forma": {
+          "modes": {
+            "light": "#7751b8",
+            "dark": "#cfb1ff"
+          }
+        }
+      }
+    },
     "on-brand": {
       "$type": "color",
       "$value": "#ffffff",
