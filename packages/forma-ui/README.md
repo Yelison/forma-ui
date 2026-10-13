@@ -192,7 +192,7 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size    |
 | ----------------- | ------- |
-| Everything        | 8.51 kB |
+| Everything        | 8.66 kB |
 | `{ SearchField }` | 3.29 kB |
 | `{ Select }`      | 3.16 kB |
 | `{ FilterChip }`  | 2.86 kB |
@@ -202,7 +202,7 @@ is the source of truth. At the time of writing they are:
 | `{ Radio }`       | 0.31 kB |
 | `{ Badge }`       | 0.26 kB |
 | `{ iconNames }`   | 0.16 kB |
-| `styles.css`      | 2.38 kB |
+| `styles.css`      | 2.46 kB |
 
 `Button`, `FilterChip`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
 the whole table travels with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
