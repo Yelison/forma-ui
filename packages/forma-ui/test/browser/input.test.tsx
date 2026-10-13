@@ -25,6 +25,10 @@ const states: Record<string, ReactNode> = {
   'error, not announced': (
     <Input label="Email" hint="Required" error="Enter a valid email" announce="off" defaultValue="ada" />
   ),
+  'label hidden': <Input label="Email" hideLabel defaultValue="ada@example.com" />,
+  'label hidden, with a hint and an error': (
+    <Input label="Email" hideLabel hint="Required" error="Enter a valid email" defaultValue="ada" />
+  ),
   disabled: <Input label="Email" hint="Locked by your admin" defaultValue="ada@example.com" disabled />,
   'read-only': <Input label="Email" hint="Managed by your admin" defaultValue="ada@example.com" readOnly />,
 }
@@ -168,6 +172,50 @@ describe('Input height', () => {
     mount(<Input label="Name" />)
 
     expect(page.getByRole('textbox', { name: 'Name' }).element().getBoundingClientRect().height).toBe(painted)
+  })
+})
+
+describe('Input hideLabel', () => {
+  it('keeps the label as the accessible name of the input', async () => {
+    mount(<Input label="Email" hideLabel />)
+
+    await expect.element(page.getByRole('textbox', { name: 'Email' })).toBeInTheDocument()
+  })
+
+  it('takes no room: the field is as tall as the input, and the label is a single pixel', () => {
+    mount(<Input label="Email" hideLabel />)
+    const input = page.getByRole('textbox', { name: 'Email' }).element()
+    const field = input.parentElement!
+    const label = field.querySelector('label')!.getBoundingClientRect()
+
+    expect(field.getBoundingClientRect().height).toBe(input.getBoundingClientRect().height)
+    expect(input.getBoundingClientRect().top).toBe(field.getBoundingClientRect().top)
+    expect([label.width, label.height]).toEqual([1, 1])
+  })
+
+  it('leaves the hint under the input at the same distance as a visible label would', () => {
+    mount(
+      <>
+        <Input label="Email" hideLabel hint="Hidden label" />
+        <Input label="Name" hint="Visible label" />
+      </>,
+    )
+    const distance = (name: string, hint: string) => {
+      const input = page.getByRole('textbox', { name }).element()
+      return page.getByText(hint).element().getBoundingClientRect().top - input.getBoundingClientRect().bottom
+    }
+
+    expect(distance('Email', 'Hidden label')).toBe(distance('Name', 'Visible label'))
+    expect(page.getByText('Hidden label').element()).toBeVisible()
+  })
+
+  it('keeps the error visible, announced and linked to the input', async () => {
+    mount(<Input label="Email" hideLabel error="Enter a valid email" />)
+
+    await expect.element(page.getByRole('alert')).toHaveTextContent('Enter a valid email')
+    await expect
+      .element(page.getByRole('textbox', { name: 'Email' }))
+      .toHaveAccessibleDescription('Enter a valid email')
   })
 })
 

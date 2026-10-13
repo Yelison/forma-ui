@@ -5,8 +5,13 @@ import controlStyles from '../Field/control.module.css'
 
 /** The props of {@link Input}: every native `input` attribute, plus the label, hint and error of its field. */
 export interface InputProps extends Omit<ComponentProps<'input'>, 'children'> {
-  /** Visible label of the field. */
+  /** Label of the field. It is the accessible name of the input whether it is drawn or not. */
   label: ReactNode
+  /**
+   * Keeps the label for screen readers and does not draw it, so it takes no room. The hint and the error stay
+   * visible and described. It is the `hideLabel` of `Field`, which has the details.
+   */
+  hideLabel?: FieldProps['hideLabel']
   /** Permanent help text under the field. */
   hint?: ReactNode
   /**
@@ -25,10 +30,21 @@ export interface InputProps extends Omit<ComponentProps<'input'>, 'children'> {
 }
 
 /** A native text input with its label, hint and error. `disabled` and `readOnly` are different states. */
-export function Input({ label, hint, error, announce, id, fieldClassName, className, ...props }: InputProps) {
+export function Input({
+  label,
+  hideLabel,
+  hint,
+  error,
+  announce,
+  id,
+  fieldClassName,
+  className,
+  ...props
+}: InputProps) {
   return (
     <Field
       label={label}
+      hideLabel={hideLabel}
       hint={hint}
       error={error}
       announce={announce}
