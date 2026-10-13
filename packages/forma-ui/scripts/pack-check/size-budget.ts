@@ -39,6 +39,10 @@
 // (8.17 kB before), within the 8800 B it already had, and 2.35 kB for styles.css (2.14 kB before), over its 2200 B, which
 // goes to 2700 B (the measure plus 15%). SearchField alone is 3.29 kB and Select alone 3.16 kB: like Button, they carry the
 // table of icons, and they have no budget of their own.
+//
+// FilterChip, on 2026-10-13, on top of the purple Badge tone: 8.66 kB for every export (8.51 kB before it) and 2.46 kB for
+// styles.css (2.38 kB before it), both within their budgets, so none is raised. FilterChip alone is 2.86 kB: like Button, it
+// carries the table of icons for its chevron, and it has no budget of its own.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'

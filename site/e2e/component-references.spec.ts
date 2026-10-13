@@ -71,6 +71,17 @@ const references: Reference[] = [
     },
   },
   {
+    slug: 'filter-chip',
+    name: 'FilterChip',
+    // In use: the keyboard has pressed the second chip of the row, which keeps the focus.
+    open: async (page) => {
+      const chip = page.getByRole('region', { name: 'Single-choice row' }).getByRole('button').nth(1)
+      await chip.focus()
+      await page.keyboard.press('Space')
+      await expect(chip).toHaveAttribute('aria-pressed', 'true')
+    },
+  },
+  {
     slug: 'tooltip',
     name: 'Tooltip',
     open: async (page) => {
@@ -330,6 +341,39 @@ for (const reference of references) {
       })
     }
 
+    if (reference.name === 'FilterChip') {
+      test('skips the disabled chip with Tab and presses the next one with Enter', async ({ page }) => {
+        await openReference(page, reference)
+        // The second group of the section is the one with a disabled option, the second of three.
+        const group = page
+          .getByRole('region', { name: 'Single-choice row' })
+          .getByRole('group', { name: 'Permission' })
+          .nth(1)
+        const chips = group.getByRole('button')
+
+        await chips.first().focus()
+        await page.keyboard.press('Tab')
+        await expect(chips.nth(2)).toBeFocused()
+        await page.keyboard.press('Enter')
+
+        await expect(chips.nth(2)).toHaveAttribute('aria-pressed', 'true')
+        await expect(chips.first()).toHaveAttribute('aria-pressed', 'false')
+      })
+
+      test('opens the dialog from a popup chip and returns the focus to it', async ({ page }) => {
+        await openReference(page, reference)
+        const chip = page.getByRole('region', { name: 'Trigger of a popup' }).getByRole('button', { name: /^Status: / })
+
+        await chip.focus()
+        await page.keyboard.press('Enter')
+        await expect(page.getByRole('dialog')).toBeVisible()
+        await page.keyboard.press('Escape')
+
+        await expect(page.getByRole('dialog')).toBeHidden()
+        await expect(chip).toBeFocused()
+      })
+    }
+
     if (reference.name === 'Select') {
       test('changes with the keyboard, and leaves the focus where a native select leaves it', async ({ page }) => {
         await openReference(page, reference)
@@ -355,7 +399,7 @@ for (const reference of references) {
       })
     }
 
-    if (['SearchField', 'Select', 'Input'].includes(reference.name)) {
+    if (['SearchField', 'Select', 'Input', 'FilterChip'].includes(reference.name)) {
       test('fits in the pseudo-locale at 320 px, the fields in it included', async ({ page }) => {
         await page.setViewportSize({ width: 320, height: 800 })
         await openReference(page, reference, './__pseudo__')

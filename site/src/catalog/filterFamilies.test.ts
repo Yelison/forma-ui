@@ -11,6 +11,7 @@ describe('matchingFamilyIds', () => {
       'input',
       'search-field',
       'select',
+      'filter-chip',
       'radio',
       'avatar',
       'badge',
@@ -27,6 +28,10 @@ describe('matchingFamilyIds', () => {
 
   it('keeps Input, SearchField, Select and Radio in the forms category', () => {
     expect(ids({ category: 'forms', name: '' })).toEqual(['input', 'search-field', 'select', 'radio'])
+  })
+
+  it('keeps Button and FilterChip in the actions category', () => {
+    expect(ids({ category: 'actions', name: '' })).toEqual(['button', 'filter-chip'])
   })
 
   it('keeps only Tabs in the navigation category', () => {

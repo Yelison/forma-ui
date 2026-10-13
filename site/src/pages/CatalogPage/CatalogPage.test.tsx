@@ -24,6 +24,7 @@ describe('CatalogPage', () => {
       'Input',
       'SearchField',
       'Select',
+      'FilterChip',
       'Radio',
       'Avatar',
       'Badge',
@@ -139,6 +140,22 @@ describe('CatalogPage', () => {
       expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     })
 
+    it('show FilterChip as a single-choice row that works, and as popup triggers with no pressed state', async () => {
+      renderCatalog()
+      const chips = within(row('FilterChip'))
+
+      const [group] = chips.getAllByRole('group', { name: 'Permission' })
+      const options = within(group!)
+      expect(options.getByRole('button', { name: 'Everyone', pressed: true })).toBeInTheDocument()
+      await userEvent.click(options.getByRole('button', { name: 'Read only' }))
+      expect(options.getByRole('button', { name: 'Read only', pressed: true })).toBeInTheDocument()
+      expect(options.getAllByRole('button', { pressed: true })).toHaveLength(1)
+
+      const popups = chips.getAllByRole('button', { name: /^Status: / })
+      expect(popups).toHaveLength(2)
+      for (const popup of popups) expect(popup).not.toHaveAttribute('aria-pressed')
+    })
+
     it('show Tabs with three panels, once with the first tab selected and once with the second', async () => {
       renderCatalog()
 
@@ -235,6 +252,7 @@ describe('CatalogPage', () => {
         'Input',
         'SearchField',
         'Select',
+        'FilterChip',
         'Radio',
         'Avatar',
         'Badge',
@@ -255,7 +273,7 @@ describe('CatalogPage', () => {
       renderCatalog()
 
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 11 components$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 12 components$/)
     })
 
     it('offer the categories in the order of the design, with Navigation after Forms', () => {
@@ -304,8 +322,8 @@ describe('CatalogPage', () => {
       await userEvent.keyboard('{ArrowRight}')
 
       expect(screen.getByRole('radio', { name: 'Actions' })).toBeChecked()
-      expect(rowNames()).toEqual(['Button'])
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 1 component$/)
+      expect(rowNames()).toEqual(['Button', 'FilterChip'])
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 2 components$/)
     })
 
     it('narrow the list by name, ignoring case, and find IconButton in the row of Button', async () => {
@@ -327,7 +345,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
 
-      expect(rowNames()).toHaveLength(11)
+      expect(rowNames()).toHaveLength(12)
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveValue('')
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveFocus()
@@ -335,11 +353,11 @@ describe('CatalogPage', () => {
 
     it('count in the language of the page', async () => {
       renderCatalog({ locale: 'es' })
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 11 componentes$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 12 componentes$/)
 
       await userEvent.click(screen.getByRole('radio', { name: 'Acciones' }))
 
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 1 componente$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 2 componentes$/)
     })
 
     it('keep what was typed in a specimen while its row is out of the list', async () => {

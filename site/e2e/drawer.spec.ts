@@ -4,8 +4,8 @@ test.use({ viewport: { width: 390, height: 800 } })
 
 const menuButton = (page: Page) => page.getByRole('button', { name: 'Open menu' })
 const drawer = (page: Page) => page.getByRole('dialog', { name: 'Menu' })
-const focusIsInside = (page: Page) =>
-  page.locator('dialog').evaluate((dialog) => dialog.contains(document.activeElement))
+// The page holds other <dialog>s, closed (the popup chips of the catalog), so the drawer is found by its name.
+const focusIsInside = (page: Page) => drawer(page).evaluate((dialog) => dialog.contains(document.activeElement))
 
 test.describe('the drawer at 390 px', () => {
   test.beforeEach(async ({ page }) => {
@@ -22,9 +22,9 @@ test.describe('the drawer at 390 px', () => {
     // The browser may send focus to its own interface when it leaves the last control, which is <body> to the page;
     // what must never happen is that it lands on the page behind the drawer.
     const reachesPageBehind = () =>
-      page
-        .locator('dialog')
-        .evaluate((dialog) => document.activeElement !== document.body && !dialog.contains(document.activeElement))
+      drawer(page).evaluate(
+        (dialog) => document.activeElement !== document.body && !dialog.contains(document.activeElement),
+      )
 
     // More presses than the drawer has controls, so it goes round more than once.
     for (const key of ['Tab', 'Shift+Tab']) {
