@@ -141,7 +141,8 @@ describe('SearchField read-only against disabled', () => {
     const onValueChange = vi.fn()
     mount(<SearchField label="Plan search" value="Team" onValueChange={onValueChange} readOnly />)
 
-    await pressTab()
+    await userEvent.click(searchbox('Plan search'))
+    await expect.element(searchbox('Plan search')).toHaveFocus()
     await pressEscape()
 
     expect(onValueChange).not.toHaveBeenCalled()
