@@ -50,6 +50,27 @@ const references: Reference[] = [
     },
   },
   {
+    slug: 'search-field',
+    name: 'SearchField',
+    // In use: someone has typed in the first field, which is empty at rest, and it keeps the focus.
+    open: async (page) => {
+      const search = page.getByRole('region', { name: 'States' }).getByRole('searchbox').first()
+      await search.fill('tabs')
+      await expect(search).toBeFocused()
+    },
+  },
+  {
+    slug: 'select',
+    name: 'Select',
+    // In use: the keyboard has changed the option of the first select, which keeps the focus.
+    open: async (page) => {
+      const select = page.getByRole('region', { name: 'States' }).getByRole('combobox', { name: 'Priority' }).first()
+      await select.focus()
+      await page.keyboard.press('ArrowDown')
+      await expect(select).toHaveValue('high')
+    },
+  },
+  {
     slug: 'tooltip',
     name: 'Tooltip',
     open: async (page) => {
@@ -279,6 +300,71 @@ for (const reference of references) {
       }
     }
 
+    if (reference.name === 'SearchField') {
+      test('clears the text with the real Escape, keeps the focus and leaves the read-only field alone', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const [, withText, , readOnly] = await page.getByRole('region', { name: 'States' }).getByRole('searchbox').all()
+
+        await withText!.focus()
+        await page.keyboard.press('Escape')
+        await expect(withText!).toHaveValue('')
+        await expect(withText!).toBeFocused()
+
+        await readOnly!.focus()
+        await page.keyboard.press('Escape')
+        await expect(readOnly!).toHaveValue('button')
+      })
+
+      test('follows the text in the controlled example, which Escape empties', async ({ page }) => {
+        await openReference(page, reference)
+        const controlled = page.getByRole('region', { name: 'Controlled' })
+        const search = controlled.getByRole('searchbox')
+
+        await search.fill('tabs')
+        await expect(controlled.getByText('Text: tabs')).toBeVisible()
+        await page.keyboard.press('Escape')
+
+        await expect(controlled.getByText('Nothing typed yet.')).toBeVisible()
+      })
+    }
+
+    if (reference.name === 'Select') {
+      test('changes with the keyboard, and leaves the focus where a native select leaves it', async ({ page }) => {
+        await openReference(page, reference)
+        const select = page.getByRole('region', { name: 'States' }).getByRole('combobox', { name: 'Priority' }).first()
+
+        await select.focus()
+        await page.keyboard.press('ArrowDown')
+
+        await expect(select).toHaveValue('high')
+        await expect(select).toBeFocused()
+      })
+
+      test('skips a disabled select with Tab and stops at an aria-disabled one', async ({ page }) => {
+        await openReference(page, reference)
+        const states = page.getByRole('region', { name: 'States' }).getByRole('combobox')
+        const [disabled, unavailable] = (await states.all()).slice(-2)
+
+        await states.nth((await states.count()) - 3).focus()
+        await page.keyboard.press('Tab')
+
+        await expect(disabled!).not.toBeFocused()
+        await expect(unavailable!).toBeFocused()
+      })
+    }
+
+    if (['SearchField', 'Select', 'Input'].includes(reference.name)) {
+      test('fits in the pseudo-locale at 320 px, the fields in it included', async ({ page }) => {
+        await page.setViewportSize({ width: 320, height: 800 })
+        await openReference(page, reference, './__pseudo__')
+
+        expect(await overflow(page)).toEqual({ scroll: 0, outside: [], clipped: [] })
+        expect(await smallTargets(page.getByRole('main'))).toEqual([])
+      })
+    }
+
     if (reference.name === 'Tooltip') {
       test('closes the tooltip with the first Escape and the dialog with the second, and gives back the focus', async ({
         page,
@@ -350,13 +436,13 @@ for (const reference of references) {
   })
 }
 
-// The reference of Input shows an error specimen twice; opening the page must not announce either of them.
+// The reference of Input shows an error specimen three times; opening the page must not announce either of them.
 for (const locale of ['en', 'es'] as const) {
   test(`the reference of Input announces nothing on load, in ${locale}`, async ({ page }) => {
     await page.addInitScript((value) => localStorage.setItem('forma-ui-locale', value), locale)
     await openReference(page, { slug: 'input', name: 'Input' })
 
-    await expect(page.locator('input[aria-invalid="true"]')).toHaveCount(2)
+    await expect(page.locator('input[aria-invalid="true"]')).toHaveCount(3)
     await expect(page.getByRole('alert')).toHaveCount(0)
   })
 }
