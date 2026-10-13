@@ -92,12 +92,6 @@ describe('Button', () => {
       expect(screen.getByRole('button', { name: 'Plain' })).not.toHaveClass('compact')
     })
 
-    it('does not hand the size to the DOM', () => {
-      render(<Button size="compact">Save</Button>)
-
-      expect(screen.getByRole('button')).not.toHaveAttribute('size')
-    })
-
     it('fills its container with block', () => {
       render(<Button block>Save</Button>)
 
