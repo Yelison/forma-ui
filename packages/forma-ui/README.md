@@ -121,20 +121,21 @@ function ThemeToggle() {
 
 ## Components
 
-`Badge`, `Button`, `IconButton`, `Icon`, `Input` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog` and `Tabs` take only the props they document.
+`Badge`, `Button`, `IconButton`, `Icon`, `Input` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
 
-| Component               | Use it for                                              | Accessibility                                                                                                                                                            |
-| ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Button`                | An action; `primary`, `secondary`, `ghost` or `danger`. | A native `button` whose `type` is `button` unless set. While `loading` it stays focusable with `aria-busy` and `aria-disabled`; `disabled` is for an unavailable action. |
-| `IconButton`            | An action with an icon and no visible text.             | `label` is required and becomes `aria-label`; show it in a `Tooltip` too.                                                                                                |
-| `Badge`                 | A short status or category tag, in five tones.          | The tone only colors it: the text has to say the same thing.                                                                                                             |
-| `Field`                 | A label, hint and error around a control you provide.   | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`; `announce="off"` shows it without announcing it.           |
-| `Input`                 | A native text input with its `Field`.                   | Same linking as `Field`, and it forwards `announce` to it; `disabled` and `readOnly` stay different states.                                                              |
-| `Icon`                  | One of the library's icons, as inline SVG.              | Decorative and hidden from screen readers unless you give it a `label`. `iconNames` lists every `IconName`, 31 of them, in alphabetical order.                           |
-| `Tooltip`               | A short description for a control.                      | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.            |
-| `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                       | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.               |
-| `Tabs`                  | Panels that share one place, one visible at a time.     | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.            |
-| `Radio`                 | One option of a group that takes a single choice.       | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                           |
+| Component               | Use it for                                              | Accessibility                                                                                                                                                                   |
+| ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`                | An action; `primary`, `secondary`, `ghost` or `danger`. | A native `button` whose `type` is `button` unless set. While `loading` it stays focusable with `aria-busy` and `aria-disabled`; `disabled` is for an unavailable action.        |
+| `IconButton`            | An action with an icon and no visible text.             | `label` is required and becomes `aria-label`; show it in a `Tooltip` too.                                                                                                       |
+| `Badge`                 | A short status or category tag, in five tones.          | The tone only colors it: the text has to say the same thing.                                                                                                                    |
+| `Field`                 | A label, hint and error around a control you provide.   | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`; `announce="off"` shows it without announcing it.                  |
+| `Input`                 | A native text input with its `Field`.                   | Same linking as `Field`, and it forwards `announce` to it; `disabled` and `readOnly` stay different states.                                                                     |
+| `Icon`                  | One of the library's icons, as inline SVG.              | Decorative and hidden from screen readers unless you give it a `label`. `iconNames` lists every `IconName`, 31 of them, in alphabetical order.                                  |
+| `Tooltip`               | A short description for a control.                      | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.                   |
+| `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                       | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.                      |
+| `Tabs`                  | Panels that share one place, one visible at a time.     | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.                   |
+| `Radio`                 | One option of a group that takes a single choice.       | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                                  |
+| `Avatar`                | A round picture of a person, or their initials.         | An image named after `name`, or hidden with `decorative` when the name is beside it. A picture that fails to load gives way to the initials. `tone` takes the tones of `Badge`. |
 
 `Dialog` takes `presentation="sheet-on-narrow"` to become a bottom sheet below 768 px (a CSS media query, so there is no
 flash on resize): pinned to the bottom edge at the full width, with rounded top corners, a decorative handle, up to about
@@ -175,6 +176,7 @@ is the source of truth. At the time of writing they are:
 | Everything      | 7.76 kB |
 | `{ Button }`    | 3.11 kB |
 | `{ Tabs }`      | 0.66 kB |
+| `{ Avatar }`    | 0.47 kB |
 | `{ Radio }`     | 0.31 kB |
 | `{ Badge }`     | 0.23 kB |
 | `{ iconNames }` | 0.16 kB |
