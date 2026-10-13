@@ -15,6 +15,7 @@ export { Field, type FieldControlProps, type FieldProps } from './components/Fie
 export { Input, type InputProps } from './components/Input/index.js'
 export { SearchField, type SearchFieldProps } from './components/SearchField/index.js'
 export { Select, type SelectProps } from './components/Select/index.js'
+export { FilterChip, type FilterChipProps } from './components/FilterChip/index.js'
 export {
   Button,
   IconButton,

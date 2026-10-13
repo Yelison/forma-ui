@@ -6,6 +6,7 @@ import {
   Badge,
   Button,
   Dialog,
+  FilterChip,
   FormaProvider,
   IconButton,
   Input,
@@ -25,6 +26,13 @@ const samples = (
     <Badge tone="blue">New</Badge>
     <Button variant="secondary">Save</Button>
     <IconButton icon="bell" label="Notifications" />
+    <FilterChip aria-haspopup="menu" aria-expanded={false} selected>
+      Status: Open
+    </FilterChip>
+    <div role="group" aria-label="Permission">
+      <FilterChip selected>Everyone</FilterChip>
+      <FilterChip>Can edit</FilterChip>
+    </div>
     <Input label="Email" error="Enter a valid email" />
     <Input label="Search" hideLabel hint="Names and emails" />
     <SearchField label="Search tickets" value="refund" onValueChange={() => {}} />

@@ -33,6 +33,10 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ SearchField: expect.any(Function), Select: expect.any(Function) })
   })
 
+  it('exports FilterChip', () => {
+    expect(entry).toMatchObject({ FilterChip: expect.any(Function) })
+  })
+
   it('exports Button, IconButton and the class names that make a link look like a button', () => {
     expect(entry).toMatchObject({
       Button: expect.any(Function),

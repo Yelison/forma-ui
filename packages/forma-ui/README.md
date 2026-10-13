@@ -121,23 +121,24 @@ function ThemeToggle() {
 
 ## Components
 
-`Badge`, `Button`, `IconButton`, `Icon`, `Input`, `SearchField`, `Select` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
+`Badge`, `Button`, `IconButton`, `FilterChip`, `Icon`, `Input`, `SearchField`, `Select` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
 
-| Component               | Use it for                                              | Accessibility                                                                                                                                                                   |
-| ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Button`                | An action; `primary`, `secondary`, `ghost` or `danger`. | A native `button` whose `type` is `button` unless set. While `loading` it stays focusable with `aria-busy` and `aria-disabled`; `disabled` is for an unavailable action.        |
-| `IconButton`            | An action with an icon and no visible text.             | `label` is required and becomes `aria-label`; show it in a `Tooltip` too.                                                                                                       |
-| `Badge`                 | A short status or category tag, in six tones.           | The tone only colors it: the text has to say the same thing.                                                                                                                    |
-| `Field`                 | A label, hint and error around a control you provide.   | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`; `announce="off"` shows it without announcing it.                  |
-| `Input`                 | A native text input with its `Field`.                   | Same linking as `Field`, and it forwards `announce` to it; `hideLabel` keeps the label for screen readers and draws nothing; `disabled` and `readOnly` stay different.          |
-| `SearchField`           | A search box with a magnifier, controlled by `value`.   | A native `type="search"` named by `label`, which is not drawn. `Escape` clears a field with text and goes no further; a read-only field keeps its text.                         |
-| `Select`                | A native `<select>` with its `Field`.                   | Same linking as `Input`, with the browser's keyboard and picker. No read-only state: `disabled` leaves the tab order, `aria-disabled` dims it and keeps the focus.              |
-| `Icon`                  | One of the library's icons, as inline SVG.              | Decorative and hidden from screen readers unless you give it a `label`. `iconNames` lists every `IconName`, 31 of them, in alphabetical order.                                  |
-| `Tooltip`               | A short description for a control.                      | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.                   |
-| `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                       | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.                      |
-| `Tabs`                  | Panels that share one place, one visible at a time.     | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.                   |
-| `Radio`                 | One option of a group that takes a single choice.       | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                                  |
-| `Avatar`                | A round picture of a person, or their initials.         | An image named after `name`, or hidden with `decorative` when the name is beside it. A picture that fails to load gives way to the initials. `tone` takes the tones of `Badge`. |
+| Component               | Use it for                                                           | Accessibility                                                                                                                                                                   |
+| ----------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`                | An action; `primary`, `secondary`, `ghost` or `danger`.              | A native `button` whose `type` is `button` unless set. While `loading` it stays focusable with `aria-busy` and `aria-disabled`; `disabled` is for an unavailable action.        |
+| `IconButton`            | An action with an icon and no visible text.                          | `label` is required and becomes `aria-label`; show it in a `Tooltip` too.                                                                                                       |
+| `Badge`                 | A short status or category tag, in six tones.                        | The tone only colors it: the text has to say the same thing.                                                                                                                    |
+| `Field`                 | A label, hint and error around a control you provide.                | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`; `announce="off"` shows it without announcing it.                  |
+| `Input`                 | A native text input with its `Field`.                                | Same linking as `Field`, and it forwards `announce` to it; `hideLabel` keeps the label for screen readers and draws nothing; `disabled` and `readOnly` stay different.          |
+| `SearchField`           | A search box with a magnifier, controlled by `value`.                | A native `type="search"` named by `label`, which is not drawn. `Escape` clears a field with text and goes no further; a read-only field keeps its text.                         |
+| `FilterChip`            | A filter: a toggle in a row of chips, or the trigger of its options. | With `aria-haspopup` it draws a chevron and adds no `aria-pressed`; without it, it is a toggle with `aria-pressed` from `selected` (see below).                                 |
+| `Select`                | A native `<select>` with its `Field`.                                | Same linking as `Input`, with the browser's keyboard and picker. No read-only state: `disabled` leaves the tab order, `aria-disabled` dims it and keeps the focus.              |
+| `Icon`                  | One of the library's icons, as inline SVG.                           | Decorative and hidden from screen readers unless you give it a `label`. `iconNames` lists every `IconName`, 31 of them, in alphabetical order.                                  |
+| `Tooltip`               | A short description for a control.                                   | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.                   |
+| `Dialog` (also `Modal`) | A modal on the native `<dialog>`.                                    | Opened with `showModal()`: focus stays inside and the page behind is inert. `Escape` and a backdrop click call `onClose`, and focus returns to the opener.                      |
+| `Tabs`                  | Panels that share one place, one visible at a time.                  | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.                   |
+| `Radio`                 | One option of a group that takes a single choice.                    | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                                  |
+| `Avatar`                | A round picture of a person, or their initials.                      | An image named after `name`, or hidden with `decorative` when the name is beside it. A picture that fails to load gives way to the initials. `tone` takes the tones of `Badge`. |
 
 `Dialog` takes `presentation="sheet-on-narrow"` to become a bottom sheet below 768 px (a CSS media query, so there is no
 flash on resize): pinned to the bottom edge at the full width, with rounded top corners, a decorative handle, up to about
@@ -146,6 +147,22 @@ at the full width. From 768 px it is the usual centered dialog, and the default 
 width. The footer reads bottom to top: the DOM order is unchanged, so the first button, the one that takes the initial
 focus, is the lowest, and the last is on top. Put the safe action first and the primary action last, and Tab goes from the
 bottom button to the top one. The handle is decorative: it is not dragged. The stacking reaches the direct children of the footer, so buttons wrapped in another element stay as they are. With `prefers-reduced-motion` the sheet does not slide in.
+
+`FilterChip` has two modes, chosen by `aria-haspopup` (any value but `false`): with it, the chip opens something your
+application shows (set `aria-expanded` too), draws a chevron and only looks selected; without it, it is a toggle button
+that announces `selected` as `aria-pressed`, with no chevron. `aria-pressed` is not a prop. A row of toggles is a
+single-choice filter without panels: put them in a `role="group"` with an `aria-label` or `aria-labelledby` you provide,
+in your language (the library has no text of its own for it), and keep which chip is `selected` in your state.
+
+```tsx
+<div role="group" aria-label="Permission">
+  {options.map((option) => (
+    <FilterChip key={option} selected={option === active} onClick={() => setActive(option)}>
+      {option}
+    </FilterChip>
+  ))}
+</div>
+```
 
 `Tabs` starts the arrows from the selected tab, not the focused one. With a controlled `value` whose parent refuses a tab, the focus still moves to it, but the next arrow press goes on from the selected tab.
 
@@ -178,6 +195,7 @@ is the source of truth. At the time of writing they are:
 | Everything        | 8.51 kB |
 | `{ SearchField }` | 3.29 kB |
 | `{ Select }`      | 3.16 kB |
+| `{ FilterChip }`  | 2.86 kB |
 | `{ Button }`      | 3.11 kB |
 | `{ Tabs }`        | 0.66 kB |
 | `{ Avatar }`      | 0.59 kB |
@@ -186,7 +204,7 @@ is the source of truth. At the time of writing they are:
 | `{ iconNames }`   | 0.16 kB |
 | `styles.css`      | 2.38 kB |
 
-`Button`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
+`Button`, `FilterChip`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
 the whole table travels with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
 and importing it alone does not bring the table.
 
