@@ -50,6 +50,26 @@ The package ships its CSS as three files, in this order:
   first in the module that loads your components (your UI barrel, or the first module that imports from
   `@yelison/forma-ui`), not only from your entry stylesheet: then its rules land at the start of that chunk, before your
   own component CSS. Check the order in your production build, not only in the dev server.
+- **Put the resets of your own element rules in a layer that comes first.** A reset for form controls, such as
+  `button, input, select, textarea { font: inherit; color: inherit }`, normalize or the preflight of Tailwind v3, must go
+  in `@layer base { … }` and be loaded before the package's CSS. The box of a control is written with `:where()`, which has
+  no specificity, on purpose: one class of yours adjusts it without depending on the order of the stylesheets. A reset
+  without a layer has the specificity of an element, so it wins over that box and replaces the font, the padding and the
+  line height of every control. The text colour is the exception: it is written with the specificity of a class, so a
+  reset does not change it. Tailwind v4 already puts its preflight in a layer like this.
+
+  ```css
+  @layer base {
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+      color: inherit;
+    }
+  }
+  ```
+
 - `tokens.css` is the foundation: the component rules read its custom properties, and without it they render unstyled.
 - Importing `@yelison/forma-ui` pulls in no CSS and has no side effects: the components are tree-shakeable (see
   [Bundle size](#bundle-size)), and the stylesheet is yours to place. `styles.css` is one file for all the components, whether you use them all or not.

@@ -6,6 +6,7 @@
   "gettingStarted.component.title": "Compose your first component",
   "gettingStarted.foundations.body": "Import the three stylesheets once, in the entry point of your application and before your own CSS: the tokens first, then the rules of the components, then the base utilities.",
   "gettingStarted.foundations.link": "Read the foundations",
+  "gettingStarted.foundations.resets": "If your application has a CSS reset for form controls, such as <code>font: inherit</code>, normalize or the preflight of Tailwind v3, put it in a layer that comes first, <code>@layer base</code>, and load it before the package. The rules of the components have no specificity on purpose, so that one class of yours can adjust them, and a reset without a layer would win over them and replace the font, the padding and the line height of the controls. The text color is already protected. Tailwind v4 puts its preflight in a layer like this.",
   "gettingStarted.foundations.roles": "Then ask for a color or a space by its role, not by its value. Forma UI does not bundle the font: <code>--font-family</code> lists <code>Inter Variable</code> and <code>Inter</code>, so load one of them.",
   "gettingStarted.foundations.title": "Apply the foundations",
   "gettingStarted.lead": "Connect Forma UI to your project and build your first screen.",
