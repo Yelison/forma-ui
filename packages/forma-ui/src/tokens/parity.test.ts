@@ -35,6 +35,9 @@ const APP_LAYOUT = [
 // The only allowed differences from Resolve's files, with their expected values.
 const D12_FONT_FAMILY = "'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif"
 const D10_NEW_TOKENS: Record<string, string> = {
+  '--avatar-size-small': '28px',
+  '--avatar-size-medium': '36px',
+  '--avatar-size-large': '48px',
   '--badge-min-height': '28px',
   '--choice-min-height': '36px',
   '--icon-button-glyph-size': '20px',

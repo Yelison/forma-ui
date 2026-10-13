@@ -113,6 +113,23 @@
       "$value": "44px"
     }
   },
+  "avatar": {
+    "size-small": {
+      "$type": "dimension",
+      "$value": "28px",
+      "$description": "The small Avatar; Resolve's value."
+    },
+    "size-medium": {
+      "$type": "dimension",
+      "$value": "36px",
+      "$description": "The default Avatar; Resolve's value."
+    },
+    "size-large": {
+      "$type": "dimension",
+      "$value": "48px",
+      "$description": "The large Avatar; Resolve's value."
+    }
+  },
   "badge": {
     "min-height": {
       "$type": "dimension",

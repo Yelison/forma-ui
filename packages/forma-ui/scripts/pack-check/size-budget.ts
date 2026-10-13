@@ -25,6 +25,9 @@
 // Radio, on 2026-10-10: 7.44 kB for every export, 0.31 kB for Radio alone and 1.80 kB for styles.css, which was 1.55 kB.
 // The stylesheet is the one that grew (Radio and the choice rules it shares with the checkbox and the switch to come) and
 // its budget had no room left for it, so it goes from 1800 to 2200 B.
+//
+// Avatar, on 2026-10-13: 7.83 kB for every export (7.44 kB before it), 0.47 kB for Avatar alone and 2.14 kB for styles.css
+// (1.80 kB before it). Its own budget is new: with the other components' it shows what one more component costs.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -60,6 +63,12 @@ const budgets: Budget[] = [
     source: `import { Badge } from '@yelison/forma-ui'\nconsole.log(Badge)`,
     extension: '.js',
     limit: 300,
+  },
+  {
+    name: 'import { Avatar } from the package',
+    source: `import { Avatar } from '@yelison/forma-ui'\nconsole.log(Avatar)`,
+    extension: '.js',
+    limit: 600,
   },
   {
     name: 'import { iconNames } from the package',
