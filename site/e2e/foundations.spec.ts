@@ -51,9 +51,9 @@ for (const theme of themes) {
     test('has two contrast tables whose ratios are numbers with their level in words', async ({ page }) => {
       const tables = page.getByRole('table')
       await expect(tables).toHaveCount(2)
-      await expect(tables.getByRole('row')).toHaveCount(42)
+      await expect(tables.getByRole('row')).toHaveCount(43)
       const ratios = await tables.locator('tbody tr td:first-of-type').allTextContents()
-      expect(ratios).toHaveLength(40)
+      expect(ratios).toHaveLength(41)
       for (const ratio of ratios) expect(ratio).toMatch(/^\d+\.\d{2}:1$/)
       await expect(tables.getByText(/^(Passes( AAA?)?|Fails)$/).first()).toBeVisible()
     })
@@ -141,11 +141,11 @@ test('keeps the columns of the contrast tables from 481 px and stacks each row b
   for (const width of [481, 767, 1024]) {
     await page.setViewportSize({ width, height: 800 })
     await expect(header()).toBeVisible()
-    await expect(page.getByRole('row')).toHaveCount(42)
+    await expect(page.getByRole('row')).toHaveCount(43)
   }
 
   await page.setViewportSize({ width: 320, height: 800 })
-  // The stacked rows have no visible header, but the semantics hold: still two tables, 42 rows, 40 row headers.
+  // The stacked rows have no visible header, but the semantics hold: still two tables, 43 rows, 41 row headers.
   expect(await header().evaluate((cell) => cell.getBoundingClientRect().width)).toBeLessThanOrEqual(1)
   // Each row is stacked: the numbers are under the pair, not beside it.
   const row = page.getByRole('row').nth(1)
@@ -153,7 +153,7 @@ test('keeps the columns of the contrast tables from 481 px and stacks each row b
   const ratio = await row.getByRole('cell').first().boundingBox()
   expect(ratio!.y).toBeGreaterThanOrEqual(pair!.y + pair!.height - 1)
   await expect(page.getByRole('table')).toHaveCount(2)
-  await expect(page.getByRole('row')).toHaveCount(42)
-  await expect(page.getByRole('rowheader')).toHaveCount(40)
-  await expect(page.getByRole('cell')).toHaveCount(80)
+  await expect(page.getByRole('row')).toHaveCount(43)
+  await expect(page.getByRole('rowheader')).toHaveCount(41)
+  await expect(page.getByRole('cell')).toHaveCount(82)
 })

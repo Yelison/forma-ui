@@ -127,7 +127,7 @@ function ThemeToggle() {
 | ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Button`                | An action; `primary`, `secondary`, `ghost` or `danger`. | A native `button` whose `type` is `button` unless set. While `loading` it stays focusable with `aria-busy` and `aria-disabled`; `disabled` is for an unavailable action.        |
 | `IconButton`            | An action with an icon and no visible text.             | `label` is required and becomes `aria-label`; show it in a `Tooltip` too.                                                                                                       |
-| `Badge`                 | A short status or category tag, in five tones.          | The tone only colors it: the text has to say the same thing.                                                                                                                    |
+| `Badge`                 | A short status or category tag, in six tones.           | The tone only colors it: the text has to say the same thing.                                                                                                                    |
 | `Field`                 | A label, hint and error around a control you provide.   | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`; `announce="off"` shows it without announcing it.                  |
 | `Input`                 | A native text input with its `Field`.                   | Same linking as `Field`, and it forwards `announce` to it; `hideLabel` keeps the label for screen readers and draws nothing; `disabled` and `readOnly` stay different.          |
 | `SearchField`           | A search box with a magnifier, controlled by `value`.   | A native `type="search"` named by `label`, which is not drawn. `Escape` clears a field with text and goes no further; a read-only field keeps its text.                         |
@@ -175,16 +175,16 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size    |
 | ----------------- | ------- |
-| Everything        | 8.46 kB |
+| Everything        | 8.51 kB |
 | `{ SearchField }` | 3.29 kB |
 | `{ Select }`      | 3.16 kB |
 | `{ Button }`      | 3.11 kB |
 | `{ Tabs }`        | 0.66 kB |
 | `{ Avatar }`      | 0.59 kB |
 | `{ Radio }`       | 0.31 kB |
-| `{ Badge }`       | 0.23 kB |
+| `{ Badge }`       | 0.26 kB |
 | `{ iconNames }`   | 0.16 kB |
-| `styles.css`      | 2.35 kB |
+| `styles.css`      | 2.38 kB |
 
 `Button`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
 the whole table travels with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,

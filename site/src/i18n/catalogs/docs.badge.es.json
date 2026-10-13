@@ -6,13 +6,16 @@
   "docs.badge.api.children": "El texto del badge, que es lo que dice lo que significa. Que sea una palabra o dos.",
   "docs.badge.api.className": "Se añade después de las clases propias de la biblioteca.",
   "docs.badge.api.others": "Cualquier otro atributo del elemento <code>span</code> nativo va a él tal cual: <code>id</code>, <code>title</code>, <code>role</code>, <code>aria-*</code>, <code>data-*</code>, los manejadores de eventos y <code>ref</code>.",
+  "docs.badge.api.shape": "El contorno del badge. <code>default</code> tiene las esquinas redondeadas de un control y <code>pill</code> redondea del todo los dos extremos. La altura es la misma en ambos.",
   "docs.badge.api.tone": "El rol de color del badge. Lo colorea y no dice nada por sí solo: su texto tiene que decir lo mismo.",
   "docs.badge.limit.interactive": "Un badge no es un botón ni un enlace: no tiene hover, foco ni forma de descartarse. Pon un control interactivo a su lado cuando lo necesite.",
   "docs.badge.limit.size": "Hay un tamaño y no hay hueco para un icono. Un badge es texto.",
-  "docs.badge.limit.tones": "Hay cinco tonos y no hay forma de añadir otro: un estado al que ninguno le sirve usa el neutro, y su texto dice el resto.",
+  "docs.badge.limit.tones": "Hay seis tonos y no hay forma de añadir otro: un estado al que ninguno le sirve usa el neutro, y su texto dice el resto.",
   "docs.badge.limit.wrap": "El texto nunca salta de línea, así que uno largo hace el badge más ancho que un contenedor estrecho. Que sea corto.",
+  "docs.badge.shapes.description": "Las esquinas por defecto sirven para un estado en una lista o una tabla. La píldora sirve para un rol o una categoría que se destaca del texto que la rodea. Las dos miden 28 px de alto.",
+  "docs.badge.shapes.title": "Formas",
   "docs.badge.summary": "Una etiqueta corta que marca un elemento con un estado o una categoría.",
-  "docs.badge.tones.description": "Cinco roles de color para un badge. Cada uno se muestra sobre una tarjeta, porque el badge neutro tiene el fondo del panel.",
+  "docs.badge.tones.description": "Seis roles de color para un badge. Cada uno se muestra sobre una tarjeta, porque el badge neutro tiene el fondo del panel.",
   "docs.badge.tones.title": "Tonos",
   "docs.badge.usage.description": "Importa Badge y escribe el estado en su texto. El <code>tone</code> solo colorea el badge: la palabra es la que dice lo que significa."
 }

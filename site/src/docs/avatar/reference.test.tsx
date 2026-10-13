@@ -30,15 +30,16 @@ describe('the reference of Avatar', () => {
     expect(codeOf('Sizes')).toContain('<Avatar name="Laura Méndez" size="large" />')
   })
 
-  it('shows the five tones on a card, so that the neutral one is not a bare disc on the panel', () => {
+  it('shows the six tones on a card, so that the neutral one is not a bare disc on the panel', () => {
     renderReference('Avatar')
 
     const tones = screen.getByRole('region', { name: 'Tones' })
     const avatars = within(tones).getAllByRole('img', { name: 'Laura Méndez' })
-    expect(avatars).toHaveLength(5)
+    expect(avatars).toHaveLength(6)
     // The class is the only thing that tells the card from the panel in jsdom, which paints no CSS.
     for (const avatar of avatars) expect(avatar.parentElement).toHaveClass(/surface/)
     expect(codeOf('Tones')).toContain('<Avatar name="Laura Méndez" tone="neutral" />')
+    expect(codeOf('Tones')).toContain('<Avatar name="Laura Méndez" tone="purple" />')
   })
 
   it('shows the initials of a name of one, two and three words', () => {

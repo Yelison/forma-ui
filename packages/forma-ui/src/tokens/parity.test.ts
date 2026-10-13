@@ -34,9 +34,15 @@ const APP_LAYOUT = [
 
 // The only allowed differences from Resolve's files, with their expected values.
 const D12_FONT_FAMILY = "'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif"
+// The purple tone of Badge and Avatar (e1-badge) is the one color Resolve lacks: its two tokens and their dark values.
+const PURPLE_DARK: Record<string, string> = { '--color-purple-bg': '#31244a', '--color-purple-ink': '#cfb1ff' }
 // The tokens that the library added to Resolve's: D10 (the literal sizes and the layers that Resolve left in its
-// components) and the Avatar sizes of d2-avatar, which Resolve writes as literals in `Avatar.module.css`.
+// components), the Avatar sizes of d2-avatar, which Resolve writes as literals in `Avatar.module.css`, and the light
+// values of the purple tone.
 const NEW_TOKENS: Record<string, string> = {
+  // e1-badge
+  '--color-purple-bg': '#efe7ff',
+  '--color-purple-ink': '#7751b8',
   // the icon inside a text control (SearchField, Select)
   '--control-icon-size': '20px',
   // d2-avatar
@@ -89,9 +95,13 @@ describe('parity with Resolve c3f02f8', () => {
   it('declares both dark blocks exactly as tokens.css does', () => {
     const darkMedia = findRule(findRule(generated, DARK_MEDIA), DARK_SELECTOR)
     const expectedMedia = findRule(findRule(resolveTokens, DARK_MEDIA), DARK_SELECTOR)
-    expect(Object.fromEntries(declarationMap(darkMedia))).toEqual(Object.fromEntries(declarationMap(expectedMedia)))
+    const withPurple = (block: typeof expectedMedia) => ({
+      ...Object.fromEntries(declarationMap(block)),
+      ...PURPLE_DARK,
+    })
+    expect(Object.fromEntries(declarationMap(darkMedia))).toEqual(withPurple(expectedMedia))
     expect(Object.fromEntries(declarationMap(findRule(generated, DARK_ATTRIBUTE)))).toEqual(
-      Object.fromEntries(declarationMap(findRule(resolveTokens, DARK_ATTRIBUTE))),
+      withPurple(findRule(resolveTokens, DARK_ATTRIBUTE)),
     )
   })
 
@@ -122,7 +132,8 @@ describe('parity with Resolve c3f02f8', () => {
 // The contrast pairs are Resolve's (contrast-pairs.json in the snapshot, extracted from tokens.contrast.test.ts): the
 // package keeps its own copy in tokens/contrast-pairs.json, and the snapshot stays as the evidence. The equality is
 // strict except for the pairs in DIFFERENCES: a pair that differs from Resolve on purpose is listed there with its
-// reason, and the comparison leaves it out on both sides. Today the list is empty.
+// reason, and the comparison leaves it out on both sides. Today the list is empty. A pair that Resolve lacks because
+// the token is the library's own is in ADDED_PAIRS instead, and only the shipped side drops it.
 interface Difference {
   /** The pair, written as the generator names it in its errors: `foreground on background`. */
   pair: string
@@ -130,6 +141,7 @@ interface Difference {
 }
 
 const DIFFERENCES: Difference[] = []
+const ADDED_PAIRS = ['purple-ink on purple-bg']
 
 const pairName = ({ foreground, background }: ContrastPair) => `${foreground} on ${background}`
 const withoutDeclared = (pairs: ContrastPair[], differences: Difference[]) =>
@@ -151,7 +163,14 @@ describe('contrast pairs and Resolve', () => {
 
   it('holds the same pairs as Resolve, in its order, with the same kind and themes', () => {
     expect(resolvePairs).toHaveLength(40)
-    expect(withoutDeclared(shipped.pairs, DIFFERENCES)).toEqual(withoutDeclared(resolvePairs, DIFFERENCES))
+    const shippedFromResolve = shipped.pairs.filter((pair) => !ADDED_PAIRS.includes(pairName(pair)))
+    expect(withoutDeclared(shippedFromResolve, DIFFERENCES)).toEqual(withoutDeclared(resolvePairs, DIFFERENCES))
+  })
+
+  it('adds the pairs of the purple tone and nothing else', () => {
+    expect(shipped.pairs.map(pairName).filter((pair) => !resolvePairs.map(pairName).includes(pair))).toEqual(
+      ADDED_PAIRS,
+    )
   })
 
   it('holds the same thresholds as Resolve', () => {

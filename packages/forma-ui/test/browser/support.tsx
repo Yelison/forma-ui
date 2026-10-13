@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { flushSync } from 'react-dom'
 import { createRoot, type Root } from 'react-dom/client'
 import { cdp, userEvent } from 'vitest/browser'
+import { contrastRatio } from '../../src/tokens/contrast'
 
 // Helpers for the specs in test/browser/. Everything here runs in a real Chromium, so keep it to what the
 // jsdom tests cannot do: real focus, real keyboard events, the top layer and media emulation.
@@ -124,6 +125,22 @@ export function loadStyles() {
     style.sheet.disabled = true
     switchedOff.add(style.sheet)
   }
+}
+
+// Contrast of what is painted
+
+/**
+ * The contrast ratio of the text color over the background color that the browser paints on `element`. The computed
+ * style reports `rgb(r, g, b)` and the contrast helper reads hex, as `tokens.json` holds the colors.
+ */
+export function paintedContrast(element: Element): number {
+  const toHex = (rgb: string) =>
+    `#${(rgb.match(/\d+/g) ?? [])
+      .slice(0, 3)
+      .map((channel) => Number(channel).toString(16).padStart(2, '0'))
+      .join('')}`
+  const { color, backgroundColor } = getComputedStyle(element)
+  return contrastRatio(toHex(color), toHex(backgroundColor))
 }
 
 // Reset between tests

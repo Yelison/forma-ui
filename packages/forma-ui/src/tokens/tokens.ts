@@ -19,6 +19,8 @@ export const tokenNames = [
   '--color-amber-ink',
   '--color-red-bg',
   '--color-red-ink',
+  '--color-purple-bg',
+  '--color-purple-ink',
   '--color-on-brand',
   '--color-nav-ink',
   '--color-focus',

@@ -1,9 +1,10 @@
-import { Badge, type BadgeTone } from '@yelison/forma-ui'
+import { Badge, type BadgeShape, type BadgeTone } from '@yelison/forma-ui'
 import type { IntlShape } from 'react-intl'
+import { attribute } from '../jsx'
 import { formatJsx } from '../../components/ComponentExplorer/formatJsx'
 import type { Example, ExampleGroup } from '../types'
 
-const tones = ['neutral', 'blue', 'green', 'amber', 'red'] as const satisfies readonly BadgeTone[]
+const tones = ['neutral', 'blue', 'green', 'amber', 'red', 'purple'] as const satisfies readonly BadgeTone[]
 
 /** The badge and its JSX, made from the same tone and text so that the code never says something else. */
 function badgeExample(tone: BadgeTone, text: string): Pick<Example, 'element' | 'code' | 'surface'> {
@@ -12,6 +13,22 @@ function badgeExample(tone: BadgeTone, text: string): Pick<Example, 'element' | 
     surface: true,
     element: <Badge tone={tone}>{text}</Badge>,
     code: formatJsx({ component: 'Badge', props: { tone }, children: text }),
+  }
+}
+
+/**
+ * A badge of the purple tone in one shape. The explorer's specimens have no `shape` (it is not one of the props it
+ * offers), so the JSX is written here, in the layout that `formatJsx` gives the tone examples.
+ */
+function shapeExample(shape: BadgeShape, text: string): Pick<Example, 'element' | 'code' | 'surface'> {
+  return {
+    surface: true,
+    element: (
+      <Badge tone="purple" shape={shape}>
+        {text}
+      </Badge>
+    ),
+    code: `<Badge ${[attribute('tone', 'purple'), attribute('shape', shape)].join(' ')}>\n  ${text}\n</Badge>`,
   }
 }
 
@@ -28,6 +45,15 @@ export function badgeExamples(intl: IntlShape): { usage: Example; groups: readon
         title: 'docs.badge.tones.title',
         description: 'docs.badge.tones.description',
         examples: tones.map((tone) => ({ label: { code: `tone="${tone}"` }, ...badgeExample(tone, word(tone)) })),
+      },
+      {
+        id: 'shapes',
+        title: 'docs.badge.shapes.title',
+        description: 'docs.badge.shapes.description',
+        examples: (['default', 'pill'] as const).map((shape) => ({
+          label: { code: `shape="${shape}"` },
+          ...shapeExample(shape, word('purple')),
+        })),
       },
     ],
   }

@@ -28,6 +28,7 @@
     { "foreground": "green-ink", "background": "green-bg", "kind": "text", "themes": ["light", "dark"] },
     { "foreground": "amber-ink", "background": "amber-bg", "kind": "text", "themes": ["light", "dark"] },
     { "foreground": "red-ink", "background": "red-bg", "kind": "text", "themes": ["light", "dark"] },
+    { "foreground": "purple-ink", "background": "purple-bg", "kind": "text", "themes": ["light", "dark"] },
     { "foreground": "ink", "background": "amber-bg", "kind": "text", "themes": ["light", "dark"] },
     { "foreground": "muted", "background": "amber-bg", "kind": "text", "themes": ["light", "dark"] },
     { "foreground": "link", "background": "surface", "kind": "text", "themes": ["light", "dark"] },

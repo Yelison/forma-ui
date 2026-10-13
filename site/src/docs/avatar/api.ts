@@ -8,7 +8,7 @@ const own = {
   name: { type: 'string', description: 'docs.avatar.api.name' },
   size: { type: `'small' | 'medium' | 'large'`, default: `'medium'`, description: 'docs.avatar.api.size' },
   tone: {
-    type: `'blue' | 'green' | 'amber' | 'red' | 'neutral'`,
+    type: `'blue' | 'green' | 'amber' | 'red' | 'purple' | 'neutral'`,
     default: `'blue'`,
     description: 'docs.avatar.api.tone',
   },

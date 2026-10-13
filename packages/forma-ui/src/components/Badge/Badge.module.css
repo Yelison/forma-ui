@@ -29,7 +29,16 @@
   color: var(--color-red-ink);
 }
 
+.purple {
+  background: var(--color-purple-bg);
+  color: var(--color-purple-ink);
+}
+
 .neutral {
   background: var(--color-bg);
   color: var(--color-muted);
+}
+
+.pill {
+  border-radius: var(--radius-round);
 }
