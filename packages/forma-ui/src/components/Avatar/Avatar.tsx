@@ -9,11 +9,14 @@ export type AvatarSize = 'small' | 'medium' | 'large'
 
 /** Props of {@link Avatar}. The component takes only these: it forwards no native attributes. */
 export interface AvatarProps {
-  /** The full name. It makes the initials and is the accessible name of the avatar. */
+  /**
+   * The full name. It makes the initials and is the accessible name of the avatar. An empty one leaves nothing to
+   * name, so the avatar is hidden from assistive technology as if it were `decorative`.
+   */
   name: string
   /** Size of the avatar. Defaults to `medium`. */
   size?: AvatarSize
-  /** The color pair of the initials and their background, the same roles as {@link Badge}. Defaults to `blue`. */
+  /** The color pair of the initials and their background, the same roles as {@link BadgeTone}. Defaults to `blue`. */
   tone?: BadgeTone
   /** URL of the picture. The initials show when it is missing or fails to load. */
   src?: string
@@ -30,12 +33,14 @@ export interface AvatarProps {
  * that it is not read twice.
  */
 export function Avatar({ name, size = 'medium', tone = 'blue', src, decorative = false, className }: AvatarProps) {
-  const [imageFailed, setImageFailed] = useState(false)
-  const accessibility = decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': name }
+  // The address that failed, not a flag: a new `src` is a new picture to try.
+  const [failedSrc, setFailedSrc] = useState<string>()
+  const hidden = decorative || name.trim() === ''
+  const accessibility = hidden ? { 'aria-hidden': true } : { role: 'img', 'aria-label': name }
   return (
     <span className={cx(styles.avatar, styles[size], styles[tone], className)} {...accessibility}>
-      {src && !imageFailed ? (
-        <img className={styles.image} src={src} alt="" onError={() => setImageFailed(true)} />
+      {src && src !== failedSrc ? (
+        <img className={styles.image} src={src} alt="" onError={() => setFailedSrc(src)} />
       ) : (
         initialsOf(name)
       )}

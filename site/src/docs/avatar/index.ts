@@ -20,7 +20,6 @@ export const avatarDoc: ComponentDoc = {
     'docs.avatar.limit.sizes',
     'docs.avatar.limit.tones',
     'docs.avatar.limit.initials',
-    'docs.avatar.limit.retry',
     'docs.avatar.limit.native',
     'docs.avatar.limit.interactive',
   ],

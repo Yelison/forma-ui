@@ -34,10 +34,14 @@ const APP_LAYOUT = [
 
 // The only allowed differences from Resolve's files, with their expected values.
 const D12_FONT_FAMILY = "'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif"
-const D10_NEW_TOKENS: Record<string, string> = {
+// The tokens that the library added to Resolve's: D10 (the literal sizes and the layers that Resolve left in its
+// components) and the Avatar sizes of d2-avatar, which Resolve writes as literals in `Avatar.module.css`.
+const NEW_TOKENS: Record<string, string> = {
+  // d2-avatar
   '--avatar-size-small': '28px',
   '--avatar-size-medium': '36px',
   '--avatar-size-large': '48px',
+  // D10
   '--badge-min-height': '28px',
   '--choice-min-height': '36px',
   '--icon-button-glyph-size': '20px',
@@ -63,15 +67,15 @@ describe('parity with Resolve c3f02f8', () => {
     const expected = new Map([
       ...rootOf(resolveTokens),
       ...libraryOnly(rootOf(resolveGlobal)),
-      ...Object.entries(D10_NEW_TOKENS),
+      ...Object.entries(NEW_TOKENS),
     ])
     expect(Object.fromEntries(rootOf(generated))).toEqual(Object.fromEntries(expected))
   })
 
-  it('differs from tokens.css and global.css only in --font-family (D12) and the D10 tokens', () => {
+  it('differs from tokens.css and global.css only in --font-family (D12) and the tokens that Resolve lacks (D10, d2-avatar)', () => {
     const resolveRoot = new Map([...rootOf(resolveTokens), ...rootOf(resolveGlobal)])
     const different = [...rootOf(generated)].filter(([name, value]) => resolveRoot.get(name) !== value)
-    const allowed = Object.entries(D10_NEW_TOKENS)
+    const allowed = Object.entries(NEW_TOKENS)
     // Resolve's tokens.css has `Inter` alone; global.css already overrides it with the D12 stack.
     expect(rootOf(resolveTokens).get('--font-family')).toBe("Inter, system-ui, -apple-system, 'Segoe UI', sans-serif")
     expect(rootOf(resolveGlobal).get('--font-family')).toBe(D12_FONT_FAMILY)

@@ -42,6 +42,7 @@
   "catalog.state.hint": "With hint",
   "catalog.state.hoverFocus": "On hover and focus",
   "catalog.state.loading": "Loading",
+  "catalog.state.pictureFailed": "Picture fails to load",
   "catalog.state.readOnly": "Read-only",
   "docs.iconButton.sample.add": "Add"
 }

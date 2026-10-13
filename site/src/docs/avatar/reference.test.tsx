@@ -59,6 +59,15 @@ describe('the reference of Avatar', () => {
     expect(picture.querySelectorAll('img[alt=""][src^="data:image"]')).toHaveLength(2)
   })
 
+  it.each([
+    ['en', 'Accessibility', '4.5:1'],
+    ['es', 'Accesibilidad', '4,5:1'],
+  ] as const)('says the contrast ratio with the separator of the language (%s)', (locale, section, ratio) => {
+    renderReference('Avatar', locale)
+
+    expect(screen.getByRole('region', { name: section })).toHaveTextContent(ratio)
+  })
+
   it('hides the decorative avatar and keeps the name beside it', () => {
     renderReference('Avatar')
 

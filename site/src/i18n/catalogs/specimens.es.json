@@ -42,6 +42,7 @@
   "catalog.state.hint": "Con ayuda",
   "catalog.state.hoverFocus": "Al pasar el puntero y con foco",
   "catalog.state.loading": "Cargando",
+  "catalog.state.pictureFailed": "La imagen no carga",
   "catalog.state.readOnly": "Solo lectura",
   "docs.iconButton.sample.add": "Añadir"
 }

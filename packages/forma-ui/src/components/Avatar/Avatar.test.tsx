@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Avatar } from './Avatar'
 import { initialsOf } from './initials'
 
@@ -13,8 +13,32 @@ describe('initialsOf', () => {
     ['   ', ''],
     ['Álvaro Ñúñez', 'ÁÑ'],
     ['élodie', 'É'],
+    ['··', '·'],
+    ['laura@acme.example', 'L'],
   ])('%j → %j', (name, expected) => {
     expect(initialsOf(name)).toBe(expected)
+  })
+
+  // The letters are what a person sees, not the code units that spell them.
+  it.each([
+    ['a decomposed accent', 'A\u0301na Ruiz', 'A\u0301R'],
+    ['an emoji of several code points', '👩\u200D👩\u200D👧 Ana', '👩\u200D👩\u200D👧A'],
+    ['an emoji of a surrogate pair', '😀 Smile', '😀S'],
+    ['a letter whose capital is two letters', 'ß Straße', 'ßS'],
+  ])('keeps %s whole', (_description, name, expected) => {
+    expect(initialsOf(name)).toBe(expected)
+  })
+
+  describe('without Intl.Segmenter', () => {
+    afterEach(() => vi.unstubAllGlobals())
+
+    it('falls back to code points, which keep an emoji whole, and does not throw', () => {
+      vi.stubGlobal('Intl', { ...Intl, Segmenter: undefined })
+
+      expect(initialsOf('😀 Smile')).toBe('😀S')
+      expect(initialsOf('Álvaro Ñúñez')).toBe('ÁÑ')
+      expect(initialsOf('ß Straße')).toBe('ßS')
+    })
   })
 })
 
@@ -31,6 +55,13 @@ describe('Avatar', () => {
 
     expect(screen.queryByRole('img')).not.toBeInTheDocument()
     expect(screen.getByText('LM')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('is hidden from assistive technology when the name is empty, since it has nothing to say', () => {
+    render(<Avatar name="  " />)
+
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+    expect(document.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
   })
 
   it('is medium and blue by default', () => {
@@ -75,6 +106,21 @@ describe('Avatar with a picture', () => {
     fireEvent.error(picture)
 
     expect(screen.getByRole('img', { name: 'Laura Méndez' })).toHaveTextContent('LM')
+    expect(container.querySelector('img')).not.toBeInTheDocument()
+  })
+
+  it('tries a new picture when src changes after a failure, and stays on the initials for the one that failed', () => {
+    const { container, rerender } = render(<Avatar name="Laura Méndez" src="/missing.png" />)
+    const failed = container.querySelector('img')
+    if (!failed) throw new Error('the picture did not render')
+    fireEvent.error(failed)
+    expect(container.querySelector('img')).not.toBeInTheDocument()
+
+    rerender(<Avatar name="Laura Méndez" src="/laura.png" />)
+    expect(container.querySelector('img')).toHaveAttribute('src', '/laura.png')
+
+    fireEvent.error(container.querySelector('img') as HTMLImageElement)
+    rerender(<Avatar name="Laura Méndez" src="/laura.png" />)
     expect(container.querySelector('img')).not.toBeInTheDocument()
   })
 })

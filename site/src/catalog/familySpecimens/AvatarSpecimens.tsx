@@ -30,7 +30,7 @@ export function AvatarSpecimens() {
       <Specimen label={<code>src</code>}>
         <Avatar name={name} src={workingPicture} />
       </Specimen>
-      <Specimen label={<code>src</code>}>
+      <Specimen label={intl.formatMessage({ id: 'catalog.state.pictureFailed' })}>
         <Avatar name={name} src={brokenPicture} />
       </Specimen>
       <Specimen label={<code>decorative</code>}>

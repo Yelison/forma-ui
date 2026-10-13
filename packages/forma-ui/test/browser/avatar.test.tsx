@@ -72,6 +72,14 @@ describe('Avatar in a real browser', () => {
     await expectNoAxeViolations(container)
   })
 
+  // With an empty name the avatar would be an image with no name, which axe reports (`role-img-alt`): it is hidden instead.
+  it.each(themes)('has no axe violations with an empty name in the %s theme', async (theme) => {
+    root.setAttribute('data-theme', theme)
+    const container = mount(<Avatar name="" />)
+
+    await expectNoAxeViolations(container)
+  })
+
   it.each([
     ['small', '28px'],
     ['medium', '36px'],

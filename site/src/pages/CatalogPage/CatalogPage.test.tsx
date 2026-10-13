@@ -135,6 +135,9 @@ describe('CatalogPage', () => {
       expect(avatars).toHaveLength(10)
       expect(within(row('Avatar')).getAllByText('LM')).toHaveLength(9)
       expect(avatars.filter((avatar) => avatar.querySelector('img'))).toHaveLength(2)
+      // The picture that fails to load is labeled as a state, not with the same `src` as the one that loads.
+      expect(within(row('Avatar')).getAllByText('src')).toHaveLength(1)
+      expect(within(row('Avatar')).getByText('Picture fails to load')).toBeInTheDocument()
     })
 
     it('put Avatar under Display, with the Badge', async () => {
