@@ -14,8 +14,14 @@ export interface FieldControlProps {
 
 /** The props of {@link Field}. */
 export interface FieldProps {
-  /** Visible label of the control. */
+  /** Label of the control. It is its accessible name whether it is drawn or not. */
   label: ReactNode
+  /**
+   * Keeps the label in the accessibility tree and does not draw it, for a control whose purpose is clear from what
+   * surrounds it, such as a search box beside its results. The hint and the error stay visible and described. Hiding
+   * a label takes away what a sighted person reads: prefer to show it unless the layout already names the control.
+   */
+  hideLabel?: boolean
   /** Permanent help text under the control. */
   hint?: ReactNode
   /**
@@ -46,6 +52,7 @@ export interface FieldProps {
 /** A label, hint and error linked to a control through its id and `aria-describedby`. */
 export function Field({
   label,
+  hideLabel = false,
   hint,
   error,
   announce = 'assertive',
@@ -63,7 +70,7 @@ export function Field({
 
   return (
     <div className={cx(styles.field, className)}>
-      <label className={styles.label} htmlFor={controlId}>
+      <label className={cx(styles.label, hideLabel && styles.labelHidden)} htmlFor={controlId}>
         {label}
       </label>
       {children({

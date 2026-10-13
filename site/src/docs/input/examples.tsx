@@ -12,6 +12,7 @@ interface InputExampleProps {
   defaultValue?: string
   disabled?: true
   readOnly?: true
+  hideLabel?: true
 }
 
 /**
@@ -20,11 +21,12 @@ interface InputExampleProps {
  * must announce its errors.
  */
 function inputExample(props: InputExampleProps): Pick<Example, 'element' | 'code'> {
-  const { label, hint, error, defaultValue, disabled, readOnly } = props
+  const { label, hint, error, defaultValue, disabled, readOnly, hideLabel } = props
   return {
     element: <Input {...props} announce="off" />,
     code: selfClosingTag('Input', [
       attribute('label', label),
+      attribute('hideLabel', hideLabel),
       attribute('hint', hint),
       attribute('error', error),
       attribute('defaultValue', defaultValue),
@@ -71,6 +73,24 @@ export function inputExamples(intl: IntlShape): { usage: Example; groups: readon
             label: { message: 'catalog.state.readOnly' },
             hint: say('docs.input.state.readOnlyHint'),
             ...inputExample({ label, defaultValue: value, readOnly: true }),
+          },
+        ],
+      },
+      {
+        id: 'hide-label',
+        title: 'docs.input.hideLabel.title',
+        description: 'docs.input.hideLabel.description',
+        note: { id: 'docs.input.hideLabel.note' },
+        examples: [
+          {
+            label: { code: 'hideLabel' },
+            hint: say('docs.input.hideLabel.hint'),
+            ...inputExample({ label, hideLabel: true }),
+          },
+          {
+            label: { code: 'hideLabel, hint, error' },
+            hint: say('docs.input.hideLabel.messagesHint'),
+            ...inputExample({ label, hideLabel: true, hint, error }),
           },
         ],
       },

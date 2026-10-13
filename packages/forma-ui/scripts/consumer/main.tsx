@@ -10,6 +10,8 @@ import {
   IconButton,
   Input,
   Radio,
+  SearchField,
+  Select,
   Tabs,
   Tooltip,
 } from '@yelison/forma-ui'
@@ -24,6 +26,12 @@ const samples = (
     <Button variant="secondary">Save</Button>
     <IconButton icon="bell" label="Notifications" />
     <Input label="Email" error="Enter a valid email" />
+    <Input label="Search" hideLabel hint="Names and emails" />
+    <SearchField label="Search tickets" value="refund" onValueChange={() => {}} />
+    <Select label="Priority" defaultValue="high" error="Choose a priority">
+      <option value="high">High</option>
+      <option value="low">Low</option>
+    </Select>
     {/* `open` renders the content on the server too; the dialog itself only opens in the browser. */}
     <Dialog
       open

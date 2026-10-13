@@ -50,6 +50,17 @@ describe('Input', () => {
     )
   })
 
+  describe('hideLabel', () => {
+    it('keeps the label as the name of the input, and the hint and the error as its description', () => {
+      render(<Input label="Email" hideLabel hint="Required" error="Enter a valid email" />)
+
+      const input = screen.getByRole('textbox', { name: 'Email' })
+      expect(input).toHaveAccessibleDescription('Enter a valid email Required')
+      expect(screen.getByRole('alert')).toHaveTextContent('Enter a valid email')
+      expect(screen.getByText('Required')).toBeVisible()
+    })
+  })
+
   it('respects its own id', () => {
     render(<Input label="Subject" id="subject" />)
 

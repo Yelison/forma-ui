@@ -61,6 +61,14 @@ export const catalogLoaders = {
     en: () => import('./catalogs/docs.radio.en.json'),
     es: () => import('./catalogs/docs.radio.es.json'),
   },
+  'docs.searchField': {
+    en: () => import('./catalogs/docs.searchField.en.json'),
+    es: () => import('./catalogs/docs.searchField.es.json'),
+  },
+  'docs.select': {
+    en: () => import('./catalogs/docs.select.en.json'),
+    es: () => import('./catalogs/docs.select.es.json'),
+  },
   'docs.tabs': {
     en: () => import('./catalogs/docs.tabs.en.json'),
     es: () => import('./catalogs/docs.tabs.es.json'),

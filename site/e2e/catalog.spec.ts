@@ -54,6 +54,8 @@ for (const locale of ['en', 'es'] as const) {
       expect(await rowNames(page)).toEqual([
         'Button',
         'Input',
+        'SearchField',
+        'Select',
         'Radio',
         'Avatar',
         'Badge',
@@ -62,12 +64,13 @@ for (const locale of ['en', 'es'] as const) {
         'Tooltip',
         'Dialog',
       ])
-      await expect(countOf(page)).toHaveText(t.count(9))
+      await expect(countOf(page)).toHaveText(t.count(11))
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
     test('announces nothing on load: its specimens with an error are not alerts', async ({ page }) => {
       await expect(page.getByRole('region', { name: 'Input' }).locator('[aria-invalid="true"]')).toHaveCount(1)
+      await expect(page.getByRole('region', { name: 'Select' }).locator('[aria-invalid="true"]')).toHaveCount(1)
       await expect(page.getByRole('alert')).toHaveCount(0)
     })
 
@@ -81,8 +84,8 @@ for (const locale of ['en', 'es'] as const) {
     test('shows the Radio row under Forms, with groups that answer the arrow keys apart', async ({ page }) => {
       await page.getByText(t.forms, { exact: true }).click()
 
-      expect(await rowNames(page)).toEqual(['Input', 'Radio'])
-      await expect(countOf(page)).toHaveText(t.count(2))
+      expect(await rowNames(page)).toEqual(['Input', 'SearchField', 'Select', 'Radio'])
+      await expect(countOf(page)).toHaveText(t.count(4))
       const [empty, preselected] = await page.getByRole('region', { name: 'Radio' }).getByRole('group').all()
       await empty!.getByRole('radio').first().focus()
       await page.keyboard.press('ArrowDown')
@@ -104,6 +107,21 @@ for (const locale of ['en', 'es'] as const) {
       // initials show ten times: three sizes, five tones, the failed picture and the decorative avatar.
       await expect(row.getByText('LM')).toHaveCount(10)
       await expect(row.locator('img')).toHaveCount(1)
+    })
+
+    test('shows the SearchField and Select rows under Forms, which answer Escape and the arrow keys', async ({
+      page,
+    }) => {
+      await page.getByText(t.forms, { exact: true }).click()
+
+      const [, withText] = await page.getByRole('region', { name: 'SearchField' }).getByRole('searchbox').all()
+      await withText!.focus()
+      await page.keyboard.press('Escape')
+      await expect(withText!).toHaveValue('')
+      const select = page.getByRole('region', { name: 'Select' }).getByRole('combobox').first()
+      await select.focus()
+      await page.keyboard.press('ArrowDown')
+      await expect(select).toHaveValue('high')
     })
 
     test('shows the Tabs row under Navigation, with tabs that answer the keyboard', async ({ page }) => {
@@ -147,7 +165,7 @@ for (const locale of ['en', 'es'] as const) {
 
       await page.getByRole('button', { name: t.clear }).click()
 
-      expect(await rowNames(page)).toHaveLength(9)
+      expect(await rowNames(page)).toHaveLength(11)
       await expect(page.getByRole('textbox', { name: t.filterByName })).toBeFocused()
       await expect(page.getByRole('textbox', { name: t.filterByName })).toHaveValue('')
     })

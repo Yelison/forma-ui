@@ -25,6 +25,10 @@ const states: Record<string, ReactNode> = {
   'error, not announced': (
     <Input label="Email" hint="Required" error="Enter a valid email" announce="off" defaultValue="ada" />
   ),
+  'label hidden': <Input label="Email" hideLabel defaultValue="ada@example.com" />,
+  'label hidden, with a hint and an error': (
+    <Input label="Email" hideLabel hint="Required" error="Enter a valid email" defaultValue="ada" />
+  ),
   disabled: <Input label="Email" hint="Locked by your admin" defaultValue="ada@example.com" disabled />,
   'read-only': <Input label="Email" hint="Managed by your admin" defaultValue="ada@example.com" readOnly />,
 }
@@ -168,5 +172,108 @@ describe('Input height', () => {
     mount(<Input label="Name" />)
 
     expect(page.getByRole('textbox', { name: 'Name' }).element().getBoundingClientRect().height).toBe(painted)
+  })
+})
+
+describe('Input hideLabel', () => {
+  it('keeps the label as the accessible name of the input', async () => {
+    mount(<Input label="Email" hideLabel />)
+
+    await expect.element(page.getByRole('textbox', { name: 'Email' })).toBeInTheDocument()
+  })
+
+  it('takes no room: the field is as tall as the input, and the label is a single pixel', () => {
+    mount(<Input label="Email" hideLabel />)
+    const input = page.getByRole('textbox', { name: 'Email' }).element()
+    const field = input.parentElement!
+    const label = field.querySelector('label')!.getBoundingClientRect()
+
+    expect(field.getBoundingClientRect().height).toBe(input.getBoundingClientRect().height)
+    expect(input.getBoundingClientRect().top).toBe(field.getBoundingClientRect().top)
+    expect([label.width, label.height]).toEqual([1, 1])
+  })
+
+  it('leaves the hint under the input at the same distance as a visible label would', () => {
+    mount(
+      <>
+        <Input label="Email" hideLabel hint="Hidden label" />
+        <Input label="Name" hint="Visible label" />
+      </>,
+    )
+    const distance = (name: string, hint: string) => {
+      const input = page.getByRole('textbox', { name }).element()
+      return page.getByText(hint).element().getBoundingClientRect().top - input.getBoundingClientRect().bottom
+    }
+
+    expect(page.getByRole('textbox', { name: 'Email' }).element().getBoundingClientRect().top).toBe(
+      page.getByText('Hidden label').element().parentElement!.getBoundingClientRect().top,
+    )
+    expect(distance('Email', 'Hidden label')).toBe(distance('Name', 'Visible label'))
+    expect(page.getByText('Hidden label').element()).toBeVisible()
+  })
+
+  it('keeps the error visible, announced and linked to the input', async () => {
+    mount(<Input label="Email" hideLabel error="Enter a valid email" />)
+
+    await expect.element(page.getByRole('alert')).toHaveTextContent('Enter a valid email')
+    await expect
+      .element(page.getByRole('textbox', { name: 'Email' }))
+      .toHaveAccessibleDescription('Enter a valid email')
+  })
+})
+
+describe('Input without hideLabel', () => {
+  // What `Input` rendered before `hideLabel` existed. The label stays an ordinary label of its field: a rule that
+  // hid it for everyone would still pass the accessibility specs, so the markup and the painted values are pinned.
+  const styleOf = (element: Element, properties: string[]) => {
+    const style = getComputedStyle(element)
+    return Object.fromEntries(properties.map((property) => [property, style.getPropertyValue(property)]))
+  }
+
+  it('renders the same markup', () => {
+    const container = mount(<Input label="Email" hint="We only use it to reply." id="email" />)
+
+    expect(container.innerHTML).toBe(
+      '<div class="forma-field">' +
+        '<label class="forma-field__label" for="email">Email</label>' +
+        '<input class="forma-field-control" id="email" aria-describedby="email-hint">' +
+        '<p id="email-hint" class="forma-field__hint">We only use it to reply.</p>' +
+        '</div>',
+    )
+  })
+
+  it('paints the label in the flow of the field, above the input', () => {
+    mount(<Input label="Email" hint="We only use it to reply." />)
+    const label = page.getByText('Email').element()
+    const input = page.getByRole('textbox', { name: 'Email' }).element()
+
+    expect(
+      styleOf(label, ['position', 'width', 'height', 'overflow', 'clip-path', 'white-space', 'margin-top']),
+    ).toEqual({
+      position: 'static',
+      width: expect.stringMatching(/^\d+(\.\d+)?px$/),
+      height: '20px',
+      overflow: 'visible',
+      'clip-path': 'none',
+      'white-space': 'normal',
+      'margin-top': '0px',
+    })
+    expect(label.getBoundingClientRect().bottom).toBeLessThan(input.getBoundingClientRect().top)
+    expect(label.getBoundingClientRect().width).toBeGreaterThan(1)
+  })
+
+  it('stacks the label, the input and the hint with the gap of the field', () => {
+    mount(<Input label="Email" hint="We only use it to reply." />)
+    const input = page.getByRole('textbox', { name: 'Email' }).element()
+    const field = input.parentElement!
+
+    expect(styleOf(field, ['display', 'flex-direction', 'row-gap'])).toEqual({
+      display: 'flex',
+      'flex-direction': 'column',
+      'row-gap': '6px',
+    })
+    const [label, control] = [page.getByText('Email').element(), input]
+    expect(label.getBoundingClientRect().top).toBe(field.getBoundingClientRect().top)
+    expect(control.getBoundingClientRect().top - label.getBoundingClientRect().bottom).toBe(6)
   })
 })

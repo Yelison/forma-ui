@@ -7,6 +7,8 @@ import { DialogSpecimens } from './DialogSpecimens'
 import { IconSpecimens } from './IconSpecimens'
 import { InputSpecimens } from './InputSpecimens'
 import { RadioSpecimens } from './RadioSpecimens'
+import { SearchFieldSpecimens } from './SearchFieldSpecimens'
+import { SelectSpecimens } from './SelectSpecimens'
 import { TabsSpecimens } from './TabsSpecimens'
 import { TooltipSpecimens } from './TooltipSpecimens'
 
@@ -14,6 +16,8 @@ import { TooltipSpecimens } from './TooltipSpecimens'
 export const familySpecimens: Record<FamilyId, ComponentType> = {
   button: ButtonSpecimens,
   input: InputSpecimens,
+  'search-field': SearchFieldSpecimens,
+  select: SelectSpecimens,
   radio: RadioSpecimens,
   avatar: AvatarSpecimens,
   badge: BadgeSpecimens,

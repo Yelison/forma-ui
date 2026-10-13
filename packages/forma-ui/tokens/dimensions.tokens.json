@@ -91,6 +91,11 @@
           }
         }
       }
+    },
+    "icon-size": {
+      "$type": "dimension",
+      "$value": "20px",
+      "$description": "Width and height of the icon inside a text control (the chevron of a Select, the magnifier of a SearchField); the control reserves room for it with the same value."
     }
   },
   "button": {

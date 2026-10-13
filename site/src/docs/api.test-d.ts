@@ -10,6 +10,8 @@ import type {
   InputProps,
   ModalProps,
   RadioProps,
+  SearchFieldProps,
+  SelectProps,
   TabItem,
   TabsProps,
   TooltipProps,
@@ -23,6 +25,8 @@ import { dialogApi } from './dialog/api'
 import { iconButtonApi } from './icon-button/api'
 import { inputApi } from './input/api'
 import { radioApi } from './radio/api'
+import { searchFieldApi } from './search-field/api'
+import { selectApi } from './select/api'
 import { tabsApi } from './tabs/api'
 import { tooltipApi } from './tooltip/api'
 import type { OwnProps } from './types'
@@ -49,6 +53,24 @@ expectTypeOf<keyof (typeof inputApi.related)[0]['own']>().toEqualTypeOf<keyof Fi
 // Radio, against an `<input>`: the same two rules as Input.
 expectTypeOf<keyof typeof radioApi.own>().toEqualTypeOf<OwnProps<RadioProps, 'input'>>()
 expectTypeOf<keyof typeof radioApi.changed>().toExtend<keyof RadioProps>()
+
+// SearchField, against an `<input>`: the same two rules as Input.
+expectTypeOf<keyof typeof searchFieldApi.own>().toEqualTypeOf<OwnProps<SearchFieldProps, 'input'>>()
+expectTypeOf<keyof typeof searchFieldApi.changed>().toExtend<keyof SearchFieldProps>()
+
+// SearchField is always controlled, so it takes no `defaultValue`: the type refuses it, and the reference does not list it.
+const controlled: SearchFieldProps = {
+  label: 'Search',
+  value: '',
+  onValueChange: () => {},
+  // @ts-expect-error `defaultValue` is omitted from the props of SearchField.
+  defaultValue: '',
+}
+expectTypeOf(controlled).toBeObject()
+
+// Select, against a `<select>`: the same two rules.
+expectTypeOf<keyof typeof selectApi.own>().toEqualTypeOf<OwnProps<SelectProps, 'select'>>()
+expectTypeOf<keyof typeof selectApi.changed>().toExtend<keyof SelectProps>()
 
 // Tooltip wraps no element, so every prop of it is its own, and so is every prop that it hands to its trigger.
 expectTypeOf<keyof typeof tooltipApi.own>().toEqualTypeOf<keyof TooltipProps>()

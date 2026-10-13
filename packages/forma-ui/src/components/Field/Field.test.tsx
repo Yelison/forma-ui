@@ -27,6 +27,18 @@ describe('Field', () => {
     expect(input).toHaveAccessibleDescription('Enter a valid email Required')
   })
 
+  it('keeps the label as the name of the control when hideLabel is set, with the hint and the error described', () => {
+    render(
+      <Field label="Email" hideLabel hint="Required" error="Enter a valid email">
+        {(control) => <input {...control} />}
+      </Field>,
+    )
+
+    const input = screen.getByRole('textbox', { name: 'Email' })
+    expect(input).toHaveAccessibleDescription('Enter a valid email Required')
+    expect(screen.getByText('Required')).toBeVisible()
+  })
+
   describe('announcing the error', () => {
     const liveRegions = (container: HTMLElement) =>
       container.querySelectorAll('[role="alert"], [role="status"], [role="log"], [aria-live]')
