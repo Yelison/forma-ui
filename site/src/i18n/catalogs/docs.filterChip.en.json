@@ -33,6 +33,6 @@
   "docs.filterChip.state.toggle": "Toggle",
   "docs.filterChip.state.toggleHint": "Not pressed: aria-pressed=\"false\", and no chevron.",
   "docs.filterChip.states.description": "The states that FilterChip has today, in its two modes. Without <code>aria-haspopup</code> it is a toggle button; with it, it is the trigger of something your application opens. Disabled is a state of its own.",
-  "docs.filterChip.summary": "A filter control on a native button. It is a toggle in a row of choices, or the trigger of a popup of options, depending on aria-haspopup.",
+  "docs.filterChip.summary": "A filter control on a native button: it toggles in a row of choices, or it opens a popup of options.",
   "docs.filterChip.usage.description": "Import FilterChip and put one for each option in a <code>role=\"group\"</code> that has a name, written in your language. Each chip is pressed or not through <code>selected</code>, and your state decides which one is: the library keeps none."
 }

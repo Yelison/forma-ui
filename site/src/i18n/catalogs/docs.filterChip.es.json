@@ -33,6 +33,6 @@
   "docs.filterChip.state.toggle": "Conmutador",
   "docs.filterChip.state.toggleHint": "Sin pulsar: aria-pressed=\"false\" y sin chevron.",
   "docs.filterChip.states.description": "Los estados que FilterChip tiene hoy, en sus dos modos. Sin <code>aria-haspopup</code> es un botón de conmutación; con él, es el disparador de algo que abre tu aplicación. Deshabilitado es un estado aparte.",
-  "docs.filterChip.summary": "Un control de filtro sobre un botón nativo. Es un conmutador en una fila de opciones, o el disparador de un popup de opciones, según aria-haspopup.",
+  "docs.filterChip.summary": "Un control de filtro sobre un botón nativo: se pulsa en una fila de opciones, o abre un popup de opciones.",
   "docs.filterChip.usage.description": "Importa FilterChip y pon uno por opción en un <code>role=\"group\"</code> con nombre, escrito en tu idioma. Cada chip está pulsado o no con <code>selected</code>, y tu estado decide cuál: la biblioteca no guarda ninguno."
 }
