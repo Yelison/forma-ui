@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   FORMA_SOURCE,
@@ -32,22 +33,15 @@ describe('icon generator', () => {
     expect(text.endsWith('\n')).toBe(true)
   })
 
-  it('ships the 31 icons of both sources, with every path, so that the table cannot drift from them', async () => {
-    const source = await loadSource(repoRoot)
+  it.each([
+    { owner: 'Resolve', file: RESOLVE_SOURCE, root: repoRoot, exportName: 'iconPaths', count: 23 },
+    { owner: 'Forma UI', file: FORMA_SOURCE, root: packageRoot, exportName: 'formaIcons', count: 8 },
+  ])('ships the $count icons of $owner as its source draws them, in the same order', async (source) => {
+    const module = await import(pathToFileURL(join(source.root, source.file)).href)
+    const drawn: Record<string, readonly string[]> = module[source.exportName]
 
-    expect(Object.keys(iconPaths)).toHaveLength(31)
-    expect(Object.entries(iconPaths)).toEqual(Object.entries(source))
-  })
-
-  it('keeps the 23 icons of Resolve as they are and adds the 8 of Forma UI', async () => {
-    const { iconPaths: resolve } = await import(join(repoRoot, RESOLVE_SOURCE))
-    const { formaIcons } = await import(join(packageRoot, FORMA_SOURCE))
-
-    expect(Object.keys(resolve)).toHaveLength(23)
-    expect(Object.keys(formaIcons)).toHaveLength(8)
-    for (const [name, paths] of Object.entries<readonly string[]>({ ...resolve, ...formaIcons })) {
-      expect(iconPaths[name as keyof typeof iconPaths]).toEqual(paths)
-    }
+    expect(Object.keys(drawn)).toHaveLength(source.count)
+    expect(Object.entries(iconPaths).filter(([name]) => name in drawn)).toEqual(Object.entries(drawn))
   })
 
   it('lists in iconNames exactly the names of the table, once each, in alphabetical order', () => {

@@ -6,6 +6,7 @@
   },
   "include": [
     "src",
+    "icons",
     "test",
     "scripts/check-changeset.ts",
     "scripts/changeset-check",
