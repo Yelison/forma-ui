@@ -436,7 +436,7 @@ for (const reference of references) {
   })
 }
 
-// The reference of Input shows an error specimen three times; opening the page must not announce either of them.
+// The reference of Input shows an error specimen three times; opening the page must not announce any of them.
 for (const locale of ['en', 'es'] as const) {
   test(`the reference of Input announces nothing on load, in ${locale}`, async ({ page }) => {
     await page.addInitScript((value) => localStorage.setItem('forma-ui-locale', value), locale)
