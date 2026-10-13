@@ -20,6 +20,8 @@ export const searchFieldDoc: ComponentDoc = {
   ],
   limitations: [
     'docs.searchField.limit.controlled',
+    'docs.searchField.limit.omitted',
+    'docs.searchField.limit.classes',
     'docs.searchField.limit.clear',
     'docs.searchField.limit.results',
     'docs.searchField.limit.hint',

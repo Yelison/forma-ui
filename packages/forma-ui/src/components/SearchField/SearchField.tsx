@@ -6,8 +6,8 @@ import { Icon } from '../Icon/Icon.js'
 import styles from './SearchField.module.css'
 
 /**
- * The props of {@link SearchField}: every native `input` attribute except `type`, `value`, `defaultValue` and `onChange`,
- * which it owns (the field is always controlled), plus the label, the value and its change handler.
+ * The props of {@link SearchField}: every native `input` attribute except `type`, `value`, `defaultValue`, `onChange` and `children`,
+ * which it owns or does not take (the field is always controlled and draws only its magnifier), plus the label, the value and its change handler.
  */
 export interface SearchFieldProps extends Omit<
   ComponentProps<'input'>,
@@ -19,7 +19,13 @@ export interface SearchFieldProps extends Omit<
   value: string
   /** Called with the new text each time the person types, pastes or clears the field. */
   onValueChange: (value: string) => void
-  /** Class name of the field container; `className` is applied to the input. */
+  /** Class name of the `<input>`, the box you can see, added after the library's own. `fieldClassName` goes to the container. */
+  className?: string
+  /**
+   * Class name of the field container, the `.forma-field` element that holds the label and the box. The box you can
+   * see is the `<input>`, which takes `className`: decorate it there, and match its focus with `:focus`, not with
+   * `:focus-within` on the container. It is the same contract as `Input` and `Select`.
+   */
   fieldClassName?: string
 }
 

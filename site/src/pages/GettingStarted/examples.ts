@@ -14,6 +14,18 @@ import '@yelison/forma-ui/styles.css'
 import '@yelison/forma-ui/base.css'
 import './app.css' // yours go after the package's`,
   },
+  resets: {
+    caption: 'reset.css',
+    code: `@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: inherit;
+  }
+}`,
+  },
   css: {
     caption: 'app.css',
     code: `.card {

@@ -84,6 +84,26 @@ describe('the reference of SearchField', () => {
     expect(region('Limitations').getByText(/always controlled/)).toBeInTheDocument()
   })
 
+  it('says which element takes each class, and that defaultValue and children are left out', () => {
+    renderReference('SearchField')
+
+    const api = screen.getByRole('region', { name: 'API' })
+    // The messages hold <code> elements, so the text is read from the region and not from a single element.
+    expect(api).toHaveTextContent(/container of the field, the element that holds the label and the box/)
+    expect(api).toHaveTextContent(/the box you can see/)
+    const limitations = region('Limitations').getByRole('list')
+    expect(limitations).toHaveTextContent(/leave out defaultValue.*and children/)
+    expect(limitations).toHaveTextContent(/change :focus-within on the box to :focus on the input/)
+  })
+
+  it('says the same in Spanish', () => {
+    renderReference('SearchField', 'es')
+
+    const limitations = region('Limitaciones').getByRole('list')
+    expect(limitations).toHaveTextContent(/dejan fuera defaultValue.*y children/)
+    expect(limitations).toHaveTextContent(/:focus-within sobre la caja por :focus sobre el input/)
+  })
+
   it('writes the page, its labels and its JSX in Spanish', () => {
     renderReference('SearchField', 'es')
 

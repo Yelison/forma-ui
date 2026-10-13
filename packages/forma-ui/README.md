@@ -50,6 +50,26 @@ The package ships its CSS as three files, in this order:
   first in the module that loads your components (your UI barrel, or the first module that imports from
   `@yelison/forma-ui`), not only from your entry stylesheet: then its rules land at the start of that chunk, before your
   own component CSS. Check the order in your production build, not only in the dev server.
+- **Put the resets of your own element rules in a layer that comes first.** A reset for form controls, such as
+  `button, input, select, textarea { font: inherit; color: inherit }`, normalize or the preflight of Tailwind v3, must go
+  in `@layer base { … }` and be loaded before the package's CSS. The box of a control is written with `:where()`, which has
+  no specificity, on purpose: one class of yours adjusts it without depending on the order of the stylesheets. A reset
+  without a layer has the specificity of an element, so it wins over that box and replaces the font, the padding and the
+  line height of every control. The text colour is the exception: it is written with the specificity of a class, so a
+  reset does not change it. Tailwind v4 already puts its preflight in a layer like this.
+
+  ```css
+  @layer base {
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+      color: inherit;
+    }
+  }
+  ```
+
 - `tokens.css` is the foundation: the component rules read its custom properties, and without it they render unstyled.
 - Importing `@yelison/forma-ui` pulls in no CSS and has no side effects: the components are tree-shakeable (see
   [Bundle size](#bundle-size)), and the stylesheet is yours to place. `styles.css` is one file for all the components, whether you use them all or not.
@@ -139,6 +159,12 @@ function ThemeToggle() {
 | `Tabs`                  | Panels that share one place, one visible at a time.                                    | The ARIA tabs pattern: arrows wrap, `Home` and `End` jump, `Tab` goes from the selected tab to its panel. Selecting is automatic. `label` names the tab list.                                                                                                                                                                                              |
 | `Radio`                 | One option of a group that takes a single choice.                                      | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                                                                                                                                                                                                             |
 | `Avatar`                | A round picture of a person, or their initials.                                        | An image named after `name`, or hidden with `decorative` when the name is beside it. A picture that fails to load gives way to the initials. `tone` takes the tones of `Badge`.                                                                                                                                                                            |
+
+`Input`, `SearchField` and `Select` share one contract for classes: `fieldClassName` goes to the container, the `.forma-field` element that holds the label, the box and the messages, and `className` goes to the control, the `<input>` or `<select>`, which is the box you can see. Decorate the box with `className`, and match its focus with `:focus` on the control, not with `:focus-within` on the container. A control paints its text with `--color-ink` (`--color-muted` when disabled) whatever colour its parent has, even under a reset such as `input { color: inherit }`. Only the colour is protected: the rest of the box (`padding`, `font`) can still be overridden by a reset of yours.
+
+`SearchField` is always controlled and leaves two native props out: `defaultValue`, since the text lives in your component and the field only shows it, and `children`, since an input has none and the magnifier is all the field adds. The types refuse both.
+
+`initialsOf(name)` gives the initials that `Avatar` draws for a name, so that something that is not an avatar, such as a workspace, can show the same letters. An empty or blank name gives an empty string.
 
 `Dialog` takes `presentation="sheet-on-narrow"` to become a bottom sheet below 768 px (a CSS media query, so there is no
 flash on resize): pinned to the bottom edge at the full width, with rounded top corners, a decorative handle, up to about

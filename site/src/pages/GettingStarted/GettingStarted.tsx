@@ -73,6 +73,8 @@ export function GettingStarted({ route, published = packageStatus.published }: G
       <GuideSection {...sectionOf(foundations)}>
         <p>{intl.formatMessage({ id: 'gettingStarted.foundations.body' }, richText)}</p>
         <GuideCode example={examples.entry} />
+        <p>{intl.formatMessage({ id: 'gettingStarted.foundations.resets' }, richText)}</p>
+        <GuideCode example={examples.resets} />
         <p>{intl.formatMessage({ id: 'gettingStarted.foundations.roles' }, richText)}</p>
         <GuideCode example={examples.css} />
         <p>

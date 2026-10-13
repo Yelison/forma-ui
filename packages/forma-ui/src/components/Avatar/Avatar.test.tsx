@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Avatar } from './Avatar'
+import { initialsOf as exportedInitialsOf } from '../../index'
 import { initialsOf } from './initials'
 
 describe('initialsOf', () => {
@@ -44,6 +45,25 @@ describe('initialsOf', () => {
       expect(initialsOf('Álvaro Ñúñez')).toBe('ÁÑ')
       expect(initialsOf('ß Straße')).toBe('ßS')
     })
+  })
+})
+
+// `initialsOf` is public so that an application can draw the initials of something that is not an avatar, such as a
+// workspace. It has to give what an avatar draws, for every name an application can meet.
+describe('the exported initialsOf', () => {
+  it.each([
+    ['a decomposed accent', 'A\u0301na Ruiz'],
+    ['an emoji of several code points', '👩\u200D👩\u200D👧 Ana'],
+    ['a letter whose capital is two letters', 'ß Straße'],
+    ['a placeholder of dots', '··'],
+    ['an email', 'laura@acme.example'],
+    ['a single word', 'yelisson'],
+    ['an empty name', ''],
+    ['two names and a surname', 'María Pérez Gómez'],
+  ])('gives what an Avatar draws for %s', (_description, name) => {
+    const { container } = render(<Avatar name={name} decorative />)
+
+    expect(exportedInitialsOf(name)).toBe(container.textContent)
   })
 })
 
