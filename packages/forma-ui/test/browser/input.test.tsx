@@ -170,3 +170,59 @@ describe('Input height', () => {
     expect(page.getByRole('textbox', { name: 'Name' }).element().getBoundingClientRect().height).toBe(painted)
   })
 })
+
+describe('Input without hideLabel', () => {
+  // What `Input` rendered before `hideLabel` existed. The label stays an ordinary label of its field: a rule that
+  // hid it for everyone would still pass the accessibility specs, so the markup and the painted values are pinned.
+  const styleOf = (element: Element, properties: string[]) => {
+    const style = getComputedStyle(element)
+    return Object.fromEntries(properties.map((property) => [property, style.getPropertyValue(property)]))
+  }
+
+  it('renders the same markup', () => {
+    const container = mount(<Input label="Email" hint="We only use it to reply." id="email" />)
+
+    expect(container.innerHTML).toBe(
+      '<div class="forma-field">' +
+        '<label class="forma-field__label" for="email">Email</label>' +
+        '<input class="forma-field-control" id="email" aria-describedby="email-hint">' +
+        '<p id="email-hint" class="forma-field__hint">We only use it to reply.</p>' +
+        '</div>',
+    )
+  })
+
+  it('paints the label in the flow of the field, above the input', () => {
+    mount(<Input label="Email" hint="We only use it to reply." />)
+    const label = page.getByText('Email').element()
+    const input = page.getByRole('textbox', { name: 'Email' }).element()
+
+    expect(
+      styleOf(label, ['position', 'width', 'height', 'overflow', 'clip-path', 'white-space', 'margin-top']),
+    ).toEqual({
+      position: 'static',
+      width: expect.stringMatching(/^\d+(\.\d+)?px$/),
+      height: '20px',
+      overflow: 'visible',
+      'clip-path': 'none',
+      'white-space': 'normal',
+      'margin-top': '0px',
+    })
+    expect(label.getBoundingClientRect().bottom).toBeLessThan(input.getBoundingClientRect().top)
+    expect(label.getBoundingClientRect().width).toBeGreaterThan(1)
+  })
+
+  it('stacks the label, the input and the hint with the gap of the field', () => {
+    mount(<Input label="Email" hint="We only use it to reply." />)
+    const input = page.getByRole('textbox', { name: 'Email' }).element()
+    const field = input.parentElement!
+
+    expect(styleOf(field, ['display', 'flex-direction', 'row-gap'])).toEqual({
+      display: 'flex',
+      'flex-direction': 'column',
+      'row-gap': '6px',
+    })
+    const [label, control] = [page.getByText('Email').element(), input]
+    expect(label.getBoundingClientRect().top).toBe(field.getBoundingClientRect().top)
+    expect(control.getBoundingClientRect().top - label.getBoundingClientRect().bottom).toBe(6)
+  })
+})
