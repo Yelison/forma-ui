@@ -1,5 +1,38 @@
 # @yelison/forma-ui
 
+## 0.5.0
+
+### Minor Changes
+
+- 1ee5dc6: Add `FilterChip`, ported from Resolve, with two modes chosen by `aria-haspopup`.
+
+  - With `aria-haspopup` it is the filter trigger of Resolve: a chevron (hidden from screen readers), no `aria-pressed`, and `selected` only changes how it looks. Resolve's five uses already spread the `aria-haspopup="menu"` of their menu trigger, so nothing changes for them.
+  - Without it, it is a toggle button: no chevron, and `aria-pressed` always follows `selected`. A row of them inside a `role="group"` with a name you give is a single-choice filter without panels; which one is `selected` stays in your state. `aria-pressed` is not a prop of `FilterChip`, and one that arrives at run time is ignored.
+  - Visual drift from Resolve: the chip is 36px tall with its border included (`--choice-min-height`, and `--touch-target` below 768px) instead of a literal `36px`; it has a focus ring and a disabled look like `Button`.
+
+- 138b484: Fixes found while adopting 0.4.0 in Resolve, and adds one export.
+
+  **A control keeps its ink inside a parent with its own colour.** The text colour of `Input`, `Select` and `SearchField` sat in a rule written with `:where()`, which has no specificity, so a reset such as `input { color: inherit }` won and the text took the colour of the parent: white on white in the light theme inside a container with white text. The rule now has the specificity of a class, so the text is `--color-ink` (and `--color-muted` when disabled, as before) whatever the parent's colour. The placeholder and the read-only and disabled states are unchanged. A control that no rule of yours colours paints exactly as before; one under a reset such as `input { color: inherit }` now paints with the token, whatever the parent's colour. Only the text colour is protected: the other properties of the box, such as `padding` and `font`, stay in `:where()` on purpose, so a reset of element rules that you load without a layer still replaces them. Put such a reset in `@layer base { … }`, before the package's CSS, as the README explains; Tailwind v4 already does. A rule of yours that sets `color` on a control with one class now ties with the library's, so the order of the stylesheets decides: load yours after `styles.css`, or raise its specificity.
+
+  **`initialsOf(name)` is exported.** It returns the initials that `Avatar` draws for `name`, cut by user-perceived character, so an application can show the same letters for something that is not an avatar, such as a workspace.
+
+  **`SearchField`: which element takes each class is documented.** Nothing changes in how it behaves: `fieldClassName` goes to the container, the `.forma-field` element, and `className` to the `<input>`, which is the visible box, the same contract as `Input` and `Select`. The README, the JSDoc and the reference page now say so, and say that `defaultValue` and `children` are left out of its props.
+
+  ### Migrating from a copy of Resolve's SearchField
+
+  In Resolve's copy, `fieldClassName` went to the `<label>`, which was the visible box. Here the box is the `<input>`. Move the decoration of the box from `fieldClassName` to `className`, and change `:focus-within` on the box to `:focus` on the input. Keep `fieldClassName` only for what belongs to the container, such as its width or margin. The states of the library (hover, focus, read-only, disabled and error) keep winning over a rule of one class: to change the background in one of them, write the rule of that state too. Do not set the initial `padding` of the input, which leaves room for the magnifier.
+
+- 103efed: `Badge` takes a `purple` tone and a `shape` prop. `shape` is `'default'` (the corners of a control, what every badge had) or `'pill'`, which rounds both ends with `--radius-round` and keeps the height. A badge without `shape` renders the same markup and styles as before. `BadgeTone` grows with `'purple'`, and `Avatar`, whose `tone` takes `BadgeTone`, can be purple too.
+
+  Adds the color tokens `--color-purple-bg` (`#efe7ff` light, `#31244a` dark) and `--color-purple-ink` (`#7751b8` light, `#cfb1ff` dark), and their text pair to `contrast-pairs.json`: 4.80:1 in the light theme and 7.68:1 in the dark one. No other color changes. Applications that keep their own copy of `tokens.css` will see it change when they sync it.
+
+- 511e1c8: Add `size` to `Button` and to `buttonClassName`: `'default'` (42 px, unchanged) or `'compact'` (36 px), and export the `ButtonSize` type.
+
+  - `compact` changes only the height, through the new token `--button-height-compact` (36px). The padding, the gap, the type, the focus ring and the six states are those of the default size.
+  - Below 768px `--button-height-compact` is `--touch-target` (44px), as `--button-height` is: a compact button is as tall as a default one on a small screen, so its touch target is never under the package's minimum.
+  - Without `size`, the markup and the styles of a `Button` do not change.
+  - The 32/40/48 px scale of the design is not part of the package.
+
 ## 0.4.0
 
 ### Minor Changes
