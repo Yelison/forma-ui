@@ -21,6 +21,7 @@ export const inputDoc: ComponentDoc = {
   limitations: [
     'docs.input.limit.native',
     'docs.input.limit.control',
+    'docs.input.limit.select',
     'docs.input.limit.validation',
     'docs.input.limit.size',
     'docs.input.limit.errorAnnouncement',
