@@ -139,6 +139,51 @@ describe('Menu rows', () => {
   })
 })
 
+describe('Menu opening and closing', () => {
+  const items: MenuItem[] = [
+    { id: 'a', label: 'Disabled first', disabled: true, onSelect: vi.fn() },
+    { id: 'b', label: 'Second', checked: false, onSelect: vi.fn() },
+    { id: 'c', label: 'Third', checked: true, onSelect: vi.fn() },
+  ]
+  const renderItems = (props: Partial<ComponentProps<typeof Menu>> = {}) => {
+    render(
+      <Menu label="Actions" items={items} {...props}>
+        {(trigger) => <button {...trigger}>Open</button>}
+      </Menu>,
+    )
+    return screen.getByRole('button', { name: 'Open' })
+  }
+
+  it('opens on the first enabled item, not on a disabled one', async () => {
+    renderItems({ items: items.map(({ checked: _checked, ...item }) => item) })
+    screen.getByRole('button', { name: 'Open' }).focus()
+    await userEvent.keyboard('{ArrowDown}')
+    await vi.waitFor(() => expect(screen.getByRole('menuitem', { name: 'Second' })).toHaveFocus())
+  })
+
+  it('opens on the chosen option when it is not the first', async () => {
+    renderItems()
+    screen.getByRole('button', { name: 'Open' }).focus()
+    await userEvent.keyboard('{ArrowDown}')
+    await vi.waitFor(() => expect(screen.getByRole('menuitemradio', { name: 'Third' })).toHaveFocus())
+  })
+
+  it('draws a check on the chosen option only', async () => {
+    await userEvent.click(renderItems())
+    expect(screen.getByRole('menuitemradio', { name: 'Third' }).querySelector('svg')).not.toBeNull()
+    expect(screen.getByRole('menuitemradio', { name: 'Second' }).querySelector('svg')).toBeNull()
+  })
+
+  it('forgets the search when the menu closes with something typed, so it opens empty', async () => {
+    const trigger = renderItems({ search: { label: 'Search', emptyText: 'None.' } })
+    await userEvent.click(trigger)
+    await userEvent.keyboard('thi{ArrowDown}{Enter}')
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+    await userEvent.click(trigger)
+    expect(screen.getByRole('searchbox', { name: 'Search' })).toHaveValue('')
+  })
+})
+
 describe('Menu inside a modal dialog', () => {
   it('mounts inside the dialog so that it stays visible in the top layer', async () => {
     render(
@@ -200,6 +245,7 @@ describe('Menu with option rows, a search field and a note', () => {
     )
     await userEvent.click(screen.getByRole('button', { name: 'Workspace' }))
     expect(screen.getByRole('menuitem')).toHaveAccessibleName('Northwind')
+    expect(screen.getByText('NW')).toBeInTheDocument()
   })
 
   it('does not count the separator as an item: the arrow keys skip it', async () => {

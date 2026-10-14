@@ -417,6 +417,24 @@ describe('Menu triggers', () => {
   })
 })
 
+describe('Menu layers and note', () => {
+  it('sits on the --z-menu layer', async () => {
+    mount(<Page />)
+    await openByClick()
+
+    expect(getComputedStyle(menuBox()).zIndex).toBe(resolved('z-index', '--z-menu'))
+  })
+
+  it('separates the note from the list with a line of the line color', async () => {
+    mount(<Page note="It is your only workspace" />)
+    await openByClick()
+
+    const style = getComputedStyle(page.getByText('It is your only workspace').element())
+    expect([style.borderTopWidth, style.borderTopStyle]).toEqual(['1px', 'solid'])
+    expect(style.borderTopColor).toBe(resolved('border-top-color', '--color-line'))
+  })
+})
+
 describe('Menu inside a modal Dialog', () => {
   function InDialog(props: Partial<MenuProps>) {
     const [open, setOpen] = useState(true)
