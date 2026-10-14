@@ -7,6 +7,7 @@ import { dialogDoc } from './dialog'
 import { filterChipDoc } from './filter-chip'
 import { iconButtonDoc } from './icon-button'
 import { inputDoc } from './input'
+import { menuDoc } from './menu'
 import { radioDoc } from './radio'
 import { searchFieldDoc } from './search-field'
 import { selectDoc } from './select'
@@ -32,6 +33,7 @@ export const componentDocs: Partial<Record<(typeof componentPages)[number]['slug
   select: selectDoc,
   'filter-chip': filterChipDoc,
   alert: alertDoc,
+  menu: menuDoc,
 }
 
 export type { ComponentDoc } from './types'

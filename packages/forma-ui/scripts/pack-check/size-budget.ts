@@ -47,6 +47,12 @@
 // Alert, on 2026-10-13: 8.85 kB for every export (8.69 kB before it), over its 8800 B, which goes to 9000 B (the measure plus
 // 2%: the next component raises it again, in its own pull request), and 2.53 kB for styles.css (2.48 kB before it), within
 // its budget. Alert alone is 0.36 kB, with a budget of 400 B: it draws no icon, so it carries none of the table.
+//
+// Menu, on 2026-10-13, on top of Alert: 10.17 kB for every export (8.85 kB before it), over its 9000 B, which goes to
+// 10300 B (the measure plus 1.4%: the budget is raised by what the component costs and no more, and the next component
+// raises it again with its own measure), and 2.88 kB for styles.css (2.53 kB before it), over its 2700 B, which goes to
+// 2900 B. Menu is the largest component: its list, its keyboard model, a SearchField for the filter and the table of icons
+// that any component that draws one carries. Its own budget is new: Menu alone is 5.44 kB, so 5600 B.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -69,7 +75,7 @@ const budgets: Budget[] = [
     name: 'dist/index.js (every export)',
     source: `import * as forma from '@yelison/forma-ui'\nconsole.log(forma)`,
     extension: '.js',
-    limit: 9000,
+    limit: 10300,
   },
   {
     name: 'import { Button } from the package',
@@ -96,6 +102,12 @@ const budgets: Budget[] = [
     limit: 400,
   },
   {
+    name: 'import { Menu } from the package',
+    source: `import { Menu } from '@yelison/forma-ui'\nconsole.log(Menu)`,
+    extension: '.js',
+    limit: 5600,
+  },
+  {
     name: 'import { iconNames } from the package',
     source: `import { iconNames } from '@yelison/forma-ui'\nconsole.log(iconNames)`,
     extension: '.js',
@@ -105,7 +117,7 @@ const budgets: Budget[] = [
     name: 'dist/styles.css',
     source: `import '@yelison/forma-ui/styles.css'`,
     extension: '.css',
-    limit: 2700,
+    limit: 2900,
   },
 ]
 

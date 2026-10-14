@@ -57,6 +57,7 @@ for (const locale of ['en', 'es'] as const) {
         'SearchField',
         'Select',
         'FilterChip',
+        'Menu',
         'Radio',
         'Avatar',
         'Badge',
@@ -66,7 +67,7 @@ for (const locale of ['en', 'es'] as const) {
         'Tooltip',
         'Dialog',
       ])
-      await expect(countOf(page)).toHaveText(t.count(13))
+      await expect(countOf(page)).toHaveText(t.count(14))
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
@@ -145,8 +146,8 @@ for (const locale of ['en', 'es'] as const) {
 
       await expect(page.getByRole('radio', { name: t.actions, exact: true })).toBeFocused()
       await expect(page.getByRole('radio', { name: t.actions, exact: true })).toBeChecked()
-      expect(await rowNames(page)).toEqual(['Button', 'FilterChip'])
-      await expect(countOf(page)).toHaveText(t.count(2))
+      expect(await rowNames(page)).toEqual(['Button', 'FilterChip', 'Menu'])
+      await expect(countOf(page)).toHaveText(t.count(3))
     })
 
     test('reaches the filters and the first specimen with Tab, in the order of the page', async ({ page }) => {
@@ -167,7 +168,7 @@ for (const locale of ['en', 'es'] as const) {
 
       await page.getByRole('button', { name: t.clear }).click()
 
-      expect(await rowNames(page)).toHaveLength(13)
+      expect(await rowNames(page)).toHaveLength(14)
       await expect(page.getByRole('textbox', { name: t.filterByName })).toBeFocused()
       await expect(page.getByRole('textbox', { name: t.filterByName })).toHaveValue('')
     })

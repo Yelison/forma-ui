@@ -193,6 +193,28 @@
       "$value": "240px"
     }
   },
+  "menu": {
+    "min-width": {
+      "$type": "dimension",
+      "$value": "200px",
+      "$description": "The narrowest a Menu gets; Resolve's value."
+    },
+    "min-width-wide": {
+      "$type": "dimension",
+      "$value": "280px",
+      "$description": "The narrowest a wide Menu gets, for rows with two lines; Resolve's value."
+    },
+    "max-width": {
+      "$type": "dimension",
+      "$value": "320px",
+      "$description": "The widest a Menu gets, as long as it fits the viewport; Resolve's value."
+    },
+    "item-min-height": {
+      "$type": "dimension",
+      "$value": "36px",
+      "$description": "The row of a Menu item; Resolve's value. Below 768px the row is touch.target tall, in the component's CSS as for FilterChip."
+    }
+  },
   "dialog": {
     "width": {
       "$type": "dimension",

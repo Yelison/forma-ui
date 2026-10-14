@@ -78,8 +78,16 @@ describe('the reference of FilterChip', () => {
     renderReference('FilterChip', 'es')
 
     const code = codeOf('Disparador de un popup')
-    expect(code).toContain('{/* Tu propio diálogo, popover o menú con las opciones */}')
+    expect(code).toContain('{/* Tu propio diálogo o popover con las opciones, o un Menu */}')
     expect(code).not.toContain('Your own')
+  })
+
+  it('sends a popup chip to Menu in its limitations instead of saying that there is no menu', () => {
+    renderReference('FilterChip')
+
+    const limitations = region('Limitations')
+    expect(limitations.getByText(/takes a FilterChip as its trigger/)).toBeInTheDocument()
+    expect(limitations.queryByText(/There is no menu/)).not.toBeInTheDocument()
   })
 
   it('documents selected as its own prop and the attributes it changes', () => {

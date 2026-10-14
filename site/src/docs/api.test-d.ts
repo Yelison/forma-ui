@@ -10,6 +10,10 @@ import type {
   IconButtonProps,
   FilterChipProps,
   InputProps,
+  MenuItem,
+  MenuProps,
+  MenuSearch,
+  MenuTriggerProps,
   ModalProps,
   RadioProps,
   SearchFieldProps,
@@ -28,6 +32,7 @@ import { dialogApi } from './dialog/api'
 import { filterChipApi } from './filter-chip/api'
 import { iconButtonApi } from './icon-button/api'
 import { inputApi } from './input/api'
+import { menuApi } from './menu/api'
 import { radioApi } from './radio/api'
 import { searchFieldApi } from './search-field/api'
 import { selectApi } from './select/api'
@@ -100,6 +105,12 @@ expectTypeOf(pressed).toBeObject()
 // Alert, against a `<div>`: the same two rules. `title` is native but taken over, so it is one of the changed rows.
 expectTypeOf<keyof typeof alertApi.own>().toEqualTypeOf<OwnProps<AlertProps, 'div'>>()
 expectTypeOf<keyof typeof alertApi.changed>().toExtend<keyof AlertProps>()
+
+// Menu wraps no element: every prop of it is its own, and so is each prop of the three shapes it documents.
+expectTypeOf<keyof typeof menuApi.own>().toEqualTypeOf<keyof MenuProps>()
+expectTypeOf<keyof (typeof menuApi.related)[0]['own']>().toEqualTypeOf<keyof MenuItem>()
+expectTypeOf<keyof (typeof menuApi.related)[1]['own']>().toEqualTypeOf<keyof MenuSearch>()
+expectTypeOf<keyof (typeof menuApi.related)[2]['own']>().toEqualTypeOf<keyof MenuTriggerProps>()
 
 // Tooltip wraps no element, so every prop of it is its own, and so is every prop that it hands to its trigger.
 expectTypeOf<keyof typeof tooltipApi.own>().toEqualTypeOf<keyof TooltipProps>()
