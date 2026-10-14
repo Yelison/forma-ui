@@ -102,10 +102,11 @@ const loadedStylesheets = new Map<BuiltFile, HTMLStyleElement>()
 // off while the built stylesheet is loaded, or its rules could never be told apart from the runner's own.
 const switchedOff = new Set<CSSStyleSheet>()
 
-function loadStylesheet(name: 'tokens.css' | 'styles.css') {
+function loadStylesheet(name: 'tokens.css' | 'styles.css', layer?: string) {
   if (loadedStylesheets.has(name)) return
   const stylesheet = document.createElement('style')
-  stylesheet.textContent = readBuilt(name)
+  const css = readBuilt(name)
+  stylesheet.textContent = layer ? `@layer ${layer} {\n${css}\n}` : css
   document.head.append(stylesheet)
   loadedStylesheets.set(name, stylesheet)
 }
@@ -117,9 +118,12 @@ export const loadTokens = () => loadStylesheet('tokens.css')
  * Adds the built `styles.css` to the page, the component rules a consumer receives, and switches off the CSS Modules
  * that the runner injected, so the page is styled by the built file alone. Their class names are the same, so a spec
  * mounts the component as usual. A module imported after this call injects its CSS again. `reset()` undoes both.
+ *
+ * With `layer`, the file goes inside `@layer <layer> { … }`, which is what `@import '…/styles.css' layer(<layer>)` does
+ * to a consumer's page; the runner's own sheets stay switched off, since they have no layer and would beat any layer.
  */
-export function loadStyles() {
-  loadStylesheet('styles.css')
+export function loadStyles(layer?: string) {
+  loadStylesheet('styles.css', layer)
   for (const style of document.head.querySelectorAll<HTMLStyleElement>('style[data-vite-dev-id$=".module.css"]')) {
     if (!style.sheet) continue
     style.sheet.disabled = true
