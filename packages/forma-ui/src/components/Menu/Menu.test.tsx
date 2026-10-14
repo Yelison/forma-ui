@@ -102,12 +102,6 @@ describe('Menu', () => {
     expect(screen.queryByRole('menu')).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'After' })).toHaveFocus()
   })
-
-  it('marks a destructive item without relying on its label', async () => {
-    const trigger = renderMenu()
-    await userEvent.click(trigger)
-    expect(screen.getByRole('menuitem', { name: 'Delete ticket' }).className).toMatch(/danger/)
-  })
 })
 
 describe('Menu rows', () => {

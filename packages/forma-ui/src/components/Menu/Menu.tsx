@@ -169,9 +169,13 @@ export function Menu({ label, items, placement = 'bottom-end', search, note, wid
     return () => document.removeEventListener('pointerdown', onPointerDown)
   }, [open, close, anchor, floating])
 
+  // From the item that has the focus, which can be a disabled one that a click reached, to the next enabled item in that
+  // direction, wrapping around at the ends.
   function move(step: 1 | -1) {
-    const position = enabledIndexes.indexOf(activeIndex)
-    const next = enabledIndexes[(position + step + enabledIndexes.length) % enabledIndexes.length]
+    const next =
+      step === 1
+        ? (enabledIndexes.find((index) => index > activeIndex) ?? enabledIndexes[0])
+        : (enabledIndexes.findLast((index) => index < activeIndex) ?? enabledIndexes[enabledIndexes.length - 1])
     if (next !== undefined) setActiveIndex(next)
   }
 
@@ -299,6 +303,8 @@ export function Menu({ label, items, placement = 'bottom-end', search, note, wid
                         item.checked && styles.checked,
                       )}
                       onClick={() => select(item)}
+                      // A click gives a disabled item the focus too: the arrows go on from where the focus is.
+                      onFocus={() => setActiveIndex(index)}
                     >
                       {item.leading}
                       {item.icon && <Icon name={item.icon} />}

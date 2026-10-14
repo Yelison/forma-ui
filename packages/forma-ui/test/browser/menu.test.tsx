@@ -170,6 +170,20 @@ describe('Menu keyboard', () => {
     await expect.element(item('Delete ticket')).toHaveFocus()
   })
 
+  // A click gives a disabled item the focus, though no arrow can: the arrows then go on from it, and not from the item
+  // that was active before.
+  it('goes on from a disabled item that a click focused: the up arrow to the item before it', async () => {
+    mount(<Page />)
+    await openByClick()
+
+    await userEvent.click(item('Change priority'), { force: true })
+    await expect.element(item('Change priority')).toHaveFocus()
+    expect(item('Change priority').element()).toHaveProperty('tabIndex', 0)
+    await userEvent.keyboard('{ArrowUp}')
+
+    await expect.element(item('Assign owner')).toHaveFocus()
+  })
+
   it('goes to the first and the last item with Home and End, and to an item with its first letter', async () => {
     mount(<Page />)
     await openByClick()
@@ -599,7 +613,7 @@ describe('Menu size', () => {
     expect(box(menuBox()).width).toBe(360)
   })
 
-  it('stays 16 px from each edge of a 320 px wide screen', async () => {
+  it('is 288 px wide on a 320 px screen and stays inside it', async () => {
     await page.viewport(320, 640)
     mount(<Page items={longItems} />)
     await openByClick()

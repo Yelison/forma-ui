@@ -11,5 +11,6 @@ Add `Menu`, ported from Resolve: a menu of actions or options that opens from a 
   - `Tab` and `Shift+Tab` hand the focus to the trigger first, so the browser moves on from it and the focus never ends on the page body.
   - The live region that says that no item matches the search is in the menu from the start and only its text arrives, so that it is announced.
   - The items draw the library's focus ring instead of the one of the application's global `:focus-visible` rule, and the menu sets its own `box-sizing`, since the library ships no global reset.
+  - The arrow keys go on from the item that has the focus: a click on a disabled item focuses it, and the next arrow goes to the enabled item after or before it, where Resolve kept the previous position and the up arrow jumped to the last item.
   - A plain item wraps its text in a `<span>`.
 - Checked options keep Resolve's `menuitemradio` role.
