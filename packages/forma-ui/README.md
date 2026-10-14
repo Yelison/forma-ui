@@ -272,7 +272,7 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size     |
 | ----------------- | -------- |
-| Everything        | 10.16 kB |
+| Everything        | 10.17 kB |
 | `{ Menu }`        | 5.44 kB  |
 | `{ SearchField }` | 3.29 kB  |
 | `{ Select }`      | 3.16 kB  |

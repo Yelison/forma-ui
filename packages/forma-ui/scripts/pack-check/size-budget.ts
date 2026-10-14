@@ -48,7 +48,7 @@
 // 2%: the next component raises it again, in its own pull request), and 2.53 kB for styles.css (2.48 kB before it), within
 // its budget. Alert alone is 0.36 kB, with a budget of 400 B: it draws no icon, so it carries none of the table.
 //
-// Menu, on 2026-10-13, on top of Alert: 10.16 kB for every export (8.85 kB before it), over its 9000 B, which goes to
+// Menu, on 2026-10-13, on top of Alert: 10.17 kB for every export (8.85 kB before it), over its 9000 B, which goes to
 // 10300 B (the measure plus 1.4%: the budget is raised by what the component costs and no more, and the next component
 // raises it again with its own measure), and 2.88 kB for styles.css (2.53 kB before it), over its 2700 B, which goes to
 // 2900 B. Menu is the largest component: its list, its keyboard model, a SearchField for the filter and the table of icons
