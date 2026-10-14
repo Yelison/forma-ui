@@ -9,3 +9,8 @@
   flex-wrap: wrap;
   gap: var(--space-8);
 }
+
+/* An alert that has no message yet draws nothing, but keeps the element (and its padding) that the message arrives in. */
+.column .pending {
+  background: transparent;
+}

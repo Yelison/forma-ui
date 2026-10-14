@@ -48,22 +48,41 @@ describe('the reference of Alert', () => {
 
     expect(liveRegions(live)).toContain(status)
     expect(status).toHaveTextContent('Changes saved')
-    await userEvent.click(live.getByRole('button', { name: 'Reset' }))
+    await userEvent.click(live.getAllByRole('button', { name: 'Reset' })[0]!)
     expect(status).toHaveTextContent('Not saved yet')
   })
 
-  it('shows the red live alert as role alert', () => {
+  it('has no role="alert" with text when the page loads, so that nothing interrupts a screen reader', () => {
     renderReference('Alert')
 
-    expect(region('Live region').getByRole('alert')).toHaveTextContent('Connection lost')
+    const withText = screen.queryAllByRole('alert').filter((element) => element.textContent)
+    expect(withText).toEqual([])
+  })
+
+  it('gives the message to the red alert that was already there, when the button is pressed', async () => {
+    renderReference('Alert')
+    const live = region('Live region')
+    const [alert] = live.getAllByRole('alert')
+    if (!alert) throw new Error('the live alert did not render')
+    expect(alert).not.toHaveTextContent(/\S/)
+
+    await userEvent.click(live.getByRole('button', { name: 'Simulate an error' }))
+
+    expect(live.getAllByRole('alert')).toEqual([alert])
+    expect(alert).toHaveTextContent('Connection lost')
+    expect(codeOf('Live region')).toContain('<Alert tone="red" title={failed ?')
+    await userEvent.click(live.getAllByRole('button', { name: 'Reset' })[1]!)
+    expect(alert).not.toHaveTextContent(/\S/)
   })
 
   it('puts the action inside the alert, with its JSX, and the strip is not live', () => {
     renderReference('Alert')
 
-    expect(region('With an action').getByRole('alert')).toContainElement(
-      region('With an action').getByRole('button', { name: 'Retry' }),
+    const action = region('With an action')
+    expect(action.getByText('Connection lost').parentElement).toContainElement(
+      action.getByRole('button', { name: 'Retry' }),
     )
+    expect(liveRegions(action)).toEqual([])
     expect(codeOf('With an action')).toContain('<Button variant="secondary" onClick={retry}>')
     const strip = region('Read-only strip')
     expect(strip.getByRole('button', { name: 'Request access' })).toBeInTheDocument()

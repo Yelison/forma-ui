@@ -91,6 +91,8 @@ const references: Reference[] = [
       await expect(
         page.getByRole('region', { name: 'Live region' }).getByText('Changes saved', { exact: true }),
       ).toBeVisible()
+      await page.getByRole('button', { name: 'Simulate an error' }).click()
+      await expect(page.getByRole('alert').filter({ hasText: 'Connection lost' })).toBeVisible()
     },
   },
   {
@@ -403,10 +405,27 @@ for (const reference of references) {
         await expect(alert).toHaveText(/Changes saved/)
         expect(await element!.evaluate((node) => node.isConnected)).toBe(true)
         await expect(save).toBeFocused()
-        await expect(live.getByRole('alert')).toContainText('Connection lost')
       })
 
-      test('keeps the action of an alert in the tab order of the page, with a visible focus', async ({ page }) => {
+      test('has no role="alert" with text when the page loads, and gives the error to the one that was there', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const alerts = page.getByRole('alert')
+        // Chromium announces a `role="alert"` that is inserted with text: none of the page may be.
+        await expect(alerts.filter({ hasText: /\S/ })).toHaveCount(0)
+        const alert = alerts.first()
+        const element = await alert.elementHandle()
+
+        await page.getByRole('button', { name: 'Simulate an error' }).click()
+
+        await expect(alert).toContainText('Connection lost')
+        expect(await element!.evaluate((node) => node.isConnected)).toBe(true)
+        await page.getByRole('button', { name: 'Reset' }).last().click()
+        await expect(alerts.filter({ hasText: /\S/ })).toHaveCount(0)
+      })
+
+      test('shows a visible focus on the action of an alert', async ({ page }) => {
         await openReference(page, reference)
         const retry = page.getByRole('region', { name: 'With an action' }).getByRole('button', { name: 'Retry' })
 

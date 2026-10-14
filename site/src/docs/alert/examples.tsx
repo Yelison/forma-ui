@@ -4,6 +4,7 @@ import type { MessageId } from '../../i18n'
 import { attribute } from '../jsx'
 import type { Example, ExampleGroup } from '../types'
 import { alertTones } from './options'
+import { ErrorAlert } from './ErrorAlert'
 import { SaveAlert } from './SaveAlert'
 
 /** The JSX of an alert: the opening tag with its attributes, the body on its own lines, and the action after it. */
@@ -49,6 +50,14 @@ export function alertExamples(intl: IntlShape): { usage: Example; groups: readon
     `</Alert>`,
   ].join('\n')
 
+  const errorCode = [
+    `const [failed, setFailed] = useState(false)`,
+    ``,
+    `<Alert tone="red" title={failed ? ${JSON.stringify(title('red'))} : ''} live>`,
+    `  {failed && ${JSON.stringify(body('red'))}}`,
+    `</Alert>`,
+  ].join('\n')
+
   return {
     usage: {
       label: { code: 'Alert' },
@@ -80,12 +89,8 @@ export function alertExamples(intl: IntlShape): { usage: Example; groups: readon
           {
             label: { code: 'tone="red" live' },
             hint: say('docs.alert.live.redHint'),
-            element: (
-              <Alert tone="red" title={title('red')} live>
-                {body('red')}
-              </Alert>
-            ),
-            code: alertCode([attribute('tone', 'red'), attribute('title', title('red')), 'live'], body('red')),
+            element: <ErrorAlert />,
+            code: errorCode,
           },
         ],
       },
@@ -96,13 +101,14 @@ export function alertExamples(intl: IntlShape): { usage: Example; groups: readon
         examples: [
           {
             label: { code: 'children' },
+            hint: say('docs.alert.action.hint'),
             element: (
-              <Alert tone="red" title={title('red')} live>
+              <Alert tone="red" title={title('red')}>
                 {body('red')}
                 <Button variant="secondary">{retry}</Button>
               </Alert>
             ),
-            code: alertCode([attribute('tone', 'red'), attribute('title', title('red')), 'live'], body('red'), {
+            code: alertCode([attribute('tone', 'red'), attribute('title', title('red'))], body('red'), {
               label: retry,
               handler: 'retry',
             }),
