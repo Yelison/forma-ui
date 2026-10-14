@@ -78,15 +78,20 @@ describe('GettingStarted', () => {
   })
 
   it.each([
-    ['en', 'Apply the foundations', /layer that comes first, @layer base.*The text color is already protected/],
-    ['es', 'Aplica los fundamentos', /capa que vaya primero, @layer base.*El color del texto ya está protegido/],
-  ] as const)('tells, in the step of the CSS in %s, where to put a reset of form controls', (locale, name, note) => {
-    renderInSite(<GettingStarted route={route} />, { locale })
+    ['en', 'Apply the foundations', /put it in @layer base\./, /CSS without a layer beats CSS in a layer/],
+    ['es', 'Aplica los fundamentos', /ponlo en @layer base\./, /CSS sin capa gana al CSS con capa/],
+  ] as const)(
+    'tells, in the step of the CSS in %s, where to put a reset and how to give the package a layer',
+    (locale, name, reset, layers) => {
+      renderInSite(<GettingStarted route={route} />, { locale })
 
-    const step = screen.getByRole('region', { name })
-    expect(step).toHaveTextContent(note)
-    expect(step).toHaveTextContent('@layer base {')
-  })
+      const step = screen.getByRole('region', { name })
+      expect(step).toHaveTextContent(reset)
+      expect(step).toHaveTextContent('@layer base {')
+      expect(step).toHaveTextContent(layers)
+      expect(step).toHaveTextContent("@import '@yelison/forma-ui/styles.css' layer(forma);")
+    },
+  )
 
   it('has a copy button on every block of code, named in the language of the page', () => {
     renderInSite(<GettingStarted route={route} />, { locale: 'es' })

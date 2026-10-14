@@ -24,12 +24,12 @@ describe('the code of the guide', () => {
     expect(imported.filter((name) => !(name in forma))).toEqual([])
   })
 
-  it('imports only stylesheets that the package exports, and all three of them', () => {
+  it('imports only stylesheets that the package exports, and all three of them (the layered recipe repeats them)', () => {
     const imported = sources.flatMap((code) => stylesheetImportsIn(code, packageStatus.name))
     const exported = Object.keys(formaPackage.exports).map((subpath) => `${packageStatus.name}${subpath.slice(1)}`)
 
     expect(imported.filter((file) => !exported.includes(file))).toEqual([])
-    expect(imported.toSorted()).toEqual(
+    expect([...new Set(imported)].toSorted()).toEqual(
       ['base.css', 'styles.css', 'tokens.css'].map((file) => `${packageStatus.name}/${file}`),
     )
   })
