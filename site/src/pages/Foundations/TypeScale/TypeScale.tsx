@@ -4,8 +4,8 @@ import { Section } from '../Section'
 import { TokenCode } from '../TokenCode'
 import { tokenValue, type ThemeTokens } from '../themeTokens'
 import { parseFontShorthand } from './fontShorthand'
-import { fontStyles } from './styles'
 import { monospaceExamples } from './monospaceExamples'
+import { fontStyles } from './styles'
 import styles from './TypeScale.module.css'
 
 export interface TypeScaleProps {

@@ -78,6 +78,7 @@ describe.each(themes)('Foundations in the %s theme', (theme) => {
     const type = section('Type hierarchy')
     expect(type.getByText('--font-family-mono').closest('p')).toHaveTextContent(values['--font-family-mono']!)
     expect(itemOf(type, '--font-code').getByText('13px / 20px, weight 400')).toBeInTheDocument()
+    expect(type.getByText('0.93em').closest('p')).toHaveTextContent('Code inline in text of another size')
     expect(type.getByRole('figure', { name: 'A block of code' })).toHaveTextContent('font: var(--font-code);')
     expect(type.getByRole('figure', { name: 'Code inline in a heading' })).toHaveTextContent(
       'font-family: var(--font-family-mono);',
