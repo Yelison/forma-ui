@@ -139,6 +139,29 @@ function ThemeToggle() {
 }
 ```
 
+## Monospace type
+
+Two tokens cover code: `--font-family-mono`, the system monospace stack (the package bundles no monospace font), and
+`--font-code`, a style of the same weight and line height as `--font-body` at 13/20.
+
+Use `--font-code` for a block of code, or an interface (a token field, a log line) that sits at the size of the body:
+
+```css
+.snippet {
+  font: var(--font-code);
+}
+```
+
+Code inline in text of another size, such as a heading or a 16/24 paragraph, takes the family alone and a size relative
+to its text, `0.93em` (13/14). It then scales with the text and leaves the line height of the line as it was:
+
+```css
+code {
+  font-family: var(--font-family-mono);
+  font-size: 0.93em;
+}
+```
+
 ## Components
 
 `Alert`, `Badge`, `Button`, `IconButton`, `FilterChip`, `Icon`, `Input`, `SearchField`, `Select` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.

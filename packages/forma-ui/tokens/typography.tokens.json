@@ -5,6 +5,11 @@
       "$value": "'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif",
       "$description": "Decision D12: the package does not bundle Inter. `Inter Variable` matches @fontsource-variable/inter; `Inter` matches a self-hosted copy."
     },
+    "family-mono": {
+      "$type": "fontFamily",
+      "$value": "ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace",
+      "$description": "The system monospace stack, for code. The package bundles no monospace font."
+    },
     "caption": {
       "$type": "typography",
       "$value": {
@@ -20,6 +25,15 @@
         "fontFamily": "{font.family}",
         "fontWeight": 400,
         "fontSize": "14px",
+        "lineHeight": "20px"
+      }
+    },
+    "code": {
+      "$type": "typography",
+      "$value": {
+        "fontFamily": "{font.family-mono}",
+        "fontWeight": 400,
+        "fontSize": "13px",
         "lineHeight": "20px"
       }
     },

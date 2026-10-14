@@ -60,6 +60,24 @@ for (const theme of themes) {
   })
 }
 
+// The stack of a code block is the package's token, and its size and line height are those of the body: moving the
+// site to the token changed no pixel.
+test('sets a code block in the monospace token, at the size of the body', async ({ page }) => {
+  await openFoundations(page)
+
+  const code = await page
+    .locator('pre')
+    .first()
+    .evaluate((pre) => {
+      const { fontFamily, fontSize, lineHeight, fontWeight } = getComputedStyle(pre)
+      return { fontFamily, fontSize, lineHeight, fontWeight }
+    })
+  // Chromium serialises the stack with quotes only where a name needs them.
+  const stack = (value: string) => value.replaceAll(/['"]/g, '')
+  expect(stack(code.fontFamily)).toBe(stack(tokens.light['--font-family-mono']))
+  expect(code).toMatchObject({ fontSize: '14px', lineHeight: '20px', fontWeight: '400' })
+})
+
 // A token name is whole or it is not a name: at the narrowest window none of them breaks across lines.
 test('keeps every token name on one line at 320 px', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 })

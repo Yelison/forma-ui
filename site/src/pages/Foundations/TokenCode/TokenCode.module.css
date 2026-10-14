@@ -1,7 +1,7 @@
 .name,
 .breakable {
   font: var(--font-caption);
-  font-family: var(--site-font-mono);
+  font-family: var(--font-family-mono);
 }
 
 .name {

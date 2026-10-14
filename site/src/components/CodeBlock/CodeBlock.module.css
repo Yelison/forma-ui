@@ -20,7 +20,7 @@
   margin: 0;
   overflow-x: auto;
   font: var(--font-body);
-  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-family: var(--font-family-mono);
   white-space: pre;
   tab-size: 2;
 }

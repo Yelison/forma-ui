@@ -1,8 +1,10 @@
 import { useIntl } from 'react-intl'
+import { CodeBlock } from '../../../components/CodeBlock'
 import { Section } from '../Section'
 import { TokenCode } from '../TokenCode'
 import { tokenValue, type ThemeTokens } from '../themeTokens'
 import { parseFontShorthand } from './fontShorthand'
+import { monospaceExamples } from './monospaceExamples'
 import { fontStyles } from './styles'
 import styles from './TypeScale.module.css'
 
@@ -52,6 +54,34 @@ export function TypeScale({ values }: TypeScaleProps) {
           )
         })}
       </ul>
+      <div className={styles.monospace}>
+        <p>
+          {intl.formatMessage(
+            { id: 'foundations.type.mono' },
+            {
+              token: <TokenCode>--font-family-mono</TokenCode>,
+              value: <TokenCode breakable>{tokenValue(values, '--font-family-mono')}</TokenCode>,
+            },
+          )}
+        </p>
+        <CodeBlock
+          label={intl.formatMessage({ id: 'foundations.type.example.block' })}
+          code={monospaceExamples.block}
+        />
+        <p>
+          {intl.formatMessage(
+            { id: 'foundations.type.inline' },
+            {
+              family: <TokenCode>font-family: var(--font-family-mono)</TokenCode>,
+              size: <TokenCode>0.93em</TokenCode>,
+            },
+          )}
+        </p>
+        <CodeBlock
+          label={intl.formatMessage({ id: 'foundations.type.example.inline' })}
+          code={monospaceExamples.inline}
+        />
+      </div>
     </Section>
   )
 }

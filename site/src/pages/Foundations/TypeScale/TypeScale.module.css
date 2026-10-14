@@ -41,3 +41,16 @@
   color: var(--color-ink);
   overflow-wrap: anywhere;
 }
+
+.monospace {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  margin-block-start: var(--space-16);
+  color: var(--color-muted);
+  font: var(--font-caption);
+}
+
+.monospace p {
+  margin: 0;
+}

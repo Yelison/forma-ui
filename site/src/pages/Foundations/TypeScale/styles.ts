@@ -1,10 +1,10 @@
 import type { TokenName } from '@yelison/forma-ui'
 import type { MessageId } from '../../../i18n'
 
-/** The part of a font token's name after `--font-`, except the family, which is not a style. */
+/** The part of a font token's name after `--font-`, except the two families, which are not styles. */
 export type FontStyleName = Exclude<
   TokenName extends infer Token ? (Token extends `--font-${infer Name}` ? Name : never) : never,
-  'family'
+  'family' | 'family-mono'
 >
 
 export interface FontStyle {
@@ -17,6 +17,7 @@ export interface FontStyle {
 export const fontStyles = [
   { name: 'caption', usage: 'foundations.type.style.caption' },
   { name: 'body', usage: 'foundations.type.style.body' },
+  { name: 'code', usage: 'foundations.type.style.code' },
   { name: 'label', usage: 'foundations.type.style.label' },
   { name: 'strong', usage: 'foundations.type.style.strong' },
   { name: 'section', usage: 'foundations.type.style.section' },
