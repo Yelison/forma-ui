@@ -1,6 +1,11 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { createIntl } from 'react-intl'
+import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
+import type { Locale } from '../../i18n'
+import { messages } from '../../../test/messages'
+import { menuDoc } from '.'
 import { codeOf, renderReference, sectionsOfPage, textOutsideMessages } from '../referenceTestUtils'
 
 const region = (name: string) => within(screen.getByRole('region', { name }))
@@ -38,7 +43,7 @@ describe('the reference of Menu', () => {
     expect(screen.getByRole('menuitem', { name: 'Change priority' })).toHaveAttribute('aria-disabled', 'true')
     expect(screen.getByRole('menu')).toHaveAccessibleDescription('Only an admin can change the priority.')
     const code = codeOf('States')
-    expect(code).toContain("{ id: 'priority', label: 'Change priority', disabled: true, onSelect: priority },")
+    expect(code).toContain("{ id: 'priority', label: 'Change priority', disabled: true, onSelect: changePriority },")
     expect(code).toContain('note="Only an admin can change the priority."')
   })
 
@@ -119,6 +124,40 @@ describe('the reference of Menu', () => {
     expect(screen.getByRole('menu', { name: 'Acciones del ticket' })).toBeInTheDocument()
     expect(codeOf('Búsqueda')).toContain("search={{ label: 'Buscar espacio', emptyText: 'Ningún espacio coincide.' }}")
     expect(codeOf('Búsqueda')).not.toContain('Search workspaces')
+  })
+
+  it('names the handler of the destructive row by its action, not by its id', () => {
+    renderReference('Menu')
+
+    expect(codeOf('States')).toContain(
+      "{ id: 'delete', label: 'Delete ticket', tone: 'danger', onSelect: deleteTicket },",
+    )
+  })
+
+  // What the page shows, and what the copy button copies, has to be code that parses: an example that does not is a
+  // mistake that a reader finds only after pasting it. `delete` as the name of a handler, for one, does not. The page
+  // shows the code of one example at a time, so the examples are read where they are made, in each language.
+  it.each<Locale>(['en', 'es'])('writes JavaScript that parses in every example, in %s', (locale) => {
+    const { usage, groups } = menuDoc.examples(createIntl({ locale, messages: messages[locale] }))
+    const examples = [usage, ...groups.flatMap((group) => group.examples)].flatMap(({ code }) => (code ? [code] : []))
+
+    expect(examples.length).toBeGreaterThanOrEqual(7)
+    for (const code of [menuDoc.importCode, ...examples]) {
+      const parts = code.split('\n\n')
+      // Declarations first and the JSX last, which is how a component writes them; an import stands alone.
+      const source = code.startsWith('import ')
+        ? code
+        : `function Example() {\n${parts.slice(0, -1).join('\n\n')}\nreturn (\n${parts.at(-1)}\n)\n}`
+      const { diagnostics } = ts.transpileModule(source, {
+        fileName: 'example.tsx',
+        reportDiagnostics: true,
+        compilerOptions: { jsx: ts.JsxEmit.ReactJSX },
+      })
+      expect(
+        diagnostics?.map(({ messageText }) => ts.flattenDiagnosticMessageText(messageText, ' ')),
+        code,
+      ).toEqual([])
+    }
   })
 
   it('writes nothing of its own on the page: every text comes from a message', () => {

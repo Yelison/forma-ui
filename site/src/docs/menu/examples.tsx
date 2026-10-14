@@ -15,8 +15,9 @@ interface ActionsOptions {
 
 /** The JSX of `ActionsMenu`, written as an application writes it, from the words that the live menu has. */
 function actionsCode(words: MenuWords, { priorityDisabled, withNote, trigger = 'button' }: ActionsOptions): string {
-  const row = (id: string, label: string, props = '') =>
-    `  { id: '${id}', label: ${quote(label)},${props} onSelect: ${id} },`
+  // The handlers are named by what they do: an id such as `delete` is a reserved word and is not a name to call.
+  const row = (id: string, label: string, handler: string, props = '') =>
+    `  { id: '${id}', label: ${quote(label)},${props} onSelect: ${handler} },`
   const menuProps = [
     attribute('label', words.label),
     'items={items}',
@@ -34,11 +35,11 @@ function actionsCode(words: MenuWords, { priorityDisabled, withNote, trigger = '
         ]
   return [
     `const items = [`,
-    row('assign', words.assign),
-    row('priority', words.priority, priorityDisabled ? ' disabled: true,' : ''),
-    row('resolve', words.resolve),
-    row('archive', words.archive, ' separatorBefore: true,'),
-    row('delete', words.delete, " tone: 'danger',"),
+    row('assign', words.assign, 'assignOwner'),
+    row('priority', words.priority, 'changePriority', priorityDisabled ? ' disabled: true,' : ''),
+    row('resolve', words.resolve, 'markResolved'),
+    row('archive', words.archive, 'archiveTicket', ' separatorBefore: true,'),
+    row('delete', words.delete, 'deleteTicket', " tone: 'danger',"),
     `]`,
     ``,
     `<Menu ${menuProps.join(' ')}>`,
