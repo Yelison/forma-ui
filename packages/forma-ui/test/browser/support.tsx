@@ -96,19 +96,25 @@ export function readBuilt(name: BuiltFile): string {
   return content
 }
 
-const loadedStylesheets = new Map<BuiltFile, HTMLStyleElement>()
+const loadedStylesheets = new Map<BuiltFile, { style: HTMLStyleElement; layer: string | undefined }>()
 
 // The runner injects each component's CSS Module as it imports it, marked with `data-vite-dev-id`. They are switched
 // off while the built stylesheet is loaded, or its rules could never be told apart from the runner's own.
 const switchedOff = new Set<CSSStyleSheet>()
 
 function loadStylesheet(name: 'tokens.css' | 'styles.css', layer?: string) {
-  if (loadedStylesheets.has(name)) return
+  const loaded = loadedStylesheets.get(name)
+  if (loaded) {
+    // Skipping the call would leave a spec that asks for a layer with the file without one, and it would prove the opposite.
+    if (loaded.layer !== layer)
+      throw new Error(`${name} is already loaded ${loaded.layer ? `in layer(${loaded.layer})` : 'without a layer'}`)
+    return
+  }
   const stylesheet = document.createElement('style')
   const css = readBuilt(name)
   stylesheet.textContent = layer ? `@layer ${layer} {\n${css}\n}` : css
   document.head.append(stylesheet)
-  loadedStylesheets.set(name, stylesheet)
+  loadedStylesheets.set(name, { style: stylesheet, layer })
 }
 
 /** Adds the generated `tokens.css` to the page, as a consumer imports it. `reset()` removes it. */
@@ -164,7 +170,7 @@ export async function reset() {
   for (const dialog of document.querySelectorAll<HTMLDialogElement>('dialog[open]')) dialog.close()
   for (const root of roots) flushSync(() => root.unmount())
   roots.clear()
-  for (const stylesheet of loadedStylesheets.values()) stylesheet.remove()
+  for (const { style } of loadedStylesheets.values()) style.remove()
   loadedStylesheets.clear()
   for (const sheet of switchedOff) sheet.disabled = false
   switchedOff.clear()

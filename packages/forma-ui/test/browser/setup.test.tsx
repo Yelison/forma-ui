@@ -88,6 +88,17 @@ describe('the built stylesheets', () => {
     expect(styleTexts()).not.toContain(readBuilt('styles.css'))
     expect(getComputedStyle(document.documentElement).getPropertyValue('--color-bg')).toBe('')
   })
+
+  it('refuses to load styles.css in a layer once it is there without one', () => {
+    loadStyles()
+    expect(() => loadStyles('forma')).toThrow('already loaded without a layer')
+    expect(() => loadStyles()).not.toThrow()
+  })
+
+  it('refuses to load styles.css without a layer once it is in one', () => {
+    loadStyles('forma')
+    expect(() => loadStyles()).toThrow('already loaded in layer(forma)')
+  })
 })
 
 describe('the CSS Modules of the runner while the built styles are loaded', () => {

@@ -50,7 +50,7 @@ The package ships its CSS as three files, in this order:
   first in the module that loads your components (your UI barrel, or the first module that imports from
   `@yelison/forma-ui`), not only from your entry stylesheet: then its rules land at the start of that chunk, before your
   own component CSS. Check the order in your production build, not only in the dev server.
-- **Layers change the rule: the order of loading decides nothing, the layer does.** `styles.css` has no layer, and CSS
+- **Layers change the rule: between layers, the order of loading decides nothing; the order of the layers does, and the first `@layer` statement fixes it.** `styles.css` has no layer, and CSS
   without a layer beats CSS in a layer whatever the specificity (with `!important` it is the other way round). So the CSS
   you write in layers, such as the utilities of Tailwind v4 or an `@layer base` reset, **loses** to the rules of the
   components, even when it is loaded after them. The standard fix is to give the package a layer of its own, in the
@@ -74,7 +74,7 @@ The package ships its CSS as three files, in this order:
 
 - **A reset that has no layer replaces the box of the controls.** A reset for form controls, such as
   `button, input, select, textarea { font: inherit; color: inherit }`, normalize or the preflight of Tailwind v3, belongs
-  in `@layer base { … }`, with the package in a layer after it as above. Without a layer, the box of a control is written
+  in `@layer base { … }`, and if the package is in a layer of its own, that layer comes after `base` as above. Without a layer, the box of a control is written
   with `:where()`, which has no specificity, on purpose: one class of yours adjusts it without depending on the order of
   the stylesheets. A reset without a layer has the specificity of an element, so it wins over that box and replaces the
   font, the padding and the line height of every control. The text colour is the exception only while the package has

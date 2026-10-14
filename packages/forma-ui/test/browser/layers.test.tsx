@@ -4,7 +4,7 @@ import { Button } from '../../src/components/Button/Button'
 import { Input } from '../../src/components/Input/Input'
 import { loadStyles, loadTokens, mount } from './support'
 
-// The recipe of the README, «Put your own layers around the package's CSS»: the package goes into `layer(forma)`, and
+// The recipe of the README, in «The CSS you import» (the bullet on layers): the package goes into `layer(forma)`, and
 // the page declares `@layer base, forma, utilities;`. Everything here is the page of a consumer that writes its styles
 // in layers, as Tailwind v4 does: its sheets come first in the document, and the package's last, so that a result that
 // holds says the order of loading decides nothing.
@@ -67,13 +67,17 @@ describe('the package in layer(forma), between a base layer and a utilities laye
     expect(style.paddingLeft).toBe(resolved('padding-left', '--space-12'))
   })
 
-  // The consequence the README warns about: a layer comes after every rule without one, so an unlayered reset still wins.
-  it('still loses to a reset that has no layer, which is why the reset goes in `base`', async () => {
+  // The consequence the README warns about: a layer comes after every rule without one, so an unlayered reset still wins,
+  // and its colour too, which an unlayered package would keep at `--color-ink` with the specificity of a class.
+  it('still loses to a reset that has no layer, colour included, which is why the reset goes in `base`', async () => {
     await page.viewport(1024, 768)
-    addStyles('input { padding: 0; }')
+    addStyles('input { padding: 0; color: rgb(255, 0, 0); }')
     mount(<Input label="Name" defaultValue="Ada" />)
 
-    expect(getComputedStyle(page.getByRole('textbox', { name: 'Name' }).element()).paddingLeft).toBe('0px')
+    const style = getComputedStyle(page.getByRole('textbox', { name: 'Name' }).element())
+
+    expect(style.paddingLeft).toBe('0px')
+    expect(style.color).toBe('rgb(255, 0, 0)')
   })
 })
 
