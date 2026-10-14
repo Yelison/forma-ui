@@ -184,6 +184,26 @@ describe('Menu keyboard', () => {
     await expect.element(item('Assign owner')).toHaveFocus()
   })
 
+  it('goes on from a disabled item that a click focused: the down arrow to the item after it', async () => {
+    const onSelect = () => {}
+    mount(
+      <Page
+        items={[
+          { id: 'a', label: 'First', onSelect },
+          { id: 'b', label: 'Second', onSelect },
+          { id: 'c', label: 'Third', disabled: true, onSelect },
+          { id: 'd', label: 'Fourth', onSelect },
+        ]}
+      />,
+    )
+    await openByClick()
+
+    await userEvent.click(item('Third'), { force: true })
+    await userEvent.keyboard('{ArrowDown}')
+
+    await expect.element(item('Fourth')).toHaveFocus()
+  })
+
   it('goes to the first and the last item with Home and End, and to an item with its first letter', async () => {
     mount(<Page />)
     await openByClick()
