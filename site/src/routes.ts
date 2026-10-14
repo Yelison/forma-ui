@@ -62,6 +62,7 @@ export const componentPages = [
   { slug: 'search-field', name: 'SearchField' },
   { slug: 'select', name: 'Select' },
   { slug: 'filter-chip', name: 'FilterChip' },
+  { slug: 'alert', name: 'Alert' },
 ] as const
 
 export const routes: readonly SiteRoute[] = [

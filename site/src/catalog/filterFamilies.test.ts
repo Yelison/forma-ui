@@ -17,13 +17,14 @@ describe('matchingFamilyIds', () => {
       'badge',
       'icon',
       'tabs',
+      'alert',
       'tooltip',
       'dialog',
     ])
   })
 
   it('keeps only the families of the chosen category', () => {
-    expect(ids({ category: 'feedback', name: '' })).toEqual(['tooltip', 'dialog'])
+    expect(ids({ category: 'feedback', name: '' })).toEqual(['alert', 'tooltip', 'dialog'])
   })
 
   it('keeps Input, SearchField, Select and Radio in the forms category', () => {

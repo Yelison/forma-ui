@@ -30,6 +30,7 @@ describe('CatalogPage', () => {
       'Badge',
       'Icon',
       'Tabs',
+      'Alert',
       'Tooltip',
       'Dialog',
     ])
@@ -138,6 +139,16 @@ describe('CatalogPage', () => {
       expect(fields.filter((field) => field.getAttribute('aria-disabled') === 'true')).toHaveLength(1)
       expect(select.getByRole('combobox', { description: 'Choose a priority.' })).toBeInvalid()
       expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    })
+
+    it('show the four tones of Alert, each with its title and body, and none announced', () => {
+      renderCatalog()
+
+      const alert = within(row('Alert'))
+      for (const title of ['New version available', 'Changes saved', 'Read only', 'Connection lost']) {
+        expect(alert.getByText(title)).toBeVisible()
+      }
+      expect(alert.queryByRole('alert')).not.toBeInTheDocument()
     })
 
     it('show FilterChip as a single-choice row that works, and as popup triggers with no pressed state', async () => {
@@ -258,6 +269,7 @@ describe('CatalogPage', () => {
         'Badge',
         'Icon',
         'Tabs',
+        'Alert',
         'Tooltip',
         'Dialog',
       ]
@@ -273,7 +285,7 @@ describe('CatalogPage', () => {
       renderCatalog()
 
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 12 components$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 13 components$/)
     })
 
     it('offer the categories in the order of the design, with Navigation after Forms', () => {
@@ -290,8 +302,8 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('radio', { name: 'Feedback' }))
 
-      expect(rowNames()).toEqual(['Tooltip', 'Dialog'])
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 2 components$/)
+      expect(rowNames()).toEqual(['Alert', 'Tooltip', 'Dialog'])
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 3 components$/)
     })
 
     it('keep Input, SearchField, Select and Radio under Forms', async () => {
@@ -345,7 +357,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
 
-      expect(rowNames()).toHaveLength(12)
+      expect(rowNames()).toHaveLength(13)
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveValue('')
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveFocus()
@@ -353,7 +365,7 @@ describe('CatalogPage', () => {
 
     it('count in the language of the page', async () => {
       renderCatalog({ locale: 'es' })
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 12 componentes$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 13 componentes$/)
 
       await userEvent.click(screen.getByRole('radio', { name: 'Acciones' }))
 

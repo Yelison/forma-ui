@@ -8,6 +8,7 @@
   "catalog.count": "{count, plural, one {Mostrando # componente} other {Mostrando # componentes}}",
   "catalog.empty": "Ningún componente coincide con estos filtros.",
   "catalog.empty.clear": "Borrar filtros",
+  "catalog.family.alert.description": "Un mensaje que permanece en la página, en cuatro tonos, con anuncio opcional y una acción.",
   "catalog.family.avatar.description": "Una imagen redonda de una persona, o sus iniciales, en tres tamaños y seis tonos.",
   "catalog.family.badge.description": "Etiqueta breve que marca un elemento con un estado o una categoría.",
   "catalog.family.button.description": "Acciones principales, secundarias y destructivas, con un botón de solo icono.",

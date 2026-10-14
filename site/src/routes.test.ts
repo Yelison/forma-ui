@@ -20,6 +20,7 @@ describe('the route manifest', () => {
       '/docs/components/search-field/',
       '/docs/components/select/',
       '/docs/components/filter-chip/',
+      '/docs/components/alert/',
       '/docs/guides/theming/',
       '/docs/guides/accessibility/',
       '/changelog/',

@@ -1,6 +1,7 @@
 // Type tests: nothing here runs. `npm run typecheck` compiles this file, and it fails to compile when the reference
 // of a component stops documenting the props that the library has.
 import type {
+  AlertProps,
   AvatarProps,
   BadgeProps,
   ButtonProps,
@@ -19,6 +20,7 @@ import type {
   TooltipTriggerProps,
 } from '@yelison/forma-ui'
 import { expectTypeOf } from 'vitest'
+import { alertApi } from './alert/api'
 import { avatarApi } from './avatar/api'
 import { badgeApi } from './badge/api'
 import { buttonApi } from './button/api'
@@ -94,6 +96,10 @@ const pressed: FilterChipProps = {
   'aria-pressed': true,
 }
 expectTypeOf(pressed).toBeObject()
+
+// Alert, against a `<div>`: the same two rules. `title` is native but taken over, so it is one of the changed rows.
+expectTypeOf<keyof typeof alertApi.own>().toEqualTypeOf<OwnProps<AlertProps, 'div'>>()
+expectTypeOf<keyof typeof alertApi.changed>().toExtend<keyof AlertProps>()
 
 // Tooltip wraps no element, so every prop of it is its own, and so is every prop that it hands to its trigger.
 expectTypeOf<keyof typeof tooltipApi.own>().toEqualTypeOf<keyof TooltipProps>()
