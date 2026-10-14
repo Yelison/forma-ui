@@ -26,6 +26,14 @@ import './app.css' // yours go after the package's`,
   }
 }`,
   },
+  layers: {
+    caption: 'app.css',
+    code: `@layer base, forma, utilities;
+
+@import '@yelison/forma-ui/tokens.css';
+@import '@yelison/forma-ui/styles.css' layer(forma);
+@import '@yelison/forma-ui/base.css';`,
+  },
   css: {
     caption: 'app.css',
     code: `.card {

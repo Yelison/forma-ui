@@ -42,21 +42,44 @@ The package ships its CSS as three files, in this order:
 | `@yelison/forma-ui/styles.css` | The rules of every component, in one file.                                                  |
 | `@yelison/forma-ui/base.css`   | Two utility classes, `.forma-visually-hidden` and `.forma-scroll-locked`, and nothing else. |
 
-- The package's files go before your own CSS. A `className` you pass to a component has the same specificity as the
-  component's own rule (for example `.forma-badge__blue`), so the later stylesheet wins: yours has to come after
+- **Without layers, your CSS comes after the package's.** A `className` you pass to a component has the same specificity
+  as the component's own rule (for example `.forma-badge__blue`), so the later stylesheet wins: yours has to come after
   `styles.css`.
 - **Bundlers order CSS by chunk, not by the order of your `@import`s.** With Vite, for example, the CSS of a shared
   chunk (your component modules) reaches the page before the CSS of the entry. Import `@yelison/forma-ui/styles.css`
   first in the module that loads your components (your UI barrel, or the first module that imports from
   `@yelison/forma-ui`), not only from your entry stylesheet: then its rules land at the start of that chunk, before your
   own component CSS. Check the order in your production build, not only in the dev server.
-- **Put the resets of your own element rules in a layer that comes first.** A reset for form controls, such as
-  `button, input, select, textarea { font: inherit; color: inherit }`, normalize or the preflight of Tailwind v3, must go
-  in `@layer base { … }` and be loaded before the package's CSS. The box of a control is written with `:where()`, which has
-  no specificity, on purpose: one class of yours adjusts it without depending on the order of the stylesheets. A reset
-  without a layer has the specificity of an element, so it wins over that box and replaces the font, the padding and the
-  line height of every control. The text colour is the exception: it is written with the specificity of a class, so a
-  reset does not change it. Tailwind v4 already puts its preflight in a layer like this.
+- **Layers change the rule: between layers, the order of loading decides nothing; the order of the layers does, and the first `@layer` statement fixes it.** `styles.css` has no layer, and CSS
+  without a layer beats CSS in a layer whatever the specificity (with `!important` it is the other way round). So the CSS
+  you write in layers, such as the utilities of Tailwind v4 or an `@layer base` reset, **loses** to the rules of the
+  components, even when it is loaded after them. The standard fix is to give the package a layer of its own, in the
+  order you want, and to declare that order before anything else:
+
+  ```css
+  @layer base, forma, utilities;
+
+  @import '@yelison/forma-ui/tokens.css';
+  @import '@yelison/forma-ui/styles.css' layer(forma);
+  @import '@yelison/forma-ui/base.css';
+  ```
+
+  With that, a utility in `@layer utilities` wins over the rule of a component, and a reset in `@layer base` does not win
+  over the box of a control, in whatever order the files load. `layer()` only works in a CSS `@import`, not in a
+  JavaScript `import '…css'`. A reset **without** a layer still beats the package once it is in one, and so does your
+  unlayered CSS: put every reset in `base`. With Tailwind v4, whose `@import 'tailwindcss'` declares
+  `theme, base, components, utilities`, declare your order first and keep those names, for example
+  `@layer theme, base, forma, components, utilities;`. The browser tests (`test/browser/layers.test.tsx`) check this
+  recipe in Chromium.
+
+- **A reset that has no layer replaces the box of the controls.** A reset for form controls, such as
+  `button, input, select, textarea { font: inherit; color: inherit }`, normalize or the preflight of Tailwind v3, belongs
+  in `@layer base { … }`, and if the package is in a layer of its own, that layer comes after `base` as above. Without a layer, the box of a control is written
+  with `:where()`, which has no specificity, on purpose: one class of yours adjusts it without depending on the order of
+  the stylesheets. A reset without a layer has the specificity of an element, so it wins over that box and replaces the
+  font, the padding and the line height of every control. The text colour is the exception only while the package has
+  no layer: it is written with the specificity of a class, so an unlayered reset does not change it. Tailwind v4 already
+  puts its preflight in a layer like this.
 
   ```css
   @layer base {
@@ -185,7 +208,7 @@ code {
 | `Radio`                 | One option of a group that takes a single choice.                                      | A native radio in its label: group it in a `fieldset` with a `legend` and one `name`. Arrows select, `disabled` skips an option, no read-only.                                                                                                                                                                                                             |
 | `Avatar`                | A round picture of a person, or their initials.                                        | An image named after `name`, or hidden with `decorative` when the name is beside it. A picture that fails to load gives way to the initials. `tone` takes the tones of `Badge`.                                                                                                                                                                            |
 
-`Input`, `SearchField` and `Select` share one contract for classes: `fieldClassName` goes to the container, the `.forma-field` element that holds the label, the box and the messages, and `className` goes to the control, the `<input>` or `<select>`, which is the box you can see. Decorate the box with `className`, and match its focus with `:focus` on the control, not with `:focus-within` on the container. A control paints its text with `--color-ink` (`--color-muted` when disabled) whatever colour its parent has, even under a reset such as `input { color: inherit }`. Only the colour is protected: the rest of the box (`padding`, `font`) can still be overridden by a reset of yours.
+`Input`, `SearchField` and `Select` share one contract for classes: `fieldClassName` goes to the container, the `.forma-field` element that holds the label, the box and the messages, and `className` goes to the control, the `<input>` or `<select>`, which is the box you can see. Decorate the box with `className`, and match its focus with `:focus` on the control, not with `:focus-within` on the container. A control paints its text with `--color-ink` (`--color-muted` when disabled) whatever colour its parent has, even under a reset such as `input { color: inherit }`. Only the colour is protected: the rest of the box (`padding`, `font`) can still be overridden by a reset of yours. If you keep a copy of the box of these controls, follow the rule of the colour, which has the specificity of a class and sits outside `:where()`, while the rest of the box stays inside it (see [the 0.5.0 changelog](https://github.com/Yelison/forma-ui/blob/main/packages/forma-ui/CHANGELOG.md#050)).
 
 `SearchField` is always controlled and leaves two native props out: `defaultValue`, since the text lives in your component and the field only shows it, and `children`, since an input has none and the magnifier is all the field adds. The types refuse both.
 
