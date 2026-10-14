@@ -164,7 +164,7 @@ code {
 
 ## Components
 
-`Alert`, `Badge`, `Button`, `IconButton`, `FilterChip`, `Icon`, `Input`, `SearchField`, `Select` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
+`Alert`, `Badge`, `Button`, `IconButton`, `FilterChip`, `Icon`, `Input`, `SearchField`, `Select` and `Radio` forward the attributes of their native element. `Field`, `Menu`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
 
 | Component               | Use it for                                                                             | Accessibility                                                                                                                                                                                                                                                                                                                                              |
 | ----------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -176,6 +176,7 @@ code {
 | `Input`                 | A native text input with its `Field`.                                                  | Same linking as `Field`, and it forwards `announce` to it; `hideLabel` keeps the label for screen readers and draws nothing; `disabled` and `readOnly` stay different.                                                                                                                                                                                     |
 | `SearchField`           | A search box with a magnifier, controlled by `value`.                                  | A native `type="search"` named by `label`, which is not drawn. `Escape` clears a field with text and goes no further; a read-only field keeps its text.                                                                                                                                                                                                    |
 | `FilterChip`            | A filter: a toggle in a row of chips, or the trigger of its options.                   | With `aria-haspopup` it draws a chevron and adds no `aria-pressed`; without it, it is a toggle with `aria-pressed` from `selected` (see below).                                                                                                                                                                                                            |
+| `Menu`                  | A menu of actions or options that opens from a button of yours.                        | The ARIA menu button pattern: arrows, `Home`, `End`, a first letter, `Escape` and `Tab` (see below). The name of an item is its label; a second line is its description.                                                                                                                                                                                   |
 | `Select`                | A native `<select>` with its `Field`.                                                  | Same linking as `Input`, with the browser's keyboard and picker. No read-only state: `disabled` leaves the tab order, `aria-disabled` dims it and keeps the focus.                                                                                                                                                                                         |
 | `Icon`                  | One of the library's icons, as inline SVG.                                             | Decorative and hidden from screen readers unless you give it a `label`. `iconNames` lists every `IconName`, 31 of them, in alphabetical order.                                                                                                                                                                                                             |
 | `Tooltip`               | A short description for a control.                                                     | Opens on hover and on keyboard focus, stays open while the pointer travels onto it, `Escape` closes it, and it describes the trigger with `aria-describedby`.                                                                                                                                                                                              |
@@ -230,6 +231,19 @@ in your language (the library has no text of its own for it), and keep which chi
 </div>
 ```
 
+`Menu` opens from the element you spread its `trigger` props on (a `Button`, an `IconButton` or a `FilterChip`, which draws its
+chevron because the props carry `aria-haspopup="menu"`). It opens in a portal, inside the closest `<dialog>` when there is
+one, and gives the focus back to the trigger when it closes. `Tab` closes it and the focus goes on from the trigger. An item
+with `checked` is a `menuitemradio`: one option of a group, and your state keeps which one. `search` adds a field for the
+`searchable` items, and its two texts, like the `label` of the menu and its `note`, are yours, in your language: the
+library has no text of its own for `Menu`.
+
+```tsx
+<Menu label="Ticket actions" items={[{ id: 'assign', label: 'Assign owner', onSelect: assign }]}>
+  {(trigger) => <IconButton icon="more" label="More actions" {...trigger} />}
+</Menu>
+```
+
 `Tabs` starts the arrows from the selected tab, not the focused one. With a controlled `value` whose parent refuses a tab, the focus still moves to it, but the next arrow press goes on from the selected tab.
 
 Also exported: `buttonClassName` (the classes of a button, for a link that must look like one), `useScrollLock` (the
@@ -259,6 +273,7 @@ is the source of truth. At the time of writing they are:
 | What you import   | Size    |
 | ----------------- | ------- |
 | Everything        | 8.85 kB |
+| `{ Menu }`        | 5.44 kB |
 | `{ SearchField }` | 3.29 kB |
 | `{ Select }`      | 3.16 kB |
 | `{ FilterChip }`  | 2.86 kB |
@@ -271,7 +286,7 @@ is the source of truth. At the time of writing they are:
 | `{ iconNames }`   | 0.16 kB |
 | `styles.css`      | 2.53 kB |
 
-`Button`, `FilterChip`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
+`Button`, `FilterChip`, `Menu`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
 the whole table travels with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
 and importing it alone does not bring the table.
 
