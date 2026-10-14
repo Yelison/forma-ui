@@ -14,10 +14,7 @@ export interface ActionsMenuProps {
 const noop = () => {}
 
 /** The items of the ticket menu, in the order of its JSX: a plain action, a disabled one, a separator and a danger one. */
-export function actionItems(
-  { assign, priority, resolve, archive, delete: remove }: MenuWords,
-  priorityDisabled: boolean,
-) {
+function actionItems({ assign, priority, resolve, archive, delete: remove }: MenuWords, priorityDisabled: boolean) {
   return [
     { id: 'assign', label: assign, onSelect: noop },
     { id: 'priority', label: priority, disabled: priorityDisabled, onSelect: noop },
