@@ -72,7 +72,8 @@ test('sets a code block in the monospace token, at the size of the body', async 
       const { fontFamily, fontSize, lineHeight, fontWeight } = getComputedStyle(pre)
       return { fontFamily, fontSize, lineHeight, fontWeight }
     })
-  const stack = (value: string) => value.replaceAll("'", '"')
+  // Chromium serialises the stack with quotes only where a name needs them.
+  const stack = (value: string) => value.replaceAll(/['"]/g, '')
   expect(stack(code.fontFamily)).toBe(stack(tokens.light['--font-family-mono']))
   expect(code).toMatchObject({ fontSize: '14px', lineHeight: '20px', fontWeight: '400' })
 })
