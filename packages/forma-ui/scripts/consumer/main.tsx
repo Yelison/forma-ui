@@ -12,6 +12,7 @@ import {
   IconButton,
   initialsOf,
   Input,
+  Menu,
   Radio,
   SearchField,
   Select,
@@ -40,6 +41,10 @@ const samples = (
       <FilterChip selected>Everyone</FilterChip>
       <FilterChip>Can edit</FilterChip>
     </div>
+    {/* Closed, a menu renders its trigger alone: its list is a portal that opens in the browser (see check-consumer.ts). */}
+    <Menu label="Ticket actions" items={[{ id: 'assign', label: 'Assign owner', onSelect: () => {} }]}>
+      {(trigger) => <IconButton icon="more" label="Ticket actions" {...trigger} />}
+    </Menu>
     <Input label="Email" error="Enter a valid email" />
     <Input label="Search" hideLabel hint="Names and emails" />
     <SearchField label="Search tickets" value="refund" onValueChange={() => {}} />

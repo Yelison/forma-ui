@@ -40,6 +40,8 @@ const consumedFiles = ['tokens.css', 'styles.css', 'base.css']
 // `loadStyles()` loads the built styles.css. Keep the list short: a module that can be rendered here belongs in
 // scripts/consumer/main.tsx, and the check fails when a module listed here is rendered or no longer exists.
 const renderedInTheBrowser: Record<string, string> = {
+  'components/Menu/Menu.module.css':
+    'its list is painted in a portal, which the server renderer rejects, and only after the trigger is pressed',
   'components/Tooltip/Tooltip.module.css':
     'it is painted in a portal, which the server renderer rejects, and only after an event',
 }
