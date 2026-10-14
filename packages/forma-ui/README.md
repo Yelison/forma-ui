@@ -235,14 +235,14 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size    |
 | ----------------- | ------- |
-| Everything        | 8.83 kB |
+| Everything        | 8.85 kB |
 | `{ SearchField }` | 3.29 kB |
 | `{ Select }`      | 3.16 kB |
 | `{ FilterChip }`  | 2.86 kB |
 | `{ Button }`      | 3.14 kB |
 | `{ Tabs }`        | 0.66 kB |
 | `{ Avatar }`      | 0.59 kB |
-| `{ Alert }`       | 0.32 kB |
+| `{ Alert }`       | 0.36 kB |
 | `{ Radio }`       | 0.31 kB |
 | `{ Badge }`       | 0.26 kB |
 | `{ iconNames }`   | 0.16 kB |
