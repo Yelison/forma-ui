@@ -10,6 +10,7 @@ export type FamilyId =
   | 'search-field'
   | 'select'
   | 'filter-chip'
+  | 'menu'
   | 'radio'
   | 'avatar'
   | 'badge'
@@ -93,6 +94,13 @@ export const catalogFamilies: readonly CatalogFamily[] = [
     category: 'actions',
     descriptionId: 'catalog.family.filterChip.description',
     references: [reference('filter-chip')],
+  },
+  {
+    id: 'menu',
+    name: 'Menu',
+    category: 'actions',
+    descriptionId: 'catalog.family.menu.description',
+    references: [reference('menu')],
   },
   {
     id: 'radio',

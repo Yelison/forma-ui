@@ -62,6 +62,7 @@ describe('SearchDialog', () => {
       'Select',
       'FilterChip',
       'Alert',
+      'Menu',
     ]
     expect(untranslatedText(screen.getByRole('dialog'), componentNames)).toEqual([])
   })
@@ -83,6 +84,7 @@ describe('SearchDialog', () => {
       'Select',
       'FilterChip',
       'Alert',
+      'Menu',
       'Getting started',
       'Foundations',
       'Components',

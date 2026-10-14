@@ -31,6 +31,7 @@ export const catalogNames = [
   'docs.filterChip',
   'docs.iconButton',
   'docs.input',
+  'docs.menu',
   'docs.radio',
   'docs.searchField',
   'docs.select',

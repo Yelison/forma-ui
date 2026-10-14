@@ -16,6 +16,7 @@
   "catalog.family.filterChip.description": "A filter control: a toggle in a single-choice row, or the trigger of a popup of options.",
   "catalog.family.icon.description": "The icons of the library, drawn in the color of the text.",
   "catalog.family.input.description": "A text field with its label, hint and error.",
+  "catalog.family.menu.description": "A menu of actions that opens from a button, with the keyboard, options and a search.",
   "catalog.family.radio.description": "One choice from a group, with the arrow keys moving between the options.",
   "catalog.family.reference": "View the {component} reference",
   "catalog.family.referencePending": "Reference page coming soon",

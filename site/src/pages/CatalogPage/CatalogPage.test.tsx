@@ -25,6 +25,7 @@ describe('CatalogPage', () => {
       'SearchField',
       'Select',
       'FilterChip',
+      'Menu',
       'Radio',
       'Avatar',
       'Badge',
@@ -167,6 +168,23 @@ describe('CatalogPage', () => {
       for (const popup of popups) expect(popup).not.toHaveAttribute('aria-pressed')
     })
 
+    it('show Menu with its trigger variants, and open a menu from each with the options and the search that work', async () => {
+      renderCatalog()
+      const menus = within(row('Menu'))
+
+      await userEvent.click(menus.getByRole('button', { name: 'Workspace' }))
+      expect(screen.getByRole('menuitemradio', { name: 'Acme Studio', checked: true })).toBeInTheDocument()
+      await userEvent.keyboard('north')
+      expect(screen.getAllByRole('menuitemradio')).toHaveLength(1)
+      await userEvent.click(screen.getByRole('menuitemradio', { name: 'Northwind' }))
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+
+      const chip = menus.getByRole('button', { name: /^Status: / })
+      expect(chip).toHaveAttribute('aria-haspopup', 'menu')
+      expect(chip).not.toHaveAttribute('aria-pressed')
+      expect(menus.getByRole('button', { name: 'More actions' })).toHaveAttribute('aria-haspopup', 'menu')
+    })
+
     it('show Tabs with three panels, once with the first tab selected and once with the second', async () => {
       renderCatalog()
 
@@ -264,6 +282,7 @@ describe('CatalogPage', () => {
         'SearchField',
         'Select',
         'FilterChip',
+        'Menu',
         'Radio',
         'Avatar',
         'Badge',
@@ -334,8 +353,8 @@ describe('CatalogPage', () => {
       await userEvent.keyboard('{ArrowRight}')
 
       expect(screen.getByRole('radio', { name: 'Actions' })).toBeChecked()
-      expect(rowNames()).toEqual(['Button', 'FilterChip'])
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 2 components$/)
+      expect(rowNames()).toEqual(['Button', 'FilterChip', 'Menu'])
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 3 components$/)
     })
 
     it('narrow the list by name, ignoring case, and find IconButton in the row of Button', async () => {
@@ -369,7 +388,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('radio', { name: 'Acciones' }))
 
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 2 componentes$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 3 componentes$/)
     })
 
     it('keep what was typed in a specimen while its row is out of the list', async () => {

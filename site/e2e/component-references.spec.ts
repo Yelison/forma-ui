@@ -96,6 +96,16 @@ const references: Reference[] = [
     },
   },
   {
+    slug: 'menu',
+    name: 'Menu',
+    // In use: the keyboard has opened the first menu, whose focus is on its first item.
+    open: async (page) => {
+      await page.getByRole('region', { name: 'States' }).getByRole('button', { name: 'Actions' }).first().focus()
+      await page.keyboard.press('ArrowDown')
+      await expect(page.getByRole('menuitem', { name: 'Assign owner' })).toBeFocused()
+    },
+  },
+  {
     slug: 'tooltip',
     name: 'Tooltip',
     open: async (page) => {
@@ -123,15 +133,15 @@ const references: Reference[] = [
 ]
 
 /**
- * What axe reports. An open tooltip is the one thing that the `region` rule cannot be asked about: the library places a
- * floating element at the end of the body, outside the landmarks, and the rule asks every piece of content to be inside
- * one. It is a rule of best practice that a floating label cannot satisfy, and the rest (names, roles, contrast) is
- * still checked.
+ * What axe reports. An open tooltip or menu is the one thing that the `region` rule cannot be asked about: the library
+ * places a floating element at the end of the body, outside the landmarks, and the rule asks every piece of content to
+ * be inside one. It is a rule of best practice that a floating element cannot satisfy, and the rest (names, roles,
+ * contrast) is still checked.
  */
 async function violations(page: Page) {
-  const tooltipOpen = (await page.getByRole('tooltip').count()) > 0
+  const floatingOpen = (await page.getByRole('tooltip').count()) + (await page.getByRole('menu').count()) > 0
   const builder = new AxeBuilder({ page })
-  const { violations } = await (tooltipOpen ? builder.disableRules('region') : builder).analyze()
+  const { violations } = await (floatingOpen ? builder.disableRules('region') : builder).analyze()
   return violations.map(({ id, nodes }) => ({ id, targets: nodes.map((node) => node.target) }))
 }
 
@@ -436,6 +446,83 @@ for (const reference of references) {
       })
     }
 
+    if (reference.name === 'Menu') {
+      test('opens from the keyboard, moves with the arrows and gives the focus back to its button on Escape', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const trigger = page.getByRole('region', { name: 'States' }).getByRole('button', { name: 'Actions' }).first()
+
+        await trigger.focus()
+        await page.keyboard.press('ArrowDown')
+        await expect(page.getByRole('menuitem', { name: 'Assign owner' })).toBeFocused()
+        await page.keyboard.press('ArrowDown')
+        await expect(page.getByRole('menuitem', { name: 'Mark as resolved' })).toBeFocused()
+        await page.keyboard.press('Escape')
+
+        await expect(page.getByRole('menu')).toBeHidden()
+        await expect(trigger).toBeFocused()
+      })
+
+      test('lets Tab go on to the next control of the page, and never to the body', async ({ page }) => {
+        await openReference(page, reference)
+        const states = page.getByRole('region', { name: 'States' })
+        const triggers = states.getByRole('button', { name: 'Actions' })
+
+        await triggers.first().click()
+        await expect(page.getByRole('menu')).toBeVisible()
+        await page.keyboard.press('Tab')
+
+        await expect(page.getByRole('menu')).toBeHidden()
+        await expect(triggers.nth(1)).toBeFocused()
+      })
+
+      test('chooses a workspace with the search field and the keyboard alone', async ({ page }) => {
+        await openReference(page, reference)
+        const search = page.getByRole('region', { name: 'Search' })
+
+        await search.getByRole('button', { name: 'Workspace' }).focus()
+        await page.keyboard.press('Enter')
+        await expect(page.getByRole('searchbox', { name: 'Search workspaces' })).toBeFocused()
+        await page.keyboard.type('north')
+        await page.keyboard.press('ArrowDown')
+        await expect(page.getByRole('menuitemradio', { name: 'Northwind' })).toBeFocused()
+        await page.keyboard.press('Enter')
+
+        await expect(page.getByRole('menu')).toBeHidden()
+        await expect(search.getByRole('button', { name: 'Workspace' })).toBeFocused()
+      })
+
+      test('fits in the pseudo-locale with the workspace menu open at 320 px', async ({ page }) => {
+        await page.setViewportSize({ width: 320, height: 800 })
+        await openReference(page, reference, './__pseudo__')
+        // The section is found by its id, which is English in every language: its name is not, in the pseudo-locale.
+        await page.locator('#search').getByRole('button').click()
+        const menu = page.getByRole('menu')
+        await expect(menu).toBeVisible()
+
+        expect(await overflow(page)).toEqual({ scroll: 0, outside: [], clipped: [] })
+        expect(await smallTargets(menu)).toEqual([])
+      })
+
+      for (const width of [320, 390]) {
+        test(`keeps the open workspace menu inside the window at ${width} px`, async ({ page }) => {
+          await page.setViewportSize({ width, height: 800 })
+          await openReference(page, reference)
+
+          await page.getByRole('region', { name: 'Search' }).getByRole('button', { name: 'Workspace' }).click()
+          const menu = page.getByRole('menu')
+          await expect(menu).toBeVisible()
+
+          const box = await menu.locator('xpath=..').boundingBox()
+          expect(box!.x).toBeGreaterThanOrEqual(0)
+          expect(box!.x + box!.width).toBeLessThanOrEqual(width)
+          expect(await overflow(page), `${width} px`).toEqual({ scroll: 0, outside: [], clipped: [] })
+          expect(await smallTargets(menu), `${width} px`).toEqual([])
+        })
+      }
+    }
+
     if (reference.name === 'Select') {
       test('changes with the keyboard, and leaves the focus where a native select leaves it', async ({ page }) => {
         await openReference(page, reference)
@@ -461,7 +548,7 @@ for (const reference of references) {
       })
     }
 
-    if (['SearchField', 'Select', 'Input', 'FilterChip', 'Alert'].includes(reference.name)) {
+    if (['SearchField', 'Select', 'Input', 'FilterChip', 'Alert', 'Menu'].includes(reference.name)) {
       test('fits in the pseudo-locale at 320 px, the fields in it included', async ({ page }) => {
         await page.setViewportSize({ width: 320, height: 800 })
         await openReference(page, reference, './__pseudo__')
