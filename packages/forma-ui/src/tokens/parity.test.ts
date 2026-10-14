@@ -62,6 +62,11 @@ const NEW_TOKENS: Record<string, string> = {
   '--tabs-panel-focus-offset': '4px',
   '--dialog-enter-offset': '8px',
   '--tooltip-max-width': '240px',
+  // f1-menu: the literals of Resolve's `Menu.module.css`
+  '--menu-min-width': '200px',
+  '--menu-min-width-wide': '280px',
+  '--menu-max-width': '320px',
+  '--menu-item-min-height': '36px',
   '--dialog-width': '440px',
   '--dialog-width-wide': '640px',
   '--z-sticky': '20',
