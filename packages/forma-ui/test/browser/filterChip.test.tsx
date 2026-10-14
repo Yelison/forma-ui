@@ -190,6 +190,22 @@ describe('FilterChip size', () => {
     expect(container.querySelector('button')?.getBoundingClientRect().height).toBe(36)
   })
 
+  // A button is border-box in the browser's own sheet, and a consumer's reset can say otherwise: the 36px has to
+  // come from the chip's own rule, as it does in the text controls.
+  it('stays 36px tall with its border when a reset says button { box-sizing: content-box }', async () => {
+    await page.viewport(1024, 768)
+    const reset = document.createElement('style')
+    reset.textContent = 'button { box-sizing: content-box; }'
+    document.head.append(reset)
+    try {
+      const { chip } = mountRow()
+
+      expect(chip('Everyone').getBoundingClientRect().height).toBe(36)
+    } finally {
+      reset.remove()
+    }
+  })
+
   // A literal that equals the token's current value would pass the comparison above, so the spec changes the token.
   it('takes its minimum height from --choice-min-height', async () => {
     await page.viewport(1024, 768)

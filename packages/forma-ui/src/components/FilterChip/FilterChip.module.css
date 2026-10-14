@@ -3,6 +3,7 @@
  * them as long as its rules come after the library's in the cascade.
  */
 .chip {
+  box-sizing: border-box; /* the library ships no global reset, and the 36 px must include the border */
   display: inline-flex;
   align-items: center;
   gap: var(--space-8);
