@@ -418,7 +418,7 @@ describe('Menu triggers', () => {
 })
 
 describe('Menu inside a modal Dialog', () => {
-  function InDialog() {
+  function InDialog(props: Partial<MenuProps>) {
     const [open, setOpen] = useState(true)
     return (
       <Dialog
@@ -427,7 +427,7 @@ describe('Menu inside a modal Dialog', () => {
         title="Ticket"
         footer={<Button onClick={() => setOpen(false)}>Done</Button>}
       >
-        <Menu label="Ticket actions" items={actions()}>
+        <Menu label="Ticket actions" items={actions()} {...props}>
           {(trigger) => <button {...trigger}>Actions</button>}
         </Menu>
       </Dialog>
@@ -458,19 +458,14 @@ describe('Menu inside a modal Dialog', () => {
   })
 
   it('takes the Escape of its empty search field and leaves the dialog open', async () => {
-    mount(
-      <Dialog open onClose={() => {}} title="Ticket">
-        <Menu label="Spaces" items={workspaces()} search={{ label: 'Search', emptyText: 'Nothing.' }}>
-          {(trigger) => <button {...trigger}>Actions</button>}
-        </Menu>
-      </Dialog>,
-    )
+    mount(<InDialog search={{ label: 'Search', emptyText: 'Nothing.' }} items={workspaces()} />)
     await openByClick()
 
     await pressEscape()
 
     await expect.element(menu()).not.toBeInTheDocument()
     await expect.element(page.getByRole('dialog', { name: 'Ticket' })).toBeVisible()
+    await expect.element(button('Actions')).toHaveFocus()
   })
 })
 
@@ -576,6 +571,9 @@ describe('Menu size', () => {
     const list = menu().element()
     expect(list.scrollHeight).toBeGreaterThan(list.clientHeight)
     expect(box(menuBox()).bottom).toBeLessThanOrEqual(400)
+    list.scrollTop = list.scrollHeight
+    expect(list.scrollTop).toBeGreaterThan(0)
+    await expect.element(page.getByText('A note')).toBeVisible()
     await expect.element(page.getByRole('searchbox')).toBeVisible()
   })
 })
