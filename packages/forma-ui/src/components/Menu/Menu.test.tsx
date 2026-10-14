@@ -110,6 +110,35 @@ describe('Menu', () => {
   })
 })
 
+describe('Menu rows', () => {
+  it('draws the icon of an item next to its text, hidden from assistive technology', async () => {
+    render(
+      <Menu label="Actions" items={[{ id: 'a', label: 'Assign owner', icon: 'team', onSelect: vi.fn() }]}>
+        {(trigger) => <button {...trigger}>Open</button>}
+      </Menu>,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Open' }))
+    const item = screen.getByRole('menuitem', { name: 'Assign owner' })
+    expect(item.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('gives the pointer the full name of an item through `title`', async () => {
+    render(
+      <Menu
+        label="Actions"
+        items={[{ id: 'a', label: 'A very long name', title: 'A very long name, in full', onSelect: vi.fn() }]}
+      >
+        {(trigger) => <button {...trigger}>Open</button>}
+      </Menu>,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Open' }))
+    expect(screen.getByRole('menuitem', { name: 'A very long name' })).toHaveAttribute(
+      'title',
+      'A very long name, in full',
+    )
+  })
+})
+
 describe('Menu inside a modal dialog', () => {
   it('mounts inside the dialog so that it stays visible in the top layer', async () => {
     render(
@@ -193,6 +222,13 @@ describe('Menu with option rows, a search field and a note', () => {
     expect(screen.getByRole('menuitemradio', { name: 'Lumen Diseño' })).toBeInTheDocument()
     expect(screen.getByRole('menuitem', { name: 'Your workspaces' })).toBeInTheDocument()
     expect(search).toHaveValue('disen')
+  })
+
+  it('ignores the spaces around what is typed', async () => {
+    renderSpaces({ search: { label: 'Search workspaces', emptyText: 'Nothing matches.' } })
+    await userEvent.click(screen.getByRole('button', { name: 'Workspace' }))
+    await userEvent.keyboard('  north  ')
+    expect(screen.getAllByRole('menuitemradio')).toHaveLength(1)
   })
 
   it('moves from the search field down to the list with the arrow', async () => {

@@ -469,6 +469,42 @@ describe('Menu inside a modal Dialog', () => {
   })
 })
 
+describe('Menu placement', () => {
+  const GAP = 8
+  const shortItems: MenuItem[] = [{ id: 'a', label: 'One', onSelect: () => {} }]
+  const at = (style: object, props: Partial<MenuProps> = {}) => (
+    <div style={{ position: 'fixed', ...style }}>
+      <Menu label="Ticket actions" items={shortItems} {...props}>
+        {(trigger) => <button {...trigger}>Actions</button>}
+      </Menu>
+    </div>
+  )
+
+  it('opens below the trigger with its end on the end of the trigger by default', async () => {
+    mount(at({ left: 400, top: 100 }))
+    await openByClick()
+
+    const trigger = box(button('Actions').element())
+    expect(box(menuBox()).right).toBe(trigger.right)
+    expect(box(menuBox()).top).toBe(trigger.bottom + GAP)
+  })
+
+  it('opens with its start on the start of the trigger with bottom-start', async () => {
+    mount(at({ left: 400, top: 100 }, { placement: 'bottom-start' }))
+    await openByClick()
+
+    expect(box(menuBox()).left).toBe(box(button('Actions').element()).left)
+  })
+
+  it('opens above the trigger when it does not fit below', async () => {
+    mount(at({ left: 400, bottom: 10 }, { items: actions() }))
+    await openByClick()
+
+    const trigger = box(button('Actions').element())
+    expect(box(menuBox()).bottom).toBe(trigger.top - GAP)
+  })
+})
+
 // The sizes are Resolve's: an item 36 px tall, a menu 200 px wide, 280 px when wide and 320 px at most. They come from
 // tokens, so each spec changes the token: a literal that equals the current value would pass the comparison alone.
 describe('Menu size', () => {
