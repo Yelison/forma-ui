@@ -98,7 +98,7 @@ describe('SearchDialog', () => {
     expect(screen.getByRole('group', { name: 'Pages' })).toContainElement(
       screen.getByRole('option', { name: /^Theming/ }),
     )
-    expect(status()).toHaveTextContent('19 results')
+    expect(status()).toHaveTextContent('20 results')
   })
 
   it('narrows the results as the person types, and announces the new count', async () => {
@@ -239,6 +239,6 @@ describe('SearchDialog', () => {
     await userEvent.click(screen.getByRole('button', { name: 'open the search' }))
 
     expect(search()).toHaveValue('')
-    expect(status()).toHaveTextContent('19 results')
+    expect(status()).toHaveTextContent('20 results')
   })
 })
