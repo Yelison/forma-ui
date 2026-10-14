@@ -457,7 +457,7 @@ for (const reference of references) {
         await page.keyboard.press('ArrowDown')
         await expect(page.getByRole('menuitem', { name: 'Assign owner' })).toBeFocused()
         await page.keyboard.press('ArrowDown')
-        await expect(page.getByRole('menuitem', { name: 'Mark as resolved' })).toBeFocused()
+        await expect(page.getByRole('menuitem', { name: 'Change priority' })).toBeFocused()
         await page.keyboard.press('Escape')
 
         await expect(page.getByRole('menu')).toBeHidden()
@@ -497,7 +497,7 @@ for (const reference of references) {
         await page.setViewportSize({ width: 320, height: 800 })
         await openReference(page, reference, './__pseudo__')
         // The section is found by its id, which is English in every language: its name is not, in the pseudo-locale.
-        await page.locator('#search').getByRole('button').click()
+        await page.locator('#search [aria-haspopup="menu"]').click()
         const menu = page.getByRole('menu')
         await expect(menu).toBeVisible()
 
