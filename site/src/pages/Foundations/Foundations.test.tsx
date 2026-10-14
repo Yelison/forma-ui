@@ -60,7 +60,7 @@ describe.each(themes)('Foundations in the %s theme', (theme) => {
   it('documents every type style of the package, with its size, line height and weight', () => {
     renderFoundations(theme)
 
-    const fontTokens = tokenNames.filter((name) => name.startsWith('--font-') && name !== '--font-family')
+    const fontTokens = tokenNames.filter((name) => name.startsWith('--font-') && !name.startsWith('--font-family'))
     expect(fontTokens.toSorted()).toEqual(fontStyles.map(({ name }) => `--font-${name}`).toSorted())
 
     const type = section('Type hierarchy')
@@ -70,6 +70,18 @@ describe.each(themes)('Foundations in the %s theme', (theme) => {
     expect(
       itemOf(type, '--font-section').getByText(`${size}px / ${lineHeight}px, weight ${weight}`),
     ).toBeInTheDocument()
+  })
+
+  it('documents the monospace family, with its value, and one example of code in a block and one inline', () => {
+    renderFoundations(theme)
+
+    const type = section('Type hierarchy')
+    expect(type.getByText('--font-family-mono').closest('p')).toHaveTextContent(values['--font-family-mono']!)
+    expect(itemOf(type, '--font-code').getByText('13px / 20px, weight 400')).toBeInTheDocument()
+    expect(type.getByRole('figure', { name: 'A block of code' })).toHaveTextContent('font: var(--font-code);')
+    expect(type.getByRole('figure', { name: 'Code inline in a heading' })).toHaveTextContent(
+      'font-family: var(--font-family-mono);',
+    )
   })
 
   it('lists every spacing step of the package with its value', () => {

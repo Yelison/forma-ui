@@ -252,6 +252,12 @@ describe('dist/tokens.json', () => {
     expect(json.light['--font-body']).toBe(
       "400 14px/20px 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif",
     )
+    expect(json.light['--font-family-mono']).toBe(
+      "ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace",
+    )
+    expect(json.light['--font-code']).toBe(
+      "400 13px/20px ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace",
+    )
   })
 
   it('resolves a mode-less token through the mode of the token it points to', () => {

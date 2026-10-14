@@ -51,6 +51,9 @@ const NEW_TOKENS: Record<string, string> = {
   '--avatar-size-small': '28px',
   '--avatar-size-medium': '36px',
   '--avatar-size-large': '48px',
+  // the monospace family and its code style, agreed by the coordinators on 2026-10-14
+  '--font-family-mono': "ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace",
+  '--font-code': '400 13px/20px var(--font-family-mono)',
   // D10
   '--badge-min-height': '28px',
   '--choice-min-height': '36px',
