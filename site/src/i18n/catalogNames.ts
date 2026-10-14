@@ -23,6 +23,7 @@ export const catalogNames = [
   'changelog',
   'specimens',
   'detail',
+  'docs.alert',
   'docs.avatar',
   'docs.badge',
   'docs.button',

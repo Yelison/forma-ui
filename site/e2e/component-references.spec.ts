@@ -82,6 +82,20 @@ const references: Reference[] = [
     },
   },
   {
+    slug: 'alert',
+    name: 'Alert',
+    // In use: Save has changed the text of the live alert, which stays the same region and does not take the focus.
+    open: async (page) => {
+      const save = page.getByRole('region', { name: 'Live region' }).getByRole('button', { name: 'Save' })
+      await save.click()
+      await expect(
+        page.getByRole('region', { name: 'Live region' }).getByText('Changes saved', { exact: true }),
+      ).toBeVisible()
+      await page.getByRole('button', { name: 'Simulate an error' }).click()
+      await expect(page.getByRole('alert').filter({ hasText: 'Connection lost' })).toBeVisible()
+    },
+  },
+  {
     slug: 'tooltip',
     name: 'Tooltip',
     open: async (page) => {
@@ -374,6 +388,54 @@ for (const reference of references) {
       })
     }
 
+    if (reference.name === 'Alert') {
+      test('announces a message that arrives in the live region, and keeps the focus on the button that caused it', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const live = page.getByRole('region', { name: 'Live region' })
+        const alert = live.getByRole('status').filter({ hasText: /Not saved yet|Changes saved/ })
+        const save = live.getByRole('button', { name: 'Save' })
+        // A live region announces what changes in it: the element must be the same before and after the message.
+        const element = await alert.elementHandle()
+
+        await save.focus()
+        await page.keyboard.press('Enter')
+
+        await expect(alert).toHaveText(/Changes saved/)
+        expect(await element!.evaluate((node) => node.isConnected)).toBe(true)
+        await expect(save).toBeFocused()
+      })
+
+      test('has no role="alert" with text when the page loads, and gives the error to the one that was there', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const alerts = page.getByRole('alert')
+        // Chromium announces a `role="alert"` that is inserted with text: none of the page may be.
+        await expect(alerts.filter({ hasText: /\S/ })).toHaveCount(0)
+        const alert = alerts.first()
+        const element = await alert.elementHandle()
+
+        await page.getByRole('button', { name: 'Simulate an error' }).click()
+
+        await expect(alert).toContainText('Connection lost')
+        expect(await element!.evaluate((node) => node.isConnected)).toBe(true)
+        await page.getByRole('button', { name: 'Reset' }).last().click()
+        await expect(alerts.filter({ hasText: /\S/ })).toHaveCount(0)
+      })
+
+      test('shows a visible focus on the action of an alert', async ({ page }) => {
+        await openReference(page, reference)
+        const retry = page.getByRole('region', { name: 'With an action' }).getByRole('button', { name: 'Retry' })
+
+        await retry.focus()
+
+        await expect(retry).toBeFocused()
+        await expect(retry).toHaveCSS('outline-style', 'solid')
+      })
+    }
+
     if (reference.name === 'Select') {
       test('changes with the keyboard, and leaves the focus where a native select leaves it', async ({ page }) => {
         await openReference(page, reference)
@@ -399,7 +461,7 @@ for (const reference of references) {
       })
     }
 
-    if (['SearchField', 'Select', 'Input', 'FilterChip'].includes(reference.name)) {
+    if (['SearchField', 'Select', 'Input', 'FilterChip', 'Alert'].includes(reference.name)) {
       test('fits in the pseudo-locale at 320 px, the fields in it included', async ({ page }) => {
         await page.setViewportSize({ width: 320, height: 800 })
         await openReference(page, reference, './__pseudo__')

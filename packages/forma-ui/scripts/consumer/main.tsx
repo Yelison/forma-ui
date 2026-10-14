@@ -2,6 +2,7 @@
 // package and then runs. It imports the package the way an application does, by name, and prints the markup of the
 // components it renders, which the script checks against the shipped styles.css.
 import {
+  Alert,
   Avatar,
   Badge,
   Button,
@@ -25,6 +26,10 @@ const samples = (
   <>
     <Avatar name="Laura Méndez" size="large" tone="green" />
     <span>{initialsOf('Laura Méndez')}</span>
+    <Alert tone="red" title="Connection lost" live>
+      We could not reach the server.
+      <Button variant="secondary">Retry</Button>
+    </Alert>
     <Badge tone="blue">New</Badge>
     <Button variant="secondary">Save</Button>
     <IconButton icon="bell" label="Notifications" />

@@ -130,16 +130,19 @@ export function loadStyles() {
 // Contrast of what is painted
 
 /**
- * The contrast ratio of the text color over the background color that the browser paints on `element`. The computed
- * style reports `rgb(r, g, b)` and the contrast helper reads hex, as `tokens.json` holds the colors.
+ * The contrast ratio of the text color of `element` over the background color that the browser paints on `against`
+ * (the element itself by default: pass the box that holds it when `element` has no background of its own, such as the
+ * title inside an alert). The computed style reports `rgb(r, g, b)` and the contrast helper reads hex, as `tokens.json`
+ * holds the colors.
  */
-export function paintedContrast(element: Element): number {
+export function paintedContrast(element: Element, against: Element = element): number {
   const toHex = (rgb: string) =>
     `#${(rgb.match(/\d+/g) ?? [])
       .slice(0, 3)
       .map((channel) => Number(channel).toString(16).padStart(2, '0'))
       .join('')}`
-  const { color, backgroundColor } = getComputedStyle(element)
+  const { color } = getComputedStyle(element)
+  const { backgroundColor } = getComputedStyle(against)
   return contrastRatio(toHex(color), toHex(backgroundColor))
 }
 

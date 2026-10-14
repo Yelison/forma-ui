@@ -1,4 +1,5 @@
 import type { componentPages } from '../routes'
+import { alertDoc } from './alert'
 import { avatarDoc } from './avatar'
 import { badgeDoc } from './badge'
 import { buttonDoc } from './button'
@@ -30,6 +31,7 @@ export const componentDocs: Partial<Record<(typeof componentPages)[number]['slug
   'search-field': searchFieldDoc,
   select: selectDoc,
   'filter-chip': filterChipDoc,
+  alert: alertDoc,
 }
 
 export type { ComponentDoc } from './types'

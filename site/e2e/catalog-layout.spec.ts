@@ -13,7 +13,7 @@ async function violations(page: Page) {
 const states = {
   'with a category chosen': async (page: Page) => {
     await page.getByText('Feedback', { exact: true }).click()
-    await expect(page.getByRole('heading', { level: 2 })).toHaveCount(2)
+    await expect(page.getByRole('heading', { level: 2 })).toHaveCount(3)
   },
   'with nothing matching': async (page: Page) => {
     await page.getByRole('textbox', { name: 'Filter by name' }).fill('zzz')

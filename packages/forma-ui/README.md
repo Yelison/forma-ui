@@ -141,12 +141,13 @@ function ThemeToggle() {
 
 ## Components
 
-`Badge`, `Button`, `IconButton`, `FilterChip`, `Icon`, `Input`, `SearchField`, `Select` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
+`Alert`, `Badge`, `Button`, `IconButton`, `FilterChip`, `Icon`, `Input`, `SearchField`, `Select` and `Radio` forward the attributes of their native element. `Field`, `Tooltip`, `Dialog`, `Tabs` and `Avatar` take only the props they document.
 
 | Component               | Use it for                                                                             | Accessibility                                                                                                                                                                                                                                                                                                                                              |
 | ----------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Button`                | An action; `primary`, `secondary`, `ghost` or `danger`; `size` `default` or `compact`. | A native `button` whose `type` is `button` unless set. While `loading` it stays focusable with `aria-busy` and `aria-disabled`; `disabled` is for an unavailable action. `size="compact"` is 36 px tall instead of 42 (`--button-height-compact`); below 768 px both are `--touch-target` (44 px), so the compact one never falls under the touch minimum. |
 | `IconButton`            | An action with an icon and no visible text.                                            | `label` is required and becomes `aria-label`; show it in a `Tooltip` too.                                                                                                                                                                                                                                                                                  |
+| `Alert`                 | A message that stays on the page, with a title and a body, in four tones.              | Plain by default. With `live` it is `role="alert"` for `red` and `role="status"` for the others: keep it mounted and change its text when the message arrives (see below).                                                                                                                                                                                 |
 | `Badge`                 | A short status or category tag, in six tones.                                          | The tone only colors it: the text has to say the same thing.                                                                                                                                                                                                                                                                                               |
 | `Field`                 | A label, hint and error around a control you provide.                                  | Links them with `id` and `aria-describedby`, sets `aria-invalid` and announces the error with `role="alert"`; `announce="off"` shows it without announcing it.                                                                                                                                                                                             |
 | `Input`                 | A native text input with its `Field`.                                                  | Same linking as `Field`, and it forwards `announce` to it; `hideLabel` keeps the label for screen readers and draws nothing; `disabled` and `readOnly` stay different.                                                                                                                                                                                     |
@@ -173,6 +174,22 @@ at the full width. From 768 px it is the usual centered dialog, and the default 
 width. The footer reads bottom to top: the DOM order is unchanged, so the first button, the one that takes the initial
 focus, is the lowest, and the last is on top. Put the safe action first and the primary action last, and Tab goes from the
 bottom button to the top one. The handle is decorative: it is not dragged. The stacking reaches the direct children of the footer, so buttons wrapped in another element stay as they are. With `prefers-reduced-motion` the sheet does not slide in.
+
+`Alert` is a `div` with a `title` and a body, the `children`. An action is a `Button` or a link inside the body: there is no
+`action` prop and no close button. With `live` it is a live region, `role="alert"` for `red` and `role="status"` for the
+other tones, which suits a message that appears after an action. A message that is there when the page loads must not be
+`live`, or it interrupts the screen reader before the user has done anything. A screen reader announces what changes
+inside a live region it already knows, so keep the `Alert` mounted and change its `title` and `children` when the message
+arrives; one that is added to the page together with its message may go unannounced, `status` ones above all.
+
+```tsx
+<Alert tone="red" title="Connection lost" live>
+  We could not reach the server.
+  <Button variant="secondary" onClick={retry}>
+    Retry
+  </Button>
+</Alert>
+```
 
 `FilterChip` has two modes, chosen by `aria-haspopup` (any value but `false`): with it, the chip opens something your
 application shows (set `aria-expanded` too), draws a chevron and only looks selected; without it, it is a toggle button
@@ -218,17 +235,18 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size    |
 | ----------------- | ------- |
-| Everything        | 8.69 kB |
+| Everything        | 8.85 kB |
 | `{ SearchField }` | 3.29 kB |
 | `{ Select }`      | 3.16 kB |
 | `{ FilterChip }`  | 2.86 kB |
 | `{ Button }`      | 3.14 kB |
 | `{ Tabs }`        | 0.66 kB |
 | `{ Avatar }`      | 0.59 kB |
+| `{ Alert }`       | 0.36 kB |
 | `{ Radio }`       | 0.31 kB |
 | `{ Badge }`       | 0.26 kB |
 | `{ iconNames }`   | 0.16 kB |
-| `styles.css`      | 2.48 kB |
+| `styles.css`      | 2.53 kB |
 
 `Button`, `FilterChip`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
 the whole table travels with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,

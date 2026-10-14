@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react'
 import type { FamilyId } from '../families'
+import { AlertSpecimens } from './AlertSpecimens'
 import { AvatarSpecimens } from './AvatarSpecimens'
 import { BadgeSpecimens } from './BadgeSpecimens'
 import { ButtonSpecimens } from './ButtonSpecimens'
@@ -25,6 +26,7 @@ export const familySpecimens: Record<FamilyId, ComponentType> = {
   badge: BadgeSpecimens,
   icon: IconSpecimens,
   tabs: TabsSpecimens,
+  alert: AlertSpecimens,
   tooltip: TooltipSpecimens,
   dialog: DialogSpecimens,
 }

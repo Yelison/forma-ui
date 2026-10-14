@@ -43,6 +43,10 @@
 // FilterChip, on 2026-10-13, on top of the purple Badge tone: 8.66 kB for every export (8.51 kB before it) and 2.46 kB for
 // styles.css (2.38 kB before it), both within their budgets, so none is raised. FilterChip alone is 2.86 kB: like Button, it
 // carries the table of icons for its chevron, and it has no budget of its own.
+//
+// Alert, on 2026-10-13: 8.85 kB for every export (8.69 kB before it), over its 8800 B, which goes to 9000 B (the measure plus
+// 2%: the next component raises it again, in its own pull request), and 2.53 kB for styles.css (2.48 kB before it), within
+// its budget. Alert alone is 0.36 kB, with a budget of 400 B: it draws no icon, so it carries none of the table.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -65,7 +69,7 @@ const budgets: Budget[] = [
     name: 'dist/index.js (every export)',
     source: `import * as forma from '@yelison/forma-ui'\nconsole.log(forma)`,
     extension: '.js',
-    limit: 8800,
+    limit: 9000,
   },
   {
     name: 'import { Button } from the package',
@@ -84,6 +88,12 @@ const budgets: Budget[] = [
     source: `import { Avatar } from '@yelison/forma-ui'\nconsole.log(Avatar)`,
     extension: '.js',
     limit: 800,
+  },
+  {
+    name: 'import { Alert } from the package',
+    source: `import { Alert } from '@yelison/forma-ui'\nconsole.log(Alert)`,
+    extension: '.js',
+    limit: 400,
   },
   {
     name: 'import { iconNames } from the package',

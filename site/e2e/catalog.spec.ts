@@ -62,10 +62,11 @@ for (const locale of ['en', 'es'] as const) {
         'Badge',
         'Icon',
         'Tabs',
+        'Alert',
         'Tooltip',
         'Dialog',
       ])
-      await expect(countOf(page)).toHaveText(t.count(12))
+      await expect(countOf(page)).toHaveText(t.count(13))
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
@@ -78,8 +79,8 @@ for (const locale of ['en', 'es'] as const) {
     test('narrows the list with a category chosen by mouse, and announces the count', async ({ page }) => {
       await page.getByText(t.feedback, { exact: true }).click()
 
-      expect(await rowNames(page)).toEqual(['Tooltip', 'Dialog'])
-      await expect(countOf(page)).toHaveText(t.count(2))
+      expect(await rowNames(page)).toEqual(['Alert', 'Tooltip', 'Dialog'])
+      await expect(countOf(page)).toHaveText(t.count(3))
     })
 
     test('shows the Radio row under Forms, with groups that answer the arrow keys apart', async ({ page }) => {
@@ -166,7 +167,7 @@ for (const locale of ['en', 'es'] as const) {
 
       await page.getByRole('button', { name: t.clear }).click()
 
-      expect(await rowNames(page)).toHaveLength(12)
+      expect(await rowNames(page)).toHaveLength(13)
       await expect(page.getByRole('textbox', { name: t.filterByName })).toBeFocused()
       await expect(page.getByRole('textbox', { name: t.filterByName })).toHaveValue('')
     })
@@ -177,7 +178,7 @@ for (const locale of ['en', 'es'] as const) {
       const status = await countOf(page).boundingBox()
 
       await page.getByText(t.feedback, { exact: true }).click()
-      await expect(countOf(page)).toHaveText(t.count(2))
+      await expect(countOf(page)).toHaveText(t.count(3))
 
       expect(await filters.boundingBox()).toEqual(before)
       expect(await countOf(page).boundingBox()).toEqual(status)
