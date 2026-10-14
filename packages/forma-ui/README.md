@@ -242,8 +242,8 @@ is the source of truth. At the time of writing they are:
 | `{ Button }`      | 3.14 kB |
 | `{ Tabs }`        | 0.66 kB |
 | `{ Avatar }`      | 0.59 kB |
-| `{ Radio }`       | 0.31 kB |
 | `{ Alert }`       | 0.32 kB |
+| `{ Radio }`       | 0.31 kB |
 | `{ Badge }`       | 0.26 kB |
 | `{ iconNames }`   | 0.16 kB |
 | `styles.css`      | 2.53 kB |

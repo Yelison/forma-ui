@@ -1,10 +1,14 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
+import type { BadgeTone } from '../Badge'
 import { Button } from '../Button'
-import { Alert } from './Alert'
+import { Alert, type AlertTone } from './Alert'
 
 // The unit config keeps CSS Module class names as written, so the tests can name them.
 const tones = ['blue', 'green', 'amber', 'red'] as const
+
+// A tone that Badge stops having would leave Alert without its tokens: this stops compiling.
+expectTypeOf<AlertTone>().toExtend<BadgeTone>()
 
 describe('Alert', () => {
   it('does not interrupt by default', () => {
@@ -61,6 +65,25 @@ describe('Alert', () => {
     rerender(<Alert title="Title">The body.</Alert>)
     expect(alert?.children).toHaveLength(2)
     expect(screen.getByText('The body.')).toBeInTheDocument()
+  })
+
+  it.each([
+    ['null', null],
+    ['undefined', undefined],
+    ['false', false],
+    ['an empty string', ''],
+    ['an empty array', []],
+    ['an array of nothing', [null, false]],
+  ])('draws no body for %s', (_name, children) => {
+    render(<Alert title="Title">{children}</Alert>)
+
+    expect(screen.getByText('Title').parentElement?.children).toHaveLength(1)
+  })
+
+  it('draws 0 in the body, as the number that it is', () => {
+    render(<Alert title="Pending">{0}</Alert>)
+
+    expect(screen.getByText('0')).toHaveClass('body')
   })
 
   it('holds an action in its body, reachable by its name', () => {
