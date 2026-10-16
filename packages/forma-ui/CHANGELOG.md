@@ -1,5 +1,41 @@
 # @yelison/forma-ui
 
+## 0.6.0
+
+### Minor Changes
+
+- 086be64: Add `Alert`, ported from Resolve: a message with a `title` and an optional body, in the `blue`, `green`, `amber` and `red` tones.
+
+  - `live` makes it a live region: `role="alert"` for `red` and `role="status"` for the other tones. Use it for a message that appears after an action, and keep the `Alert` mounted while its text changes so that it is announced.
+  - The body is `children`, so an action is a `Button` or a link inside it; there is no `action` prop and no close button, so the library has no text of its own for it.
+  - `AlertTone` is `'blue' | 'green' | 'amber' | 'red'`, four of the tones of `BadgeTone` with which it shares its tokens; a type test fails if Badge stops having one of them.
+  - The title has `margin: 0` of its own, so it does not depend on the consumer's reset. In Resolve, whose reset already zeroes it, nothing changes.
+  - Fix over Resolve: a body that is empty (`null`, `undefined`, `false`, `''`, `[]`) is no longer drawn, so it adds no gap, and `0` is drawn inside the body instead of as a loose text node.
+
+- a3a775b: Add `Menu`, ported from Resolve: a menu of actions or options that opens from a `Button`, an `IconButton` or a `FilterChip` you spread its `trigger` props on, with `label`, `items`, `placement`, `search`, `note`, `wide` and the same keyboard model (arrows, `Home` and `End`, a first-letter jump, `Escape` and `Tab`). It opens in a portal, inside the closest `<dialog>`, and returns the focus to the trigger. The trigger props carry `aria-haspopup="menu"`, so a `FilterChip` draws its chevron and adds no `aria-pressed`.
+
+  - New tokens for the literals of Resolve's `Menu.module.css`: `--menu-min-width` (200px), `--menu-min-width-wide` (280px), `--menu-max-width` (320px) and `--menu-item-min-height` (36px, `--touch-target` below 768px). The layer is the existing `--z-menu`. The sizes are Resolve's.
+  - `normalizeText` stays in the package's internals: the filter of `search` ignores case and accents.
+  - Differences from Resolve, none of them a change of size:
+    - An item is named by its `label` alone and its `description` is its accessible description (`aria-labelledby` and `aria-describedby`), where Resolve joined both into one `aria-label` ("Acme Studio, Admin"). A `leading` box is no longer part of the name.
+    - `Tab` and `Shift+Tab` hand the focus to the trigger first, so the browser moves on from it and the focus never ends on the page body.
+    - The live region that says that no item matches the search is in the menu from the start and only its text arrives, so that it is announced.
+    - The items draw the library's focus ring instead of the one of the application's global `:focus-visible` rule, and the menu sets its own `box-sizing`, since the library ships no global reset.
+    - The arrow keys go on from the item that has the focus: a click on a disabled item focuses it, and the next arrow goes to the enabled item after or before it, where Resolve kept the previous position and the up arrow jumped to the last item.
+    - A plain item wraps its text in a `<span>`.
+  - Checked options keep Resolve's `menuitemradio` role.
+
+- f1bd1cd: Fixes and documentation found while adopting 0.5.0 in Resolve.
+
+  - **`FilterChip` sets `box-sizing: border-box`.** It relied on the browser's default for `<button>`, so a reset such as `button { box-sizing: content-box }` made the chip 38 px tall instead of 36. The other components already declared it. A page without such a reset paints exactly as before.
+  - **The README explains layers.** The order of loading decides nothing once layers are involved: CSS without a layer beats CSS in a layer, whatever its specificity, except with `!important`. `styles.css` has no layer, so a consumer's layered CSS, such as the utilities of Tailwind v4, loses to the rules of the components. Import it inside a layer of your own, `@import '@yelison/forma-ui/styles.css' layer(forma);`, and declare the order first, for example `@layer base, forma, utilities;`. A reset or a rule without a layer still beats the package once it is in one, so put resets in `@layer base`. The recipe is checked in Chromium by `test/browser/layers.test.tsx`, and the getting started guide of the site says the same, in English and Spanish.
+
+  ### Migrating from a copy of the box of the controls
+
+  If you keep a copy of `control.module.css` (as Resolve does, with a parity test), follow its rule of the colour. Since 0.5.0, `color` is written outside `:where()`, with the specificity of a class, so that a reset such as `input { color: inherit }` does not win; the rest of the box (`padding`, `font`, `min-height` and the others) stays inside `:where()`. A copy that keeps the colour inside `:where()` no longer matches the package.
+
+- 0c5efdf: Add `--font-family-mono`, the system monospace stack, and `--font-code`, a 13/20 code style that matches `--font-body`. Code inline in text of another size takes `font-family: var(--font-family-mono)` with a relative size such as `0.93em`. If you keep a copy of `tokens.css`, sync it: it gains two custom properties. The site's own `TokenCode` now uses the same stack as its code blocks, so on Linux it can move from DejaVu Sans Mono to Liberation Mono.
+
 ## 0.5.0
 
 ### Minor Changes
