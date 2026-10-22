@@ -4,9 +4,9 @@
 //
 // The conventions of the set, shared with Resolve's icons: a 24 grid, a 1.7 stroke drawn by `Icon` (so no fill and
 // no stroke in the data), round caps and joins, and a 3 to 4 unit margin to the edge of the grid. The first eight
-// start from Draftroom's drawings (20 or 22 px grids) scaled to 24; each deviation is noted on its icon. The twelve
+// start from Draftroom's drawings (20 or 22 px grids) scaled to 24; each deviation is noted on its icon. The thirteen
 // that follow have no drawing to start from (Draftroom sets its toolbar in letters), so they are drawn on the grid
-// of the set, one idea each and no more than four strokes.
+// of the set, one idea each.
 //
 // The set is outline only, with one exception: the icons named in `filledIcons`. A fill says "on", so it is for an
 // icon that only shows a state, and the button that uses it must also carry `aria-pressed`.
@@ -17,9 +17,14 @@ const starPath = 'M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z'
 export const formaIcons = {
   // Draftroom's four centered lines, scaled by 1.2: the same ends and rhythm.
   align: ['M4 6H20M7 10H17M4 14H20M7 18H17'],
-  // A capital B from two bowls of radius 4 on one stem, the lower a little wider as in the letter. Stem on x 6 and
-  // bowls to 19, so it sits in the margins of the set.
-  bold: ['M6 4H14A4 4 0 0 1 14 12H6V4Z', 'M6 12H15A4 4 0 0 1 15 20H6V12Z'],
+  // The outline of a heavy capital B: a silhouette of a stem and two bowls (radius 4.5, the lower a little wider) with a
+  // counter cut in each, all in the stroke of the set. The outline is what tells it from `italic` at 20 px: it is the only
+  // letter that is closed and wide.
+  bold: [
+    'M4 3H12A4.5 4.5 0 0 1 12 12H13A4.5 4.5 0 0 1 13 21H4V3Z',
+    'M9 6.5H12A1.5 1.5 0 0 1 12 9.5H9V6.5Z',
+    'M9 14.5H13A2 2 0 0 1 13 18.5H9V14.5Z',
+  ],
   // The circle is two arcs of radius 9, like `search` and `sun` are drawn on this grid. The hands are Draftroom's
   // scaled.
   clock: ['M12 3A9 9 0 1 0 12 21A9 9 0 0 0 12 3Z', 'M12 6V12L16 14'],
@@ -40,8 +45,12 @@ export const formaIcons = {
   folder: ['M3 5H10L12 8H21V19H3V5Z'],
   // `folder` unchanged, with a plus centered on its body (y 8 to 19): arms of 2.5 so that it stays clear of the edges.
   'folder-plus': ['M3 5H10L12 8H21V19H3V5Z', 'M12 11V16M9.5 13.5H14.5'],
-  // A capital H: two stems on the edges of `align`'s lines (6 and 18) and a bar through the middle.
-  heading: ['M6 4V20M18 4V20M6 12H18'],
+  // A capital H, narrowed to 4 to 12 to leave room for a numeral at its foot, as in a type specimen: stems clear of the
+  // numeral by 4 units, so that the two read apart at 20 px. The numeral is 5 wide and 6 tall (the bowl of the 3 ends at 20.4), bigger than the 4 of
+  // `list-ordered` because it is all that tells `heading-2` from `heading-3`.
+  'heading-2': ['M4 4V20M12 4V20M4 12H12', 'M16 16.5A2.5 2.5 0 0 1 21 16.5C21 18 16 18.5 16 20H21'],
+  // Same H and same place for the numeral, a 3 made of a bar and a bowl.
+  'heading-3': ['M4 4V20M12 4V20M4 12H12', 'M16 14H21L18.6 16.3', 'M18.6 16.3A2.1 2.1 0 1 1 16 18.4'],
   // Serif-less italic I: top and bottom bars, joined by a slant of 6 units over 16.
   italic: ['M19 4H10M14 20H5M15 4L9 20'],
   // Draftroom's link, whose curves are fitted segments, redrawn as two quarter arcs of radius 4 through the same
@@ -50,14 +59,11 @@ export const formaIcons = {
   // Draftroom's list, with the right end at 20 and the bullets at 4 to 5 so that the left and right edges are those
   // of `menu`, which it shares its three rows with.
   list: ['M8 6H20M8 12H20M8 18H20M4 6H5M4 12H5M4 18H5'],
-  // `list`'s three rows with numerals 1, 2 and 3 in place of the bullets: rows at 6, 12 and 18 as in `list`, each numeral
-  // 4 units tall and 3 wide, the most that stays legible at a 1.7 stroke.
-  'list-ordered': [
-    'M10 6H20M10 12H20M10 18H20',
-    'M4 5L6 4V8',
-    'M4 10A1.5 1.5 0 0 1 7 10C7 11.5 4 12.5 4 14H7',
-    'M4 16H7L5.5 17.7A1.6 1.6 0 1 1 4 19.6',
-  ],
+  // Two rows, a "1" and a short dash, in place of `list`'s three: at 20 px the 1.7 stroke is as wide as the gap that a
+  // numeral 4 units tall leaves in itself, so a "2" or a "3" fills in and only the "1" stays legible, as in the sets that
+  // draw this icon with fewer rows. The "1" is 4 tall, centered on its row at 7, and the dash on the row at 17; the text
+  // starts at 11, 3 units from either mark.
+  'list-ordered': ['M11 7H20M11 17H20', 'M4 6.5L6 5V9', 'M4 17H8'],
   // A screen on a stand, 3 to 21 wide like `comment`'s bubble: the picture of "follow the system" for a theme choice.
   monitor: ['M3 5H21V16H3V5Z', 'M8 20H16M12 16V20'],
   // A pencil on the diagonal of the grid, its tip cut by one line: edit.

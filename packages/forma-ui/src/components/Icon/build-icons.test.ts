@@ -37,7 +37,7 @@ describe('icon generator', () => {
 
   it.each([
     { owner: 'Resolve', file: RESOLVE_SOURCE, root: repoRoot, exportName: 'iconPaths', count: 23 },
-    { owner: 'Forma UI', file: FORMA_SOURCE, root: packageRoot, exportName: 'formaIcons', count: 20 },
+    { owner: 'Forma UI', file: FORMA_SOURCE, root: packageRoot, exportName: 'formaIcons', count: 21 },
   ])('ships the $count icons of $owner as its source draws them, in the same order', async (source) => {
     const module = await import(pathToFileURL(join(source.root, source.file)).href)
     const drawn: Record<string, readonly string[]> = module[source.exportName]
@@ -94,12 +94,12 @@ describe('icon generator', () => {
     )
   })
 
-  it('ships the 43 icons of the agreed set, the 23 of Resolve, 8 of Draftroom and 12 agreed in 0.7', () => {
-    expect(iconNames).toHaveLength(43)
+  it('ships the 44 icons of the agreed set: the 23 of Resolve, 8 of Draftroom and 13 agreed in 0.7', () => {
+    expect(iconNames).toHaveLength(44)
     expect(iconNames).toEqual(
       expect.arrayContaining([
         ...['trash', 'share', 'folder-plus', 'pencil', 'eye', 'monitor'],
-        ...['bold', 'italic', 'code', 'heading', 'list-ordered', 'star-filled'],
+        ...['bold', 'italic', 'code', 'heading-2', 'heading-3', 'list-ordered', 'star-filled'],
       ]),
     )
   })
@@ -115,5 +115,9 @@ describe('icon generator', () => {
   it('refuses a filled icon that no source draws, or one named twice', () => {
     expect(() => validateFilled(['ghost'], { star: ['M0 0'] })).toThrow(/Filled icon "ghost" is not drawn/)
     expect(() => validateFilled(['star', 'star'], { star: ['M0 0'] })).toThrow(/named twice/)
+  })
+
+  it('does not take a name that every object inherits for an icon that is drawn', () => {
+    expect(() => validateFilled(['constructor'], { star: ['M0 0'] })).toThrow(/Filled icon "constructor"/)
   })
 })

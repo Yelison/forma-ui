@@ -7,12 +7,12 @@
 //
 // Two sources, two owners:
 //   design/resolve-c3f02f8/icon-paths.ts   the verified copy of Resolve's `Icon/paths.ts`; never edited.
-//   icons/forma-icons.ts                   the icons Forma UI draws itself, and `filledIcons`, the names among all of them
-//                                          that Icon paints with a fill; the place to add or change one.
+//   icons/forma-icons.ts                   the icons Forma UI draws itself, and `filledIcons`, the names (of either
+//                                          source) that Icon paints with a fill; the place to add or change one.
 // A name in both is an error: an icon has one owner. Output (deterministic: names in alphabetical order, fixed
 // formatting, no timestamps):
-//   src/components/Icon/paths.ts   `iconPaths`, `IconName`, `iconNames` and `filledIconNames`. Committed; CI regenerates it and fails on any
-//                                  diff.
+//   src/components/Icon/paths.ts   `iconPaths`, `IconName`, `iconNames` and `filledIconNames`. Committed; CI
+//                                  regenerates it and fails on any diff.
 //
 // The script sticks to erasable TypeScript, so type stripping can run it (see build-tokens.ts).
 import { join, resolve } from 'node:path'
@@ -53,7 +53,7 @@ export function validate(source: unknown): IconPaths {
 /** Checks that each filled icon is drawn, once, so that `filledIconNames` can only hold names of the table. */
 export function validateFilled(filledIcons: readonly string[], iconPaths: IconPaths): void {
   for (const name of filledIcons) {
-    if (!(name in iconPaths)) throw new Error(`Filled icon "${name}" is not drawn in either source`)
+    if (!Object.hasOwn(iconPaths, name)) throw new Error(`Filled icon "${name}" is not drawn in either source`)
   }
   if (new Set(filledIcons).size !== filledIcons.length) throw new Error('A filled icon is named twice')
 }
