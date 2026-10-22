@@ -58,6 +58,12 @@
 // for every export (10.17 kB before), over its 10300 B, which goes to 10800 B; Menu alone is 5.87 kB, over its 5600 B,
 // which goes to 5900 B; iconNames is 0.21 kB, over its 200 B, which goes to 250 B. Button, at 3.57 kB, stays within its
 // 3600 B. The cost is the table of paths, which every component that draws an icon carries.
+//
+// Disclosure, on 2026-10-22, on top of Menu: 10.75 kB for every export (10.17 kB before it), over its 10300 B, which goes
+// to 10900 B (the measure plus 1.4%, as for Menu: the budget is raised by what the component costs and no more), and
+// 3.06 kB for styles.css (2.88 kB before it), over its 2900 B, which goes to 3100 B. Disclosure alone is 3.48 kB, with a
+// new budget of 3600 B: almost all of it is the table of icons that its chevron brings along, as for Button, and its own
+// code is the four small parts (the state, the button, the region and the layout of the two variants).
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -80,7 +86,7 @@ const budgets: Budget[] = [
     name: 'dist/index.js (every export)',
     source: `import * as forma from '@yelison/forma-ui'\nconsole.log(forma)`,
     extension: '.js',
-    limit: 10800,
+    limit: 10900,
   },
   {
     name: 'import { Button } from the package',
@@ -113,6 +119,12 @@ const budgets: Budget[] = [
     limit: 5900,
   },
   {
+    name: 'import { Disclosure } from the package',
+    source: `import { Disclosure } from '@yelison/forma-ui'\nconsole.log(Disclosure)`,
+    extension: '.js',
+    limit: 3600,
+  },
+  {
     name: 'import { iconNames } from the package',
     source: `import { iconNames } from '@yelison/forma-ui'\nconsole.log(iconNames)`,
     extension: '.js',
@@ -122,7 +134,7 @@ const budgets: Budget[] = [
     name: 'dist/styles.css',
     source: `import '@yelison/forma-ui/styles.css'`,
     extension: '.css',
-    limit: 2900,
+    limit: 3100,
   },
 ]
 
