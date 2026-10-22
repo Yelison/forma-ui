@@ -22,6 +22,7 @@ describe('the route manifest', () => {
       '/docs/components/filter-chip/',
       '/docs/components/alert/',
       '/docs/components/menu/',
+      '/docs/components/disclosure/',
       '/docs/guides/theming/',
       '/docs/guides/accessibility/',
       '/changelog/',

@@ -23,6 +23,7 @@ const referenceCatalogs: Record<(typeof componentPages)[number]['name'], Catalog
   FilterChip: 'docs.filterChip',
   Alert: 'docs.alert',
   Menu: 'docs.menu',
+  Disclosure: 'docs.disclosure',
 }
 
 const pageCatalogsByKey: Partial<Record<SiteRoute['key'], readonly CatalogName[]>> = {

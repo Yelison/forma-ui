@@ -53,6 +53,10 @@ export const catalogLoaders = {
     en: () => import('./catalogs/docs.dialog.en.json'),
     es: () => import('./catalogs/docs.dialog.es.json'),
   },
+  'docs.disclosure': {
+    en: () => import('./catalogs/docs.disclosure.en.json'),
+    es: () => import('./catalogs/docs.disclosure.es.json'),
+  },
   'docs.filterChip': {
     en: () => import('./catalogs/docs.filterChip.en.json'),
     es: () => import('./catalogs/docs.filterChip.es.json'),

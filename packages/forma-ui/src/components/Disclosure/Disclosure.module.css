@@ -1,0 +1,100 @@
+/*
+ * The states (hover and disabled) are wrapped in `:where()`, which adds no specificity: a consumer's own class wins over
+ * them as long as its rules come after the library's in the cascade.
+ */
+.disclosure {
+  box-sizing: border-box; /* the library ships no global reset */
+  min-width: 0;
+}
+
+/* The button keeps its text color and its font, so that in a line of text it reads as part of the line. */
+.button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  /* A summary is the name of something of the user's, such as a folder: a word longer than its room breaks instead of
+     being clipped. */
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.button:where(:not(:disabled):hover) {
+  background: var(--color-surface-hover);
+}
+
+.button:where(:disabled) {
+  color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+/* Closed it points to the inline end of the line, open it points down. */
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-muted);
+  transform: rotate(-90deg);
+  transition: transform var(--duration-fast);
+}
+
+.button[aria-expanded='true'] > .chevron {
+  transform: none;
+}
+
+/* A section's header: the button fills the row up to the actions and is as tall as a choice. */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.heading {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font: var(--font-strong);
+}
+
+.heading > .button {
+  width: 100%;
+  min-height: var(--choice-min-height);
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.panel {
+  padding-top: var(--space-8);
+}
+
+/* Below 768px the button is a touch target, in a line of content as well: it makes its line taller there, as the
+   FilterChip does. */
+@media (max-width: 767.98px) {
+  .button,
+  .heading > .button {
+    min-height: var(--touch-target);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}

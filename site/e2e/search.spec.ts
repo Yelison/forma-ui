@@ -60,8 +60,8 @@ for (const locale of ['en', 'es'] as const) {
 
       await expect(page.getByRole('dialog', { name: t.title })).toBeVisible()
       await expect(page.getByRole('combobox', { name: t.combobox })).toBeFocused()
-      await expect(results(page)).toHaveCount(20)
-      await expect(count(page)).toHaveText(t.count(20))
+      await expect(results(page)).toHaveCount(21)
+      await expect(count(page)).toHaveText(t.count(21))
     })
 
     test('opens from Ctrl+K, wherever focus is', async ({ page }) => {
