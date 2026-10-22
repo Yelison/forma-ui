@@ -1,0 +1,7 @@
+---
+'@yelison/forma-ui': patch
+---
+
+**`Dialog` opens again when the browser closes it and the application keeps `open` set.** Chromium's protection against abuse of close watchers closes the native `<dialog>` on the third `Escape` in a row, with a `cancel` event that cannot be cancelled. `onClose` was called, but an application that kept `open={true}`, such as one that ignores `onClose` while a delete is running, was left with a hidden dialog: nothing called `showModal()` again, so an error painted inside it was not seen and the next dialog did not appear. Now, after a close the browser forced (a `cancel` that cannot be cancelled), the dialog goes back up as a modal a frame later, with the focus inside it, unless `open` is already `false`; the element that had the focus before it opened is still the one that gets it back when the dialog closes for good. Every other native close, such as a `method="dialog"` form, behaves as before: `onClose` is called and the application decides.
+
+`onClose` is called once per close (the `cancel` that cannot be cancelled no longer adds a second call), and a dialog whose application sets `open` to `false` in response closes as before. Closing with a router navigation, which runs in a transition, also works: the only thing that can happen is that, after a forced close (the third `Escape` in a row), the dialog shows again for an instant before the navigation arrives. The markup and the look do not change.
