@@ -50,6 +50,7 @@ describe('package entry point', () => {
       Button: expect.any(Function),
       IconButton: expect.any(Function),
       buttonClassName: expect.any(Function),
+      iconButtonClassName: expect.any(Function),
     })
   })
 

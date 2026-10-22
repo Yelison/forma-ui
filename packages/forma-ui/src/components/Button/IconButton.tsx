@@ -2,6 +2,7 @@ import type { ComponentProps } from 'react'
 import { cx } from '../../lib/cx.js'
 import { Icon, type IconName } from '../Icon/index.js'
 import styles from './IconButton.module.css'
+import { iconButtonClassName } from './iconButtonClassName.js'
 
 /** Props of {@link IconButton}: the native `button` attributes, without `children`, plus the icon and its name. */
 export interface IconButtonProps extends Omit<ComponentProps<'button'>, 'children'> {
@@ -22,7 +23,7 @@ export function IconButton({ icon, flip = false, label, className, type = 'butto
   const names = typeof icon === 'string' ? [icon] : icon
 
   return (
-    <button {...props} type={type} aria-label={label} className={cx(styles.iconButton, className)}>
+    <button {...props} type={type} aria-label={label} className={iconButtonClassName({ className })}>
       <span className={cx(styles.icons, flip && styles.flip)}>
         {/* The names can repeat (a double arrow), and the list never reorders: the position is its identity. */}
         {names.map((name, position) => (

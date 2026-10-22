@@ -5,11 +5,13 @@ import {
   Button,
   IconButton,
   buttonClassName,
+  iconButtonClassName,
   type ButtonProps,
   type ButtonSize,
   type ButtonVariant,
   type IconButtonProps,
 } from '../../src/components/Button'
+import { Icon } from '../../src/components/Icon'
 import { expectNoAxeViolations } from '../axe'
 import { emulateMedia, loadStyles, loadTokens, mount, pressTab, reset } from './support'
 
@@ -607,6 +609,65 @@ describe('IconButton painting', () => {
 
     expect(document.activeElement).toBe(button)
     const style = getComputedStyle(button as HTMLButtonElement)
+    expect([style.outlineStyle, style.outlineWidth, style.outlineOffset]).toEqual(['solid', '2px', '2px'])
+    expect(style.outlineColor).toBe(resolved('outline-color', '--color-focus'))
+  })
+})
+
+// Draftroom's access to the version history: a link with a clock icon, drawn as an icon button. The icon has no text,
+// so the link takes its name from an `aria-label`.
+function mountIconLink(style?: CSSProperties) {
+  const container = mount(
+    <Page style={style}>
+      <IconButton icon="bell" label="Notifications" />
+      <a href="/history" aria-label="Version history" className={iconButtonClassName()}>
+        <Icon name="clock" />
+      </a>
+    </Page>,
+  )
+  const button = container.querySelector('button')
+  const link = container.querySelector('a')
+  if (!button || !link) throw new Error('the icon button and the link did not render')
+  return { container, button, link }
+}
+
+describe('A link that takes its look from iconButtonClassName', () => {
+  it.each(themes)('has no axe violations in the %s theme', async (theme) => {
+    root.setAttribute('data-theme', theme)
+    const { container } = mountIconLink()
+
+    await expectNoAxeViolations(container)
+  })
+
+  // A link is `content-box` until the class says otherwise, so the size shows whether the class sets the box.
+  it.each(['36px', '52px'])('has the box of an IconButton, %s wide and tall when --touch-target says so', (size) => {
+    const { button, link } = mountIconLink({ '--touch-target': size } as CSSProperties)
+
+    const { width, height } = link.getBoundingClientRect()
+    expect([width, height]).toEqual([Number.parseFloat(size), Number.parseFloat(size)])
+    expect(getComputedStyle(link).borderRadius).toBe(getComputedStyle(button).borderRadius)
+  })
+
+  it.each(themes)('reacts to hover like an IconButton in the %s theme', async (theme) => {
+    root.setAttribute('data-theme', theme)
+    const { button, link } = mountIconLink({ '--duration-fast': '0s' } as CSSProperties)
+    expect(getComputedStyle(link).color).toBe(getComputedStyle(button).color)
+
+    await userEvent.hover(link)
+
+    await expect.poll(() => getComputedStyle(link).color).toBe(resolved('color', '--color-ink'))
+    expect(getComputedStyle(link).backgroundColor).toBe(resolved('background-color', '--color-surface-hover'))
+  })
+
+  it.each(themes)('draws the focus ring of an IconButton when the keyboard reaches it in the %s theme', async (theme) => {
+    root.setAttribute('data-theme', theme)
+    const { link } = mountIconLink()
+
+    await pressTab()
+    await pressTab()
+
+    expect(document.activeElement).toBe(link)
+    const style = getComputedStyle(link)
     expect([style.outlineStyle, style.outlineWidth, style.outlineOffset]).toEqual(['solid', '2px', '2px'])
     expect(style.outlineColor).toBe(resolved('outline-color', '--color-focus'))
   })
