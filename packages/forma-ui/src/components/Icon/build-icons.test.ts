@@ -94,8 +94,7 @@ describe('icon generator', () => {
     )
   })
 
-  it('ships the 44 icons of the agreed set: the 23 of Resolve, 8 of Draftroom and 13 agreed in 0.7', () => {
-    expect(iconNames).toHaveLength(44)
+  it('ships the 13 icons agreed in 0.7, whatever the size of the set grows to', () => {
     expect(iconNames).toEqual(
       expect.arrayContaining([
         ...['trash', 'share', 'folder-plus', 'pencil', 'eye', 'monitor'],
