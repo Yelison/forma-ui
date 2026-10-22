@@ -1,4 +1,5 @@
-/* The button goes under the sentence when the row is too narrow for both, instead of squeezing the sentence. */
+/* The sentence starts from its longest word and grows, so the avatar and the sentence stay together and the button goes
+   under them only when not even that fits: nothing is squeezed below a word. */
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -7,6 +8,6 @@
 }
 
 .sentence {
-  flex: 1 1 auto;
+  flex: 1 1 min-content;
   margin: 0;
 }
