@@ -2,12 +2,14 @@ import { useIntl } from 'react-intl'
 import { ControlledDisclosure } from '../../docs/disclosure/ControlledDisclosure'
 import { DetailsDisclosure } from '../../docs/disclosure/DetailsDisclosure'
 import { FolderDisclosure } from '../../docs/disclosure/FolderDisclosure'
-import { RenameBurst } from '../../docs/disclosure/RenameBurst'
 import { disclosureWords } from '../../docs/disclosure/words'
 import type { MessageId } from '../../i18n'
 import { Specimen, SpecimenGrid } from '../SpecimenGrid'
 
-/** Disclosure in its two variants, closed and open, and with what it asks of an application: a disabled button and a row of parts. */
+/**
+ * Disclosure in its two variants, closed and open, controlled by the application and disabled. The parts, whose sample
+ * holds a link, are in its reference.
+ */
 export function DisclosureSpecimens() {
   const intl = useIntl()
   const words = disclosureWords(intl)
@@ -29,9 +31,6 @@ export function DisclosureSpecimens() {
       </Specimen>
       <Specimen label={say('catalog.state.disabled')}>
         <DetailsDisclosure words={words} disabled />
-      </Specimen>
-      <Specimen label={<code>DisclosureRoot</code>}>
-        <RenameBurst words={words} />
       </Specimen>
     </SpecimenGrid>
   )

@@ -123,13 +123,14 @@ function Folder({ headingLevel }: { headingLevel?: 2 | 3 }) {
       headingLevel={headingLevel}
       summary="Launch"
       defaultOpen
+      buttonProps={{ id: 'launch-folder' }}
       actions={
         <Menu label="Folder actions" items={[{ id: 'rename', label: 'Rename', onSelect: () => {} }]}>
           {(trigger) => <IconButton icon="more" label="Folder actions" {...trigger} />}
         </Menu>
       }
     >
-      <ul>
+      <ul aria-labelledby="launch-folder">
         <li>Launch plan</li>
       </ul>
     </Disclosure>
@@ -343,6 +344,17 @@ describe('Disclosure section', () => {
     const heading = container.querySelector('h3')!
     expect(heading).toHaveAccessibleName('Launch')
     expect(heading.contains(actionsOf(container))).toBe(false)
+  })
+
+  // The explorer of an editor names the list of a folder by its heading: the button has an id and the list points at it.
+  it('lets the list in the region be named by the heading, through the id of the button', () => {
+    const container = mount(
+      <Page>
+        <Folder headingLevel={3} />
+      </Page>,
+    )
+
+    expect(container.querySelector('ul')).toHaveAccessibleName('Launch')
   })
 
   it('draws no heading without headingLevel', () => {

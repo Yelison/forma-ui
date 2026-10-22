@@ -273,7 +273,8 @@ stays mounted, so keep your own `display` rules off the region and on what it ho
 a line of content with its chevron after the text, and `variant="section"` is the heading of a part of the page: the chevron
 comes first, `headingLevel` puts the button in a heading, and `actions` hold controls such as a `Menu` trigger, beside the
 button and outside it. `open` and `onOpenChange` control it (without `onOpenChange` a controlled one never opens), and
-`buttonProps` takes the attributes of the button, such as `aria-describedby`. The summary and the region are yours, in your
+`buttonProps` takes the attributes of the button, such as `aria-describedby`. Below 768 px the button is 44 px tall, a touch target,
+so an inline one makes its line taller there. The summary and the region are yours, in your
 language: the library has no text of its own for `Disclosure`. A link cannot go inside a button, so a row whose sentence has one
 is built from `DisclosureRoot`, `DisclosureButton` and `DisclosureRegion`, which `Disclosure` is made of: the button is a part
 of the row and the region goes where you place it.
