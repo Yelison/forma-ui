@@ -22,6 +22,9 @@
   color: inherit;
   font: inherit;
   text-align: start;
+  /* A summary is the name of something of the user's, such as a folder: a word longer than its room breaks instead of
+     being clipped. */
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 

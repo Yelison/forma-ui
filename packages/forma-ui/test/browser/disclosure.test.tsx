@@ -499,3 +499,25 @@ describe('Disclosure layout', () => {
     expect(summary.scrollWidth).toBeLessThanOrEqual(summary.clientWidth)
   })
 })
+
+describe('Disclosure summary that does not fit', () => {
+  // The name of a folder is the user's, and a word of it can be longer than the column it is in.
+  it.each([
+    ['inline', <Disclosure summary="Supercalifragilisticexpialidocious">Region</Disclosure>],
+    [
+      'section',
+      <Disclosure variant="section" summary="Supercalifragilisticexpialidocious">
+        Region
+      </Disclosure>,
+    ],
+  ])('breaks a word that is longer than its room, in the %s variant, instead of clipping it', (_name, example) => {
+    const container = mount(
+      <Page>
+        <div style={{ width: 120 }}>{example}</div>
+      </Page>,
+    )
+
+    const button = container.querySelector('button')!
+    expect(button.scrollWidth).toBeLessThanOrEqual(button.clientWidth)
+  })
+})

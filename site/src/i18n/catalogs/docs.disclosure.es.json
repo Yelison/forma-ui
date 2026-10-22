@@ -37,6 +37,6 @@
   "docs.disclosure.limit.parts": "Un enlace u otro control no puede ir en el resumen, porque quedaría dentro de un <code>button</code>. Cuando tiene que estar en la misma fila, usa <code>DisclosureRoot</code>, <code>DisclosureButton</code> y <code>DisclosureRegion</code>: el botón es una parte de la fila y la región va donde la coloques.",
   "docs.disclosure.limit.touch": "Por debajo de 768 px el botón mide 44 px de alto, un objetivo táctil, así que uno en línea hace más alta su línea ahí. Un enlace en la misma frase que un botón en línea queda fuera de él y conserva su propio tamaño.",
   "docs.disclosure.root.children": "Un <code>DisclosureButton</code> y una <code>DisclosureRegion</code>, donde los coloques.",
-  "docs.disclosure.summary": "Un botón que muestra y oculta una región, como una línea de contenido o como el encabezado de una sección.",
+  "docs.disclosure.summary": "Un botón que muestra y oculta una región, en línea o como título de una sección.",
   "docs.disclosure.usage.description": "Importa Disclosure, dale un <code>summary</code> y escribe la región como sus hijos. El botón lleva <code>aria-expanded</code> y <code>aria-controls</code>, y la región está <code>hidden</code> mientras está cerrada."
 }
