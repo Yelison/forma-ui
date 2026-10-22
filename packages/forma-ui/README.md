@@ -332,9 +332,9 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size     |
 | ----------------- | -------- |
-| Everything        | 10.65 kB |
+| Everything        | 11.34 kB |
 | `{ Menu }`        | 5.87 kB  |
-| `{ Disclosure }`  | 3.48 kB  |
+| `{ Disclosure }`  | 3.92 kB  |
 | `{ SearchField }` | 3.73 kB  |
 | `{ Select }`      | 3.60 kB  |
 | `{ FilterChip }`  | 3.30 kB  |
@@ -348,7 +348,7 @@ is the source of truth. At the time of writing they are:
 | `styles.css`      | 3.06 kB  |
 
 `Button`, `Disclosure`, `FilterChip`, `Menu`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
-the whole table travels with any component that draws an icon (44 icons, about 3 kB gzip). `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
+the whole table travels with any component that draws an icon (44 icons, about 3 kB gzip; importing each icon on its own is a debt already noted, and would take most of that weight off them). `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
 and importing it alone does not bring the table.
 
 ## Compatibility
