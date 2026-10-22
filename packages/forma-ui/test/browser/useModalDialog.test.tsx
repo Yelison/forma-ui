@@ -141,9 +141,11 @@ describe('useModalDialog in a real browser', () => {
     mount(<StubbornHarness />)
     const modal = dialog().element() as HTMLDialogElement
 
+    // Registered after React's own listener, so it runs once the hook has handled this close.
+    let openInTheClosingFrame: boolean | undefined
+    modal.addEventListener('close', () => (openInTheClosingFrame = modal.open), { once: true })
     modal.close()
-    await new Promise<void>((resolve) => queueMicrotask(resolve))
-    expect(modal.open).toBe(false)
+    await expect.poll(() => openInTheClosingFrame).toBe(false)
 
     await expect.poll(() => modal.open).toBe(true)
     modal.close()

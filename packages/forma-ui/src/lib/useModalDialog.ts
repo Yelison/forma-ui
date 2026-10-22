@@ -9,7 +9,6 @@ import { lockScroll } from './scrollLock.js'
 export function useModalDialog(open: boolean, onClose: () => void) {
   const ref = useRef<HTMLDialogElement>(null)
   const onCloseRef = useRef(onClose)
-  const openRef = useRef(open)
   const reopenFrameRef = useRef(0)
   /** Close started by the hook itself when `open` becomes false: it must not notify the parent again. */
   const closingRef = useRef(false)
@@ -21,7 +20,6 @@ export function useModalDialog(open: boolean, onClose: () => void) {
 
   useEffect(() => {
     onCloseRef.current = onClose
-    openRef.current = open
   })
 
   useEffect(() => {
@@ -55,7 +53,8 @@ export function useModalDialog(open: boolean, onClose: () => void) {
     /**
      * Native closes that do not go through a cancelable cancel, such as a form with method="dialog" or the browser's
      * own abuse protection. The parent decides: if it still has `open` set a frame later, the dialog goes back up.
-     * The delay lets the parent's update commit first, and keeps a browser that closes it again from looping.
+     * The delay lets the parent's update commit first, and keeps a browser that closes it again from looping. When `open`
+     * becomes false the effect's cleanup cancels the pending frame, so a legitimate close is never undone.
      */
     onClose(event: SyntheticEvent<HTMLDialogElement>) {
       if (closingRef.current) {
@@ -66,7 +65,7 @@ export function useModalDialog(open: boolean, onClose: () => void) {
       const dialog = event.currentTarget
       cancelAnimationFrame(reopenFrameRef.current)
       reopenFrameRef.current = requestAnimationFrame(() => {
-        if (openRef.current && !dialog.open) dialog.showModal()
+        if (!dialog.open) dialog.showModal()
       })
     },
     onPointerDown(event: PointerEvent<HTMLDialogElement>) {
