@@ -42,6 +42,10 @@ for (const theme of themes) {
   })
 }
 
+// Every link and button, except a link inside a sentence: it is exempt from the target size (WCAG 2.5.8, inline), and the
+// sentence of the Disclosure parts has one, which is the reason for those parts.
+const touchControls = 'button, a:not(p a)'
+
 test.describe('the catalog at 390 px', () => {
   test.use({ viewport: { width: 390, height: 800 } })
 
@@ -49,7 +53,7 @@ test.describe('the catalog at 390 px', () => {
     await page.goto('./docs/components/')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 
-    expect(await smallTargets(page.getByRole('main'))).toEqual([])
+    expect(await smallTargets(page.getByRole('main'), 44, touchControls)).toEqual([])
     // The chips only: the radios of the Radio row are 20 px controls whose label is the target, checked below.
     for (const chip of await page.getByRole('group', { name: 'Category' }).getByRole('radio').all()) {
       const box = await chip.boundingBox()
@@ -75,7 +79,7 @@ for (const locale of ['en', 'es'] as const) {
       test('fits, with targets of 44 px on a narrow screen', async ({ page }) => {
         expect(await overflow(page)).toEqual({ scroll: 0, outside: [], clipped: [] })
         // From 768 px a Button is 42 px high, as in Resolve, and the target size is the library's to decide.
-        if (width < 768) expect(await smallTargets(page.getByRole('main'))).toEqual([])
+        if (width < 768) expect(await smallTargets(page.getByRole('main'), 44, touchControls)).toEqual([])
       })
 
       test('fits with nothing matching, and with a dialog open', async ({ page }) => {
