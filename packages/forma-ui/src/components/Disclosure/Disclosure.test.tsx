@@ -441,14 +441,15 @@ describe('DisclosureRoot, DisclosureButton and DisclosureRegion', () => {
   it('lets a button and a region that are apart open and close each other', async () => {
     render(<Burst />)
     const button = screen.getByRole('button', { name: 'Show who' })
-    const region = screen.getByRole('group', { name: 'Who renamed it', hidden: true })
+    // A hidden element has no accessible name to query by: the button points at it.
+    const region = regionOf(button)!
+    expect(region).toHaveAttribute('aria-label', 'Who renamed it')
     expect(button).not.toContainElement(region)
     expect(region).not.toBeVisible()
 
     await userEvent.click(button)
     expect(button).toHaveAttribute('aria-expanded', 'true')
-    expect(button).toHaveAttribute('aria-controls', region.id)
-    expect(region).toBeVisible()
+    expect(screen.getByRole('group', { name: 'Who renamed it' })).toBe(region)
 
     await userEvent.click(button)
     expect(region).not.toBeVisible()
