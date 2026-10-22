@@ -429,7 +429,7 @@ describe('DisclosureRoot, DisclosureButton and DisclosureRegion', () => {
           </p>
           <DisclosureButton aria-describedby="burst-text">Show who</DisclosureButton>
         </div>
-        <DisclosureRegion aria-label="Who renamed it">
+        <DisclosureRegion role="group" aria-label="Who renamed it">
           <ul>
             <li>Priya</li>
           </ul>
@@ -441,7 +441,7 @@ describe('DisclosureRoot, DisclosureButton and DisclosureRegion', () => {
   it('lets a button and a region that are apart open and close each other', async () => {
     render(<Burst />)
     const button = screen.getByRole('button', { name: 'Show who' })
-    const region = screen.getByLabelText('Who renamed it', { selector: 'div' })
+    const region = screen.getByRole('group', { name: 'Who renamed it', hidden: true })
     expect(button).not.toContainElement(region)
     expect(region).not.toBeVisible()
 

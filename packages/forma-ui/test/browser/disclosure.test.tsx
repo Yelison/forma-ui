@@ -105,7 +105,7 @@ function Burst() {
         </p>
         <DisclosureButton aria-describedby="burst-text">Show who</DisclosureButton>
       </div>
-      <DisclosureRegion aria-label="Who renamed it">
+      <DisclosureRegion role="group" aria-label="Who renamed it">
         <ul>
           <li>Priya Raman, 8:21 AM</li>
           <li>Daniel Okafor, 8:17 AM</li>
