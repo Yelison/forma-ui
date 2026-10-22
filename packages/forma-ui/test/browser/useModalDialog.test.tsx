@@ -53,9 +53,15 @@ const opener = () => page.getByRole('button', { name: 'Open settings' })
 const dialog = () => page.getByRole('dialog', { name: 'Settings' })
 const closeCount = () => page.getByRole('status')
 
+function dialogElement() {
+  const element = dialog().element()
+  if (!(element instanceof HTMLDialogElement)) throw new Error('The dialog is not a <dialog> element')
+  return element
+}
+
 async function openDialog() {
   await userEvent.click(opener())
-  return dialog().element()
+  return dialogElement()
 }
 
 describe('useModalDialog in a real browser', () => {
@@ -125,7 +131,7 @@ describe('useModalDialog in a real browser', () => {
 
   it('opens again after a close the browser forced while the application keeps open set, notifying it once', async () => {
     mount(<Harness initiallyOpen holdOpen={() => true} />)
-    const modal = dialog().element() as HTMLDialogElement
+    const modal = dialogElement()
     const showModal = vi.spyOn(modal, 'showModal')
 
     forceClose(modal)
@@ -138,7 +144,7 @@ describe('useModalDialog in a real browser', () => {
 
   it('does not reopen in the frame that closed it, and calls showModal once per forced close', async () => {
     mount(<Harness initiallyOpen holdOpen={() => true} />)
-    const modal = dialog().element() as HTMLDialogElement
+    const modal = dialogElement()
     const showModal = vi.spyOn(modal, 'showModal')
 
     // Registered after React's own listener, so it runs once the hook has handled this close.
@@ -157,7 +163,7 @@ describe('useModalDialog in a real browser', () => {
 
   it('does not reopen after a native close that is not forced, even if the application keeps open set', async () => {
     mount(<Harness initiallyOpen holdOpen={() => true} />)
-    const modal = dialog().element() as HTMLDialogElement
+    const modal = dialogElement()
     const showModal = vi.spyOn(modal, 'showModal')
 
     modal.close()
