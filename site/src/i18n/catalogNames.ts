@@ -28,6 +28,7 @@ export const catalogNames = [
   'docs.badge',
   'docs.button',
   'docs.dialog',
+  'docs.disclosure',
   'docs.filterChip',
   'docs.iconButton',
   'docs.input',

@@ -7,6 +7,10 @@ import {
   Badge,
   Button,
   Dialog,
+  Disclosure,
+  DisclosureButton,
+  DisclosureRegion,
+  DisclosureRoot,
   FilterChip,
   FormaProvider,
   IconButton,
@@ -45,6 +49,21 @@ const samples = (
     <Menu label="Ticket actions" items={[{ id: 'assign', label: 'Assign owner', onSelect: () => {} }]}>
       {(trigger) => <IconButton icon="more" label="Ticket actions" {...trigger} />}
     </Menu>
+    {/* A closed disclosure renders its region too, `hidden`; the open section also shows its heading and its actions. */}
+    <Disclosure summary="Show details">Opened on Monday.</Disclosure>
+    <Disclosure
+      variant="section"
+      headingLevel={3}
+      summary="Launch"
+      defaultOpen
+      actions={<IconButton icon="more" label="Folder actions" />}
+    >
+      <p>Launch plan</p>
+    </Disclosure>
+    <DisclosureRoot>
+      <DisclosureButton>Show who</DisclosureButton>
+      <DisclosureRegion>Priya Raman</DisclosureRegion>
+    </DisclosureRoot>
     <Input label="Email" error="Enter a valid email" />
     <Input label="Search" hideLabel hint="Names and emails" />
     <SearchField label="Search tickets" value="refund" onValueChange={() => {}} />

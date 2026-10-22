@@ -1,5 +1,26 @@
 # @yelison/forma-ui
 
+## 0.7.0
+
+### Minor Changes
+
+- ce5400c: Add `Disclosure`: a button that shows and hides a region, following the ARIA disclosure pattern. The button is a native `button` with `aria-expanded` and `aria-controls`, the region is `hidden` while it is closed and keeps its content mounted, and a chevron turns when it opens, without an animation under `prefers-reduced-motion: reduce`. The focus stays on the button when it opens and closes, and goes back to it when the region closes with the focus inside.
+
+  - `variant="inline"` (the default) is a button in a line of content, with its chevron after the text. `variant="section"` is the heading of a part of the page: the chevron comes first, `headingLevel` puts the button in a heading, and `actions` holds controls such as the trigger of a `Menu`, beside the button and outside it.
+  - `open`, `defaultOpen` and `onOpenChange` make it controlled or uncontrolled. `buttonProps` takes the attributes of the button, such as `aria-describedby`, and `className` goes to the element around the button and the region.
+  - `DisclosureRoot`, `DisclosureButton` and `DisclosureRegion` are what `Disclosure` is made of. Use them for a row whose sentence holds a link, which cannot go inside a button: the button is a part of the row and the region goes where you place it.
+  - Below 768px the button is 44px tall, a touch target, in a line of content as well, so an inline one makes its line taller there.
+  - It adds no token and no string to `FormaProvider`: it uses the existing sizes, and the summary and the region are yours.
+
+- 5da7dd2: Export `iconButtonClassName`, the classes of an `IconButton`, so that a link (an `<a>` or the `Link` of a router) can look like one. `IconButton` uses it itself, so its markup does not change. The link keeps its own semantics: give it an `aria-label`.
+- 86c6b3b: Add thirteen icons, 44 in all: `trash`, `share` (send or export), `folder-plus`, `pencil`, `eye` and `monitor` for actions, `bold`, `italic`, `code`, `heading-2`, `heading-3` and `list-ordered` for text formatting, and `star-filled`. `star-filled` is the one filled icon of the set: `Icon` paints it with a fill as well as a stroke, and it is only for a state, so a button that shows it must carry `aria-pressed`. `iconNames` stays in alphabetical order, which moves the index of some existing names; nothing in the API depends on an index. `{ Icon }` and `{ iconNames }` grow a little.
+
+### Patch Changes
+
+- d0f4a0a: **`Dialog` opens again when the browser closes it and the application keeps `open` set.** Chromium's protection against abuse of close watchers closes the native `<dialog>` on the third `Escape` in a row, with a `cancel` event that cannot be cancelled. `onClose` was called, but an application that kept `open={true}`, such as one that ignores `onClose` while a delete is running, was left with a hidden dialog: nothing called `showModal()` again, so an error painted inside it was not seen and the next dialog did not appear. Now, after a close the browser forced (a `cancel` that cannot be cancelled), the dialog goes back up as a modal a frame later, with the focus inside it, unless `open` is already `false`; the element that had the focus before it opened is still the one that gets it back when the dialog closes for good. Every other native close, such as a `method="dialog"` form, behaves as before: `onClose` is called and the application decides.
+
+  `onClose` is called once per close (the `cancel` that cannot be cancelled no longer adds a second call), and a dialog whose application sets `open` to `false` in response closes as before. Closing with a router navigation, which runs in a transition, also works: the only thing that can happen is that, after a forced close (the third `Escape` in a row), the dialog shows again for an instant before the navigation arrives. The markup and the look do not change.
+
 ## 0.6.0
 
 ### Minor Changes
