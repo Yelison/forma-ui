@@ -54,9 +54,9 @@
 // 2900 B. Menu is the largest component: its list, its keyboard model, a SearchField for the filter and the table of icons
 // that any component that draws one carries. Its own budget is new: Menu alone is 5.44 kB, so 5600 B.
 //
-// +13 icons agreed on 2026-10-22 (44 in all; 12 at first, `heading` became `heading-2` and `heading-3` in review): 10.66 kB
-// for every export (10.17 kB before), over its 10300 B, which goes to 10800 B; Menu alone is 5.88 kB, over its 5600 B,
-// which goes to 5900 B; iconNames is 0.21 kB, over its 200 B, which goes to 250 B. Button, at 3.58 kB, stays within its
+// +13 icons agreed on 2026-10-22 (44 in all; 12 at first, `heading` became `heading-2` and `heading-3` in review): 10.65 kB
+// for every export (10.17 kB before), over its 10300 B, which goes to 10800 B; Menu alone is 5.87 kB, over its 5600 B,
+// which goes to 5900 B; iconNames is 0.21 kB, over its 200 B, which goes to 250 B. Button, at 3.57 kB, stays within its
 // 3600 B. The cost is the table of paths, which every component that draws an icon carries.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'

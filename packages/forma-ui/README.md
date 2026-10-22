@@ -313,12 +313,12 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size     |
 | ----------------- | -------- |
-| Everything        | 10.66 kB |
-| `{ Menu }`        | 5.88 kB  |
-| `{ SearchField }` | 3.74 kB  |
-| `{ Select }`      | 3.61 kB  |
-| `{ FilterChip }`  | 3.31 kB  |
-| `{ Button }`      | 3.58 kB  |
+| Everything        | 10.65 kB |
+| `{ Menu }`        | 5.87 kB  |
+| `{ SearchField }` | 3.73 kB  |
+| `{ Select }`      | 3.60 kB  |
+| `{ FilterChip }`  | 3.30 kB  |
+| `{ Button }`      | 3.57 kB  |
 | `{ Tabs }`        | 0.66 kB  |
 | `{ Avatar }`      | 0.59 kB  |
 | `{ Alert }`       | 0.36 kB  |
