@@ -313,22 +313,22 @@ is the source of truth. At the time of writing they are:
 
 | What you import   | Size     |
 | ----------------- | -------- |
-| Everything        | 10.17 kB |
-| `{ Menu }`        | 5.44 kB  |
-| `{ SearchField }` | 3.29 kB  |
-| `{ Select }`      | 3.16 kB  |
-| `{ FilterChip }`  | 2.86 kB  |
-| `{ Button }`      | 3.14 kB  |
+| Everything        | 10.60 kB |
+| `{ Menu }`        | 5.83 kB  |
+| `{ SearchField }` | 3.68 kB  |
+| `{ Select }`      | 3.55 kB  |
+| `{ FilterChip }`  | 3.25 kB  |
+| `{ Button }`      | 3.53 kB  |
 | `{ Tabs }`        | 0.66 kB  |
 | `{ Avatar }`      | 0.59 kB  |
 | `{ Alert }`       | 0.36 kB  |
 | `{ Radio }`       | 0.31 kB  |
 | `{ Badge }`       | 0.26 kB  |
-| `{ iconNames }`   | 0.16 kB  |
+| `{ iconNames }`   | 0.21 kB  |
 | `styles.css`      | 2.88 kB  |
 
 `Button`, `FilterChip`, `Menu`, `SearchField` and `Select` are not small because `Icon` looks its path up in one object that holds every icon, so
-the whole table travels with any component that draws an icon. `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
+the whole table travels with any component that draws an icon (43 icons, about 3 kB gzip). `iconNames` is a plain list of strings: a bundler drops it when you do not use it,
 and importing it alone does not bring the table.
 
 ## Compatibility
