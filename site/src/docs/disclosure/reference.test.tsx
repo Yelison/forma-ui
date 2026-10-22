@@ -93,8 +93,8 @@ describe('the reference of Disclosure', () => {
   })
 
   it.each([
-    ['en', /cannot go inside a paragraph/, /\{open && <Content \/>\}/],
-    ['es', /no puede ir dentro de un párrafo/, /\{open && <Contenido \/>\}/],
+    ['en', /cannot go inside a paragraph/, /\{open && …\}/],
+    ['es', /no puede ir dentro de un párrafo/, /\{open && …\}/],
   ] as const)(
     'says in %s that inline is a block and how to render the region only when open',
     (locale, block, open) => {
