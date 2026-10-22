@@ -316,7 +316,9 @@ describe('Disclosure', () => {
 
       const button = screen.getByRole('button', { name: 'Show as table' })
       expect(screen.queryByRole('heading')).not.toBeInTheDocument()
-      expect(button.lastElementChild?.tagName.toLowerCase()).toBe('svg')
+      // Nodes, not elements: the summary is a text node, which an element query would skip over.
+      expect(button.lastChild).toBe(button.querySelector('svg'))
+      expect(button.firstChild).toHaveTextContent('Show as table')
     })
 
     it('puts the region right under the button, in the same element', () => {
@@ -358,7 +360,8 @@ describe('Disclosure', () => {
       )
 
       const button = screen.getByRole('button', { name: 'Launch' })
-      expect(button.firstElementChild?.tagName.toLowerCase()).toBe('svg')
+      expect(button.firstChild).toBe(button.querySelector('svg'))
+      expect(button.lastChild).toHaveTextContent('Launch')
     })
 
     it('draws the actions beside the button, outside it and outside the heading', () => {

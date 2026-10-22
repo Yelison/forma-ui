@@ -298,6 +298,23 @@ describe('Disclosure region', () => {
     expect(getComputedStyle(regionOf(button)).display).toBe('block')
   })
 
+  // The section's region has a class of its own for its spacing: no rule of it may bring back what `hidden` took away.
+  it('is not displayed while a section is closed either, whatever spacing the section gives its region', async () => {
+    const container = mount(
+      <Page>
+        <Disclosure variant="section" headingLevel={3} summary="Archive">
+          Old documents
+        </Disclosure>
+      </Page>,
+    )
+    const button = buttonNamed(container, 'Archive')
+    expect(getComputedStyle(regionOf(button)).display).toBe('none')
+
+    await userEvent.click(button)
+
+    expect(getComputedStyle(regionOf(button)).display).toBe('block')
+  })
+
   it('does not change by itself when it is controlled and nothing answers onOpenChange', async () => {
     const container = mount(
       <Page>
