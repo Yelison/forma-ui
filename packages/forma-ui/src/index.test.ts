@@ -41,6 +41,15 @@ describe('package entry point', () => {
     expect(entry).toMatchObject({ FilterChip: expect.any(Function) })
   })
 
+  it('exports Disclosure and the three parts it is built from', () => {
+    expect(entry).toMatchObject({
+      Disclosure: expect.any(Function),
+      DisclosureRoot: expect.any(Function),
+      DisclosureButton: expect.any(Function),
+      DisclosureRegion: expect.any(Function),
+    })
+  })
+
   it('exports Menu', () => {
     expect(entry).toMatchObject({ Menu: expect.any(Function) })
   })
