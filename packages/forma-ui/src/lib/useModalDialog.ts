@@ -9,6 +9,8 @@ import { lockScroll } from './scrollLock.js'
 export function useModalDialog(open: boolean, onClose: () => void) {
   const ref = useRef<HTMLDialogElement>(null)
   const onCloseRef = useRef(onClose)
+  const openRef = useRef(open)
+  const reopenFrameRef = useRef(0)
   /** Close started by the hook itself when `open` becomes false: it must not notify the parent again. */
   const closingRef = useRef(false)
   /**
@@ -19,6 +21,7 @@ export function useModalDialog(open: boolean, onClose: () => void) {
 
   useEffect(() => {
     onCloseRef.current = onClose
+    openRef.current = open
   })
 
   useEffect(() => {
@@ -30,6 +33,7 @@ export function useModalDialog(open: boolean, onClose: () => void) {
     const unlockScroll = lockScroll()
 
     return () => {
+      cancelAnimationFrame(reopenFrameRef.current)
       if (dialog.open) {
         closingRef.current = true
         dialog.close()
@@ -42,16 +46,28 @@ export function useModalDialog(open: boolean, onClose: () => void) {
   return {
     ref,
     onCancel(event: SyntheticEvent<HTMLDialogElement>) {
+      // A cancel that cannot be cancelled, which Chromium sends after repeated Escapes, closes the dialog anyway and
+      // is followed by a close event: that one notifies the parent, so notifying here too would call onClose twice.
+      if (!event.nativeEvent.cancelable) return
       event.preventDefault()
       onCloseRef.current()
     },
-    /** Native closes that do not go through cancel, such as a form with method="dialog". */
-    onClose() {
+    /**
+     * Native closes that do not go through a cancelable cancel, such as a form with method="dialog" or the browser's
+     * own abuse protection. The parent decides: if it still has `open` set a frame later, the dialog goes back up.
+     * The delay lets the parent's update commit first, and keeps a browser that closes it again from looping.
+     */
+    onClose(event: SyntheticEvent<HTMLDialogElement>) {
       if (closingRef.current) {
         closingRef.current = false
         return
       }
       onCloseRef.current()
+      const dialog = event.currentTarget
+      cancelAnimationFrame(reopenFrameRef.current)
+      reopenFrameRef.current = requestAnimationFrame(() => {
+        if (openRef.current && !dialog.open) dialog.showModal()
+      })
     },
     onPointerDown(event: PointerEvent<HTMLDialogElement>) {
       pressedOnBackdropRef.current = event.target === event.currentTarget

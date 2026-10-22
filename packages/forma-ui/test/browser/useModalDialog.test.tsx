@@ -9,12 +9,12 @@ import { mount, pressEscape } from './support'
 //
 // The dialog has no padding or border and its content fills it, as the hook requires: a press anywhere else on the
 // dialog is then a press on the backdrop.
-function Harness() {
+function Harness({ holdOpen = () => false }: { holdOpen?: () => boolean }) {
   const [open, setOpen] = useState(false)
   const [closes, setCloses] = useState(0)
   const dialog = useModalDialog(open, () => {
     setCloses((count) => count + 1)
-    setOpen(false)
+    if (!holdOpen()) setOpen(false)
   })
 
   return (
@@ -25,6 +25,23 @@ function Harness() {
       <dialog aria-label="Settings" style={{ width: 240, height: 120, padding: 0, border: 0 }} {...dialog}>
         <div style={{ width: '100%', height: '100%' }}>
           <p>Notifications</p>
+          <button type="button">Save</button>
+        </div>
+      </dialog>
+      <output>{closes}</output>
+    </>
+  )
+}
+
+// The application keeps `open` set and ignores `onClose`, as it does while it deletes something.
+function StubbornHarness() {
+  const [closes, setCloses] = useState(0)
+  const dialog = useModalDialog(true, () => setCloses((count) => count + 1))
+
+  return (
+    <>
+      <dialog aria-label="Settings" style={{ width: 240, height: 120, padding: 0, border: 0 }} {...dialog}>
+        <div style={{ width: '100%', height: '100%' }}>
           <button type="button">Save</button>
         </div>
       </dialog>
@@ -94,5 +111,74 @@ describe('useModalDialog in a real browser', () => {
 
     await expect.element(dialog()).toBeVisible()
     await expect.element(closeCount()).toHaveTextContent('0')
+  })
+
+  it('opens again after a native close while the application keeps open set, notifying it once', async () => {
+    mount(<StubbornHarness />)
+    const modal = dialog().element() as HTMLDialogElement
+
+    modal.close()
+
+    await expect.poll(() => modal.matches(':modal')).toBe(true)
+    expect(modal.contains(document.activeElement)).toBe(true)
+    await expect.element(closeCount()).toHaveTextContent('1')
+  })
+
+  it('opens again after a cancel that cannot be cancelled, as Chromium sends after repeated Escapes', async () => {
+    mount(<StubbornHarness />)
+    const modal = dialog().element() as HTMLDialogElement
+
+    // The browser's own sequence: the cancel event, then the close it cannot prevent.
+    modal.dispatchEvent(new Event('cancel', { cancelable: false }))
+    modal.close()
+
+    await expect.poll(() => modal.matches(':modal')).toBe(true)
+    expect(modal.contains(document.activeElement)).toBe(true)
+    await expect.element(closeCount()).toHaveTextContent('1')
+  })
+
+  it('does not reopen in the frame that closed it, and reopens once per close', async () => {
+    mount(<StubbornHarness />)
+    const modal = dialog().element() as HTMLDialogElement
+
+    modal.close()
+    await new Promise<void>((resolve) => queueMicrotask(resolve))
+    expect(modal.open).toBe(false)
+
+    await expect.poll(() => modal.open).toBe(true)
+    modal.close()
+    await expect.poll(() => modal.open).toBe(true)
+    await expect.element(closeCount()).toHaveTextContent('2')
+  })
+
+  it('stays closed when the application sets open to false in response, and the focus returns to the opener', async () => {
+    mount(<Harness />)
+    const modal = await openDialog()
+
+    modal.close()
+
+    await expect.poll(() => modal.open).toBe(false)
+    await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+    expect(modal.open).toBe(false)
+    await expect.element(closeCount()).toHaveTextContent('1')
+    await expect.element(opener()).toHaveFocus()
+  })
+
+  it('keeps the original return focus after a reopen: the next legitimate close goes back to the opener', async () => {
+    let hold = true
+    mount(<Harness holdOpen={() => hold} />)
+    const modal = await openDialog()
+    modal.close()
+    await expect.poll(() => modal.matches(':modal')).toBe(true)
+    expect(modal.contains(document.activeElement)).toBe(true)
+    await expect.element(closeCount()).toHaveTextContent('1')
+
+    // The parent lets go: Escape asks to close, and this time `open` becomes false.
+    hold = false
+    await pressEscape()
+
+    await expect.poll(() => modal.open).toBe(false)
+    await expect.element(closeCount()).toHaveTextContent('2')
+    await expect.element(opener()).toHaveFocus()
   })
 })
