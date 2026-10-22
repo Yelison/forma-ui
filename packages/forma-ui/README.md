@@ -269,8 +269,9 @@ library has no text of its own for `Menu`.
 ```
 
 `Disclosure` is a button with `aria-expanded` and `aria-controls` and a region that is `hidden` while it is closed: its content
-stays mounted, so keep your own `display` rules off the region and on what it holds. `variant="inline"` (the default) goes in
-a line of content with its chevron after the text, and `variant="section"` is the heading of a part of the page: the chevron
+stays mounted, so keep your own `display` rules off the region and on what it holds. `variant="inline"` (the default) is a block, the button
+with its chevron after the text and the region under it: it draws a `div`, so it cannot go inside a paragraph, and a button inside
+a sentence is a `DisclosureButton` instead. and `variant="section"` is the heading of a part of the page: the chevron
 comes first, `headingLevel` puts the button in a heading, and `actions` hold controls such as a `Menu` trigger, beside the
 button and outside it. `open` and `onOpenChange` control it (without `onOpenChange` a controlled one never opens), and
 `buttonProps` takes the attributes of the button, such as `aria-describedby`. Below 768 px the button is 44 px tall, a touch target,

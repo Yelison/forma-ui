@@ -58,9 +58,9 @@ function folderCode({ folder }: DisclosureWords): string {
 }
 
 function burstCode({ burst }: DisclosureWords): string {
-  const { document, sentenceCode, show, list, people } = burst
+  const { document, href, sentence, show, list, people } = burst
   // The live sentence has a link where the code has the element that makes it.
-  const written = sentenceCode(`<a href="/documents/brand-voice">${document}</a>`)
+  const written = sentence(`<a href="${href}">${document}</a>`)
   return [
     `<DisclosureRoot>`,
     `  <div className="row">`,

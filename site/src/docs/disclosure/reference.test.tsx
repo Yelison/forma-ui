@@ -82,6 +82,31 @@ describe('the reference of Disclosure', () => {
     expect(row.getByRole('list', { name: 'Who renamed it' })).toBeVisible()
   })
 
+  it('links the sentence to an anchor that exists on the page, the same one that its JSX writes', () => {
+    renderReference('Disclosure')
+    const link = region('Parts').getByRole('link', { name: 'Brand voice' })
+
+    const target = link.getAttribute('href')
+    expect(target).toBe('#parts')
+    expect(document.getElementById(target!.slice(1))).toBeInTheDocument()
+    expect(codeOf('Parts')).toContain(`<a href="${target}">Brand voice</a> was renamed 4 times`)
+  })
+
+  it.each([
+    ['en', /cannot go inside a paragraph/, /\{open && <Content \/>\}/],
+    ['es', /no puede ir dentro de un párrafo/, /\{open && <Contenido \/>\}/],
+  ] as const)(
+    'says in %s that inline is a block and how to render the region only when open',
+    (locale, block, open) => {
+      renderReference('Disclosure', locale)
+
+      expect(screen.getByRole('region', { name: locale === 'en' ? 'Variants' : 'Variantes' })).toHaveTextContent(block)
+      expect(screen.getByRole('region', { name: locale === 'en' ? 'Limitations' : 'Limitaciones' })).toHaveTextContent(
+        open,
+      )
+    },
+  )
+
   it('shows the JSX of each variant, state and part', () => {
     renderReference('Disclosure')
 
@@ -90,7 +115,7 @@ describe('the reference of Disclosure', () => {
     expect(codeOf('Parts')).toContain(
       '<DisclosureButton aria-describedby="rename-sentence">Show who</DisclosureButton>',
     )
-    expect(codeOf('Parts')).toContain('<a href="/documents/brand-voice">Brand voice</a> was renamed 4 times')
+    expect(codeOf('Parts')).toContain('<a href="#parts">Brand voice</a> was renamed 4 times')
   })
 
   it('documents its own props and the parts that it is built from', () => {
@@ -121,7 +146,7 @@ describe('the reference of Disclosure', () => {
     expect(button).toHaveAccessibleDescription('Voz de marca se renombró 4 veces')
     await userEvent.click(button)
     expect(region('Partes').getByRole('list', { name: 'Quién la renombró' })).toBeVisible()
-    expect(codeOf('Partes')).toContain('<a href="/documents/brand-voice">Voz de marca</a> se renombró 4 veces')
+    expect(codeOf('Partes')).toContain('<a href="#parts">Voz de marca</a> se renombró 4 veces')
     expect(codeOf('Partes')).not.toContain('Brand voice')
   })
 

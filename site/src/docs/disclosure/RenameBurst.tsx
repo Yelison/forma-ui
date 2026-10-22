@@ -8,14 +8,14 @@ import styles from './RenameBurst.module.css'
  * row and the sentence describes it; the list goes under the whole row, which `Disclosure` could not do.
  */
 export function RenameBurst({ words }: { words: DisclosureWords }) {
-  const { document, sentence, show, list, people } = words.burst
+  const { document, href, sentence, show, list, people } = words.burst
   const sentenceId = useId()
   return (
     <DisclosureRoot>
       <div className={styles.row}>
         <Avatar name={people[0]} size="small" decorative />
         <p id={sentenceId} className={styles.sentence}>
-          {sentence(<a href="#brand-voice">{document}</a>)}
+          {sentence(<a href={href}>{document}</a>)}
         </p>
         <DisclosureButton aria-describedby={sentenceId}>{show}</DisclosureButton>
       </div>

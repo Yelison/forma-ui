@@ -31,7 +31,10 @@ interface DisclosureBaseProps {
   children: ReactNode
 }
 
-/** A button in the line of text around it, with its chevron after the text. */
+/**
+ * A block: the button, with its chevron after the text, and the region right under it. It draws a `div`, so it cannot go
+ * inside a paragraph; for a button inside a sentence, use `DisclosureButton` and `DisclosureRegion`.
+ */
 interface InlineDisclosureProps extends DisclosureBaseProps {
   variant?: 'inline'
   headingLevel?: never
@@ -57,7 +60,8 @@ export type DisclosureProps = InlineDisclosureProps | SectionDisclosureProps
  * A button that shows and hides a region, following the ARIA disclosure pattern: the button carries `aria-expanded` and
  * `aria-controls`, the region is `hidden` while closed, and the focus stays on the button when it opens and closes.
  *
- * `inline` is for a line of text or a row of content, and `section` for the heading of a part of a page.
+ * `inline` is a block for a line or a row of content, not for the inside of a paragraph, and `section` is for the heading
+ * of a part of a page. A button inside a sentence is a `DisclosureButton`, which draws only the `button`.
  * When the button and the region cannot be neighbors, because something else belongs in the row (a link, which cannot
  * go inside a button), build them from `DisclosureRoot`, `DisclosureButton` and `DisclosureRegion`.
  */

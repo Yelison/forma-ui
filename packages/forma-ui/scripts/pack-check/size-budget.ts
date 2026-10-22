@@ -59,11 +59,13 @@
 // which goes to 5900 B; iconNames is 0.21 kB, over its 200 B, which goes to 250 B. Button, at 3.57 kB, stays within its
 // 3600 B. The cost is the table of paths, which every component that draws an icon carries.
 //
-// Disclosure, on 2026-10-22, on top of Menu: 10.75 kB for every export (10.17 kB before it), over its 10300 B, which goes
-// to 10900 B (the measure plus 1.4%, as for Menu: the budget is raised by what the component costs and no more), and
-// 3.06 kB for styles.css (2.88 kB before it), over its 2900 B, which goes to 3100 B. Disclosure alone is 3.48 kB, with a
-// new budget of 3600 B: almost all of it is the table of icons that its chevron brings along, as for Button, and its own
-// code is the four small parts (the state, the button, the region and the layout of the two variants).
+// Disclosure, on 2026-10-22, on top of the 44 icons: 11.34 kB for every export (10.65 kB before it), over its 10800 B, which
+// goes to 11500 B (the measure plus 1.4%, as for Menu: the budget is raised by what the component costs and no more), and
+// 3.06 kB for styles.css (2.88 kB before it), over its 2900 B, which goes to 3100 B. Disclosure alone is 3.92 kB, with a
+// new budget of 4000 B. Its own code is about 0.5 kB (the state, the button, the region and the layout of the two
+// variants); the rest is the table of icons that its chevron brings along, as for Button. That is a debt already noted:
+// the icons cannot be imported one by one, so any component that draws one carries all 44. Letting a component import
+// only the icon it draws would take most of that weight off Disclosure, Button, FilterChip, Menu and the fields.
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fail, kilobytes } from '../check-support.ts'
@@ -86,7 +88,7 @@ const budgets: Budget[] = [
     name: 'dist/index.js (every export)',
     source: `import * as forma from '@yelison/forma-ui'\nconsole.log(forma)`,
     extension: '.js',
-    limit: 10900,
+    limit: 11500,
   },
   {
     name: 'import { Button } from the package',
@@ -122,7 +124,7 @@ const budgets: Budget[] = [
     name: 'import { Disclosure } from the package',
     source: `import { Disclosure } from '@yelison/forma-ui'\nconsole.log(Disclosure)`,
     extension: '.js',
-    limit: 3600,
+    limit: 4000,
   },
   {
     name: 'import { iconNames } from the package',

@@ -20,10 +20,16 @@ export interface DisclosureWords {
   burst: {
     /** The name of the document, which the live sentence turns into a link. */
     document: string
-    /** The sentence, with `document` as the link that the live row draws. */
-    sentence: (document: ReactNode) => ReactNode
-    /** The same sentence as text, for the JSX that shows it, with `document` written as the element. */
-    sentenceCode: (document: string) => string
+    /** Where the link of the sentence goes: an anchor of the reference itself, so that it works on the live row. */
+    href: string
+    /**
+     * The sentence, with `document` as the link: the element that the live row draws, or the text of its JSX, which a
+     * string gives. One message and one count for both, so that the row and its code say the same.
+     */
+    sentence: {
+      (document: string): string
+      (document: ReactNode): ReactNode
+    }
     show: string
     /** The accessible name of the list. */
     list: string
@@ -34,6 +40,12 @@ export interface DisclosureWords {
 /** The words of the samples, from the catalogue of the page. */
 export function disclosureWords(intl: IntlShape): DisclosureWords {
   const say = (id: MessageId) => intl.formatMessage({ id })
+  // The overloads say what formatMessage does: a string for the value gives a string, an element gives nodes.
+  function sentence(document: string): string
+  function sentence(document: ReactNode): ReactNode
+  function sentence(document: ReactNode): ReactNode {
+    return intl.formatMessage({ id: 'catalog.sample.disclosure.burst.sentence' }, { document, count: 4 })
+  }
   return {
     details: {
       summary: say('catalog.sample.disclosure.details.summary'),
@@ -59,10 +71,8 @@ export function disclosureWords(intl: IntlShape): DisclosureWords {
     },
     burst: {
       document: say('catalog.sample.disclosure.burst.document'),
-      sentence: (document) =>
-        intl.formatMessage({ id: 'catalog.sample.disclosure.burst.sentence' }, { document, count: 4 }),
-      sentenceCode: (document) =>
-        intl.formatMessage({ id: 'catalog.sample.disclosure.burst.sentence' }, { document, count: 4 }),
+      href: '#parts',
+      sentence,
       show: say('catalog.sample.disclosure.burst.show'),
       list: say('catalog.sample.disclosure.burst.list'),
       people: [say('catalog.sample.disclosure.burst.first'), say('catalog.sample.disclosure.burst.second')],
