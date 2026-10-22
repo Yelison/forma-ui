@@ -1,11 +1,12 @@
+/* The button goes under the sentence when the row is too narrow for both, instead of squeezing the sentence. */
 .row {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--space-12);
 }
 
 .sentence {
-  flex: 1;
-  min-width: 0;
+  flex: 1 1 auto;
   margin: 0;
 }

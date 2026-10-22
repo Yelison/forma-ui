@@ -390,6 +390,29 @@ describe('Disclosure section', () => {
   })
 })
 
+describe('Disclosure inline size', () => {
+  const inline = () => (
+    <Page>
+      <Disclosure summary="Show as table">The table</Disclosure>
+    </Page>
+  )
+
+  it('is a touch target below 768px, which makes its line taller there', async () => {
+    await page.viewport(390, 844)
+    const container = mount(inline())
+
+    expect(buttonNamed(container, 'Show as table').getBoundingClientRect().height).toBe(44)
+  })
+
+  it('is as tall as its text from 768px wide up', async () => {
+    await page.viewport(1024, 768)
+    const container = mount(inline())
+
+    const { height } = buttonNamed(container, 'Show as table').getBoundingClientRect()
+    expect(height).toBeLessThan(36)
+  })
+})
+
 describe('Disclosure chevron', () => {
   const chevronOf = (button: HTMLElement) => button.querySelector('svg')!
 

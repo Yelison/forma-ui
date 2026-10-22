@@ -35,6 +35,7 @@
   "docs.disclosure.limit.group": "A group of disclosures where opening one closes the others is not part of it. Control each one with <code>open</code> and keep which one is open yourself.",
   "docs.disclosure.limit.mounted": "The region stays mounted while it is closed, so its content keeps its state and is rendered even if nobody opens it. To render it only when it is open, control the disclosure and write the content after the open state in the region.",
   "docs.disclosure.limit.parts": "A link or another control cannot go in the summary, because it would be inside a <code>button</code>. When it has to sit in the same row, use <code>DisclosureRoot</code>, <code>DisclosureButton</code> and <code>DisclosureRegion</code>: the button is a part of the row and the region goes where you place it.",
+  "docs.disclosure.limit.touch": "Below 768 px the button is 44 px tall, a touch target, so an inline one makes its line taller there. A link in the same sentence as an inline button is outside it and keeps its own size.",
   "docs.disclosure.root.children": "A <code>DisclosureButton</code> and a <code>DisclosureRegion</code>, wherever you place them.",
   "docs.disclosure.summary": "A button that shows and hides a region, as a line of content or as the heading of a section.",
   "docs.disclosure.usage.description": "Import Disclosure, give it a <code>summary</code> and write the region as its children. The button carries <code>aria-expanded</code> and <code>aria-controls</code>, and the region is <code>hidden</code> while it is closed."

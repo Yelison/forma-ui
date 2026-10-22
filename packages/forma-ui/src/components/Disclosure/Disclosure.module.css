@@ -51,7 +51,7 @@
   transform: none;
 }
 
-/* A section's header: the button fills the row up to the actions and is as tall as a choice, or a touch target. */
+/* A section's header: the button fills the row up to the actions and is as tall as a choice. */
 .header {
   display: flex;
   align-items: center;
@@ -81,7 +81,10 @@
   padding-top: var(--space-8);
 }
 
+/* Below 768px the button is a touch target, in a line of content as well: it makes its line taller there, as the
+   FilterChip does. */
 @media (max-width: 767.98px) {
+  .button,
   .heading > .button {
     min-height: var(--touch-target);
   }

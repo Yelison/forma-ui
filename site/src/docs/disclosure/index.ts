@@ -26,5 +26,6 @@ export const disclosureDoc: ComponentDoc = {
     'docs.disclosure.limit.button',
     'docs.disclosure.limit.group',
     'docs.disclosure.limit.direction',
+    'docs.disclosure.limit.touch',
   ],
 }

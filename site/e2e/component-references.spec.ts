@@ -13,6 +13,11 @@ interface Reference {
   name: string
   /** Puts the page in the state that only use brings about, and waits for it: an open tooltip, an open dialog. */
   open?: (page: Page) => Promise<void>
+  /**
+   * The controls whose size is measured below 768 px, when the page holds some that are exempt from it: a link inside a
+   * sentence is (WCAG 2.5.8, inline). Defaults to every link and button.
+   */
+  touchControls?: string
 }
 
 const references: Reference[] = [
@@ -108,6 +113,8 @@ const references: Reference[] = [
   {
     slug: 'disclosure',
     name: 'Disclosure',
+    // The sample of the parts has a link in its sentence, which is the reason for the parts.
+    touchControls: 'button, a:not(p a)',
     // In use: the keyboard has opened the first one, so the page shows a region that the closed one hides.
     open: async (page) => {
       const button = page.getByRole('region', { name: 'Variants' }).getByRole('button', { name: 'Show details' })
@@ -189,7 +196,8 @@ for (const reference of references) {
 
           expect(await overflow(page), `${width} px`).toEqual({ scroll: 0, outside: [], clipped: [] })
           // The library's own controls are 42 px high from 768 px, which is theirs to decide.
-          if (width < 768) expect(await smallTargets(page.getByRole('main')), `${width} px`).toEqual([])
+          if (width < 768)
+            expect(await smallTargets(page.getByRole('main'), 44, reference.touchControls), `${width} px`).toEqual([])
         }
       })
     }
@@ -623,7 +631,7 @@ for (const reference of references) {
         await openReference(page, reference, './__pseudo__')
 
         expect(await overflow(page)).toEqual({ scroll: 0, outside: [], clipped: [] })
-        expect(await smallTargets(page.getByRole('main'))).toEqual([])
+        expect(await smallTargets(page.getByRole('main'), 44, reference.touchControls)).toEqual([])
       })
     }
 
@@ -691,7 +699,8 @@ for (const reference of references) {
           await page.locator('#usage').getByRole('tablist').first().getByRole('tab').last().click()
 
           expect(await overflow(page), `${width} px`).toEqual({ scroll: 0, outside: [], clipped: [] })
-          if (width < 768) expect(await smallTargets(page.getByRole('main')), `${width} px`).toEqual([])
+          if (width < 768)
+            expect(await smallTargets(page.getByRole('main'), 44, reference.touchControls), `${width} px`).toEqual([])
         }
       })
     }
