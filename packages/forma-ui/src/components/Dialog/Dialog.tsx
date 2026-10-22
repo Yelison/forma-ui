@@ -11,6 +11,12 @@ export interface DialogProps {
    * Called when the user asks to close the dialog: `Escape`, a click on the backdrop or a native close such as a
    * `method="dialog"` form. Set `open` to `false` in it: the dialog stays open until the parent decides.
    * It is not called when the parent closes the dialog by setting `open` itself.
+   *
+   * If the browser forces the close, as Chromium does on the third `Escape` in a row, the dialog goes back up a frame
+   * later unless `open` is already `false`, so an application that keeps `open` set, such as while it deletes
+   * something, does not end up with a hidden dialog. Closing with a router navigation, which runs in a transition,
+   * also works: the only thing that can happen is that, after a forced close, the dialog shows again for an instant
+   * before the navigation arrives.
    */
   onClose: () => void
   /** The dialog's title and its accessible name. */
