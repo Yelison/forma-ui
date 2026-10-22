@@ -7,11 +7,12 @@
 //
 // Two sources, two owners:
 //   design/resolve-c3f02f8/icon-paths.ts   the verified copy of Resolve's `Icon/paths.ts`; never edited.
-//   icons/forma-icons.ts                   the icons Forma UI draws itself; the place to add or change one.
+//   icons/forma-icons.ts                   the icons Forma UI draws itself, and `filledIcons`, the names (of either
+//                                          source) that Icon paints with a fill; the place to add or change one.
 // A name in both is an error: an icon has one owner. Output (deterministic: names in alphabetical order, fixed
 // formatting, no timestamps):
-//   src/components/Icon/paths.ts   `iconPaths`, `IconName` and `iconNames`. Committed; CI regenerates it and fails on any
-//                                  diff.
+//   src/components/Icon/paths.ts   `iconPaths`, `IconName`, `iconNames` and `filledIconNames`. Committed; CI
+//                                  regenerates it and fails on any diff.
 //
 // The script sticks to erasable TypeScript, so type stripping can run it (see build-tokens.ts).
 import { join, resolve } from 'node:path'
@@ -49,9 +50,18 @@ export function validate(source: unknown): IconPaths {
   return iconPaths
 }
 
-/** The text of `paths.ts` for these icons. */
-export function generate(source: IconPaths): string {
+/** Checks that each filled icon is drawn, once, so that `filledIconNames` can only hold names of the table. */
+export function validateFilled(filledIcons: readonly string[], iconPaths: IconPaths): void {
+  for (const name of filledIcons) {
+    if (!Object.hasOwn(iconPaths, name)) throw new Error(`Filled icon "${name}" is not drawn in either source`)
+  }
+  if (new Set(filledIcons).size !== filledIcons.length) throw new Error('A filled icon is named twice')
+}
+
+/** The text of `paths.ts` for these icons; `filledIcons` is empty unless the caller names some. */
+export function generate(source: IconPaths, filledIcons: readonly string[] = []): string {
   const iconPaths = validate(source)
+  validateFilled(filledIcons, iconPaths)
   const icons = Object.entries(iconPaths).map(([name, paths]) => {
     const lines = paths.map((d) => `    '${d}',`)
     return `  ${name.includes('-') ? `'${name}'` : name}: [\n${lines.join('\n')}\n  ],`
@@ -67,6 +77,11 @@ export function generate(source: IconPaths): string {
     '/** Every icon name, in alphabetical order, which is also the order of the table above. */',
     'export const iconNames: readonly IconName[] = [',
     ...Object.keys(iconPaths).map((name) => `  '${name}',`),
+    ']',
+    '',
+    '/** The icons drawn with a fill as well as a stroke. The set is outline only, so each one is an exception. */',
+    'export const filledIconNames: readonly IconName[] = [',
+    ...filledIcons.map((name) => `  '${name}',`),
     ']',
     '',
   ].join('\n')
@@ -100,8 +115,18 @@ export async function loadSource(
   )
 }
 
+/** The names `forma-icons.ts` marks as filled. */
+export async function loadFilled(packageRoot: string): Promise<readonly string[]> {
+  const module: Record<string, unknown> = await import(pathToFileURL(join(packageRoot, FORMA_SOURCE)).href)
+  const names = module.filledIcons
+  if (!Array.isArray(names) || !names.every((name) => typeof name === 'string')) {
+    throw new Error(`${FORMA_SOURCE} must export filledIcons, a list of icon names`)
+  }
+  return names
+}
+
 export async function main(root: string, repoRoot = resolve(root, '..', '..')): Promise<void> {
-  write(join(root, OUTPUT), generate(await loadSource(repoRoot)))
+  write(join(root, OUTPUT), generate(await loadSource(repoRoot), await loadFilled(root)))
 }
 
 if (isMainModule(import.meta.filename)) {

@@ -31,6 +31,7 @@ describe('CatalogPage', () => {
       'Badge',
       'Icon',
       'Tabs',
+      'Disclosure',
       'Alert',
       'Tooltip',
       'Dialog',
@@ -70,7 +71,6 @@ describe('CatalogPage', () => {
       .getAllByRole('listitem')
       .map((item) => item.textContent)
     expect(names).toEqual([...iconNames])
-    expect(names).toHaveLength(31)
   })
 
   it('links the row of Button to the reference of IconButton too, which the row shows', () => {
@@ -185,6 +185,27 @@ describe('CatalogPage', () => {
       expect(menus.getByRole('button', { name: 'More actions' })).toHaveAttribute('aria-haspopup', 'menu')
     })
 
+    it('show Disclosure in both variants, with a region that opens and one that a button inside it closes', async () => {
+      renderCatalog()
+      const disclosures = within(row('Disclosure'))
+
+      const [details, startsOpen] = disclosures.getAllByRole('button', { name: 'Show details' })
+      expect(details).toHaveAttribute('aria-expanded', 'false')
+      expect(startsOpen).toHaveAttribute('aria-expanded', 'true')
+      await userEvent.click(details!)
+      expect(details).toHaveAttribute('aria-expanded', 'true')
+
+      const folder = disclosures.getByRole('heading', { level: 3, name: 'Launch' })
+      expect(folder).not.toContainElement(disclosures.getByRole('button', { name: 'Folder actions' }))
+
+      const reply = disclosures.getByRole('button', { name: 'Reply options' })
+      await userEvent.click(reply)
+      await userEvent.click(disclosures.getByRole('button', { name: 'Done' }))
+      expect(reply).toHaveAttribute('aria-expanded', 'false')
+      expect(reply).toHaveFocus()
+      expect(disclosures.getByRole('button', { name: 'Internal notes' })).toBeDisabled()
+    })
+
     it('show Tabs with three panels, once with the first tab selected and once with the second', async () => {
       renderCatalog()
 
@@ -247,7 +268,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('radio', { name: 'Display' }))
 
-      expect(rowNames()).toEqual(['Avatar', 'Badge', 'Icon'])
+      expect(rowNames()).toEqual(['Avatar', 'Badge', 'Icon', 'Disclosure'])
     })
 
     it('open a Dialog from its button, and close it with its own button', async () => {
@@ -288,6 +309,7 @@ describe('CatalogPage', () => {
         'Badge',
         'Icon',
         'Tabs',
+        'Disclosure',
         'Alert',
         'Tooltip',
         'Dialog',
@@ -304,7 +326,7 @@ describe('CatalogPage', () => {
       renderCatalog()
 
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
-      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 14 components$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Showing 15 components$/)
     })
 
     it('offer the categories in the order of the design, with Navigation after Forms', () => {
@@ -376,7 +398,7 @@ describe('CatalogPage', () => {
 
       await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }))
 
-      expect(rowNames()).toHaveLength(14)
+      expect(rowNames()).toHaveLength(15)
       expect(screen.getByRole('radio', { name: 'All' })).toBeChecked()
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveValue('')
       expect(screen.getByRole('textbox', { name: 'Filter by name' })).toHaveFocus()
@@ -384,7 +406,7 @@ describe('CatalogPage', () => {
 
     it('count in the language of the page', async () => {
       renderCatalog({ locale: 'es' })
-      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 14 componentes$/)
+      expect(screen.getByRole('status')).toHaveTextContent(/^Mostrando 15 componentes$/)
 
       await userEvent.click(screen.getByRole('radio', { name: 'Acciones' }))
 

@@ -9,6 +9,7 @@ const text = {
     actions: 'Actions',
     forms: 'Forms',
     navigation: 'Navigation',
+    display: 'Display',
     feedback: 'Feedback',
     all: 'All',
     count: (count: number) => `Showing ${count} component${count === 1 ? '' : 's'}`,
@@ -17,6 +18,8 @@ const text = {
     openDeleteDialog: 'Delete item',
     deleteTitle: 'Delete this item?',
     cancel: 'Cancel',
+    showDetails: 'Show details',
+    folderActions: 'Folder actions',
   },
   es: {
     category: 'Categoría',
@@ -24,6 +27,7 @@ const text = {
     actions: 'Acciones',
     forms: 'Formularios',
     navigation: 'Navegación',
+    display: 'Visualización',
     feedback: 'Feedback',
     all: 'Todos',
     count: (count: number) => `Mostrando ${count} componente${count === 1 ? '' : 's'}`,
@@ -32,6 +36,8 @@ const text = {
     openDeleteDialog: 'Eliminar elemento',
     deleteTitle: '¿Eliminar este elemento?',
     cancel: 'Cancelar',
+    showDetails: 'Ver detalles',
+    folderActions: 'Acciones de la carpeta',
   },
 } as const
 
@@ -63,11 +69,12 @@ for (const locale of ['en', 'es'] as const) {
         'Badge',
         'Icon',
         'Tabs',
+        'Disclosure',
         'Alert',
         'Tooltip',
         'Dialog',
       ])
-      await expect(countOf(page)).toHaveText(t.count(14))
+      await expect(countOf(page)).toHaveText(t.count(15))
       await expect(page.getByRole('button', { name: t.openDeleteDialog })).toBeVisible()
     })
 
@@ -95,6 +102,27 @@ for (const locale of ['en', 'es'] as const) {
       await expect(empty!.getByRole('radio').nth(1)).toBeFocused()
       await expect(empty!.getByRole('radio').nth(1)).toBeChecked()
       await expect(preselected!.getByRole('radio').nth(1)).toBeChecked()
+    })
+
+    test('shows the Disclosure row under Display, with disclosures that answer Enter and Space and a folder whose menu does not toggle it', async ({
+      page,
+    }) => {
+      await page.getByText(t.display, { exact: true }).click()
+      expect(await rowNames(page)).toEqual(['Avatar', 'Badge', 'Icon', 'Disclosure'])
+      const row = page.getByRole('region', { name: 'Disclosure' })
+
+      const details = row.getByRole('button', { name: text[locale].showDetails }).first()
+      await details.focus()
+      await page.keyboard.press('Enter')
+      await expect(details).toHaveAttribute('aria-expanded', 'true')
+      await page.keyboard.press('Space')
+      await expect(details).toHaveAttribute('aria-expanded', 'false')
+      await expect(details).toBeFocused()
+
+      const folder = row.getByRole('heading', { level: 3 }).getByRole('button')
+      await row.getByRole('button', { name: text[locale].folderActions }).click()
+      await expect(page.getByRole('menu', { name: text[locale].folderActions })).toBeVisible()
+      await expect(folder).toHaveAttribute('aria-expanded', 'true')
     })
 
     test('shows the Avatar row at its three sizes, with the initials where a picture fails to load', async ({
@@ -168,7 +196,7 @@ for (const locale of ['en', 'es'] as const) {
 
       await page.getByRole('button', { name: t.clear }).click()
 
-      expect(await rowNames(page)).toHaveLength(14)
+      expect(await rowNames(page)).toHaveLength(15)
       await expect(page.getByRole('textbox', { name: t.filterByName })).toBeFocused()
       await expect(page.getByRole('textbox', { name: t.filterByName })).toHaveValue('')
     })

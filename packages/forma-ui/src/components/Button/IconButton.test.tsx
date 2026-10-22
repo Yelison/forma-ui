@@ -6,6 +6,7 @@ import * as entry from '../../index.js'
 import type { IconName } from '../Icon/index.js'
 import { iconPaths } from '../Icon/paths.js'
 import { IconButton, type IconButtonProps } from './IconButton.js'
+import { iconButtonClassName } from './iconButtonClassName.js'
 
 // React drops an unknown boolean attribute without rendering it, but it warns, and only once per attribute name: a prop
 // that leaks to the DOM is visible as a warning, so the watch covers every test of the file and not just one.
@@ -26,6 +27,12 @@ function iconsOf(button: HTMLElement) {
 }
 
 describe('IconButton', () => {
+  it('renders the classes that iconButtonClassName gives a link, so both look the same', () => {
+    render(<IconButton icon="bell" label="Notifications" className="toggle" />)
+
+    expect(screen.getByRole('button')).toHaveClass(iconButtonClassName({ className: 'toggle' }), { exact: true })
+  })
+
   it('takes its accessible name from the label', () => {
     render(<IconButton icon="bell" label="Notifications" />)
 
