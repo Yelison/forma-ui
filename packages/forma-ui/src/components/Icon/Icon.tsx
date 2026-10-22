@@ -1,5 +1,5 @@
 import type { SVGProps } from 'react'
-import { iconPaths, type IconName } from './paths.js'
+import { filledIconNames, iconPaths, type IconName } from './paths.js'
 
 export type { IconName }
 
@@ -19,6 +19,9 @@ const STROKE_WIDTH = 1.7
 /**
  * Draws one of the library's icons as an inline SVG that takes the current text color.
  *
+ * The set is outline only, except the icons in `filledIconNames` (`star-filled`), which also fill with that color. A fill
+ * is a state, so a button that shows one must carry `aria-pressed` and not leave the state to the icon.
+ *
  * An icon next to text is decorative: leave `label` out. An icon that stands alone, such as the content of an icon
  * button, needs a `label` that says what it does.
  */
@@ -28,7 +31,7 @@ export function Icon({ name, size = 20, label, ...props }: IconProps) {
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={filledIconNames.includes(name) ? 'currentColor' : 'none'}
       stroke="currentColor"
       strokeWidth={STROKE_WIDTH}
       strokeLinecap="round"

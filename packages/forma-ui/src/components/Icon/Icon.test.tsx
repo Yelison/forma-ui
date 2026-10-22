@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import * as entry from '../../index.js'
 import { Icon } from './Icon.js'
-import { iconPaths, type IconName } from './paths.js'
+import { iconNames, iconPaths, type IconName } from './paths.js'
 
 describe('Icon', () => {
   it('is decorative by default: hidden from screen readers and without a role', () => {
@@ -58,6 +58,27 @@ describe('Icon', () => {
     const { container } = render(<Icon name="plus" strokeWidth={3} />)
 
     expect(container.querySelector('svg')).toHaveAttribute('stroke-width', '3')
+  })
+
+  it('is outline only: star-filled is the one icon that fills with the current color', () => {
+    const filled = iconNames.filter((name) => {
+      const { container } = render(<Icon name={name} />)
+      return container.querySelector('svg')?.getAttribute('fill') === 'currentColor'
+    })
+
+    expect(filled).toEqual(['star-filled'])
+  })
+
+  it('draws star-filled with the geometry and the stroke of star, so only the fill tells them apart', () => {
+    expect(iconPaths['star-filled']).toEqual(iconPaths.star)
+    const { container } = render(<Icon name="star-filled" />)
+    expect(container.querySelector('svg')).toHaveAttribute('stroke', 'currentColor')
+  })
+
+  it('lets a fill of the consumer win over the one of the icon', () => {
+    const { container } = render(<Icon name="star-filled" fill="none" />)
+
+    expect(container.querySelector('svg')).toHaveAttribute('fill', 'none')
   })
 
   it('is exported from the package entry point with its name type', () => {

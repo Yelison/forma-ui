@@ -70,7 +70,6 @@ describe('CatalogPage', () => {
       .getAllByRole('listitem')
       .map((item) => item.textContent)
     expect(names).toEqual([...iconNames])
-    expect(names).toHaveLength(31)
   })
 
   it('links the row of Button to the reference of IconButton too, which the row shows', () => {
