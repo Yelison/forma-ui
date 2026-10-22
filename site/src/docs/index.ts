@@ -4,6 +4,7 @@ import { avatarDoc } from './avatar'
 import { badgeDoc } from './badge'
 import { buttonDoc } from './button'
 import { dialogDoc } from './dialog'
+import { disclosureDoc } from './disclosure'
 import { filterChipDoc } from './filter-chip'
 import { iconButtonDoc } from './icon-button'
 import { inputDoc } from './input'
@@ -34,6 +35,7 @@ export const componentDocs: Partial<Record<(typeof componentPages)[number]['slug
   'filter-chip': filterChipDoc,
   alert: alertDoc,
   menu: menuDoc,
+  disclosure: disclosureDoc,
 }
 
 export type { ComponentDoc } from './types'

@@ -6,6 +6,9 @@ import type {
   BadgeProps,
   ButtonProps,
   DialogProps,
+  DisclosureButtonProps,
+  DisclosureProps,
+  DisclosureRootProps,
   FieldProps,
   IconButtonProps,
   FilterChipProps,
@@ -29,6 +32,7 @@ import { avatarApi } from './avatar/api'
 import { badgeApi } from './badge/api'
 import { buttonApi } from './button/api'
 import { dialogApi } from './dialog/api'
+import { disclosureApi } from './disclosure/api'
 import { filterChipApi } from './filter-chip/api'
 import { iconButtonApi } from './icon-button/api'
 import { inputApi } from './input/api'
@@ -111,6 +115,14 @@ expectTypeOf<keyof typeof menuApi.own>().toEqualTypeOf<keyof MenuProps>()
 expectTypeOf<keyof (typeof menuApi.related)[0]['own']>().toEqualTypeOf<keyof MenuItem>()
 expectTypeOf<keyof (typeof menuApi.related)[1]['own']>().toEqualTypeOf<keyof MenuSearch>()
 expectTypeOf<keyof (typeof menuApi.related)[2]['own']>().toEqualTypeOf<keyof MenuTriggerProps>()
+
+// Disclosure wraps no single element, so every prop of it is its own; the state of its parts has the same rule, and the
+// button, a native `button`, documents the one prop that it adds.
+expectTypeOf<keyof typeof disclosureApi.own>().toEqualTypeOf<keyof DisclosureProps>()
+expectTypeOf<keyof (typeof disclosureApi.related)[0]['own']>().toEqualTypeOf<keyof DisclosureRootProps>()
+expectTypeOf<keyof (typeof disclosureApi.related)[1]['own']>().toEqualTypeOf<
+  OwnProps<DisclosureButtonProps, 'button'>
+>()
 
 // Tooltip wraps no element, so every prop of it is its own, and so is every prop that it hands to its trigger.
 expectTypeOf<keyof typeof tooltipApi.own>().toEqualTypeOf<keyof TooltipProps>()

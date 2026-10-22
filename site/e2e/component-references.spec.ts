@@ -13,6 +13,11 @@ interface Reference {
   name: string
   /** Puts the page in the state that only use brings about, and waits for it: an open tooltip, an open dialog. */
   open?: (page: Page) => Promise<void>
+  /**
+   * The controls whose size is measured below 768 px, when the page holds some that are exempt from it: a link inside a
+   * sentence is (WCAG 2.5.8, inline). Defaults to every link and button.
+   */
+  touchControls?: string
 }
 
 const references: Reference[] = [
@@ -106,6 +111,19 @@ const references: Reference[] = [
     },
   },
   {
+    slug: 'disclosure',
+    name: 'Disclosure',
+    // The sample of the parts has a link in its sentence, which is the reason for the parts.
+    touchControls: 'button, a:not(p a)',
+    // In use: the keyboard has opened the first one, so the page shows a region that the closed one hides.
+    open: async (page) => {
+      const button = page.getByRole('region', { name: 'Variants' }).getByRole('button', { name: 'Show details' })
+      await button.focus()
+      await page.keyboard.press('Enter')
+      await expect(button).toHaveAttribute('aria-expanded', 'true')
+    },
+  },
+  {
     slug: 'tooltip',
     name: 'Tooltip',
     open: async (page) => {
@@ -178,7 +196,8 @@ for (const reference of references) {
 
           expect(await overflow(page), `${width} px`).toEqual({ scroll: 0, outside: [], clipped: [] })
           // The library's own controls are 42 px high from 768 px, which is theirs to decide.
-          if (width < 768) expect(await smallTargets(page.getByRole('main')), `${width} px`).toEqual([])
+          if (width < 768)
+            expect(await smallTargets(page.getByRole('main'), 44, reference.touchControls), `${width} px`).toEqual([])
         }
       })
     }
@@ -446,6 +465,64 @@ for (const reference of references) {
       })
     }
 
+    if (reference.name === 'Disclosure') {
+      test('opens and closes with Enter and Space, and the focus stays on the button', async ({ page }) => {
+        await openReference(page, reference)
+        const button = page.getByRole('region', { name: 'Variants' }).getByRole('button', { name: 'Show details' })
+        const details = page.locator(`[id="${await button.getAttribute('aria-controls')}"]`)
+        await expect(details).toBeHidden()
+
+        await button.focus()
+        await page.keyboard.press('Enter')
+        await expect(details).toBeVisible()
+        await page.keyboard.press('Space')
+        await expect(details).toBeHidden()
+        await expect(button).toBeFocused()
+      })
+
+      test('gives the focus to the button when a button inside the region closes it, never to the body', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const states = page.getByRole('region', { name: 'States' })
+        const button = states.getByRole('button', { name: 'Reply options' })
+
+        await button.click()
+        await states.getByRole('button', { name: 'Done' }).click()
+
+        await expect(button).toHaveAttribute('aria-expanded', 'false')
+        await expect(button).toBeFocused()
+      })
+
+      test('keeps the menu of a folder out of the heading and the button, and the folder open when it is pressed', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const variants = page.getByRole('region', { name: 'Variants' })
+        const folder = variants.getByRole('heading', { level: 3 }).getByRole('button')
+
+        await variants.getByRole('button', { name: 'Folder actions' }).click()
+
+        await expect(page.getByRole('menu', { name: 'Folder actions' })).toBeVisible()
+        await expect(folder).toHaveAttribute('aria-expanded', 'true')
+        await page.keyboard.press('Escape')
+        await expect(variants.getByRole('button', { name: 'Folder actions' })).toBeFocused()
+      })
+
+      test('lists the sentence and the button of the row apart, with the sentence describing the button', async ({
+        page,
+      }) => {
+        await openReference(page, reference)
+        const parts = page.getByRole('region', { name: 'Parts' })
+        const button = parts.getByRole('button', { name: 'Show who' })
+
+        await expect(parts.getByRole('link', { name: 'Brand voice' })).toBeVisible()
+        await expect(button).toHaveAccessibleDescription('Brand voice was renamed 4 times')
+        await button.click()
+        await expect(parts.getByRole('list', { name: 'Who renamed it' })).toBeVisible()
+      })
+    }
+
     if (reference.name === 'Menu') {
       test('opens from the keyboard, moves with the arrows and gives the focus back to its button on Escape', async ({
         page,
@@ -548,13 +625,13 @@ for (const reference of references) {
       })
     }
 
-    if (['SearchField', 'Select', 'Input', 'FilterChip', 'Alert', 'Menu'].includes(reference.name)) {
+    if (['SearchField', 'Select', 'Input', 'FilterChip', 'Alert', 'Menu', 'Disclosure'].includes(reference.name)) {
       test('fits in the pseudo-locale at 320 px, the fields in it included', async ({ page }) => {
         await page.setViewportSize({ width: 320, height: 800 })
         await openReference(page, reference, './__pseudo__')
 
         expect(await overflow(page)).toEqual({ scroll: 0, outside: [], clipped: [] })
-        expect(await smallTargets(page.getByRole('main'))).toEqual([])
+        expect(await smallTargets(page.getByRole('main'), 44, reference.touchControls)).toEqual([])
       })
     }
 
@@ -622,7 +699,8 @@ for (const reference of references) {
           await page.locator('#usage').getByRole('tablist').first().getByRole('tab').last().click()
 
           expect(await overflow(page), `${width} px`).toEqual({ scroll: 0, outside: [], clipped: [] })
-          if (width < 768) expect(await smallTargets(page.getByRole('main')), `${width} px`).toEqual([])
+          if (width < 768)
+            expect(await smallTargets(page.getByRole('main'), 44, reference.touchControls), `${width} px`).toEqual([])
         }
       })
     }

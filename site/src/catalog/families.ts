@@ -16,6 +16,7 @@ export type FamilyId =
   | 'badge'
   | 'icon'
   | 'tabs'
+  | 'disclosure'
   | 'alert'
   | 'tooltip'
   | 'dialog'
@@ -130,6 +131,13 @@ export const catalogFamilies: readonly CatalogFamily[] = [
     category: 'navigation',
     descriptionId: 'catalog.family.tabs.description',
     references: [reference('tabs')],
+  },
+  {
+    id: 'disclosure',
+    name: 'Disclosure',
+    category: 'display',
+    descriptionId: 'catalog.family.disclosure.description',
+    references: [reference('disclosure')],
   },
   {
     id: 'alert',
