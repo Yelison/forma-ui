@@ -2,10 +2,10 @@ import type { ComponentProps } from 'react'
 import { cx } from '../../lib/cx.js'
 import { Icon, type IconName } from '../Icon/index.js'
 import styles from './IconButton.module.css'
-import { iconButtonClassName } from './iconButtonClassName.js'
+import { iconButtonClassName, type IconButtonStyleOptions } from './iconButtonClassName.js'
 
 /** Props of {@link IconButton}: the native `button` attributes, without `children`, plus the icon and its name. */
-export interface IconButtonProps extends Omit<ComponentProps<'button'>, 'children'> {
+export interface IconButtonProps extends Omit<ComponentProps<'button'>, 'children'>, IconButtonStyleOptions {
   /** The icon to draw, or several to draw side by side, overlapping, as one glyph, such as a double arrow. */
   icon: IconName | readonly IconName[]
   /** Mirrors the icon horizontally, so one drawing serves two directions. Defaults to `false`. */

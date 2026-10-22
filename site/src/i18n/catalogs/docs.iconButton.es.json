@@ -18,7 +18,7 @@
   "docs.iconButton.limit.glyph": "Varios iconos se solapan en una fracción fija, ajustada para una flecha doble. Otros pares pueden no leerse como un solo glifo.",
   "docs.iconButton.limit.icons": "Solo dibuja los iconos de la biblioteca: recibe el nombre de uno, no un SVG propio.",
   "docs.iconButton.limit.label": "El <code>label</code> es un texto que traduces tú: la biblioteca no tiene un texto propio para él.",
-  "docs.iconButton.limit.link": "<code>iconButtonClassName</code> solo da estilo al elemento: el aspecto deshabilitado y el foco son los de un enlace, y un enlace no puede estar <code>disabled</code>.",
+  "docs.iconButton.limit.link": "<code>iconButtonClassName</code> solo da estilo al elemento: un enlace no puede estar <code>disabled</code>, así que el aspecto deshabilitado de IconButton no está disponible para él.",
   "docs.iconButton.limit.pressed": "El estado pulsado no se pinta: <code>aria-pressed</code> llega al botón pero en pantalla no cambia nada, así que un interruptor muestra su estado con otro icono.",
   "docs.iconButton.limit.size": "Hay un tamaño y un aspecto: no hay variantes ni estado de carga.",
   "docs.iconButton.link.description": "Un enlace que debe verse como un IconButton toma su clase de <code>iconButtonClassName</code>. Conserva su propia semántica: tú le das el nombre, el icono y, si quieres, el Tooltip.",

@@ -27,7 +27,7 @@ function iconsOf(button: HTMLElement) {
 }
 
 describe('IconButton', () => {
-  it('takes its classes from iconButtonClassName, so a link and a button share them', () => {
+  it('renders the classes that iconButtonClassName gives a link, so both look the same', () => {
     render(<IconButton icon="bell" label="Notifications" className="toggle" />)
 
     expect(screen.getByRole('button')).toHaveClass(iconButtonClassName({ className: 'toggle' }), { exact: true })

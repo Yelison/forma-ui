@@ -18,7 +18,7 @@
   "docs.iconButton.limit.glyph": "Several icons overlap by a fixed fraction, tuned for a double arrow. Other pairs may not read as one glyph.",
   "docs.iconButton.limit.icons": "It draws the icons of the library only: it takes the name of one, not an SVG of your own.",
   "docs.iconButton.limit.label": "The <code>label</code> is a string that you translate: there is no string of the library for it.",
-  "docs.iconButton.limit.link": "<code>iconButtonClassName</code> only styles the element: the disabled look and the focus are those of a link, and a link cannot be <code>disabled</code>.",
+  "docs.iconButton.limit.link": "<code>iconButtonClassName</code> only styles the element: a link cannot be <code>disabled</code>, so the disabled look of IconButton is not available to it.",
   "docs.iconButton.limit.pressed": "A pressed state is not painted: <code>aria-pressed</code> reaches the button but nothing changes on the screen, so a toggle shows its state with a different icon.",
   "docs.iconButton.limit.size": "There is one size, and one look: no variants and no loading state.",
   "docs.iconButton.link.description": "A link that must look like an IconButton takes its class from <code>iconButtonClassName</code>. It keeps its own semantics: you give it the name, the icon and, if you want one, the Tooltip.",

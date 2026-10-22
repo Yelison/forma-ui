@@ -116,7 +116,7 @@ export function iconButtonExamples(intl: IntlShape): { usage: Example; groups: r
             code: [
               `<Tooltip ${attribute('content', history)} describe={false}>`,
               `  {(trigger) => (`,
-              `    <a href="/history" ${attribute('aria-label', history)} className={iconButtonClassName()} {...trigger}>`,
+              `    <a href="#history" ${attribute('aria-label', history)} className={iconButtonClassName()} {...trigger}>`,
               `      <Icon name="clock" />`,
               `    </a>`,
               `  )}`,

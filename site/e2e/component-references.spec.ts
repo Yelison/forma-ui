@@ -648,7 +648,11 @@ test('the link of the reference of IconButton opens its tooltip with the keyboar
   await openReference(page, { slug: 'icon-button', name: 'IconButton' })
   const link = page.getByRole('region', { name: 'As a link' }).getByRole('link', { name: 'Version history' })
 
-  await link.focus()
+  // The keyboard walks the page from the top: the link is reached by Tab, never focused by script.
+  for (let presses = 0; presses < 80 && !(await link.evaluate((el) => el === document.activeElement)); presses++) {
+    await page.keyboard.press('Tab')
+  }
+  await expect(link).toBeFocused()
 
   await expect(page.getByRole('tooltip')).toHaveText('Version history')
   expect(await link.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe('solid')
