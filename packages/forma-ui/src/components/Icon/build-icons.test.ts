@@ -7,12 +7,14 @@ import {
   OUTPUT,
   RESOLVE_SOURCE,
   generate,
+  loadFilled,
   loadSource,
   merge,
   validate,
+  validateFilled,
 } from '../../../scripts/build-icons.ts'
 import { iconNames as exportedIconNames } from '../../index.ts'
-import { iconNames, iconPaths } from './paths.ts'
+import { filledIconNames, iconNames, iconPaths } from './paths.ts'
 
 const packageRoot = resolve(import.meta.dirname, '../../..')
 const repoRoot = resolve(packageRoot, '..', '..')
@@ -21,7 +23,7 @@ describe('icon generator', () => {
   it('writes the committed paths.ts, so CI fails on a stale file or an icon added there by hand', async () => {
     const committed = readFileSync(join(packageRoot, OUTPUT), 'utf8')
 
-    expect(generate(await loadSource(repoRoot))).toBe(committed)
+    expect(generate(await loadSource(repoRoot), await loadFilled(packageRoot))).toBe(committed)
   })
 
   it('names the source in the header and ends the file with a newline', async () => {
@@ -35,7 +37,7 @@ describe('icon generator', () => {
 
   it.each([
     { owner: 'Resolve', file: RESOLVE_SOURCE, root: repoRoot, exportName: 'iconPaths', count: 23 },
-    { owner: 'Forma UI', file: FORMA_SOURCE, root: packageRoot, exportName: 'formaIcons', count: 8 },
+    { owner: 'Forma UI', file: FORMA_SOURCE, root: packageRoot, exportName: 'formaIcons', count: 20 },
   ])('ships the $count icons of $owner as its source draws them, in the same order', async (source) => {
     const module = await import(pathToFileURL(join(source.root, source.file)).href)
     const drawn: Record<string, readonly string[]> = module[source.exportName]
@@ -90,5 +92,28 @@ describe('icon generator', () => {
     expect(generate({ 'arrow-left': ['M15 5L8 12L15 19'] })).toContain(
       "  'arrow-left': [\n    'M15 5L8 12L15 19',\n  ],",
     )
+  })
+
+  it('ships the 43 icons of the agreed set, the 23 of Resolve, 8 of Draftroom and 12 agreed in 0.7', () => {
+    expect(iconNames).toHaveLength(43)
+    expect(iconNames).toEqual(
+      expect.arrayContaining([
+        ...['trash', 'share', 'folder-plus', 'pencil', 'eye', 'monitor'],
+        ...['bold', 'italic', 'code', 'heading', 'list-ordered', 'star-filled'],
+      ]),
+    )
+  })
+
+  it('lists in filledIconNames the icons that are filled, and writes them from the source', async () => {
+    expect(filledIconNames).toEqual(await loadFilled(packageRoot))
+    expect(generate({ star: ['M0 0'], 'star-filled': ['M0 0'] }, ['star-filled'])).toContain(
+      "export const filledIconNames: readonly IconName[] = [\n  'star-filled',\n]",
+    )
+    expect(generate({ star: ['M0 0'] })).toContain('export const filledIconNames: readonly IconName[] = [\n]')
+  })
+
+  it('refuses a filled icon that no source draws, or one named twice', () => {
+    expect(() => validateFilled(['ghost'], { star: ['M0 0'] })).toThrow(/Filled icon "ghost" is not drawn/)
+    expect(() => validateFilled(['star', 'star'], { star: ['M0 0'] })).toThrow(/named twice/)
   })
 })
