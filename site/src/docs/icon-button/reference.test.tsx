@@ -12,6 +12,7 @@ describe('the reference of IconButton', () => {
       'Icons',
       'States',
       'With a Tooltip',
+      'As a link',
       'Usage',
       'API',
       'Accessibility',
@@ -54,6 +55,15 @@ describe('the reference of IconButton', () => {
     expect(await screen.findByRole('tooltip')).toHaveTextContent('Add')
     expect(button).not.toHaveAttribute('aria-describedby')
     expect(codeOf('With a Tooltip')).toContain('describe={false}')
+  })
+
+  it('shows a link drawn as an icon button, named by its aria-label, with the JSX that does it', () => {
+    renderReference('IconButton')
+
+    const pairing = screen.getByRole('region', { name: 'As a link' })
+    const link = within(pairing).getByRole('link', { name: 'Version history' })
+    expect(link).toHaveClass(/icon-button/)
+    expect(codeOf('As a link')).toContain('className={iconButtonClassName()}')
   })
 
   it('writes a text with a double quote into the JSX as an expression, so that the code still compiles', () => {

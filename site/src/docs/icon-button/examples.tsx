@@ -1,4 +1,4 @@
-import { IconButton, Tooltip, type IconName } from '@yelison/forma-ui'
+import { Icon, IconButton, Tooltip, iconButtonClassName, type IconName } from '@yelison/forma-ui'
 import type { IntlShape } from 'react-intl'
 import type { MessageId } from '../../i18n'
 import { attribute, selfClosingTag } from '../jsx'
@@ -34,6 +34,7 @@ export function iconButtonExamples(intl: IntlShape): { usage: Example; groups: r
   const add = say('docs.iconButton.sample.add')
   const collapse = say('docs.iconButton.sample.collapse')
   const expand = say('docs.iconButton.sample.expand')
+  const history = say('docs.iconButton.sample.history')
   const plus = { icon: 'plus', label: add } as const
 
   return {
@@ -91,6 +92,34 @@ export function iconButtonExamples(intl: IntlShape): { usage: Example; groups: r
             code: [
               `<Tooltip ${attribute('content', add)} describe={false}>`,
               `  {(trigger) => <IconButton icon="plus" ${attribute('label', add)} {...trigger} />}`,
+              `</Tooltip>`,
+            ].join('\n'),
+          },
+        ],
+      },
+      {
+        id: 'link',
+        title: 'docs.iconButton.link.title',
+        description: 'docs.iconButton.link.description',
+        examples: [
+          {
+            label: { message: 'docs.iconButton.link.label' },
+            element: (
+              <Tooltip content={history} describe={false}>
+                {(trigger) => (
+                  <a href="#history" aria-label={history} className={iconButtonClassName()} {...trigger}>
+                    <Icon name="clock" />
+                  </a>
+                )}
+              </Tooltip>
+            ),
+            code: [
+              `<Tooltip ${attribute('content', history)} describe={false}>`,
+              `  {(trigger) => (`,
+              `    <a href="#history" ${attribute('aria-label', history)} className={iconButtonClassName()} {...trigger}>`,
+              `      <Icon name="clock" />`,
+              `    </a>`,
+              `  )}`,
               `</Tooltip>`,
             ].join('\n'),
           },

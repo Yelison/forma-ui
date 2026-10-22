@@ -22,9 +22,11 @@ export {
   Button,
   IconButton,
   buttonClassName,
+  iconButtonClassName,
   type ButtonProps,
   type ButtonSize,
   type IconButtonProps,
+  type IconButtonStyleOptions,
   type ButtonStyleOptions,
   type ButtonVariant,
 } from './components/Button/index.js'
