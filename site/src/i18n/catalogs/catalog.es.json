@@ -13,6 +13,7 @@
   "catalog.family.badge.description": "Etiqueta breve que marca un elemento con un estado o una categoría.",
   "catalog.family.button.description": "Acciones principales, secundarias y destructivas, con un botón de solo icono.",
   "catalog.family.dialog.description": "Un modal que confirma una decisión antes de tomarla.",
+  "catalog.family.disclosure.description": "Un botón que muestra y oculta una región, en una línea de contenido o como el encabezado de una sección.",
   "catalog.family.filterChip.description": "Un control de filtro: un conmutador en una fila de opción única, o el disparador de un popup de opciones.",
   "catalog.family.icon.description": "Los iconos de la biblioteca, dibujados con el color del texto.",
   "catalog.family.input.description": "Un campo de texto con su etiqueta, su ayuda y su error.",

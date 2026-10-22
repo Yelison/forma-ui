@@ -13,6 +13,7 @@
   "catalog.family.badge.description": "A short label that tags an item with a status or category.",
   "catalog.family.button.description": "Primary, secondary and destructive actions, with an icon-only button.",
   "catalog.family.dialog.description": "A modal that confirms a decision before it is made.",
+  "catalog.family.disclosure.description": "A button that shows and hides a region, in a line of content or as the heading of a section.",
   "catalog.family.filterChip.description": "A filter control: a toggle in a single-choice row, or the trigger of a popup of options.",
   "catalog.family.icon.description": "The icons of the library, drawn in the color of the text.",
   "catalog.family.input.description": "A text field with its label, hint and error.",

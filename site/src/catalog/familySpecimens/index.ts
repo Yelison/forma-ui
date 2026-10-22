@@ -5,6 +5,7 @@ import { AvatarSpecimens } from './AvatarSpecimens'
 import { BadgeSpecimens } from './BadgeSpecimens'
 import { ButtonSpecimens } from './ButtonSpecimens'
 import { DialogSpecimens } from './DialogSpecimens'
+import { DisclosureSpecimens } from './DisclosureSpecimens'
 import { FilterChipSpecimens } from './FilterChipSpecimens'
 import { IconSpecimens } from './IconSpecimens'
 import { InputSpecimens } from './InputSpecimens'
@@ -28,6 +29,7 @@ export const familySpecimens: Record<FamilyId, ComponentType> = {
   badge: BadgeSpecimens,
   icon: IconSpecimens,
   tabs: TabsSpecimens,
+  disclosure: DisclosureSpecimens,
   alert: AlertSpecimens,
   tooltip: TooltipSpecimens,
   dialog: DialogSpecimens,

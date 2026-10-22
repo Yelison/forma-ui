@@ -18,6 +18,7 @@ describe('matchingFamilyIds', () => {
       'badge',
       'icon',
       'tabs',
+      'disclosure',
       'alert',
       'tooltip',
       'dialog',
@@ -34,6 +35,10 @@ describe('matchingFamilyIds', () => {
 
   it('keeps Button, FilterChip and Menu in the actions category', () => {
     expect(ids({ category: 'actions', name: '' })).toEqual(['button', 'filter-chip', 'menu'])
+  })
+
+  it('keeps Avatar, Badge, Icon and Disclosure in the display category', () => {
+    expect(ids({ category: 'display', name: '' })).toEqual(['avatar', 'badge', 'icon', 'disclosure'])
   })
 
   it('keeps only Tabs in the navigation category', () => {

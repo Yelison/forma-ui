@@ -1,0 +1,11 @@
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+.sentence {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
