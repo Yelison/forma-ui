@@ -659,18 +659,21 @@ describe('A link that takes its look from iconButtonClassName', () => {
     expect(getComputedStyle(link).backgroundColor).toBe(resolved('background-color', '--color-surface-hover'))
   })
 
-  it.each(themes)('draws the focus ring of an IconButton when the keyboard reaches it in the %s theme', async (theme) => {
-    root.setAttribute('data-theme', theme)
-    const { link } = mountIconLink()
+  it.each(themes)(
+    'draws the focus ring of an IconButton when the keyboard reaches it in the %s theme',
+    async (theme) => {
+      root.setAttribute('data-theme', theme)
+      const { link } = mountIconLink()
 
-    await pressTab()
-    await pressTab()
+      await pressTab()
+      await pressTab()
 
-    expect(document.activeElement).toBe(link)
-    const style = getComputedStyle(link)
-    expect([style.outlineStyle, style.outlineWidth, style.outlineOffset]).toEqual(['solid', '2px', '2px'])
-    expect(style.outlineColor).toBe(resolved('outline-color', '--color-focus'))
-  })
+      expect(document.activeElement).toBe(link)
+      const style = getComputedStyle(link)
+      expect([style.outlineStyle, style.outlineWidth, style.outlineOffset]).toEqual(['solid', '2px', '2px'])
+      expect(style.outlineColor).toBe(resolved('outline-color', '--color-focus'))
+    },
+  )
 })
 
 describe('IconButton icons', () => {

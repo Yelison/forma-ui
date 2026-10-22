@@ -269,10 +269,28 @@ library has no text of its own for `Menu`.
 
 `Tabs` starts the arrows from the selected tab, not the focused one. With a controlled `value` whose parent refuses a tab, the focus still moves to it, but the next arrow press goes on from the selected tab.
 
-Also exported: `buttonClassName` (the classes of a button, for a link that must look like one), `useScrollLock` (the
+Also exported: `buttonClassName` and `iconButtonClassName` (the classes of a button and of an icon button, for a link that must look like one; see below), `useScrollLock` (the
 scroll lock of the dialog, for an overlay of your own), `useFormaStrings` and `defaultStrings` (the text the components show
 on their own), `contrastRatio` and `relativeLuminance` (WCAG contrast, over `#rgb` and `#rrggbb` colors) and every props
 type next to its component.
+
+### A link drawn as an icon button
+
+`iconButtonClassName` gives a link the box, the hover and the focus ring of an `IconButton`, with no `href` or `render` prop on the component. The link keeps its own semantics, so it is yours to name: the icon has no text, and without an `aria-label` a screen reader reads only the address.
+
+```tsx
+import { Icon, Tooltip, iconButtonClassName } from '@yelison/forma-ui'
+
+;<Tooltip content="Version history" describe={false}>
+  {(trigger) => (
+    <a href="/history" aria-label="Version history" className={iconButtonClassName()} {...trigger}>
+      <Icon name="clock" />
+    </a>
+  )}
+</Tooltip>
+```
+
+The same goes for the `Link` of a router: pass `className={iconButtonClassName()}` and an `aria-label`. A link cannot be `disabled`, so the disabled look of `IconButton` is not available to it.
 
 ## Bundle size
 

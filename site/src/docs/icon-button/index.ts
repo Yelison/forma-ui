@@ -6,7 +6,7 @@ import { iconButtonExamples } from './examples'
 export const iconButtonDoc: ComponentDoc = {
   summary: 'docs.iconButton.summary',
   usageDescription: 'docs.iconButton.usage.description',
-  importCode: `import { IconButton } from '@yelison/forma-ui'`,
+  importCode: `import { IconButton, iconButtonClassName } from '@yelison/forma-ui'`,
   examples: iconButtonExamples,
   api: iconButtonApi,
   accessibility: [
@@ -16,6 +16,7 @@ export const iconButtonDoc: ComponentDoc = {
     'docs.iconButton.a11y.focus',
     'docs.iconButton.a11y.disabled',
     'docs.iconButton.a11y.target',
+    'docs.iconButton.a11y.link',
   ],
   limitations: [
     'docs.iconButton.limit.icons',
@@ -23,5 +24,6 @@ export const iconButtonDoc: ComponentDoc = {
     'docs.iconButton.limit.pressed',
     'docs.iconButton.limit.label',
     'docs.iconButton.limit.glyph',
+    'docs.iconButton.limit.link',
   ],
 }

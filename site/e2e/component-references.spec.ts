@@ -639,3 +639,19 @@ for (const locale of ['en', 'es'] as const) {
     await expect(page.getByRole('alert')).toHaveCount(0)
   })
 }
+
+// The link of the reference of IconButton is an <a> with the class of an icon button: the keyboard reaches it, it takes
+// the focus ring of the library, and its Tooltip opens and closes like the one of the button.
+test('the link of the reference of IconButton opens its tooltip with the keyboard and closes it with Escape', async ({
+  page,
+}) => {
+  await openReference(page, { slug: 'icon-button', name: 'IconButton' })
+  const link = page.getByRole('region', { name: 'As a link' }).getByRole('link', { name: 'Version history' })
+
+  await link.focus()
+
+  await expect(page.getByRole('tooltip')).toHaveText('Version history')
+  expect(await link.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe('solid')
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('tooltip')).toBeHidden()
+})
